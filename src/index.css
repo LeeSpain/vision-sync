@@ -1,3 +1,11 @@
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,35 +16,63 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Vision-Sync Brand Colors */
+    --background: 220 13% 98%; /* Slate White */
+    --foreground: 220 39% 11%; /* Midnight Navy for text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 13% 98%; /* Slate White */
+    --card-foreground: 220 39% 11%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 13% 98%;
+    --popover-foreground: 220 39% 11%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Royal Purple as primary brand color */
+    --primary: 248 39% 58%; /* Royal Purple #6A5ACD */
+    --primary-foreground: 220 13% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Soft Lilac for secondary elements */
+    --secondary: 253 42% 89%; /* Soft Lilac #C5B8F0 */
+    --secondary-foreground: 220 39% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 214 32% 91%; /* Cool Gray lighter */
+    --muted-foreground: 214 20% 58%; /* Cool Gray #94A3B8 */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Emerald Green for accents */
+    --accent: 158 64% 52%; /* Emerald Green #10B981 */
+    --accent-foreground: 220 13% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 220 13% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 248 39% 58%;
 
-    --radius: 0.5rem;
+    /* Custom brand colors */
+    --royal-purple: 248 39% 58%; /* #6A5ACD */
+    --emerald-green: 158 64% 52%; /* #10B981 */
+    --midnight-navy: 220 39% 11%; /* #1E293B */
+    --soft-lilac: 253 42% 89%; /* #C5B8F0 */
+    --cool-gray: 214 20% 58%; /* #94A3B8 */
+    --slate-white: 220 13% 98%; /* #F8FAFC */
+    --coral-orange: 16 100% 66%; /* #FF7F50 */
+    --electric-blue: 217 91% 60%; /* #3B82F6 */
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--royal-purple)), hsl(var(--emerald-green)));
+    --gradient-hero: linear-gradient(180deg, hsl(var(--slate-white)), hsl(var(--soft-lilac)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--slate-white)), hsl(var(--soft-lilac) / 0.3));
+
+    /* Shadows */
+    --shadow-card: 0 4px 20px -2px hsl(var(--royal-purple) / 0.1);
+    --shadow-hover: 0 8px 30px -4px hsl(var(--royal-purple) / 0.2);
+    --shadow-glow: 0 0 40px hsl(var(--emerald-green) / 0.3);
+
+    /* Animation & Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +136,55 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-hero text-foreground font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
