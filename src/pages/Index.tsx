@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import ProjectCard from '@/components/ProjectCard';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
+import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket } from 'lucide-react';
 
 const Index = () => {
@@ -18,7 +19,56 @@ const Index = () => {
     message: '',
   });
 
-  const featuredProjects = [
+  // Project state - now loaded from database
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
+  const [platformsForSale, setPlatformsForSale] = useState<Project[]>([]);
+  const [offTheShelf, setOffTheShelf] = useState<Project[]>([]);
+  const [internalTools, setInternalTools] = useState<Project[]>([]);
+  const [investmentOps, setInvestmentOps] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load projects on component mount
+  useEffect(() => {
+    loadAllProjects();
+  }, []);
+
+  const loadAllProjects = async () => {
+    try {
+      setLoading(true);
+      
+      // Load featured projects
+      const featured = await projectManager.getFeaturedProjects();
+      setFeaturedProjects(featured.slice(0, 3)); // Limit to 3 for featured
+      
+      // Load projects by category
+      const forSale = await projectManager.getProjectsByCategory('For Sale');
+      setPlatformsForSale(forSale.filter(p => p.status === 'Live' || p.status === 'Beta'));
+      setOffTheShelf(forSale.filter(p => p.status === 'Live'));
+      
+      const internal = await projectManager.getProjectsByCategory('Internal');
+      setInternalTools(internal);
+      
+      const investment = await projectManager.getProjectsByCategory('Investment');
+      setInvestmentOps(investment);
+      
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Convert database project to ProjectCard format
+  const convertToProjectCard = (project: Project) => ({
+    title: project.name,
+    description: project.description || '',
+    status: project.status as any,
+    category: project.category as any,
+    route: project.route || `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+    actions: { view: true },
+  });
+
+  const legacyFeaturedProjects = [
     {
       title: 'Global Health-Sync',
       description: 'Revolutionary healthcare synchronization platform connecting patients, providers, and data globally.',
@@ -45,7 +95,7 @@ const Index = () => {
     },
   ];
 
-  const platformsForSale = [
+  const legacyPlatformsForSale = [
     {
       title: 'Tether-Band',
       description: 'Innovative connectivity solution for secure device-to-device communication.',
@@ -64,7 +114,7 @@ const Index = () => {
     },
   ];
 
-  const offTheShelf = [
+  const legacyOffTheShelf = [
     {
       title: 'ForSale Portal',
       description: 'Ready-to-deploy marketplace platform with built-in payment processing.',
@@ -83,7 +133,7 @@ const Index = () => {
     },
   ];
 
-  const internalTools = [
+  const legacyInternalTools = [
     {
       title: 'Conneqt-Central',
       description: 'Internal project management and team collaboration platform.',
@@ -102,7 +152,7 @@ const Index = () => {
     },
   ];
 
-  const investmentOps = [
+  const legacyInvestmentOps = [
     {
       title: 'ForInvestors Platform',
       description: 'Comprehensive investor relations and portfolio management system.',
@@ -351,9 +401,16 @@ const Index = () => {
             </div>
             <div className="flex justify-center">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
-                {featuredProjects.map((project, index) => (
-                  <ProjectCard key={index} {...project} />
-                ))}
+                {loading ? (
+                  // Loading skeleton
+                  [...Array(3)].map((_, i) => (
+                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                  ))
+                ) : (
+                  featuredProjects.map((project, index) => (
+                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -366,9 +423,15 @@ const Index = () => {
             </div>
             <div className="flex justify-center">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {platformsForSale.map((project, index) => (
-                  <ProjectCard key={index} {...project} />
-                ))}
+                {loading ? (
+                  [...Array(2)].map((_, i) => (
+                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                  ))
+                ) : (
+                  platformsForSale.map((project, index) => (
+                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -381,9 +444,15 @@ const Index = () => {
             </div>
             <div className="flex justify-center">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {offTheShelf.map((project, index) => (
-                  <ProjectCard key={index} {...project} />
-                ))}
+                {loading ? (
+                  [...Array(2)].map((_, i) => (
+                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                  ))
+                ) : (
+                  offTheShelf.map((project, index) => (
+                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -396,9 +465,15 @@ const Index = () => {
             </div>
             <div className="flex justify-center">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {internalTools.map((project, index) => (
-                  <ProjectCard key={index} {...project} />
-                ))}
+                {loading ? (
+                  [...Array(2)].map((_, i) => (
+                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                  ))
+                ) : (
+                  internalTools.map((project, index) => (
+                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -411,9 +486,15 @@ const Index = () => {
             </div>
             <div className="flex justify-center">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {investmentOps.map((project, index) => (
-                  <ProjectCard key={index} {...project} />
-                ))}
+                {loading ? (
+                  [...Array(2)].map((_, i) => (
+                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                  ))
+                ) : (
+                  investmentOps.map((project, index) => (
+                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
+                  ))
+                )}
               </div>
             </div>
           </div>

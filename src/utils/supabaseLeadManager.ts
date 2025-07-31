@@ -161,6 +161,18 @@ export const supabaseLeadManager = {
         form_data: data.form_data
       };
 
+      // Send project email notification
+      await this.sendProjectEmailNotification(projectLead);
+
+      // Import project manager to increment lead count
+      const { projectManager } = await import('./projectManager');
+      try {
+        await projectManager.incrementLeadCount(leadData.project_id);
+      } catch (error) {
+        console.error('Error incrementing lead count:', error);
+        // Don't throw error here as the lead was saved successfully
+      }
+
       toast({
         title: "Success",
         description: "Your project inquiry has been submitted successfully!",
