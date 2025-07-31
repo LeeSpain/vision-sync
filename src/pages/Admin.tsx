@@ -97,15 +97,14 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen">
-      <Header />
       
       {/* Admin Header */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-midnight-navy text-slate-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-heading font-bold mb-2">Admin Dashboard</h1>
-              <p className="text-slate-white/80">Manage Vision-Sync platform content and leads</p>
+              <h1 className="text-3xl font-heading font-bold mb-2">Welcome back, Lee! 👋</h1>
+              <p className="text-slate-white/80">Manage your Vision-Sync platform and grow your business</p>
             </div>
             <div className="flex items-center gap-4">
               <Button 
