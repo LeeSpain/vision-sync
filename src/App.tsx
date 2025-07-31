@@ -5,7 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import GlobalHealthSync from "./pages/GlobalHealthSync";
+import NurseSync from "./pages/NurseSync";
+import ConneqtCentral from "./pages/ConneqtCentral";
+import IceSosLite from "./pages/IceSosLite";
+import AiSpainHomes from "./pages/AiSpainHomes";
+import TetherBand from "./pages/TetherBand";
 import ForInvestors from "./pages/ForInvestors";
+import ForSale from "./pages/ForSale";
+import CustomBuilds from "./pages/CustomBuilds";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,8 +27,15 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/global-health-sync" element={<GlobalHealthSync />} />
+          <Route path="/nurse-sync" element={<NurseSync />} />
+          <Route path="/conneqt-central" element={<ConneqtCentral />} />
+          <Route path="/ice-sos-lite" element={<IceSosLite />} />
+          <Route path="/ai-spain-homes" element={<AiSpainHomes />} />
+          <Route path="/tether-band" element={<TetherBand />} />
           <Route path="/for-investors" element={<ForInvestors />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/for-sale" element={<ForSale />} />
+          <Route path="/custom-builds" element={<CustomBuilds />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
