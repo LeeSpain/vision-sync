@@ -82,19 +82,17 @@ export function AdminSidebar() {
             <SidebarMenu>
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a 
-                      href={item.url}
-                      className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                        isActive(item.url) 
-                          ? "bg-royal-purple text-white" 
-                          : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
-                      }`}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </a>
-                  </SidebarMenuButton>
+                  <a 
+                    href={item.url}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                      isActive(item.url) 
+                        ? "bg-royal-purple text-white" 
+                        : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {!collapsed && <span>{item.title}</span>}
+                  </a>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -110,27 +108,25 @@ export function AdminSidebar() {
             <SidebarMenu>
               {quickActions.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    {item.external ? (
-                      <a 
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                      >
-                        <item.icon className="h-5 w-5" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </a>
-                    ) : (
-                      <a 
-                        href={item.url}
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                      >
-                        <item.icon className="h-5 w-5" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </a>
-                    )}
-                  </SidebarMenuButton>
+                  {item.external ? (
+                    <a 
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </a>
+                  ) : (
+                    <a 
+                      href={item.url}
+                      className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </a>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -141,7 +137,6 @@ export function AdminSidebar() {
         <div className="mt-auto p-4 border-t border-slate-white/10">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
                 <a 
                   href="#settings"
                   className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
@@ -153,7 +148,6 @@ export function AdminSidebar() {
                   <Settings className="h-5 w-5" />
                   {!collapsed && <span>Settings</span>}
                 </a>
-              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </div>
