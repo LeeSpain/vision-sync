@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/AdminLayout';
 import { ProjectManager } from '@/components/admin/ProjectManager';
 import { ContentManager } from '@/components/admin/ContentManager';
+import { MessagesManager } from '@/components/admin/MessagesManager';
 import { LeadsManager } from '@/components/admin/LeadsManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail } from 'lucide-react';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true); // Bypass login for testing
@@ -190,17 +191,17 @@ const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'messages'}>
+                      <Mail className="h-6 w-6 mb-2" />
+                      View Messages
+                    </Button>
                     <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'leads'}>
                       <Users className="h-6 w-6 mb-2" />
-                      View Leads
+                      Manage Leads
                     </Button>
                     <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'add-project'}>
                       <Plus className="h-6 w-6 mb-2" />
                       Add Project
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'content'}>
-                      <FileText className="h-6 w-6 mb-2" />
-                      Upload Content
                     </Button>
                     <Button variant="outline" className="h-20 flex-col" onClick={() => window.open('/', '_blank')}>
                       <Eye className="h-6 w-6 mb-2" />
@@ -212,6 +213,9 @@ const Admin = () => {
             </div>
           </div>
         );
+
+      case 'messages':
+        return <MessagesManager />;
 
       case 'projects':
         return <ProjectManager />;

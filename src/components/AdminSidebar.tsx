@@ -9,7 +9,8 @@ import {
   Plus,
   BarChart3,
   Eye,
-  LogOut
+  LogOut,
+  Mail
 } from "lucide-react"
 
 import {
@@ -28,6 +29,7 @@ import { Button } from "@/components/ui/button"
 
 const mainItems = [
   { title: "Dashboard", url: "#overview", icon: LayoutDashboard },
+  { title: "Messages", url: "#messages", icon: Mail },
   { title: "Projects", url: "#projects", icon: FolderOpen },
   { title: "Leads", url: "#leads", icon: Users },
   { title: "Content", url: "#content", icon: FileText },
