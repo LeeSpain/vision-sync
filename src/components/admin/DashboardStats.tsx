@@ -187,8 +187,27 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
           <div className="text-2xl font-bold text-midnight-navy">
             {formatCurrency(stats.totalPipeline)}
           </div>
-          <div className="text-xs text-emerald-green">
-            {stats.qualified} qualified leads
+          <div className="space-y-1 mt-2">
+            {stats.projectStats && (
+              <>
+                <div className="flex justify-between text-xs">
+                  <span className="text-cool-gray">Investment:</span>
+                  <span className="font-medium text-royal-purple">
+                    {formatCurrency(stats.projectStats.revenueByCategory?.Investment || 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-cool-gray">For Sale:</span>
+                  <span className="font-medium text-emerald-green">
+                    {formatCurrency(stats.projectStats.revenueByCategory?.['For Sale'] || 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-cool-gray">Leads:</span>
+                  <span className="text-emerald-green">{stats.qualified} qualified</span>
+                </div>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>

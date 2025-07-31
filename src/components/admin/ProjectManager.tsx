@@ -256,6 +256,52 @@ export function ProjectManager() {
   );
 
   return (
+    <div className="space-y-6">
+      {/* Revenue Pipeline Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="bg-gradient-card shadow-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-cool-gray">Investment Projects</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-royal-purple">
+              €{projects.filter(p => p.category === 'Investment').reduce((sum, p) => sum + (p.investment_amount || 0), 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-cool-gray">
+              {projects.filter(p => p.category === 'Investment').length} projects
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-card shadow-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-cool-gray">For Sale Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-green">
+              €{projects.filter(p => p.category === 'For Sale').reduce((sum, p) => sum + (p.price || 0), 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-cool-gray">
+              {projects.filter(p => p.category === 'For Sale').length} projects
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-card shadow-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-cool-gray">Total Pipeline</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-midnight-navy">
+              €{projects.reduce((sum, p) => sum + (p.investment_amount || 0) + (p.price || 0), 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-cool-gray">
+              {projects.reduce((sum, p) => sum + p.leads_count, 0)} total leads
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -360,5 +406,6 @@ export function ProjectManager() {
         )}
       </CardContent>
     </Card>
+    </div>
   );
 }

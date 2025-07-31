@@ -187,12 +187,17 @@ export const projectManager = {
       }, 0) || 0,
       byStatus: {} as Record<string, number>,
       byCategory: {} as Record<string, number>,
+      revenueByCategory: {} as Record<string, number>,
     };
 
-    // Count by status and category
+    // Count by status and category, calculate revenue by category
     data?.forEach(project => {
       stats.byStatus[project.status] = (stats.byStatus[project.status] || 0) + 1;
       stats.byCategory[project.category] = (stats.byCategory[project.category] || 0) + 1;
+      
+      // Calculate revenue by category
+      const projectRevenue = (project.investment_amount || 0) + (project.price || 0);
+      stats.revenueByCategory[project.category] = (stats.revenueByCategory[project.category] || 0) + projectRevenue;
     });
 
     return stats;
