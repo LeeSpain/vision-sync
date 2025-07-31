@@ -80,10 +80,11 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "Vision-Sync <noreply@vision-sync.com>",
+      from: "Vision-Sync Lead Manager <leads@vision-sync.com>",
       to: ["lee@vision-sync.com"],
       subject: subject,
       html: emailContent,
+      replyTo: lead.email, // Allow direct replies to the lead
     });
 
     console.log("Email sent successfully:", emailResponse);

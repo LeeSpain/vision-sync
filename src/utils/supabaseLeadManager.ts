@@ -417,20 +417,17 @@ export const supabaseLeadManager = {
   // Send email notification
   async sendEmailNotification(lead: Lead) {
     try {
-      const response = await fetch('https://bqcmhkajtuzovmvwblbe.supabase.co/functions/v1/send-lead-notification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxY21oa2FqdHV6b3ZtdndibGJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Nzc1MzYsImV4cCI6MjA2OTU1MzUzNn0.30fGqpWjKYteiMhQWts28ShnVmdP3TZg8B49OLLMdt8`
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('send-lead-notification', {
+        body: {
           type: 'general_lead',
           lead
-        })
+        }
       });
 
-      if (!response.ok) {
-        console.error('Failed to send email notification');
+      if (error) {
+        console.error('Failed to send email notification:', error);
+      } else {
+        console.log('Email notification sent successfully:', data);
       }
     } catch (error) {
       console.error('Error sending email notification:', error);
@@ -440,20 +437,17 @@ export const supabaseLeadManager = {
   // Send project email notification
   async sendProjectEmailNotification(lead: ProjectLead) {
     try {
-      const response = await fetch('https://bqcmhkajtuzovmvwblbe.supabase.co/functions/v1/send-lead-notification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxY21oa2FqdHV6b3ZtdndibGJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Nzc1MzYsImV4cCI6MjA2OTU1MzUzNn0.30fGqpWjKYteiMhQWts28ShnVmdP3TZg8B49OLLMdt8`
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('send-lead-notification', {
+        body: {
           type: 'project_lead',
           lead
-        })
+        }
       });
 
-      if (!response.ok) {
-        console.error('Failed to send project email notification');
+      if (error) {
+        console.error('Failed to send project email notification:', error);
+      } else {
+        console.log('Project email notification sent successfully:', data);
       }
     } catch (error) {
       console.error('Error sending project email notification:', error);
