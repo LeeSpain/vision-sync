@@ -142,7 +142,21 @@ const DynamicProjectPage = () => {
 
   // Not found - redirect to 404
   if (notFound || !project) {
-    return <Navigate to="/404" replace />;
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-midnight-navy mb-4">Project Not Found</h1>
+            <p className="text-cool-gray mb-8">The project you're looking for doesn't exist or is not publicly available.</p>
+            <Button variant="hero" onClick={() => window.location.href = '/'}>
+              Return Home
+            </Button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   // Parse content with fallbacks
