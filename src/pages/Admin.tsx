@@ -189,7 +189,11 @@ const Admin = () => {
                   <CardTitle className="font-heading">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'leads'}>
+                      <Users className="h-6 w-6 mb-2" />
+                      View Leads
+                    </Button>
                     <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'add-project'}>
                       <Plus className="h-6 w-6 mb-2" />
                       Add Project
@@ -201,10 +205,6 @@ const Admin = () => {
                     <Button variant="outline" className="h-20 flex-col" onClick={() => window.open('/', '_blank')}>
                       <Eye className="h-6 w-6 mb-2" />
                       Preview Site
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'analytics'}>
-                      <BarChart3 className="h-6 w-6 mb-2" />
-                      View Analytics
                     </Button>
                   </div>
                 </CardContent>
