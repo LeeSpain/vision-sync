@@ -30,6 +30,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { projectManager } from "@/utils/projectManager"
+import { supabaseLeadManager } from "@/utils/supabaseLeadManager"
 
 const mainItems = [
   { title: "Dashboard", url: "#overview", icon: LayoutDashboard },
@@ -53,13 +54,16 @@ export function AdminSidebar() {
   
   const [projectStats, setProjectStats] = useState({
     totalProjects: 0,
-    totalLeads: 0,
-    totalRevenue: 0,
     activeProjects: 0
+  });
+  
+  const [leadStats, setLeadStats] = useState({
+    totalLeads: 0
   });
 
   useEffect(() => {
     loadProjectStats();
+    loadLeadStats();
   }, []);
 
   const loadProjectStats = async () => {
@@ -71,12 +75,24 @@ export function AdminSidebar() {
       
       setProjectStats({
         totalProjects: stats.totalProjects,
-        totalLeads: stats.totalLeads,
-        totalRevenue: stats.totalRevenuePipeline,
         activeProjects: activeCount
       });
     } catch (error) {
       console.error('Error loading project stats:', error);
+    }
+  };
+
+  const loadLeadStats = async () => {
+    try {
+      const allLeads = await supabaseLeadManager.getAllLeads();
+      // Count only non-archived leads
+      const activeLeads = allLeads.filter(lead => lead.status !== 'archived').length;
+      
+      setLeadStats({
+        totalLeads: activeLeads
+      });
+    } catch (error) {
+      console.error('Error loading lead stats:', error);
     }
   };
 
@@ -136,7 +152,7 @@ export function AdminSidebar() {
                     )}
                     {!collapsed && item.title === "Leads" && (
                       <Badge variant="secondary" className="bg-emerald-green/20 text-emerald-green border-0">
-                        {projectStats.totalLeads}
+                        {leadStats.totalLeads}
                       </Badge>
                     )}
                   </a>
@@ -146,45 +162,6 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Project Stats */}
-        {!collapsed && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-slate-white/60">
-              Project Stats
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <div className="space-y-3 px-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <FolderOpen className="h-4 w-4 text-royal-purple" />
-                    <span className="text-sm text-slate-white/80">Active</span>
-                  </div>
-                  <Badge variant="outline" className="bg-royal-purple/10 text-royal-purple border-royal-purple/30">
-                    {projectStats.activeProjects}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <TrendingUp className="h-4 w-4 text-emerald-green" />
-                    <span className="text-sm text-slate-white/80">Leads</span>
-                  </div>
-                  <Badge variant="outline" className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
-                    {projectStats.totalLeads}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <DollarSign className="h-4 w-4 text-coral-orange" />
-                    <span className="text-sm text-slate-white/80">Pipeline</span>
-                  </div>
-                  <Badge variant="outline" className="bg-coral-orange/10 text-coral-orange border-coral-orange/30 text-xs">
-                    ${(projectStats.totalRevenue / 1000000).toFixed(1)}M
-                  </Badge>
-                </div>
-              </div>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
 
         {/* Quick Actions */}
         <SidebarGroup>
