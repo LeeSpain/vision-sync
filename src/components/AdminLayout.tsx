@@ -17,11 +17,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <div className="flex-1 flex flex-col">
           {/* Top bar with sidebar trigger */}
           <header className="h-16 border-b border-slate-white/10 bg-midnight-navy flex items-center px-6">
-            <SidebarTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-slate-white hover:bg-slate-white/10">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SidebarTrigger>
+            <SidebarTrigger className="text-slate-white hover:bg-slate-white/10" />
             
             <div className="ml-4">
               <h1 className="text-xl font-heading font-bold text-slate-white">
