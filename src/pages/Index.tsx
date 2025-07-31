@@ -42,18 +42,7 @@ const Index = () => {
     },
   ];
 
-  const investmentProjects = [
-    {
-      title: 'AI Spain Homes',
-      description: 'AI-powered real estate platform for Spanish property investment and management.',
-      status: 'Concept' as const,
-      category: 'Investment' as const,
-      route: '/ai-spain-homes',
-      actions: { view: true, invest: true },
-    },
-  ];
-
-  const forSaleProjects = [
+  const platformsForSale = [
     {
       title: 'Tether-Band',
       description: 'Innovative connectivity solution for secure device-to-device communication.',
@@ -61,6 +50,33 @@ const Index = () => {
       category: 'For Sale' as const,
       route: '/tether-band',
       actions: { view: true, buy: true },
+    },
+    {
+      title: 'CustomBuilds Platform',
+      description: 'White-label e-commerce solution with advanced customization capabilities.',
+      status: 'Live' as const,
+      category: 'For Sale' as const,
+      route: '/custom-builds',
+      actions: { view: true, buy: true },
+    },
+  ];
+
+  const offTheShelf = [
+    {
+      title: 'ForSale Portal',
+      description: 'Ready-to-deploy marketplace platform with built-in payment processing.',
+      status: 'Live' as const,
+      category: 'For Sale' as const,
+      route: '/for-sale',
+      actions: { view: true, buy: true, demo: true },
+    },
+    {
+      title: 'AI Spain Homes',
+      description: 'Complete real estate platform with AI-powered property matching.',
+      status: 'Beta' as const,
+      category: 'For Sale' as const,
+      route: '/ai-spain-homes',
+      actions: { view: true, buy: true, demo: true },
     },
   ];
 
@@ -72,6 +88,31 @@ const Index = () => {
       category: 'Internal' as const,
       route: '/conneqt-central',
       actions: { view: true },
+    },
+    {
+      title: 'Analytics Dashboard',
+      description: 'Comprehensive business intelligence and reporting suite.',
+      status: 'Private' as const,
+      category: 'Internal' as const,
+      actions: { view: true },
+    },
+  ];
+
+  const investmentOps = [
+    {
+      title: 'ForInvestors Platform',
+      description: 'Comprehensive investor relations and portfolio management system.',
+      status: 'MVP' as const,
+      category: 'Investment' as const,
+      route: '/for-investors',
+      actions: { view: true, invest: true },
+    },
+    {
+      title: 'VisionSync Capital',
+      description: 'Strategic investment fund focused on innovative technology platforms.',
+      status: 'Concept' as const,
+      category: 'Investment' as const,
+      actions: { view: true, invest: true },
     },
   ];
 
@@ -144,46 +185,77 @@ const Index = () => {
       <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Featured Projects */}
-          <div className="mb-16">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-2">🔥 Featured Projects</h2>
-            <p className="text-cool-gray mb-8">Flagship platforms ready for investment and growth</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project, index) => (
-                <ProjectCard key={index} {...project} />
-              ))}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🔥 Featured Projects</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Flagship platforms ready for investment and growth</p>
             </div>
-          </div>
-
-          {/* Investment Opportunities */}
-          <div className="mb-16">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-2">💼 Investment Opportunities</h2>
-            <p className="text-cool-gray mb-8">Early-stage platforms seeking strategic investment</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {investmentProjects.map((project, index) => (
-                <ProjectCard key={index} {...project} />
-              ))}
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+                {featuredProjects.map((project, index) => (
+                  <ProjectCard key={index} {...project} />
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Platforms for Sale */}
-          <div className="mb-16">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-2">🛒 Platforms for Sale</h2>
-            <p className="text-cool-gray mb-8">Complete solutions ready for immediate deployment</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {forSaleProjects.map((project, index) => (
-                <ProjectCard key={index} {...project} />
-              ))}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🛒 Platforms for Sale</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Complete solutions ready for immediate deployment and ownership transfer</p>
+            </div>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                {platformsForSale.map((project, index) => (
+                  <ProjectCard key={index} {...project} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Off the Shelf */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">📦 Off the Shelf</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Ready-to-deploy solutions with minimal customization required</p>
+            </div>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                {offTheShelf.map((project, index) => (
+                  <ProjectCard key={index} {...project} />
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Internal Tools */}
-          <div className="mb-16">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-2">🧠 Internal Tools</h2>
-            <p className="text-cool-gray mb-8">Proprietary systems powering our operations</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {internalTools.map((project, index) => (
-                <ProjectCard key={index} {...project} />
-              ))}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🧠 Internal Tools</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Proprietary systems powering our operations and workflows</p>
+            </div>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                {internalTools.map((project, index) => (
+                  <ProjectCard key={index} {...project} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Investment Ops */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">💼 Investment Ops</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Strategic investment opportunities and financial partnerships</p>
+            </div>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                {investmentOps.map((project, index) => (
+                  <ProjectCard key={index} {...project} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
