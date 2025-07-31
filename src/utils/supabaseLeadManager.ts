@@ -75,14 +75,14 @@ export const supabaseLeadManager = {
       }
 
       // Send email notification
-      await this.sendEmailNotification(data);
+      await this.sendEmailNotification(data as Lead);
 
       toast({
         title: "Success",
         description: "Your inquiry has been submitted successfully!",
       });
 
-      return data;
+      return data as Lead;
     } catch (error) {
       console.error('Error saving lead:', error);
       toast({
@@ -130,14 +130,14 @@ export const supabaseLeadManager = {
       }
 
       // Send email notification
-      await this.sendProjectEmailNotification(data);
+      await this.sendProjectEmailNotification(data as ProjectLead);
 
       toast({
         title: "Success",
         description: "Your project inquiry has been submitted successfully!",
       });
 
-      return data;
+      return data as ProjectLead;
     } catch (error) {
       console.error('Error saving project lead:', error);
       toast({
@@ -162,7 +162,7 @@ export const supabaseLeadManager = {
         return [];
       }
 
-      return data || [];
+      return (data || []) as Lead[];
     } catch (error) {
       console.error('Error fetching leads:', error);
       return [];
@@ -174,13 +174,7 @@ export const supabaseLeadManager = {
     try {
       const { data, error } = await supabase
         .from('project_leads' as any)
-        .select(`
-          *,
-          projects (
-            name,
-            slug
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -188,7 +182,7 @@ export const supabaseLeadManager = {
         return [];
       }
 
-      return data || [];
+      return (data || []) as ProjectLead[];
     } catch (error) {
       console.error('Error fetching project leads:', error);
       return [];
@@ -210,7 +204,7 @@ export const supabaseLeadManager = {
         return null;
       }
 
-      return data;
+      return data as Lead;
     } catch (error) {
       console.error('Error updating lead:', error);
       return null;
@@ -232,7 +226,7 @@ export const supabaseLeadManager = {
         return null;
       }
 
-      return data;
+      return data as ProjectLead;
     } catch (error) {
       console.error('Error updating project lead:', error);
       return null;
@@ -288,8 +282,8 @@ export const supabaseLeadManager = {
       ]);
 
       const allLeads = [
-        ...(leadsResponse.data || []),
-        ...(projectLeadsResponse.data || [])
+        ...(leadsResponse.data || []).filter(lead => lead && typeof lead === 'object' && 'status' in lead),
+        ...(projectLeadsResponse.data || []).filter(lead => lead && typeof lead === 'object' && 'status' in lead)
       ];
 
       const total = allLeads.length;
@@ -299,13 +293,13 @@ export const supabaseLeadManager = {
 
       const today = new Date().toDateString();
       const todayLeads = allLeads.filter(lead => 
-        new Date(lead.created_at).toDateString() === today
+        lead.created_at && new Date(lead.created_at).toDateString() === today
       ).length;
 
       const thisWeek = new Date();
       thisWeek.setDate(thisWeek.getDate() - 7);
       const weekLeads = allLeads.filter(lead => 
-        new Date(lead.created_at) > thisWeek
+        lead.created_at && new Date(lead.created_at) > thisWeek
       ).length;
 
       return {
