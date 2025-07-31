@@ -11,11 +11,8 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'For Investors', href: '/for-investors' },
-    { name: 'For Sale', href: '/for-sale' },
-    { name: 'Custom Builds', href: '/custom-builds' },
+    { name: 'Contact Us', href: '/contact' },
+    { name: 'Meet Your AI Agent', href: '/ai-agents' },
   ];
 
   return (
