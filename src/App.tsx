@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
+import Templates from "./pages/Templates";
 import DynamicProjectPage from "./components/DynamicProjectPage";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
@@ -24,6 +25,7 @@ const App = () => (
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/templates" element={<Templates />} />
           
           {/* Static pages that should remain */}
           <Route path="/admin" element={<Admin />} />
