@@ -321,6 +321,17 @@ const Index = () => {
             </div>
           </div>
 
+          {/* Call to Action */}
+          <div className="text-center mt-16">
+            <Link to="/ai-agent-questionnaire">
+              <Button variant="hero" size="lg" className="animate-float">
+                <Bot className="h-5 w-5" />
+                Get Your AI Agent Now
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+
         </div>
       </section>
 

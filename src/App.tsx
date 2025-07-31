@@ -17,6 +17,7 @@ import CustomBuilds from "./pages/CustomBuilds";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import AiAgents from "./pages/AiAgents";
+import AiAgentQuestionnaire from "./pages/AiAgentQuestionnaire";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/ai-agents" element={<AiAgents />} />
+          <Route path="/ai-agent-questionnaire" element={<AiAgentQuestionnaire />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
