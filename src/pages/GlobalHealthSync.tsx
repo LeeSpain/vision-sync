@@ -6,6 +6,7 @@ import {
   InvestmentSection,
   StatsShowcase
 } from '@/components/project-template';
+import { leadManager } from '@/utils/leadManager';
 import { 
   Globe2, 
   Shield, 
@@ -26,15 +27,39 @@ import {
 
 const GlobalHealthSync = () => {
   const handleViewDemo = () => {
-    console.log('View Demo clicked');
+    leadManager.saveLead({
+      source: 'project-inquiry',
+      name: 'Demo Request',
+      email: 'demo@placeholder.com', // Would normally be from a form
+      projectName: 'Global Health-Sync',
+      inquiryType: 'demo',
+      message: 'Requested demo from project page'
+    });
+    alert('Demo request captured! In a real implementation, this would show a form to collect contact details.');
   };
 
   const handleInvestmentInfo = () => {
-    console.log('Investment Info clicked');
+    leadManager.saveLead({
+      source: 'project-inquiry',
+      name: 'Investment Inquiry',
+      email: 'investment@placeholder.com', // Would normally be from a form
+      projectName: 'Global Health-Sync',
+      inquiryType: 'investment',
+      message: 'Requested investment information from project page'
+    });
+    alert('Investment inquiry captured! In a real implementation, this would show a form to collect investor details.');
   };
 
   const handleContactUs = () => {
-    console.log('Contact Us clicked');
+    leadManager.saveLead({
+      source: 'project-inquiry',
+      name: 'General Inquiry',
+      email: 'contact@placeholder.com', // Would normally be from a form
+      projectName: 'Global Health-Sync',
+      inquiryType: 'partnership',
+      message: 'General contact request from project page'
+    });
+    alert('Contact request captured! In a real implementation, this would show a contact form.');
   };
 
   const platformHighlights = [

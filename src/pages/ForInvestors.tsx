@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import { leadManager } from '@/utils/leadManager';
 import { TrendingUp, DollarSign, Users, BarChart3, ArrowRight, Shield, Target } from 'lucide-react';
 
 const ForInvestors = () => {
@@ -21,7 +22,21 @@ const ForInvestors = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Investor inquiry submitted:', investorForm);
+    
+    // Save lead to database
+    leadManager.saveLead({
+      source: 'investor',
+      name: investorForm.name,
+      email: investorForm.email,
+      company: investorForm.company,
+      investmentRange: investorForm.investmentRange,
+      interests: investorForm.interests,
+      message: investorForm.message
+    });
+    
+    // Show success message
+    alert('Thank you for your interest! We\'ll send you detailed investment information within 24 hours.');
+    
     // Reset form
     setInvestorForm({
       name: '',

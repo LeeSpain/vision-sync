@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/AdminLayout';
 import { ProjectManager } from '@/components/admin/ProjectManager';
 import { ContentManager } from '@/components/admin/ContentManager';
+import { LeadsManager } from '@/components/admin/LeadsManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -216,51 +217,7 @@ const Admin = () => {
         return <ProjectManager />;
 
       case 'leads':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-heading">Lead Management</CardTitle>
-              <CardDescription>Track and manage incoming leads and inquiries</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Project</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {leads.map((lead) => (
-                    <TableRow key={lead.id}>
-                      <TableCell className="font-medium">{lead.name}</TableCell>
-                      <TableCell>{lead.email}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{lead.type}</Badge>
-                      </TableCell>
-                      <TableCell>{lead.project}</TableCell>
-                      <TableCell>{lead.date}</TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        );
+        return <LeadsManager />;
 
       case 'content':
         return <ContentManager />;

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import { leadManager } from '@/utils/leadManager';
 import { ArrowRight, Code, Smartphone, Globe, Database, Zap, Shield, Users, DollarSign } from 'lucide-react';
 
 const CustomBuilds = () => {
@@ -38,7 +39,24 @@ const CustomBuilds = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Custom build request submitted:', projectForm);
+    
+    // Save lead to database
+    leadManager.saveLead({
+      source: 'custom-build',
+      name: projectForm.name,
+      email: projectForm.email,
+      company: projectForm.company,
+      projectType: projectForm.projectType,
+      budget: projectForm.budget,
+      timeline: projectForm.timeline,
+      description: projectForm.description,
+      features: projectForm.features,
+      urgency: projectForm.urgency
+    });
+    
+    // Show success message
+    alert('Thank you for your project request! We\'ll review it and get back to you within 24 hours.');
+    
     // Reset form
     setProjectForm({
       name: '',

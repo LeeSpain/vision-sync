@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import ProjectCard from '@/components/ProjectCard';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import { leadManager } from '@/utils/leadManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2 } from 'lucide-react';
 
 const Index = () => {
@@ -120,8 +121,18 @@ const Index = () => {
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Contact form submitted:', contactForm);
+    
+    // Save lead to database
+    leadManager.saveLead({
+      source: 'contact',
+      name: contactForm.name,
+      email: contactForm.email,
+      message: contactForm.message
+    });
+    
+    // Show success message
+    alert('Thank you for your message! We\'ll get back to you soon.');
+    
     // Reset form
     setContactForm({ name: '', email: '', message: '' });
   };
