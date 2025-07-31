@@ -14,6 +14,7 @@ const Index = () => {
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
+    phone: '',
     message: '',
   });
 
@@ -128,6 +129,7 @@ const Index = () => {
       source: 'contact',
       name: contactForm.name,
       email: contactForm.email,
+      company: contactForm.phone, // Using company field for phone temporarily
       message: contactForm.message
     });
     
@@ -135,7 +137,7 @@ const Index = () => {
     alert('Thank you for your message! We\'ll get back to you soon.');
     
     // Reset form
-    setContactForm({ name: '', email: '', message: '' });
+    setContactForm({ name: '', email: '', phone: '', message: '' });
   };
 
   return (
@@ -457,6 +459,18 @@ const Index = () => {
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                       placeholder="your@email.com"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-midnight-navy mb-2">
+                      Phone Number
+                    </label>
+                    <Input
+                      type="tel"
+                      value={contactForm.phone}
+                      onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                      placeholder="+1 (555) 123-4567"
                       required
                     />
                   </div>

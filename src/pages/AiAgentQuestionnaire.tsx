@@ -13,6 +13,7 @@ const AiAgentQuestionnaire = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     company: '',
     industry: '',
     businessType: '',
@@ -83,7 +84,7 @@ Additional Info: ${formData.additionalInfo}`,
   const isStepComplete = (step: number) => {
     switch (step) {
       case 1:
-        return formData.name && formData.email && formData.company;
+        return formData.name && formData.email && formData.phone && formData.company;
       case 2:
         return formData.industry && formData.businessType;
       case 3:
@@ -128,6 +129,18 @@ Additional Info: ${formData.additionalInfo}`,
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   placeholder="your.email@company.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-midnight-navy mb-2">
+                  Phone Number *
+                </label>
+                <Input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  placeholder="+1 (555) 123-4567"
                 />
               </div>
               
