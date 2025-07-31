@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
+import { useCurrency } from '@/hooks/useCurrency';
 import { 
   Users, 
   TrendingUp, 
@@ -22,6 +23,7 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     loadDashboardStats();
@@ -139,14 +141,6 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
     );
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-EU', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   const formatPercentage = (value: number) => {
     return `${Math.round(value)}%`;
@@ -185,7 +179,7 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-midnight-navy">
-            {formatCurrency(stats.totalPipeline)}
+            {formatPrice(stats.totalPipeline)}
           </div>
           <div className="space-y-1 mt-2">
             {stats.projectStats && (
@@ -193,13 +187,13 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
                 <div className="flex justify-between text-xs">
                   <span className="text-cool-gray">Investment:</span>
                   <span className="font-medium text-royal-purple">
-                    {formatCurrency(stats.projectStats.revenueByCategory?.Investment || 0)}
+                    {formatPrice(stats.projectStats.revenueByCategory?.Investment || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-cool-gray">For Sale:</span>
                   <span className="font-medium text-emerald-green">
-                    {formatCurrency(stats.projectStats.revenueByCategory?.['For Sale'] || 0)}
+                    {formatPrice(stats.projectStats.revenueByCategory?.['For Sale'] || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">

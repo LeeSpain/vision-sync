@@ -10,12 +10,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Edit, Trash2, Eye, ExternalLink, Loader2 } from 'lucide-react';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { toast } from 'sonner';
+import { useCurrency } from '@/hooks/useCurrency';
 
 export function ProjectManager() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const { formatPrice } = useCurrency();
   const [newProject, setNewProject] = useState({
     name: '',
     status: 'Concept',
@@ -265,7 +267,7 @@ export function ProjectManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-royal-purple">
-              €{projects.filter(p => p.category === 'Investment').reduce((sum, p) => sum + (p.investment_amount || 0), 0).toLocaleString()}
+              {formatPrice(projects.filter(p => p.category === 'Investment').reduce((sum, p) => sum + (p.investment_amount || 0), 0))}
             </div>
             <div className="text-xs text-cool-gray">
               {projects.filter(p => p.category === 'Investment').length} projects
@@ -279,7 +281,7 @@ export function ProjectManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-emerald-green">
-              €{projects.filter(p => p.category === 'For Sale').reduce((sum, p) => sum + (p.price || 0), 0).toLocaleString()}
+              {formatPrice(projects.filter(p => p.category === 'For Sale').reduce((sum, p) => sum + (p.price || 0), 0))}
             </div>
             <div className="text-xs text-cool-gray">
               {projects.filter(p => p.category === 'For Sale').length} projects
@@ -293,7 +295,7 @@ export function ProjectManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-midnight-navy">
-              €{projects.reduce((sum, p) => sum + (p.investment_amount || 0) + (p.price || 0), 0).toLocaleString()}
+              {formatPrice(projects.reduce((sum, p) => sum + (p.investment_amount || 0) + (p.price || 0), 0))}
             </div>
             <div className="text-xs text-cool-gray">
               {projects.reduce((sum, p) => sum + p.leads_count, 0)} total leads
@@ -373,12 +375,12 @@ export function ProjectManager() {
                   <div className="text-sm">
                     {project.investment_amount && (
                       <div className="text-emerald-green font-medium">
-                        Investment: ${project.investment_amount.toLocaleString()}
+                        Investment: {formatPrice(project.investment_amount)}
                       </div>
                     )}
                     {project.price && (
                       <div className="text-royal-purple font-medium">
-                        Price: ${project.price.toLocaleString()}
+                        Price: {formatPrice(project.price)}
                       </div>
                     )}
                     {!project.investment_amount && !project.price && (
