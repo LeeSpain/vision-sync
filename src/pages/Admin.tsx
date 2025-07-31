@@ -107,9 +107,19 @@ const Admin = () => {
               <h1 className="text-3xl font-heading font-bold mb-2">Admin Dashboard</h1>
               <p className="text-slate-white/80">Manage Vision-Sync platform content and leads</p>
             </div>
-            <Badge className="bg-emerald-green text-white">
-              Admin Access
-            </Badge>
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+                onClick={() => window.open('/', '_blank')}
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                View Homepage
+              </Button>
+              <Badge className="bg-emerald-green text-white">
+                Admin Access
+              </Badge>
+            </div>
           </div>
         </div>
       </section>
