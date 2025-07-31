@@ -316,47 +316,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Enhanced Bottom CTA Section */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-royal-purple/10 via-transparent to-emerald-green/10 rounded-3xl blur"></div>
-            <div className="relative bg-gradient-to-r from-royal-purple/5 via-slate-white/50 to-emerald-green/5 rounded-3xl p-12 border border-soft-lilac/30 shadow-elegant">
-              <div className="text-center">
-                <h3 className="text-3xl font-heading font-bold text-midnight-navy mb-4">
-                  Ready to Build the Future?
-                </h3>
-                <p className="text-lg text-cool-gray mb-8 max-w-2xl mx-auto">
-                  Join the AI revolution with custom intelligent agents tailored to your business needs. 
-                  Experience the power of conversational AI that understands and evolves.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button variant="hero" size="lg" className="animate-float shadow-glow">
-                    <Rocket className="h-5 w-5" />
-                    Explore AI Solutions
-                    <ArrowRight className="h-5 w-5" />
-                  </Button>
-                  <Button variant="view" size="lg" className="shadow-card">
-                    <Target className="h-5 w-5" />
-                    Schedule Consultation
-                  </Button>
-                </div>
-                
-                <div className="mt-8 flex items-center justify-center gap-8 text-sm text-cool-gray">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-emerald-green rounded-full"></div>
-                    <span>24/7 Availability</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-royal-purple rounded-full"></div>
-                    <span>Instant Setup</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-coral-orange rounded-full"></div>
-                    <span>Custom Training</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
