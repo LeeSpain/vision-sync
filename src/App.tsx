@@ -15,6 +15,7 @@ import ForInvestors from "./pages/ForInvestors";
 import ForSale from "./pages/ForSale";
 import CustomBuilds from "./pages/CustomBuilds";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/for-sale" element={<ForSale />} />
           <Route path="/custom-builds" element={<CustomBuilds />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

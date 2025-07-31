@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -44,9 +46,24 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <Button variant="hero" size="sm">
-              Get Started
-            </Button>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-midnight-navy/80 flex items-center">
+                  <User className="h-4 w-4 mr-1" />
+                  {user.email}
+                </span>
+                <Button variant="ghost" size="sm" onClick={signOut}>
+                  <LogOut className="h-4 w-4 mr-1" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button variant="hero" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -75,9 +92,24 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              <Button variant="hero" size="sm" className="w-full">
-                Get Started
-              </Button>
+              {user ? (
+                <div className="flex flex-col space-y-2">
+                  <span className="text-sm text-midnight-navy/80 flex items-center">
+                    <User className="h-4 w-4 mr-1" />
+                    {user.email}
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={signOut} className="w-full">
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="hero" size="sm" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         )}
