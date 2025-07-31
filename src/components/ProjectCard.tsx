@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExternalLink, Eye, DollarSign, TrendingUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectCardProps {
   title: string;
@@ -19,6 +20,14 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ title, description, status, category, route, image, actions }: ProjectCardProps) => {
+  const navigate = useNavigate();
+
+  const handleViewClick = () => {
+    if (route) {
+      navigate(route);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Live': return 'bg-emerald-green text-white';
@@ -68,29 +77,16 @@ const ProjectCard = ({ title, description, status, category, route, image, actio
         </CardDescription>
       </CardHeader>
 
-      <CardFooter className="flex flex-wrap gap-2">
+      <CardFooter className="flex justify-center">
         {actions.view && (
-          <Button variant="view" size="sm" className="flex-1">
+          <Button 
+            variant="view" 
+            size="sm" 
+            onClick={handleViewClick}
+            className="w-full max-w-32"
+          >
             <Eye className="h-4 w-4" />
             View
-          </Button>
-        )}
-        {actions.demo && (
-          <Button variant="outline" size="sm" className="flex-1">
-            <ExternalLink className="h-4 w-4" />
-            Demo
-          </Button>
-        )}
-        {actions.invest && (
-          <Button variant="invest" size="sm" className="flex-1">
-            <TrendingUp className="h-4 w-4" />
-            Invest
-          </Button>
-        )}
-        {actions.buy && (
-          <Button variant="buy" size="sm" className="flex-1">
-            <DollarSign className="h-4 w-4" />
-            Buy
           </Button>
         )}
       </CardFooter>

@@ -22,7 +22,7 @@ const Index = () => {
       status: 'MVP' as const,
       category: 'Investment' as const,
       route: '/global-health-sync',
-      actions: { view: true, invest: true, demo: true },
+      actions: { view: true },
     },
     {
       title: 'Nurse-Sync',
@@ -30,7 +30,7 @@ const Index = () => {
       status: 'Live' as const,
       category: 'Investment' as const,
       route: '/nurse-sync',
-      actions: { view: true, invest: true },
+      actions: { view: true },
     },
     {
       title: 'ICE-SOS Lite',
@@ -38,7 +38,7 @@ const Index = () => {
       status: 'For Sale' as const,
       category: 'For Sale' as const,
       route: '/ice-sos-lite',
-      actions: { view: true, buy: true },
+      actions: { view: true },
     },
   ];
 
@@ -49,7 +49,7 @@ const Index = () => {
       status: 'Beta' as const,
       category: 'For Sale' as const,
       route: '/tether-band',
-      actions: { view: true, buy: true },
+      actions: { view: true },
     },
     {
       title: 'CustomBuilds Platform',
@@ -57,7 +57,7 @@ const Index = () => {
       status: 'Live' as const,
       category: 'For Sale' as const,
       route: '/custom-builds',
-      actions: { view: true, buy: true },
+      actions: { view: true },
     },
   ];
 
@@ -68,7 +68,7 @@ const Index = () => {
       status: 'Live' as const,
       category: 'For Sale' as const,
       route: '/for-sale',
-      actions: { view: true, buy: true, demo: true },
+      actions: { view: true },
     },
     {
       title: 'AI Spain Homes',
@@ -76,7 +76,7 @@ const Index = () => {
       status: 'Beta' as const,
       category: 'For Sale' as const,
       route: '/ai-spain-homes',
-      actions: { view: true, buy: true, demo: true },
+      actions: { view: true },
     },
   ];
 
@@ -94,6 +94,7 @@ const Index = () => {
       description: 'Comprehensive business intelligence and reporting suite.',
       status: 'Private' as const,
       category: 'Internal' as const,
+      route: '/admin',
       actions: { view: true },
     },
   ];
@@ -105,14 +106,15 @@ const Index = () => {
       status: 'MVP' as const,
       category: 'Investment' as const,
       route: '/for-investors',
-      actions: { view: true, invest: true },
+      actions: { view: true },
     },
     {
       title: 'VisionSync Capital',
       description: 'Strategic investment fund focused on innovative technology platforms.',
       status: 'Concept' as const,
       category: 'Investment' as const,
-      actions: { view: true, invest: true },
+      route: '/for-investors',
+      actions: { view: true },
     },
   ];
 
