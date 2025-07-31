@@ -4,17 +4,23 @@ import { ProjectManager } from '@/components/admin/ProjectManager';
 import { ContentManager } from '@/components/admin/ContentManager';
 import { MessagesManager } from '@/components/admin/MessagesManager';
 import { LeadsManager } from '@/components/admin/LeadsManager';
+import { DashboardStats } from '@/components/admin/DashboardStats';
+import { RecentActivity } from '@/components/admin/RecentActivity';
+import { QuickActions } from '@/components/admin/QuickActions';
+import { LeadSourceChart } from '@/components/admin/LeadSourceChart';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail } from 'lucide-react';
+import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail, RefreshCw } from 'lucide-react';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true); // Bypass login for testing
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [activeSection, setActiveSection] = useState('overview');
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '') || 'overview';
@@ -38,12 +44,13 @@ const Admin = () => {
     }
   };
 
-  const leads = [
-    { id: 1, name: 'John Smith', email: 'john@example.com', type: 'Investment', project: 'Global Health-Sync', date: '2024-01-15' },
-    { id: 2, name: 'Sarah Johnson', email: 'sarah@tech.com', type: 'Purchase', project: 'ICE-SOS Lite', date: '2024-01-14' },
-    { id: 3, name: 'Mike Chen', email: 'mike@startup.io', type: 'Custom Build', project: 'Web Application', date: '2024-01-13' },
-    { id: 4, name: 'Lisa Brown', email: 'lisa@corp.com', type: 'Investment', project: 'Nurse-Sync', date: '2024-01-12' },
-  ];
+  const handleStatsLoad = (stats: any) => {
+    setDashboardStats(stats);
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   if (!isAuthenticated) {
     return (
@@ -104,109 +111,77 @@ const Admin = () => {
       case 'overview':
         return (
           <div className="space-y-6">
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card className="bg-gradient-card shadow-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-medium text-cool-gray">Total Projects</CardTitle>
-                    <Settings className="h-4 w-4 text-royal-purple" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-midnight-navy">6</div>
-                  <div className="text-xs text-emerald-green">+1 this month</div>
-                </CardContent>
-              </Card>
+            {/* Enhanced Stats Overview */}
+            <DashboardStats key={refreshKey} onStatsLoad={handleStatsLoad} />
 
-              <Card className="bg-gradient-card shadow-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-medium text-cool-gray">Active Leads</CardTitle>
-                    <Users className="h-4 w-4 text-electric-blue" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-midnight-navy">50</div>
-                  <div className="text-xs text-emerald-green">+12 this week</div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-card shadow-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-medium text-cool-gray">Revenue Pipeline</CardTitle>
-                    <BarChart3 className="h-4 w-4 text-emerald-green" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-midnight-navy">€2.1M</div>
-                  <div className="text-xs text-emerald-green">+15% this quarter</div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-card shadow-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-medium text-cool-gray">Conversion Rate</CardTitle>
-                    <FileText className="h-4 w-4 text-coral-orange" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-midnight-navy">24%</div>
-                  <div className="text-xs text-emerald-green">+3% improvement</div>
-                </CardContent>
-              </Card>
+            {/* Main Dashboard Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Recent Activity - Takes 2 columns */}
+              <div className="lg:col-span-2">
+                <RecentActivity key={refreshKey} />
+              </div>
+              
+              {/* Quick Actions - Takes 1 column */}
+              <QuickActions stats={dashboardStats} onRefresh={handleRefresh} />
             </div>
 
-            {/* Quick Overview */}
+            {/* Secondary Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
+              {/* Lead Sources Chart */}
+              <LeadSourceChart 
+                sourceBreakdown={dashboardStats?.sourceBreakdown} 
+                loading={!dashboardStats}
+              />
+              
+              {/* Business Intelligence Card */}
+              <Card className="bg-gradient-card shadow-card">
                 <CardHeader>
-                  <CardTitle className="font-heading">Recent Activity</CardTitle>
+                  <CardTitle className="font-heading">Business Intelligence</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-soft-lilac/20 rounded-lg">
-                      <div>
-                        <p className="font-medium">New lead from ICE-SOS Lite</p>
-                        <p className="text-sm text-cool-gray">2 hours ago</p>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-4 bg-gradient-subtle rounded-lg">
+                        <div className="text-2xl font-bold text-royal-purple">
+                          {dashboardStats?.avgLeadsPerDay || 0}
+                        </div>
+                        <div className="text-sm text-cool-gray">Avg Leads/Day</div>
                       </div>
-                      <Badge>New</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-soft-lilac/20 rounded-lg">
-                      <div>
-                        <p className="font-medium">Global Health-Sync page updated</p>
-                        <p className="text-sm text-cool-gray">1 day ago</p>
+                      <div className="text-center p-4 bg-gradient-subtle rounded-lg">
+                        <div className="text-2xl font-bold text-emerald-green">
+                          {dashboardStats?.conversionRate ? `${Math.round(dashboardStats.conversionRate)}%` : '0%'}
+                        </div>
+                        <div className="text-sm text-cool-gray">Conversion Rate</div>
                       </div>
-                      <Badge variant="outline">Updated</Badge>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-heading">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'messages'}>
-                      <Mail className="h-6 w-6 mb-2" />
-                      View Messages
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'leads'}>
-                      <Users className="h-6 w-6 mb-2" />
-                      Manage Leads
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.location.hash = 'add-project'}>
-                      <Plus className="h-6 w-6 mb-2" />
-                      Add Project
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col" onClick={() => window.open('/', '_blank')}>
-                      <Eye className="h-6 w-6 mb-2" />
-                      Preview Site
-                    </Button>
+                    
+                    {dashboardStats?.followUpNeeded > 0 && (
+                      <div className="p-4 bg-coral-orange/10 border border-coral-orange/30 rounded-lg">
+                        <div className="flex items-center gap-2 text-coral-orange mb-1">
+                          <RefreshCw className="h-4 w-4" />
+                          <span className="font-medium">Action Required</span>
+                        </div>
+                        <p className="text-sm text-midnight-navy">
+                          {dashboardStats.followUpNeeded} leads need follow-up
+                        </p>
+                      </div>
+                    )}
+                    
+                    <div className="pt-2 border-t border-soft-lilac/30">
+                      <div className="text-sm text-cool-gray mb-2">Performance This Week</div>
+                      <div className="flex justify-between text-sm">
+                        <span>New Leads:</span>
+                        <span className="font-medium">{dashboardStats?.weekLeads || 0}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Qualified:</span>
+                        <span className="font-medium">{dashboardStats?.qualified || 0}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Converted:</span>
+                        <span className="font-medium">{dashboardStats?.converted || 0}</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
