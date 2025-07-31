@@ -195,76 +195,103 @@ const Index = () => {
       </section>
 
       {/* AI Agents & The Future Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-soft-lilac/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-midnight-navy mb-6">
-              🤖 Leading the AI Revolution
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-emerald-green/5 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-royal-purple/5 to-transparent"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-green/10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-royal-purple/10 rounded-full blur-xl"></div>
+        
+        <div className="relative max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in">
+              <Sparkles className="h-4 w-4" />
+              The Future is Now
+            </div>
+            <h2 className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-midnight-navy via-royal-purple to-emerald-green bg-clip-text text-transparent mb-6 animate-slide-up">
+              AI Agents & The Future
             </h2>
-            <p className="text-xl md:text-2xl text-cool-gray max-w-3xl mx-auto mb-4">
-              We're at the forefront of AI innovation - let us help you harness the power of intelligent agents
+            <p className="text-xl md:text-2xl text-cool-gray max-w-4xl mx-auto mb-4 animate-fade-in" style={{animationDelay: '0.2s'}}>
+              We're pioneering the next generation of intelligent automation
             </p>
-            <p className="text-lg text-cool-gray max-w-2xl mx-auto">
-              AI Agents & The Future - We can help you! Leading the way!
+            <p className="text-lg text-royal-purple font-medium animate-fade-in" style={{animationDelay: '0.3s'}}>
+              Leading the way in AI innovation - Let us help you transform your business!
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <Card className="group bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 hover:scale-105">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-primary">
-                  <Bot className="h-10 w-10 text-white" />
+          {/* Modern AI Capabilities Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            {/* Left Side - Main Feature */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-slate-white to-soft-lilac/30 rounded-3xl p-8 shadow-elegant border border-soft-lilac/20 hover:shadow-glow transition-all duration-500 group">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <Brain className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-heading font-bold text-midnight-navy mb-3 group-hover:text-royal-purple transition-colors">
+                      Conversational Intelligence
+                    </h3>
+                    <p className="text-cool-gray leading-relaxed mb-4">
+                      Advanced voice agents and conversational AI that understand context, emotion, and intent. Transform customer interactions with natural, intelligent dialogue systems.
+                    </p>
+                    <div className="flex items-center gap-2 text-royal-purple font-medium">
+                      <Sparkles className="h-4 w-4" />
+                      Next-gen Communication
+                    </div>
+                  </div>
                 </div>
-                <CardTitle className="text-xl font-heading text-midnight-navy group-hover:text-royal-purple transition-colors">
-                  Conversational AI
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center text-cool-gray leading-relaxed">
-                  Voice agents, intelligent chatbots, and seamless human-AI interactions that transform customer experiences and automate complex conversations.
-                </CardDescription>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card className="group bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 hover:scale-105">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-green">
-                  <Brain className="h-10 w-10 text-white" />
+            {/* Right Side - Two Stacked Features */}
+            <div className="space-y-6">
+              <div className="bg-gradient-to-r from-emerald-green/10 to-emerald-green/5 rounded-2xl p-6 border border-emerald-green/20 hover:border-emerald-green/40 transition-all duration-300 group">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-12 h-12 bg-emerald-green rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                    <Zap className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-midnight-navy">Smart Automation</h3>
                 </div>
-                <CardTitle className="text-xl font-heading text-midnight-navy group-hover:text-emerald-green transition-colors">
-                  Automation Intelligence
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center text-cool-gray leading-relaxed">
-                  Smart process automation, workflow optimization, and intelligent decision-making systems that scale your operations effortlessly.
-                </CardDescription>
-              </CardContent>
-            </Card>
+                <p className="text-cool-gray leading-relaxed">
+                  Intelligent process automation that learns, adapts, and optimizes workflows in real-time.
+                </p>
+              </div>
 
-            <Card className="group bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 hover:scale-105">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-coral-orange">
-                  <TrendingUp className="h-10 w-10 text-white" />
+              <div className="bg-gradient-to-r from-coral-orange/10 to-coral-orange/5 rounded-2xl p-6 border border-coral-orange/20 hover:border-coral-orange/40 transition-all duration-300 group">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-12 h-12 bg-coral-orange rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-midnight-navy">Predictive Analytics</h3>
                 </div>
-                <CardTitle className="text-xl font-heading text-midnight-navy group-hover:text-coral-orange transition-colors">
-                  Predictive Analytics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center text-cool-gray leading-relaxed">
-                  Advanced data insights, forecasting capabilities, and intelligent analytics that drive informed business decisions and strategic growth.
-                </CardDescription>
-              </CardContent>
-            </Card>
+                <p className="text-cool-gray leading-relaxed">
+                  AI-powered insights that forecast trends, predict outcomes, and drive strategic decisions.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="text-center">
-            <Button variant="hero" size="lg" className="animate-float">
-              <Rocket className="h-5 w-5" />
-              Explore AI Solutions
-              <ArrowRight className="h-5 w-5" />
-            </Button>
+          {/* Bottom CTA Section */}
+          <div className="text-center bg-gradient-to-r from-royal-purple/10 via-transparent to-emerald-green/10 rounded-3xl p-12 border border-soft-lilac/30">
+            <h3 className="text-3xl font-heading font-bold text-midnight-navy mb-4">
+              Ready to Build the Future?
+            </h3>
+            <p className="text-lg text-cool-gray mb-8 max-w-2xl mx-auto">
+              Join the AI revolution with custom intelligent agents tailored to your business needs
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button variant="hero" size="lg" className="animate-float">
+                <Rocket className="h-5 w-5" />
+                Explore AI Solutions
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+              <Button variant="view" size="lg">
+                <Target className="h-5 w-5" />
+                Schedule Consultation
+              </Button>
+            </div>
           </div>
         </div>
       </section>
