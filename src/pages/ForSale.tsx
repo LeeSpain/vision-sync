@@ -8,8 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { DollarSign, ShoppingCart, Download, ArrowRight, CheckCircle, Shield, Headphones } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
+import { useBudgetOptions } from '@/utils/budgetOptions';
 
 const ForSale = () => {
+  const { formatPrice } = useCurrency();
+  const { forSale: budgetOptions } = useBudgetOptions();
   const [inquiryForm, setInquiryForm] = useState({
     name: '',
     email: '',
@@ -39,7 +43,7 @@ const ForSale = () => {
     {
       title: 'ICE-SOS Lite',
       description: 'Emergency contact and medical information system',
-      price: '$75,000',
+      price: formatPrice(75000),
       stage: 'For Sale',
       users: '500+ Beta Users',
       rating: '4.8★',
@@ -55,7 +59,7 @@ const ForSale = () => {
     {
       title: 'Tether-Band',
       description: 'Secure device-to-device connectivity solution',
-      price: '$150,000',
+      price: formatPrice(150000),
       stage: 'Beta License',
       users: 'Early Access',
       rating: 'In Development',
@@ -300,10 +304,11 @@ const ForSale = () => {
                         <SelectValue placeholder="Select budget" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="under-50k">Under $50K</SelectItem>
-                        <SelectItem value="50k-100k">$50K - $100K</SelectItem>
-                        <SelectItem value="100k-200k">$100K - $200K</SelectItem>
-                        <SelectItem value="over-200k">Over $200K</SelectItem>
+                        {budgetOptions.map((budget, index) => (
+                          <SelectItem key={index} value={budget.toLowerCase().replace(/[^a-z0-9]/g, '-')}>
+                            {budget}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

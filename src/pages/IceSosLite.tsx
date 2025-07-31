@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Shield, Smartphone, DollarSign, Eye, ExternalLink, AlertTriangle, Clock, Users } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const IceSosLite = () => {
+  const { formatPrice } = useCurrency();
   return (
     <div className="min-h-screen">
       <Header />
@@ -164,7 +166,7 @@ const IceSosLite = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="text-center">
-              <div className="text-3xl font-bold text-coral-orange mb-2">$75K</div>
+              <div className="text-3xl font-bold text-coral-orange mb-2">{formatPrice(75000)}</div>
               <div className="text-cool-gray">Platform License</div>
             </div>
             <div className="text-center">

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { CurrencySelector } from '@/components/ui/currency-selector';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,24 +47,27 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-midnight-navy/80 flex items-center">
-                  <User className="h-4 w-4 mr-1" />
-                  {user.email}
-                </span>
-                <Button variant="ghost" size="sm" onClick={signOut}>
-                  <LogOut className="h-4 w-4 mr-1" />
-                  Sign Out
-                </Button>
-              </div>
-            ) : (
-              <Link to="/auth">
-                <Button variant="hero" size="sm">
-                  Sign In
-                </Button>
-              </Link>
-            )}
+            <div className="flex items-center space-x-3">
+              <CurrencySelector variant="compact" />
+              {user ? (
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm text-midnight-navy/80 flex items-center">
+                    <User className="h-4 w-4 mr-1" />
+                    {user.email}
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="hero" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -92,6 +96,9 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              <div className="mb-4">
+                <CurrencySelector />
+              </div>
               {user ? (
                 <div className="flex flex-col space-y-2">
                   <span className="text-sm text-midnight-navy/80 flex items-center">

@@ -2,15 +2,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, Package, Shield, Headphones, CheckCircle } from 'lucide-react';
+import { CurrencySelector } from '@/components/ui/currency-selector';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface PurchaseSectionProps {
   title?: string;
   description?: string;
   pricing: {
-    amount: string;
-    currency?: string;
+    amount: number; // Amount in EUR
     period?: string;
-    originalPrice?: string;
+    originalPrice?: number; // Original price in EUR
   };
   includes: string[];
   features?: string[];
@@ -27,6 +28,7 @@ const PurchaseSection = ({
   onPurchase,
   badge
 }: PurchaseSectionProps) => {
+  const { formatPrice } = useCurrency();
   return (
     <section className="py-16 lg:py-24 bg-gradient-primary">
       <div className="container">
@@ -40,6 +42,9 @@ const PurchaseSection = ({
 
           <Card className="bg-white/10 border-white/20 backdrop-blur-md">
             <CardHeader className="text-center">
+              <div className="flex justify-center mb-4">
+                <CurrencySelector variant="inline" />
+              </div>
               {badge && (
                 <Badge className="mx-auto mb-4 bg-emerald-green text-white">
                   {badge}
@@ -49,11 +54,11 @@ const PurchaseSection = ({
                 <div className="flex items-center justify-center gap-2">
                   {pricing.originalPrice && (
                     <span className="text-xl text-white/60 line-through">
-                      {pricing.currency || '$'}{pricing.originalPrice}
+                      {formatPrice(pricing.originalPrice)}
                     </span>
                   )}
                   <span className="text-4xl font-bold">
-                    {pricing.currency || '$'}{pricing.amount}
+                    {formatPrice(pricing.amount)}
                   </span>
                   {pricing.period && (
                     <span className="text-lg text-white/80">

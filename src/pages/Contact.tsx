@@ -7,8 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight, Sparkles, MessageSquare, Building2, Users, Target } from 'lucide-react';
 import { leadManager } from '@/utils/leadManager';
+import { useBudgetOptions } from '@/utils/budgetOptions';
 
 const Contact = () => {
+  const { general: budgetOptions } = useBudgetOptions();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -32,9 +34,6 @@ const Contact = () => {
     'Education', 'Technology', 'Marketing', 'Legal', 'Other'
   ];
 
-  const budgetRanges = [
-    'Under $10k', '$10k - $25k', '$25k - $50k', '$50k - $100k', '$100k+', 'Let\'s discuss'
-  ];
 
   const timelines = [
     'ASAP (1-2 weeks)', '1 month', '2-3 months', '3-6 months', '6+ months', 'Not sure yet'
@@ -217,7 +216,7 @@ Message: ${formData.message}`,
                   Budget Range *
                 </label>
                 <div className="grid grid-cols-2 gap-2">
-                  {budgetRanges.map((budget) => (
+                  {budgetOptions.map((budget) => (
                     <button
                       key={budget}
                       type="button"

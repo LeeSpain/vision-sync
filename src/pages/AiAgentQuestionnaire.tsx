@@ -7,8 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Bot, Building2, MessageSquare, Zap, Users, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { leadManager } from '@/utils/leadManager';
+import { useBudgetOptions } from '@/utils/budgetOptions';
 
 const AiAgentQuestionnaire = () => {
+  const { aiAgent: budgetOptions } = useBudgetOptions();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -42,9 +44,6 @@ const AiAgentQuestionnaire = () => {
     'Process Automation', 'Lead Generation', 'Appointment Scheduling', 'Voice Assistance'
   ];
 
-  const budgetRanges = [
-    'Under $10k', '$10k - $25k', '$25k - $50k', '$50k - $100k', '$100k+'
-  ];
 
   const timelines = [
     'ASAP (1-2 weeks)', '1 month', '2-3 months', '3-6 months', '6+ months'
@@ -292,7 +291,7 @@ Additional Info: ${formData.additionalInfo}`,
                   Budget Range *
                 </label>
                 <div className="space-y-2">
-                  {budgetRanges.map((budget) => (
+                  {budgetOptions.map((budget) => (
                     <button
                       key={budget}
                       type="button"

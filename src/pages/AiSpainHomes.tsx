@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Home, Brain, TrendingUp, Eye, ExternalLink, MapPin, Euro, BarChart3 } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const AiSpainHomes = () => {
+  const { formatPrice } = useCurrency();
   return (
     <div className="min-h-screen">
       <Header />
@@ -88,7 +90,7 @@ const AiSpainHomes = () => {
                 <li>• Madrid & Barcelona metros</li>
                 <li>• Emerging markets analysis</li>
                 <li>• International buyer focus</li>
-                <li>• €50K - €2M property range</li>
+                <li>• {formatPrice(50000)} - {formatPrice(2000000)} property range</li>
               </ul>
             </div>
           </div>
@@ -164,7 +166,7 @@ const AiSpainHomes = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="text-center">
-              <div className="text-3xl font-bold text-electric-blue mb-2">€50B</div>
+              <div className="text-3xl font-bold text-electric-blue mb-2">{formatPrice(50000000000)}</div>
               <div className="text-cool-gray">Spanish Property Market</div>
             </div>
             <div className="text-center">
@@ -172,7 +174,7 @@ const AiSpainHomes = () => {
               <div className="text-cool-gray">International Buyers</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-royal-purple mb-2">$1M</div>
+              <div className="text-3xl font-bold text-royal-purple mb-2">{formatPrice(1000000)}</div>
               <div className="text-cool-gray">Seed Funding Target</div>
             </div>
             <div className="text-center">
