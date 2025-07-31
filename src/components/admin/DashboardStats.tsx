@@ -32,19 +32,24 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
       setLoading(true);
       setError(null);
 
-      // Get comprehensive stats
-      const [leadStats, allLeads] = await Promise.all([
+      // Get comprehensive stats from both leads and projects
+      const [leadStats, allLeads, projectStats] = await Promise.all([
         supabaseLeadManager.getLeadStats(),
-        supabaseLeadManager.getAllLeads()
+        supabaseLeadManager.getAllLeads(),
+        // Import and use projectManager
+        (async () => {
+          const { projectManager } = await import('@/utils/projectManager');
+          return await projectManager.getProjectStats();
+        })()
       ]);
 
-      // Calculate revenue pipeline from investment inquiries
+      // Calculate revenue pipeline from investment inquiries AND project values
       const investmentLeads = allLeads.filter(lead => 
         lead.form_data?.inquiry_type === 'investment' || 
         lead.form_data?.projectInterest?.includes('investment')
       );
       
-      const totalPipeline = investmentLeads.reduce((sum, lead) => {
+      const leadsPipeline = investmentLeads.reduce((sum, lead) => {
         const amount = lead.form_data?.investment_amount || lead.form_data?.budget;
         if (amount && typeof amount === 'string') {
           const numericAmount = parseFloat(amount.replace(/[€,$,]/g, ''));
@@ -52,6 +57,9 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
         }
         return sum;
       }, 0);
+
+      // Add project revenue pipeline
+      const totalPipeline = leadsPipeline + projectStats.totalRevenuePipeline;
 
       // Calculate source breakdown
       const sourceBreakdown = allLeads.reduce((acc, lead) => {
@@ -70,14 +78,24 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
         return new Date(lead.next_follow_up) <= now;
       }).length;
 
+      // Calculate conversion rate based on qualified vs total leads
+      const qualifiedLeads = allLeads.filter(lead => 
+        lead.status === 'qualified' || lead.status === 'converted'
+      ).length;
+      const conversionRate = leadStats.total > 0 ? (qualifiedLeads / leadStats.total) * 100 : 0;
+
       const enhancedStats = {
         ...leadStats,
         totalPipeline,
         sourceBreakdown,
         highPriorityCount,
         followUpNeeded,
-        projectsCount: 6, // Static for now, can be made dynamic
-        avgLeadsPerDay: Math.round(leadStats.total / 30),
+        projectsCount: projectStats.totalProjects,
+        avgLeadsPerDay: leadStats.total > 0 ? Math.round(leadStats.total / 30) : 0,
+        conversionRate,
+        qualified: qualifiedLeads,
+        converted: allLeads.filter(lead => lead.status === 'converted').length,
+        projectStats
       };
 
       setStats(enhancedStats);

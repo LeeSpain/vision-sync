@@ -8,6 +8,7 @@ import { DashboardStats } from '@/components/admin/DashboardStats';
 import { RecentActivity } from '@/components/admin/RecentActivity';
 import { QuickActions } from '@/components/admin/QuickActions';
 import { LeadSourceChart } from '@/components/admin/LeadSourceChart';
+import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -202,78 +203,7 @@ const Admin = () => {
         return <ContentManager />;
 
       case 'analytics':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-heading">Analytics Dashboard</CardTitle>
-              <CardDescription>Monitor your platform performance</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-royal-purple">1,247</div>
-                    <p className="text-sm text-cool-gray">Page Views (This Month)</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-emerald-green">89</div>
-                    <p className="text-sm text-cool-gray">Unique Visitors</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-electric-blue">12</div>
-                    <p className="text-sm text-cool-gray">Contact Forms Submitted</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Top Projects</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span>Global Health-Sync</span>
-                          <span className="font-medium">324 views</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>ICE-SOS Lite</span>
-                          <span className="font-medium">289 views</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Nurse-Sync</span>
-                          <span className="font-medium">156 views</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Conversion Funnel</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span>Homepage Visits</span>
-                          <span className="font-medium">1,247</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Project Views</span>
-                          <span className="font-medium">456</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Contact Forms</span>
-                          <span className="font-medium">12</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
+        return <RealTimeAnalytics />;
 
       case 'settings':
         return (
