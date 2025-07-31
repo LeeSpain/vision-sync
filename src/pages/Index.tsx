@@ -7,7 +7,7 @@ import ProjectCard from '@/components/ProjectCard';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { leadManager } from '@/utils/leadManager';
-import { ArrowRight, Sparkles, Target, Zap, Building2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket } from 'lucide-react';
 
 const Index = () => {
   const [contactForm, setContactForm] = useState({
@@ -190,6 +190,81 @@ const Index = () => {
               <h3 className="font-heading font-semibold text-midnight-navy mb-2">Market Ready</h3>
               <p className="text-cool-gray">Validated concepts with proven potential</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Agents & The Future Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-soft-lilac/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-midnight-navy mb-6">
+              🤖 Leading the AI Revolution
+            </h2>
+            <p className="text-xl md:text-2xl text-cool-gray max-w-3xl mx-auto mb-4">
+              We're at the forefront of AI innovation - let us help you harness the power of intelligent agents
+            </p>
+            <p className="text-lg text-cool-gray max-w-2xl mx-auto">
+              AI Agents & The Future - We can help you! Leading the way!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <Card className="group bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 hover:scale-105">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-primary">
+                  <Bot className="h-10 w-10 text-white" />
+                </div>
+                <CardTitle className="text-xl font-heading text-midnight-navy group-hover:text-royal-purple transition-colors">
+                  Conversational AI
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-cool-gray leading-relaxed">
+                  Voice agents, intelligent chatbots, and seamless human-AI interactions that transform customer experiences and automate complex conversations.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 hover:scale-105">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-green">
+                  <Brain className="h-10 w-10 text-white" />
+                </div>
+                <CardTitle className="text-xl font-heading text-midnight-navy group-hover:text-emerald-green transition-colors">
+                  Automation Intelligence
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-cool-gray leading-relaxed">
+                  Smart process automation, workflow optimization, and intelligent decision-making systems that scale your operations effortlessly.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 hover:scale-105">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-coral-orange">
+                  <TrendingUp className="h-10 w-10 text-white" />
+                </div>
+                <CardTitle className="text-xl font-heading text-midnight-navy group-hover:text-coral-orange transition-colors">
+                  Predictive Analytics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center text-cool-gray leading-relaxed">
+                  Advanced data insights, forecasting capabilities, and intelligent analytics that drive informed business decisions and strategic growth.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button variant="hero" size="lg" className="animate-float">
+              <Rocket className="h-5 w-5" />
+              Explore AI Solutions
+              <ArrowRight className="h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
