@@ -139,7 +139,7 @@ const Admin = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-midnight-navy">$2.3M</div>
+                  <div className="text-2xl font-bold text-midnight-navy">€2.1M</div>
                   <div className="text-xs text-emerald-green">+15% this quarter</div>
                 </CardContent>
               </Card>
