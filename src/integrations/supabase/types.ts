@@ -68,50 +68,71 @@ export type Database = {
       projects: {
         Row: {
           category: string
+          content: Json | null
           created_at: string
           description: string | null
           features: Json | null
+          gallery_images: string[] | null
+          hero_image_url: string | null
           id: string
           image_url: string | null
           investment_amount: number | null
+          key_features: Json | null
           leads_count: number
           name: string
           price: number | null
+          purchase_info: Json | null
           route: string | null
+          stats: Json | null
           status: string
           updated_at: string
+          use_cases: Json | null
           visibility: string
         }
         Insert: {
           category?: string
+          content?: Json | null
           created_at?: string
           description?: string | null
           features?: Json | null
+          gallery_images?: string[] | null
+          hero_image_url?: string | null
           id?: string
           image_url?: string | null
           investment_amount?: number | null
+          key_features?: Json | null
           leads_count?: number
           name: string
           price?: number | null
+          purchase_info?: Json | null
           route?: string | null
+          stats?: Json | null
           status?: string
           updated_at?: string
+          use_cases?: Json | null
           visibility?: string
         }
         Update: {
           category?: string
+          content?: Json | null
           created_at?: string
           description?: string | null
           features?: Json | null
+          gallery_images?: string[] | null
+          hero_image_url?: string | null
           id?: string
           image_url?: string | null
           investment_amount?: number | null
+          key_features?: Json | null
           leads_count?: number
           name?: string
           price?: number | null
+          purchase_info?: Json | null
           route?: string | null
+          stats?: Json | null
           status?: string
           updated_at?: string
+          use_cases?: Json | null
           visibility?: string
         }
         Relationships: []

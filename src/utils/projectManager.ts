@@ -15,6 +15,14 @@ export interface Project {
   features: any;
   created_at: string;
   updated_at: string;
+  // New rich content fields
+  content: any;
+  hero_image_url: string | null;
+  gallery_images: string[] | null;
+  key_features: any;
+  stats: any;
+  use_cases: any;
+  purchase_info: any;
 }
 
 export interface CreateProjectData {
