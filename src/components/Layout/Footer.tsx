@@ -54,6 +54,11 @@ const Footer = () => {
                   Custom Builds
                 </Link>
               </li>
+              <li>
+                <Link to="/admin" className="text-slate-white/60 hover:text-slate-white transition-colors text-sm">
+                  Admin
+                </Link>
+              </li>
             </ul>
           </div>
 
