@@ -197,6 +197,12 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
+                  <span className="text-cool-gray">Subscription:</span>
+                  <span className="font-medium text-sky-blue">
+                    {formatPrice(stats.projectStats.subscriptionRevenue || 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs">
                   <span className="text-cool-gray">Leads:</span>
                   <span className="text-emerald-green">{stats.qualified} qualified</span>
                 </div>

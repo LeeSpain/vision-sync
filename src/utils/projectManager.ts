@@ -23,6 +23,10 @@ export interface Project {
   stats: any;
   use_cases: any;
   purchase_info: any;
+  // Subscription fields
+  subscription_price: number | null;
+  subscription_period: string | null;
+  billing_type: string;
 }
 
 export interface CreateProjectData {
@@ -36,6 +40,9 @@ export interface CreateProjectData {
   investment_amount?: number;
   price?: number;
   features?: any;
+  subscription_price?: number;
+  subscription_period?: string;
+  billing_type?: string;
 }
 
 export const projectManager = {
@@ -172,7 +179,7 @@ export const projectManager = {
   async getProjectStats() {
     const { data, error } = await supabase
       .from('projects')
-      .select('status, category, leads_count, investment_amount, price');
+      .select('status, category, leads_count, investment_amount, price, subscription_price, billing_type');
 
     if (error) {
       console.error('Error fetching project stats:', error);
@@ -183,11 +190,12 @@ export const projectManager = {
       totalProjects: data?.length || 0,
       totalLeads: data?.reduce((sum, p) => sum + p.leads_count, 0) || 0,
       totalRevenuePipeline: data?.reduce((sum, p) => {
-        return sum + (p.investment_amount || 0) + (p.price || 0);
+        return sum + (p.investment_amount || 0) + (p.price || 0) + (p.subscription_price || 0);
       }, 0) || 0,
       byStatus: {} as Record<string, number>,
       byCategory: {} as Record<string, number>,
       revenueByCategory: {} as Record<string, number>,
+      subscriptionRevenue: data?.reduce((sum, p) => sum + (p.subscription_price || 0), 0) || 0,
     };
 
     // Count by status and category, calculate revenue by category
@@ -196,7 +204,7 @@ export const projectManager = {
       stats.byCategory[project.category] = (stats.byCategory[project.category] || 0) + 1;
       
       // Calculate revenue by category
-      const projectRevenue = (project.investment_amount || 0) + (project.price || 0);
+      const projectRevenue = (project.investment_amount || 0) + (project.price || 0) + (project.subscription_price || 0);
       stats.revenueByCategory[project.category] = (stats.revenueByCategory[project.category] || 0) + projectRevenue;
     });
 

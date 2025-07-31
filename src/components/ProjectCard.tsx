@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Eye, DollarSign, TrendingUp } from 'lucide-react';
+import { ExternalLink, Eye, DollarSign, TrendingUp, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface ProjectCardProps {
@@ -11,15 +11,17 @@ interface ProjectCardProps {
   category: 'Featured' | 'Investment' | 'For Sale' | 'Internal';
   route?: string;
   image?: string;
+  billing_type?: 'one-time' | 'subscription' | 'investment';
   actions: {
     view?: boolean;
     invest?: boolean;
     buy?: boolean;
     demo?: boolean;
+    subscribe?: boolean;
   };
 }
 
-const ProjectCard = ({ title, description, status, category, route, image, actions }: ProjectCardProps) => {
+const ProjectCard = ({ title, description, status, category, route, image, billing_type, actions }: ProjectCardProps) => {
   const navigate = useNavigate();
 
   const handleViewClick = () => {
@@ -40,7 +42,8 @@ const ProjectCard = ({ title, description, status, category, route, image, actio
     }
   };
 
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIcon = (category: string, billingType?: string) => {
+    if (billingType === 'subscription') return <RefreshCw className="h-4 w-4" />;
     switch (category) {
       case 'Investment': return <TrendingUp className="h-4 w-4" />;
       case 'For Sale': return <DollarSign className="h-4 w-4" />;
@@ -52,7 +55,7 @@ const ProjectCard = ({ title, description, status, category, route, image, actio
     <Card className="group hover:shadow-hover transition-all duration-300 hover:scale-105 bg-gradient-card border-soft-lilac/30">
       {image && (
         <div className="aspect-video bg-gradient-hero rounded-t-xl flex items-center justify-center">
-          <div className="text-6xl opacity-20">{getCategoryIcon(category)}</div>
+          <div className="text-6xl opacity-20">{getCategoryIcon(category, billing_type)}</div>
         </div>
       )}
       
@@ -78,7 +81,18 @@ const ProjectCard = ({ title, description, status, category, route, image, actio
       </CardHeader>
 
       <CardFooter className="flex justify-center">
-        {actions.view && (
+        {actions.subscribe && (
+          <Button 
+            variant="premium" 
+            size="sm" 
+            onClick={handleViewClick}
+            className="w-full max-w-32"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Subscribe
+          </Button>
+        )}
+        {actions.view && !actions.subscribe && (
           <Button 
             variant="view" 
             size="sm" 

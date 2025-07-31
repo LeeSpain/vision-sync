@@ -67,6 +67,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          billing_type: string | null
           category: string
           content: Json | null
           created_at: string
@@ -85,11 +86,14 @@ export type Database = {
           route: string | null
           stats: Json | null
           status: string
+          subscription_period: string | null
+          subscription_price: number | null
           updated_at: string
           use_cases: Json | null
           visibility: string
         }
         Insert: {
+          billing_type?: string | null
           category?: string
           content?: Json | null
           created_at?: string
@@ -108,11 +112,14 @@ export type Database = {
           route?: string | null
           stats?: Json | null
           status?: string
+          subscription_period?: string | null
+          subscription_price?: number | null
           updated_at?: string
           use_cases?: Json | null
           visibility?: string
         }
         Update: {
+          billing_type?: string | null
           category?: string
           content?: Json | null
           created_at?: string
@@ -131,6 +138,8 @@ export type Database = {
           route?: string | null
           stats?: Json | null
           status?: string
+          subscription_period?: string | null
+          subscription_price?: number | null
           updated_at?: string
           use_cases?: Json | null
           visibility?: string
