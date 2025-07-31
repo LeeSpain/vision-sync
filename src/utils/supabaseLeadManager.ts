@@ -94,7 +94,7 @@ export const supabaseLeadManager = {
     }
   },
 
-  // Save project-specific lead
+  // Save project-specific lead (using leads table with project data in form_data)
   async saveProjectLead(leadData: Omit<ProjectLead, 'id' | 'created_at' | 'updated_at'>): Promise<ProjectLead | null> {
     try {
       // Determine priority based on inquiry type and investment amount
@@ -109,12 +109,25 @@ export const supabaseLeadManager = {
         priority = 'low';
       }
 
+      // Store project lead data in the regular leads table with special source
       const { data, error } = await supabase
-        .from('project_leads' as any)
+        .from('leads')
         .insert([{
-          ...leadData,
+          name: leadData.name,
+          email: leadData.email,
+          company: leadData.company,
+          phone: leadData.phone,
+          source: 'contact', // Use existing enum value
           status: 'new',
-          priority
+          priority,
+          form_data: {
+            type: 'project_inquiry',
+            project_id: leadData.project_id,
+            inquiry_type: leadData.inquiry_type,
+            message: leadData.message,
+            investment_amount: leadData.investment_amount,
+            ...leadData.form_data
+          }
         }])
         .select()
         .single();
@@ -129,15 +142,31 @@ export const supabaseLeadManager = {
         return null;
       }
 
-      // Send email notification
-      await this.sendProjectEmailNotification(data as ProjectLead);
+      // Convert back to ProjectLead format
+      const formData = data.form_data as any;
+      const projectLead: ProjectLead = {
+        id: data.id,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        project_id: formData?.project_id || '',
+        name: data.name,
+        email: data.email,
+        company: data.company,
+        phone: data.phone,
+        inquiry_type: formData?.inquiry_type || 'demo',
+        message: formData?.message,
+        status: data.status as ProjectLead['status'],
+        priority: data.priority as ProjectLead['priority'],
+        investment_amount: formData?.investment_amount,
+        form_data: data.form_data
+      };
 
       toast({
         title: "Success",
         description: "Your project inquiry has been submitted successfully!",
       });
 
-      return data as ProjectLead;
+      return projectLead;
     } catch (error) {
       console.error('Error saving project lead:', error);
       toast({
@@ -169,12 +198,13 @@ export const supabaseLeadManager = {
     }
   },
 
-  // Get all project leads
+  // Get all project leads (from leads table where form_data.type = 'project_inquiry')
   async getAllProjectLeads(): Promise<ProjectLead[]> {
     try {
       const { data, error } = await supabase
-        .from('project_leads' as any)
+        .from('leads')
         .select('*')
+        .eq('source', 'contact') // Filter for project inquiries stored as contact
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -182,7 +212,33 @@ export const supabaseLeadManager = {
         return [];
       }
 
-      return (data || []) as ProjectLead[];
+      // Convert and filter for project inquiries
+      const projectLeads = (data || [])
+        .filter(lead => {
+          const formData = lead.form_data as any;
+          return formData?.type === 'project_inquiry';
+        })
+        .map(lead => {
+          const formData = lead.form_data as any;
+          return {
+            id: lead.id,
+            created_at: lead.created_at,
+            updated_at: lead.updated_at,
+            project_id: formData?.project_id || '',
+            name: lead.name,
+            email: lead.email,
+            company: lead.company,
+            phone: lead.phone,
+            inquiry_type: formData?.inquiry_type || 'demo',
+            message: formData?.message,
+            status: lead.status as ProjectLead['status'],
+            priority: lead.priority as ProjectLead['priority'],
+            investment_amount: formData?.investment_amount,
+            form_data: lead.form_data
+          };
+        }) as ProjectLead[];
+
+      return projectLeads;
     } catch (error) {
       console.error('Error fetching project leads:', error);
       return [];
@@ -211,12 +267,20 @@ export const supabaseLeadManager = {
     }
   },
 
-  // Update project lead
+  // Update project lead (updates the lead in leads table)
   async updateProjectLead(leadId: string, updates: Partial<ProjectLead>): Promise<ProjectLead | null> {
     try {
+      // Convert ProjectLead updates to Lead format
+      const leadUpdates: any = {};
+      if (updates.status) leadUpdates.status = updates.status;
+      if (updates.priority) leadUpdates.priority = updates.priority;
+      if (updates.notes) leadUpdates.notes = updates.notes;
+      if (updates.last_contact) leadUpdates.last_contact = updates.last_contact;
+      if (updates.next_follow_up) leadUpdates.next_follow_up = updates.next_follow_up;
+
       const { data, error } = await supabase
-        .from('project_leads' as any)
-        .update(updates)
+        .from('leads')
+        .update(leadUpdates)
         .eq('id', leadId)
         .select()
         .single();
@@ -226,7 +290,24 @@ export const supabaseLeadManager = {
         return null;
       }
 
-      return data as ProjectLead;
+      // Convert back to ProjectLead format
+      const formData = data.form_data as any;
+      return {
+        id: data.id,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        project_id: formData?.project_id || '',
+        name: data.name,
+        email: data.email,
+        company: data.company,
+        phone: data.phone,
+        inquiry_type: formData?.inquiry_type || 'demo',
+        message: formData?.message,
+        status: data.status as ProjectLead['status'],
+        priority: data.priority as ProjectLead['priority'],
+        investment_amount: formData?.investment_amount,
+        form_data: data.form_data
+      } as ProjectLead;
     } catch (error) {
       console.error('Error updating project lead:', error);
       return null;
@@ -253,11 +334,11 @@ export const supabaseLeadManager = {
     }
   },
 
-  // Delete project lead
+  // Delete project lead (deletes from leads table)
   async deleteProjectLead(leadId: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('project_leads' as any)
+        .from('leads')
         .delete()
         .eq('id', leadId);
 
@@ -276,16 +357,24 @@ export const supabaseLeadManager = {
   // Get lead statistics
   async getLeadStats() {
     try {
-      const [leadsResponse, projectLeadsResponse] = await Promise.all([
-        supabase.from('leads').select('status, created_at'),
-        supabase.from('project_leads' as any).select('status, created_at')
-      ]);
+      const { data: leadsData, error } = await supabase
+        .from('leads')
+        .select('status, created_at, form_data');
 
-      const allLeads = [
-        ...(leadsResponse.data || []).filter(lead => lead && typeof lead === 'object' && 'status' in lead),
-        ...(projectLeadsResponse.data || []).filter(lead => lead && typeof lead === 'object' && 'status' in lead)
-      ];
+      if (error) {
+        console.error('Error fetching lead stats:', error);
+        return {
+          total: 0,
+          newLeads: 0,
+          qualified: 0,
+          converted: 0,
+          todayLeads: 0,
+          weekLeads: 0,
+          conversionRate: 0
+        };
+      }
 
+      const allLeads = leadsData || [];
       const total = allLeads.length;
       const newLeads = allLeads.filter(lead => lead.status === 'new').length;
       const qualified = allLeads.filter(lead => lead.status === 'qualified').length;
