@@ -68,108 +68,46 @@ const Index = () => {
     actions: { view: true },
   });
 
-  const legacyFeaturedProjects = [
-    {
-      title: 'Global Health-Sync',
-      description: 'Revolutionary healthcare synchronization platform connecting patients, providers, and data globally.',
-      status: 'MVP' as const,
-      category: 'Investment' as const,
-      route: '/global-health-sync',
-      actions: { view: true },
-    },
-    {
-      title: 'Nurse-Sync',
-      description: 'Advanced nursing workflow management and patient care coordination system.',
-      status: 'Live' as const,
-      category: 'Investment' as const,
-      route: '/nurse-sync',
-      actions: { view: true },
-    },
-    {
-      title: 'ICE-SOS Lite',
-      description: 'Emergency contact and medical information system for immediate crisis response.',
-      status: 'For Sale' as const,
-      category: 'For Sale' as const,
-      route: '/ice-sos-lite',
-      actions: { view: true },
-    },
-  ];
+  // Helper function to render project sections with loading and empty states
+  const renderProjectSection = (
+    title: string,
+    projects: Project[],
+    emptyMessage: string = "No projects available at the moment."
+  ) => {
+    if (loading) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-slate-200 h-64 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      );
+    }
 
-  const legacyPlatformsForSale = [
-    {
-      title: 'Tether-Band',
-      description: 'Innovative connectivity solution for secure device-to-device communication.',
-      status: 'Beta' as const,
-      category: 'For Sale' as const,
-      route: '/tether-band',
-      actions: { view: true },
-    },
-    {
-      title: 'CustomBuilds Platform',
-      description: 'White-label e-commerce solution with advanced customization capabilities.',
-      status: 'Live' as const,
-      category: 'For Sale' as const,
-      route: '/custom-builds',
-      actions: { view: true },
-    },
-  ];
+    if (projects.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-cool-gray text-lg">{emptyMessage}</p>
+        </div>
+      );
+    }
 
-  const legacyOffTheShelf = [
-    {
-      title: 'ForSale Portal',
-      description: 'Ready-to-deploy marketplace platform with built-in payment processing.',
-      status: 'Live' as const,
-      category: 'For Sale' as const,
-      route: '/for-sale',
-      actions: { view: true },
-    },
-    {
-      title: 'AI Spain Homes',
-      description: 'Complete real estate platform with AI-powered property matching.',
-      status: 'Beta' as const,
-      category: 'For Sale' as const,
-      route: '/ai-spain-homes',
-      actions: { view: true },
-    },
-  ];
-
-  const legacyInternalTools = [
-    {
-      title: 'Conneqt-Central',
-      description: 'Internal project management and team collaboration platform.',
-      status: 'Private' as const,
-      category: 'Internal' as const,
-      route: '/conneqt-central',
-      actions: { view: true },
-    },
-    {
-      title: 'Analytics Dashboard',
-      description: 'Comprehensive business intelligence and reporting suite.',
-      status: 'Private' as const,
-      category: 'Internal' as const,
-      route: '/admin',
-      actions: { view: true },
-    },
-  ];
-
-  const legacyInvestmentOps = [
-    {
-      title: 'ForInvestors Platform',
-      description: 'Comprehensive investor relations and portfolio management system.',
-      status: 'MVP' as const,
-      category: 'Investment' as const,
-      route: '/for-investors',
-      actions: { view: true },
-    },
-    {
-      title: 'VisionSync Capital',
-      description: 'Strategic investment fund focused on innovative technology platforms.',
-      status: 'Concept' as const,
-      category: 'Investment' as const,
-      route: '/for-investors',
-      actions: { view: true },
-    },
-  ];
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((project, index) => (
+          <div
+            key={project.id}
+            className="animate-slide-up"
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            <ProjectCard {...convertToProjectCard(project)} />
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
