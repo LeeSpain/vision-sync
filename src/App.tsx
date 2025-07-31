@@ -16,6 +16,8 @@ import ForSale from "./pages/ForSale";
 import CustomBuilds from "./pages/CustomBuilds";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
+import AiAgents from "./pages/AiAgents";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/custom-builds" element={<CustomBuilds />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/ai-agents" element={<AiAgents />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -152,18 +153,22 @@ const Index = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-cool-gray mb-8 max-w-3xl mx-auto">
-              Explore what I've built, invest in innovation, or request a custom platform.
+              Discover intelligent AI solutions designed to transform your business and streamline operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Button variant="hero" size="lg" className="animate-float">
-                <Sparkles className="h-5 w-5" />
-                Explore Projects
-                <ArrowRight className="h-5 w-5" />
-              </Button>
-              <Button variant="view" size="lg">
-                <Target className="h-5 w-5" />
-                For Investors
-              </Button>
+              <Link to="/ai-agents">
+                <Button variant="hero" size="lg" className="animate-float">
+                  <Sparkles className="h-5 w-5" />
+                  Meet Your AI Agents
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button variant="view" size="lg">
+                  <Target className="h-5 w-5" />
+                  Contact Us Today
+                </Button>
+              </Link>
             </div>
           </div>
 
