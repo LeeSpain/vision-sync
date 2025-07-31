@@ -234,7 +234,7 @@ const Index = () => {
                   <div className="relative mb-6">
                     <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur opacity-20"></div>
                     <img 
-                      src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&crop=face"
+                      src="/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
                       alt="Professional AI Agent Representative"
                       className="relative w-full h-64 object-cover rounded-2xl shadow-card"
                     />
