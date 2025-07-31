@@ -5,11 +5,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectCard from '@/components/ProjectCard';
+import TemplateCard from '@/components/TemplateCard';
+import TemplateDetailModal from '@/components/TemplateDetailModal';
+import TemplateCategoryFilter from '@/components/TemplateCategoryFilter';
+import TemplateInquiryForm from '@/components/TemplateInquiryForm';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { projectManager, type Project } from '@/utils/projectManager';
-import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket } from 'lucide-react';
+import { appTemplates, getTemplatesByCategory, getAllCategories, TemplateCategory, AppTemplate } from '@/utils/appTemplates';
+import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package } from 'lucide-react';
 
 const Index = () => {
   const [contactForm, setContactForm] = useState({
@@ -26,6 +31,12 @@ const Index = () => {
   const [internalTools, setInternalTools] = useState<Project[]>([]);
   const [investmentOps, setInvestmentOps] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Template state
+  const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | 'all'>('all');
+  const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
+  const [showTemplateDetail, setShowTemplateDetail] = useState(false);
+  const [showTemplateInquiry, setShowTemplateInquiry] = useState(false);
 
   // Load projects on component mount
   useEffect(() => {
@@ -107,6 +118,34 @@ const Index = () => {
         ))}
       </div>
     );
+  };
+
+  // Template handlers
+  const getFilteredTemplates = () => {
+    if (selectedCategory === 'all') {
+      return appTemplates;
+    }
+    return getTemplatesByCategory(selectedCategory);
+  };
+
+  const getTemplateCounts = () => {
+    const counts: Partial<Record<TemplateCategory | 'all', number>> = {
+      all: appTemplates.length
+    };
+    getAllCategories().forEach(category => {
+      counts[category] = getTemplatesByCategory(category).length;
+    });
+    return counts;
+  };
+
+  const handleTemplateLearnMore = (template: AppTemplate) => {
+    setSelectedTemplate(template);
+    setShowTemplateDetail(true);
+  };
+
+  const handleTemplateRequest = (template: AppTemplate) => {
+    setSelectedTemplate(template);
+    setShowTemplateInquiry(true);
   };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
@@ -374,24 +413,59 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Off the Shelf */}
+          {/* Off the Shelf - Template Showcase */}
           <div className="mb-20">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">📦 Off the Shelf</h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Ready-to-deploy solutions with minimal customization required</p>
-            </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {loading ? (
-                  [...Array(2)].map((_, i) => (
-                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                  ))
-                ) : (
-                  offTheShelf.map((project, index) => (
-                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
-                  ))
-                )}
+              <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
+                <Package className="h-4 w-4" />
+                Ready-to-Deploy Apps
               </div>
+              <h2 className="text-4xl md:text-5xl font-heading font-bold text-midnight-navy mb-4">
+                📦 Off the Shelf Templates
+              </h2>
+              <p className="text-xl text-cool-gray max-w-3xl mx-auto mb-8">
+                Professional app templates ready for customization. Choose from 9 industry-specific solutions designed for immediate deployment.
+              </p>
+              <div className="flex items-center justify-center gap-4 text-sm text-cool-gray">
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-coral-orange" />
+                  <span>Professional Design</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Rocket className="h-4 w-4 text-emerald-green" />
+                  <span>Quick Deployment</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-royal-purple" />
+                  <span>Full Customization</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="mb-12">
+              <TemplateCategoryFilter
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+                templateCounts={getTemplateCounts()}
+              />
+            </div>
+
+            {/* Template Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {getFilteredTemplates().map((template, index) => (
+                <div
+                  key={template.id}
+                  className="animate-slide-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <TemplateCard
+                    template={template}
+                    onLearnMore={handleTemplateLearnMore}
+                    onRequestTemplate={handleTemplateRequest}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -520,6 +594,20 @@ const Index = () => {
       </section>
 
       <Footer />
+
+      {/* Template Modals */}
+      <TemplateDetailModal
+        template={selectedTemplate}
+        isOpen={showTemplateDetail}
+        onClose={() => setShowTemplateDetail(false)}
+        onRequestTemplate={handleTemplateRequest}
+      />
+      
+      <TemplateInquiryForm
+        template={selectedTemplate}
+        isOpen={showTemplateInquiry}
+        onClose={() => setShowTemplateInquiry(false)}
+      />
     </div>
   );
 };
