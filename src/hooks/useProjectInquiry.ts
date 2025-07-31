@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 
 interface ProjectInquiryData {
   projectName: string;
@@ -18,14 +18,13 @@ export const useProjectInquiry = () => {
     
     try {
       // Save lead with project-specific data
-      const lead = leadManager.saveLead({
-        source: 'project-inquiry',
+      const lead = await supabaseLeadManager.saveProjectLead({
+        project_id: data.projectName, // Using project name as ID for now
         name: data.name,
         email: data.email,
         company: data.company,
         message: data.message,
-        projectName: data.projectName,
-        inquiryType: data.inquiryType
+        inquiry_type: data.inquiryType
       });
 
       // Show success message based on inquiry type

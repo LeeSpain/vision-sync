@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { ArrowRight, Code, Smartphone, Globe, Database, Zap, Shield, Users, DollarSign } from 'lucide-react';
 
 const CustomBuilds = () => {
@@ -37,38 +37,41 @@ const CustomBuilds = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Save lead to database
-    leadManager.saveLead({
-      source: 'custom-build',
-      name: projectForm.name,
-      email: projectForm.email,
-      company: projectForm.company,
-      projectType: projectForm.projectType,
-      budget: projectForm.budget,
-      timeline: projectForm.timeline,
-      description: projectForm.description,
-      features: projectForm.features,
-      urgency: projectForm.urgency
-    });
-    
-    // Show success message
-    alert('Thank you for your project request! We\'ll review it and get back to you within 24 hours.');
-    
-    // Reset form
-    setProjectForm({
-      name: '',
-      email: '',
-      company: '',
-      projectType: '',
-      budget: '',
-      timeline: '',
-      description: '',
-      features: [],
-      urgency: '',
-    });
+    try {
+      // Save lead to database
+      await supabaseLeadManager.saveLead({
+        source: 'custom-build',
+        name: projectForm.name,
+        email: projectForm.email,
+        company: projectForm.company,
+        form_data: {
+          projectType: projectForm.projectType,
+          budget: projectForm.budget,
+          timeline: projectForm.timeline,
+          features: projectForm.features,
+          urgency: projectForm.urgency,
+          description: projectForm.description
+        }
+      });
+      
+      // Reset form
+      setProjectForm({
+        name: '',
+        email: '',
+        company: '',
+        projectType: '',
+        budget: '',
+        timeline: '',
+        description: '',
+        features: [],
+        urgency: '',
+      });
+    } catch (error) {
+      console.error('Error submitting custom build request:', error);
+    }
   };
 
   const serviceCategories = [

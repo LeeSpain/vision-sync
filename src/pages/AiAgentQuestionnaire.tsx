@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Bot, Building2, MessageSquare, Zap, Users, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 
 const AiAgentQuestionnaire = () => {
@@ -55,28 +55,28 @@ const AiAgentQuestionnaire = () => {
 
   const handleSubmit = async () => {
     try {
-      await leadManager.saveLead({
+      await supabaseLeadManager.saveLead({
         name: formData.name,
         email: formData.email,
         company: formData.company,
-        message: `AI Agent Questionnaire:
-        
-Industry: ${formData.industry}
-Business Type: ${formData.businessType}
-Primary Use Case: ${formData.primaryUseCase}
-Specific Needs: ${formData.specificNeeds}
-Current Challenges: ${formData.currentChallenges}
-Budget: ${formData.budget}
-Timeline: ${formData.timeline}
-Team Size: ${formData.teamSize}
-Tech Stack: ${formData.techStack}
-Additional Info: ${formData.additionalInfo}`,
-        source: 'custom-build'
+        source: 'ai-agent',
+        form_data: {
+          industry: formData.industry,
+          businessType: formData.businessType,
+          primaryUseCase: formData.primaryUseCase,
+          specificNeeds: formData.specificNeeds,
+          currentChallenges: formData.currentChallenges,
+          budget: formData.budget,
+          timeline: formData.timeline,
+          teamSize: formData.teamSize,
+          techStack: formData.techStack,
+          additionalInfo: formData.additionalInfo
+        }
       });
       
       setCurrentStep(5); // Success step
     } catch (error) {
-      alert('There was an error submitting your questionnaire. Please try again.');
+      console.error('Error submitting questionnaire:', error);
     }
   };
 

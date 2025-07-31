@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight, Sparkles, MessageSquare, Building2, Users, Target } from 'lucide-react';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 
 const Contact = () => {
@@ -45,25 +45,24 @@ const Contact = () => {
 
   const handleSubmit = async () => {
     try {
-      await leadManager.saveLead({
+      await supabaseLeadManager.saveLead({
         name: formData.name,
         email: formData.email,
-        company: formData.phone, // Using company field for phone temporarily
-        message: `General Contact Inquiry:
-        
-Company: ${formData.company}
-Phone: ${formData.phone}
-Inquiry Type: ${formData.inquiryType}
-Industry: ${formData.industry}
-Budget: ${formData.budget}
-Timeline: ${formData.timeline}
-Message: ${formData.message}`,
-        source: 'contact'
+        company: formData.company,
+        phone: formData.phone,
+        source: 'contact',
+        form_data: {
+          industry: formData.industry,
+          inquiryType: formData.inquiryType,
+          budget: formData.budget,
+          timeline: formData.timeline,
+          message: formData.message
+        }
       });
       
       setCurrentStep(4); // Success step
     } catch (error) {
-      alert('There was an error sending your message. Please try again.');
+      console.error('Error submitting contact form:', error);
     }
   };
 

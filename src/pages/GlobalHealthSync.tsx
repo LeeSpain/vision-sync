@@ -6,7 +6,7 @@ import {
   InvestmentSection,
   StatsShowcase
 } from '@/components/project-template';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { 
   Globe2, 
   Shield, 
@@ -26,37 +26,34 @@ import {
 } from 'lucide-react';
 
 const GlobalHealthSync = () => {
-  const handleViewDemo = () => {
-    leadManager.saveLead({
-      source: 'project-inquiry',
+  const handleViewDemo = async () => {
+    await supabaseLeadManager.saveProjectLead({
+      project_id: 'global-health-sync',
       name: 'Demo Request',
       email: 'demo@placeholder.com', // Would normally be from a form
-      projectName: 'Global Health-Sync',
-      inquiryType: 'demo',
+      inquiry_type: 'demo',
       message: 'Requested demo from project page'
     });
     alert('Demo request captured! In a real implementation, this would show a form to collect contact details.');
   };
 
-  const handleInvestmentInfo = () => {
-    leadManager.saveLead({
-      source: 'project-inquiry',
+  const handleInvestmentInfo = async () => {
+    await supabaseLeadManager.saveProjectLead({
+      project_id: 'global-health-sync',
       name: 'Investment Inquiry',
       email: 'investment@placeholder.com', // Would normally be from a form
-      projectName: 'Global Health-Sync',
-      inquiryType: 'investment',
+      inquiry_type: 'investment',
       message: 'Requested investment information from project page'
     });
     alert('Investment inquiry captured! In a real implementation, this would show a form to collect investor details.');
   };
 
-  const handleContactUs = () => {
-    leadManager.saveLead({
-      source: 'project-inquiry',
+  const handleContactUs = async () => {
+    await supabaseLeadManager.saveProjectLead({
+      project_id: 'global-health-sync',
       name: 'General Inquiry',
       email: 'contact@placeholder.com', // Would normally be from a form
-      projectName: 'Global Health-Sync',
-      inquiryType: 'partnership',
+      inquiry_type: 'partnership',
       message: 'General contact request from project page'
     });
     alert('Contact request captured! In a real implementation, this would show a contact form.');

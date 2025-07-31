@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import ProjectCard from '@/components/ProjectCard';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket } from 'lucide-react';
 
 const Index = () => {
@@ -121,23 +121,26 @@ const Index = () => {
     },
   ];
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Save lead to database
-    leadManager.saveLead({
-      source: 'contact',
-      name: contactForm.name,
-      email: contactForm.email,
-      company: contactForm.phone, // Using company field for phone temporarily
-      message: contactForm.message
-    });
-    
-    // Show success message
-    alert('Thank you for your message! We\'ll get back to you soon.');
-    
-    // Reset form
-    setContactForm({ name: '', email: '', phone: '', message: '' });
+    try {
+      // Save lead to database
+      await supabaseLeadManager.saveLead({
+        source: 'contact',
+        name: contactForm.name,
+        email: contactForm.email,
+        phone: contactForm.phone,
+        form_data: {
+          message: contactForm.message
+        }
+      });
+      
+      // Reset form
+      setContactForm({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+    }
   };
 
   return (

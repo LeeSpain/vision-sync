@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { leadManager } from '@/utils/leadManager';
+import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { TrendingUp, DollarSign, Users, BarChart3, ArrowRight, Shield, Target } from 'lucide-react';
 
 const ForInvestors = () => {
@@ -20,32 +20,35 @@ const ForInvestors = () => {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Save lead to database
-    leadManager.saveLead({
-      source: 'investor',
-      name: investorForm.name,
-      email: investorForm.email,
-      company: investorForm.company,
-      investmentRange: investorForm.investmentRange,
-      interests: investorForm.interests,
-      message: investorForm.message
-    });
-    
-    // Show success message
-    alert('Thank you for your interest! We\'ll send you detailed investment information within 24 hours.');
-    
-    // Reset form
-    setInvestorForm({
-      name: '',
-      email: '',
-      company: '',
-      investmentRange: '',
-      interests: '',
-      message: '',
-    });
+    try {
+      // Save lead to database
+      await supabaseLeadManager.saveLead({
+        source: 'investor',
+        name: investorForm.name,
+        email: investorForm.email,
+        company: investorForm.company,
+        form_data: {
+          investmentRange: investorForm.investmentRange,
+          interests: investorForm.interests,
+          message: investorForm.message
+        }
+      });
+      
+      // Reset form
+      setInvestorForm({
+        name: '',
+        email: '',
+        company: '',
+        investmentRange: '',
+        interests: '',
+        message: '',
+      });
+    } catch (error) {
+      console.error('Error submitting investor form:', error);
+    }
   };
 
   const investmentOpportunities = [

@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { leadManager, Lead } from '@/utils/leadManager';
+import { supabaseLeadManager, Lead, ProjectLead } from '@/utils/supabaseLeadManager';
 import { 
   Search, 
   Download, 
@@ -25,14 +25,22 @@ import {
 } from 'lucide-react';
 
 export function LeadsManager() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [filteredLeads, setFilteredLeads] = useState<Lead[]>([]);
+  const [leads, setLeads] = useState<(Lead & { type?: string; project?: string })[]>([]);
+  const [filteredLeads, setFilteredLeads] = useState<(Lead & { type?: string; project?: string })[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedLead, setSelectedLead] = useState<(Lead & { type?: string; project?: string }) | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [stats, setStats] = useState(leadManager.getLeadStats());
+  const [stats, setStats] = useState({
+    total: 0,
+    newLeads: 0,
+    qualified: 0,
+    converted: 0,
+    todayLeads: 0,
+    weekLeads: 0,
+    conversionRate: 0
+  });
 
   useEffect(() => {
     loadLeads();
@@ -42,10 +50,38 @@ export function LeadsManager() {
     filterLeads();
   }, [leads, searchTerm, statusFilter, sourceFilter]);
 
-  const loadLeads = () => {
-    const allLeads = leadManager.getAllLeads();
-    setLeads(allLeads);
-    setStats(leadManager.getLeadStats());
+  const loadLeads = async () => {
+    try {
+      const [generalLeads, projectLeads, leadStats] = await Promise.all([
+        supabaseLeadManager.getAllLeads(),
+        supabaseLeadManager.getAllProjectLeads(),
+        supabaseLeadManager.getLeadStats()
+      ]);
+
+      // Combine and format leads
+      const combinedLeads = [
+        ...generalLeads.map(lead => ({
+          ...lead,
+          type: 'General Lead',
+          project: '',
+          source: lead.source as Lead['source']
+        })),
+        ...projectLeads.map(lead => ({
+          ...lead,
+          type: 'Project Lead',
+          project: (lead as any).projects?.name || lead.project_id,
+          source: 'project-inquiry' as Lead['source'],
+          company: lead.company,
+          phone: lead.phone,
+          form_data: lead.form_data
+        }))
+      ].sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
+
+      setLeads(combinedLeads);
+      setStats(leadStats);
+    } catch (error) {
+      console.error('Error loading leads:', error);
+    }
   };
 
   const filterLeads = () => {
@@ -70,25 +106,46 @@ export function LeadsManager() {
     setFilteredLeads(filtered);
   };
 
-  const updateLeadStatus = (leadId: string, status: Lead['status']) => {
-    leadManager.updateLead(leadId, { status });
+  const updateLeadStatus = async (leadId: string, status: Lead['status']) => {
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead) return;
+
+    if (lead.type === 'Project Lead') {
+      await supabaseLeadManager.updateProjectLead(leadId, { status });
+    } else {
+      await supabaseLeadManager.updateLead(leadId, { status });
+    }
     loadLeads();
   };
 
-  const updateLeadPriority = (leadId: string, priority: Lead['priority']) => {
-    leadManager.updateLead(leadId, { priority });
+  const updateLeadPriority = async (leadId: string, priority: Lead['priority']) => {
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead) return;
+
+    if (lead.type === 'Project Lead') {
+      await supabaseLeadManager.updateProjectLead(leadId, { priority });
+    } else {
+      await supabaseLeadManager.updateLead(leadId, { priority });
+    }
     loadLeads();
   };
 
-  const deleteLead = (leadId: string) => {
+  const deleteLead = async (leadId: string) => {
     if (confirm('Are you sure you want to delete this lead?')) {
-      leadManager.deleteLead(leadId);
+      const lead = leads.find(l => l.id === leadId);
+      if (!lead) return;
+
+      if (lead.type === 'Project Lead') {
+        await supabaseLeadManager.deleteProjectLead(leadId);
+      } else {
+        await supabaseLeadManager.deleteLead(leadId);
+      }
       loadLeads();
     }
   };
 
-  const exportLeads = () => {
-    const csvContent = leadManager.exportLeads();
+  const exportLeads = async () => {
+    const csvContent = await supabaseLeadManager.exportLeads();
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -123,7 +180,8 @@ export function LeadsManager() {
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -241,6 +299,7 @@ export function LeadsManager() {
               <thead>
                 <tr className="border-b border-soft-lilac/30">
                   <th className="text-left p-3 font-medium text-midnight-navy">Lead</th>
+                  <th className="text-left p-3 font-medium text-midnight-navy">Type</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Source</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Status</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Priority</th>
@@ -258,7 +317,15 @@ export function LeadsManager() {
                         {lead.company && (
                           <div className="text-xs text-cool-gray">{lead.company}</div>
                         )}
+                        {lead.project && (
+                          <div className="text-xs text-royal-purple font-medium">Project: {lead.project}</div>
+                        )}
                       </div>
+                    </td>
+                    <td className="p-3">
+                      <Badge variant="outline" className="text-xs">
+                        {lead.type}
+                      </Badge>
                     </td>
                     <td className="p-3">
                       <Badge variant="outline">{lead.source}</Badge>
@@ -297,7 +364,7 @@ export function LeadsManager() {
                       </Select>
                     </td>
                     <td className="p-3 text-sm text-cool-gray">
-                      {formatDate(lead.timestamp)}
+                      {formatDate(lead.created_at)}
                     </td>
                     <td className="p-3">
                       <div className="flex items-center space-x-2">
@@ -339,60 +406,81 @@ export function LeadsManager() {
                                     <label className="text-sm font-medium">Source</label>
                                     <p className="text-sm text-cool-gray">{selectedLead.source}</p>
                                   </div>
-                                  {selectedLead.projectType && (
-                                    <div>
-                                      <label className="text-sm font-medium">Project Type</label>
-                                      <p className="text-sm text-cool-gray">{selectedLead.projectType}</p>
-                                    </div>
-                                  )}
-                                  {selectedLead.budget && (
-                                    <div>
-                                      <label className="text-sm font-medium">Budget</label>
-                                      <p className="text-sm text-cool-gray">{selectedLead.budget}</p>
-                                    </div>
-                                  )}
-                                  {selectedLead.investmentRange && (
-                                    <div>
-                                      <label className="text-sm font-medium">Investment Range</label>
-                                      <p className="text-sm text-cool-gray">{selectedLead.investmentRange}</p>
-                                    </div>
-                                  )}
-                                  {selectedLead.timeline && (
-                                    <div>
-                                      <label className="text-sm font-medium">Timeline</label>
-                                      <p className="text-sm text-cool-gray">{selectedLead.timeline}</p>
-                                    </div>
-                                  )}
+                                   {selectedLead.type && (
+                                     <div>
+                                       <label className="text-sm font-medium">Lead Type</label>
+                                       <p className="text-sm text-cool-gray">{selectedLead.type}</p>
+                                     </div>
+                                   )}
+                                   {selectedLead.project && (
+                                     <div>
+                                       <label className="text-sm font-medium">Project</label>
+                                       <p className="text-sm text-cool-gray">{selectedLead.project}</p>
+                                     </div>
+                                   )}
+                                   {selectedLead.form_data?.projectType && (
+                                     <div>
+                                       <label className="text-sm font-medium">Project Type</label>
+                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.projectType}</p>
+                                     </div>
+                                   )}
+                                   {selectedLead.form_data?.budget && (
+                                     <div>
+                                       <label className="text-sm font-medium">Budget</label>
+                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.budget}</p>
+                                     </div>
+                                   )}
+                                   {selectedLead.form_data?.investmentRange && (
+                                     <div>
+                                       <label className="text-sm font-medium">Investment Range</label>
+                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.investmentRange}</p>
+                                     </div>
+                                   )}
+                                   {selectedLead.form_data?.timeline && (
+                                     <div>
+                                       <label className="text-sm font-medium">Timeline</label>
+                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.timeline}</p>
+                                     </div>
+                                   )}
                                 </div>
                                 
-                                {selectedLead.features && selectedLead.features.length > 0 && (
-                                  <div>
-                                    <label className="text-sm font-medium">Required Features</label>
-                                    <div className="flex flex-wrap gap-2 mt-1">
-                                      {selectedLead.features.map((feature, index) => (
-                                        <Badge key={index} variant="outline">{feature}</Badge>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
+                                 {selectedLead.form_data?.features && selectedLead.form_data.features.length > 0 && (
+                                   <div>
+                                     <label className="text-sm font-medium">Required Features</label>
+                                     <div className="flex flex-wrap gap-2 mt-1">
+                                       {selectedLead.form_data.features.map((feature: string, index: number) => (
+                                         <Badge key={index} variant="outline">{feature}</Badge>
+                                       ))}
+                                     </div>
+                                   </div>
+                                 )}
                                 
-                                {selectedLead.message && (
-                                  <div>
-                                    <label className="text-sm font-medium">Message</label>
-                                    <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">
-                                      {selectedLead.message}
-                                    </p>
-                                  </div>
-                                )}
-                                
-                                {selectedLead.description && (
-                                  <div>
-                                    <label className="text-sm font-medium">Project Description</label>
-                                    <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">
-                                      {selectedLead.description}
-                                    </p>
-                                  </div>
-                                )}
+                                 {(selectedLead.form_data?.message || (selectedLead as any).message) && (
+                                   <div>
+                                     <label className="text-sm font-medium">Message</label>
+                                     <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">
+                                       {selectedLead.form_data?.message || (selectedLead as any).message}
+                                     </p>
+                                   </div>
+                                 )}
+                                 
+                                 {selectedLead.form_data?.description && (
+                                   <div>
+                                     <label className="text-sm font-medium">Project Description</label>
+                                     <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">
+                                       {selectedLead.form_data.description}
+                                     </p>
+                                   </div>
+                                 )}
+
+                                 {selectedLead.form_data && Object.keys(selectedLead.form_data).length > 0 && (
+                                   <div>
+                                     <label className="text-sm font-medium">Additional Form Data</label>
+                                     <pre className="text-xs text-cool-gray bg-soft-lilac/10 p-3 rounded-md overflow-auto max-h-32">
+                                       {JSON.stringify(selectedLead.form_data, null, 2)}
+                                     </pre>
+                                   </div>
+                                 )}
                               </div>
                             )}
                           </DialogContent>
