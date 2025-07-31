@@ -10,12 +10,13 @@ export interface Lead {
   company?: string | null;
   phone?: string | null;
   source: 'contact' | 'custom-build' | 'investor' | 'ai-agent';
-  status?: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed';
+  status?: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed' | 'archived';
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   form_data?: any;
   notes?: string | null;
   last_contact?: string | null;
   next_follow_up?: string | null;
+  archived_at?: string | null;
 }
 
 export interface ProjectLead {
@@ -29,7 +30,7 @@ export interface ProjectLead {
   phone?: string | null;
   inquiry_type: 'investment' | 'purchase' | 'demo' | 'partnership';
   message?: string | null;
-  status?: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed';
+  status?: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed' | 'archived';
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   investment_amount?: number | null;
   form_data?: any;
@@ -516,5 +517,101 @@ export const supabaseLeadManager = {
     ].join('\n');
 
     return csvContent;
+  },
+
+  // Archive lead (update status to archived)
+  async archiveLead(leadId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .update({ 
+          status: 'archived',
+          archived_at: new Date().toISOString()
+        })
+        .eq('id', leadId);
+
+      if (error) {
+        console.error('Error archiving lead:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error archiving lead:', error);
+      return false;
+    }
+  },
+
+  // Get source breakdown statistics
+  async getSourceBreakdown() {
+    try {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('source, status, created_at, form_data');
+
+      if (error) {
+        console.error('Error fetching source breakdown:', error);
+        return {};
+      }
+
+      const breakdown: any = {};
+      const today = new Date();
+      const thisWeek = new Date();
+      thisWeek.setDate(thisWeek.getDate() - 7);
+      const thisMonth = new Date();
+      thisMonth.setMonth(thisMonth.getMonth() - 1);
+
+      (data || []).forEach(lead => {
+        const source = lead.source;
+        const createdAt = new Date(lead.created_at);
+        
+        if (!breakdown[source]) {
+          breakdown[source] = {
+            total: 0,
+            today: 0,
+            week: 0,
+            month: 0,
+            new: 0,
+            qualified: 0,
+            converted: 0,
+            archived: 0
+          };
+        }
+
+        breakdown[source].total++;
+        
+        if (createdAt.toDateString() === today.toDateString()) {
+          breakdown[source].today++;
+        }
+        
+        if (createdAt > thisWeek) {
+          breakdown[source].week++;
+        }
+        
+        if (createdAt > thisMonth) {
+          breakdown[source].month++;
+        }
+
+        switch (lead.status) {
+          case 'new':
+            breakdown[source].new++;
+            break;
+          case 'qualified':
+            breakdown[source].qualified++;
+            break;
+          case 'converted':
+            breakdown[source].converted++;
+            break;
+          case 'archived':
+            breakdown[source].archived++;
+            break;
+        }
+      });
+
+      return breakdown;
+    } catch (error) {
+      console.error('Error getting source breakdown:', error);
+      return {};
+    }
   }
 };

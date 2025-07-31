@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabaseLeadManager, Lead } from '@/utils/supabaseLeadManager';
 import { 
   Search, 
@@ -19,20 +21,29 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  Filter
+  Filter,
+  Archive,
+  Trash2,
+  BarChart3,
+  PieChart,
+  Activity
 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 export function MessagesManager() {
   const [messages, setMessages] = useState<Lead[]>([]);
   const [filteredMessages, setFilteredMessages] = useState<Lead[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedMessage, setSelectedMessage] = useState<Lead | null>(null);
+  const [sourceBreakdown, setSourceBreakdown] = useState<any>({});
   const [stats, setStats] = useState({
     total: 0,
     today: 0,
     week: 0,
-    unread: 0
+    unread: 0,
+    archived: 0
   });
 
   useEffect(() => {
@@ -41,19 +52,24 @@ export function MessagesManager() {
 
   useEffect(() => {
     filterMessages();
-  }, [messages, searchTerm, sourceFilter]);
+  }, [messages, searchTerm, sourceFilter, statusFilter]);
 
   const loadMessages = async () => {
     try {
-      const allLeads = await supabaseLeadManager.getAllLeads();
-      const leadStats = await supabaseLeadManager.getLeadStats();
+      const [allLeads, leadStats, sourceStats] = await Promise.all([
+        supabaseLeadManager.getAllLeads(),
+        supabaseLeadManager.getLeadStats(),
+        supabaseLeadManager.getSourceBreakdown()
+      ]);
       
       setMessages(allLeads);
+      setSourceBreakdown(sourceStats);
       setStats({
         total: allLeads.length,
         today: leadStats.todayLeads,
         week: leadStats.weekLeads,
-        unread: allLeads.filter(lead => lead.status === 'new').length
+        unread: allLeads.filter(lead => lead.status === 'new').length,
+        archived: allLeads.filter(lead => lead.status === 'archived').length
       });
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -74,6 +90,10 @@ export function MessagesManager() {
 
     if (sourceFilter !== 'all') {
       filtered = filtered.filter(message => message.source === sourceFilter);
+    }
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(message => message.status === statusFilter);
     }
 
     setFilteredMessages(filtered);
@@ -125,6 +145,58 @@ export function MessagesManager() {
     }
   };
 
+  const handleArchiveMessage = async (messageId: string) => {
+    try {
+      const success = await supabaseLeadManager.archiveLead(messageId);
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Message archived successfully",
+        });
+        loadMessages();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to archive message",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error archiving message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to archive message",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      const success = await supabaseLeadManager.deleteLead(messageId);
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Message deleted successfully",
+        });
+        loadMessages();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to delete message",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete message",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
@@ -164,15 +236,72 @@ export function MessagesManager() {
 
         <Card className="bg-gradient-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unread</CardTitle>
-            <AlertCircle className="h-4 w-4 text-coral-orange" />
+            <CardTitle className="text-sm font-medium">Archived</CardTitle>
+            <Archive className="h-4 w-4 text-cool-gray" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-coral-orange">{stats.unread}</div>
-            <p className="text-xs text-cool-gray">Require attention</p>
+            <div className="text-2xl font-bold text-cool-gray">{stats.archived}</div>
+            <p className="text-xs text-cool-gray">Archived messages</p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Source Breakdown Analytics */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Source Analytics
+          </CardTitle>
+          <CardDescription>
+            Breakdown of messages by source with performance metrics
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Object.entries(sourceBreakdown).map(([source, data]: [string, any]) => (
+              <Card key={source} className="bg-soft-lilac/10">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium flex items-center justify-between">
+                    <span>{getSourceDisplayName(source)}</span>
+                    <Badge className={getSourceColor(source as Lead['source'])}>
+                      {data.total}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-cool-gray">Today:</span>
+                      <span className="ml-1 font-medium">{data.today}</span>
+                    </div>
+                    <div>
+                      <span className="text-cool-gray">Week:</span>
+                      <span className="ml-1 font-medium">{data.week}</span>
+                    </div>
+                    <div>
+                      <span className="text-cool-gray">New:</span>
+                      <span className="ml-1 font-medium text-coral-orange">{data.new}</span>
+                    </div>
+                    <div>
+                      <span className="text-cool-gray">Qualified:</span>
+                      <span className="ml-1 font-medium text-emerald-green">{data.qualified}</span>
+                    </div>
+                  </div>
+                  <div className="pt-1 border-t border-soft-lilac/20">
+                    <div className="text-xs">
+                      <span className="text-cool-gray">Conversion:</span>
+                      <span className="ml-1 font-medium text-royal-purple">
+                        {data.total > 0 ? Math.round((data.converted / data.total) * 100) : 0}%
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Messages Table */}
       <Card>
@@ -182,10 +311,12 @@ export function MessagesManager() {
               <Mail className="h-5 w-5" />
               Contact Messages
             </span>
-            <Button onClick={exportMessages} variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export CSV
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={exportMessages} variant="outline" size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
+            </div>
           </CardTitle>
           <CardDescription>
             All messages from contact forms across your website
@@ -204,18 +335,34 @@ export function MessagesManager() {
                 />
               </div>
             </div>
-            <Select value={sourceFilter} onValueChange={setSourceFilter}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filter by source" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Sources</SelectItem>
-                <SelectItem value="contact">General Contact</SelectItem>
-                <SelectItem value="custom-build">Custom Build</SelectItem>
-                <SelectItem value="investor">Investor</SelectItem>
-                <SelectItem value="ai-agent">AI Agent</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select value={sourceFilter} onValueChange={setSourceFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Filter by source" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sources</SelectItem>
+                  <SelectItem value="contact">General Contact</SelectItem>
+                  <SelectItem value="custom-build">Custom Build</SelectItem>
+                  <SelectItem value="investor">Investor</SelectItem>
+                  <SelectItem value="ai-agent">AI Agent</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="contacted">Contacted</SelectItem>
+                  <SelectItem value="qualified">Qualified</SelectItem>
+                  <SelectItem value="converted">Converted</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Messages Table */}
@@ -225,6 +372,7 @@ export function MessagesManager() {
                 <tr className="border-b border-soft-lilac/30">
                   <th className="text-left p-3 font-medium text-midnight-navy">Sender</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Source</th>
+                  <th className="text-left p-3 font-medium text-midnight-navy">Status</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Preview</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Date</th>
                   <th className="text-left p-3 font-medium text-midnight-navy">Actions</th>
@@ -232,7 +380,7 @@ export function MessagesManager() {
               </thead>
               <tbody>
                 {filteredMessages.map((message) => (
-                  <tr key={message.id} className="border-b border-soft-lilac/20 hover:bg-soft-lilac/10">
+                  <tr key={message.id} className={`border-b border-soft-lilac/20 hover:bg-soft-lilac/10 ${message.status === 'archived' ? 'opacity-60' : ''}`}>
                     <td className="p-3">
                       <div>
                         <div className="font-medium text-midnight-navy">{message.name}</div>
@@ -245,6 +393,14 @@ export function MessagesManager() {
                     <td className="p-3">
                       <Badge className={getSourceColor(message.source)}>
                         {getSourceDisplayName(message.source)}
+                      </Badge>
+                    </td>
+                    <td className="p-3">
+                      <Badge variant={message.status === 'new' ? 'destructive' : 
+                                   message.status === 'qualified' ? 'default' : 
+                                   message.status === 'converted' ? 'default' :
+                                   message.status === 'archived' ? 'secondary' : 'outline'}>
+                        {message.status}
                       </Badge>
                     </td>
                     <td className="p-3">
@@ -351,6 +507,47 @@ export function MessagesManager() {
                         >
                           <Mail className="h-4 w-4" />
                         </Button>
+
+                        {message.status !== 'archived' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleArchiveMessage(message.id!)}
+                            className="text-cool-gray hover:text-midnight-navy"
+                          >
+                            <Archive className="h-4 w-4" />
+                          </Button>
+                        )}
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-coral-orange hover:text-coral-orange"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Message</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to permanently delete this message from {message.name}? 
+                                This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleDeleteMessage(message.id!)}
+                                className="bg-coral-orange hover:bg-coral-orange/90"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </td>
                   </tr>
