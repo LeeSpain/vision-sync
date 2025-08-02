@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Templates from "./pages/Templates";
+import TemplateFinder from "./pages/TemplateFinder";
+import TemplateRecommendations from "./pages/TemplateRecommendations";
+import TemplatePreview from "./pages/TemplatePreview";
 import DynamicProjectPage from "./components/DynamicProjectPage";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
@@ -26,6 +29,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/templates" element={<Templates />} />
+          <Route path="/template-finder" element={<TemplateFinder />} />
+          <Route path="/template-recommendations" element={<TemplateRecommendations />} />
+          <Route path="/template-preview/:id" element={<TemplatePreview />} />
           
           {/* CRITICAL: Static admin and system pages MUST come before dynamic routes */}
           <Route path="/admin" element={<Admin />} />
