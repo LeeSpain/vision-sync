@@ -122,6 +122,38 @@ const AiAgentManager: React.FC = () => {
     }
   };
 
+  const updateBusinessKnowledge = async (field: string, value: string) => {
+    if (!selectedAgent) return;
+
+    const updatedBusinessKnowledge = {
+      ...selectedAgent.business_knowledge,
+      [field]: value
+    };
+
+    try {
+      const { error } = await supabase
+        .from('ai_agents')
+        .update({ business_knowledge: updatedBusinessKnowledge })
+        .eq('id', selectedAgent.id);
+
+      if (error) throw error;
+
+      setSelectedAgent({ 
+        ...selectedAgent, 
+        business_knowledge: updatedBusinessKnowledge 
+      });
+      setAgents(agents.map(agent => 
+        agent.id === selectedAgent.id 
+          ? { ...agent, business_knowledge: updatedBusinessKnowledge } 
+          : agent
+      ));
+      toast.success('Business knowledge updated successfully');
+    } catch (error) {
+      console.error('Error updating business knowledge:', error);
+      toast.error('Failed to update business knowledge');
+    }
+  };
+
   const updateSetting = async (settingKey: string, value: any) => {
     try {
       const { error } = await supabase
@@ -217,6 +249,10 @@ const AiAgentManager: React.FC = () => {
           <TabsTrigger value="agent" className="flex items-center gap-2">
             <Brain className="h-4 w-4" />
             Agent Config
+          </TabsTrigger>
+          <TabsTrigger value="business" className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            Business Profile
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
@@ -341,6 +377,271 @@ const AiAgentManager: React.FC = () => {
               </Card>
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="business" className="space-y-4">
+          {selectedAgent && (
+            <div className="mb-4">
+              <h3 className="text-lg font-medium">Business Profile for {selectedAgent.name}</h3>
+              <p className="text-sm text-muted-foreground">Configure comprehensive business information the AI can use</p>
+            </div>
+          )}
+          
+          {selectedAgent && (
+            <div className="grid gap-6">
+              {/* Company Vision & Mission */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Company Vision & Mission</CardTitle>
+                  <CardDescription>Core company values and direction</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="company-vision">Company Vision</Label>
+                    <Textarea
+                      id="company-vision"
+                      value={selectedAgent.business_knowledge?.company_vision || ''}
+                      onChange={(e) => updateBusinessKnowledge('company_vision', e.target.value)}
+                      placeholder="Our vision for the future and what we aspire to achieve..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="company-mission">Company Mission</Label>
+                    <Textarea
+                      id="company-mission"
+                      value={selectedAgent.business_knowledge?.company_mission || ''}
+                      onChange={(e) => updateBusinessKnowledge('company_mission', e.target.value)}
+                      placeholder="Our mission statement and why we exist..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="company-values">Core Values</Label>
+                    <Textarea
+                      id="company-values"
+                      value={selectedAgent.business_knowledge?.company_values || ''}
+                      onChange={(e) => updateBusinessKnowledge('company_values', e.target.value)}
+                      placeholder="Our fundamental beliefs and principles..."
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Company Background */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Company Background</CardTitle>
+                  <CardDescription>History, expertise, and competitive advantages</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="company-history">Company History</Label>
+                    <Textarea
+                      id="company-history"
+                      value={selectedAgent.business_knowledge?.company_history || ''}
+                      onChange={(e) => updateBusinessKnowledge('company_history', e.target.value)}
+                      placeholder="When we started, key milestones, growth story..."
+                      rows={4}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="industry-expertise">Industry Expertise</Label>
+                    <Textarea
+                      id="industry-expertise"
+                      value={selectedAgent.business_knowledge?.industry_expertise || ''}
+                      onChange={(e) => updateBusinessKnowledge('industry_expertise', e.target.value)}
+                      placeholder="Industries we specialize in, our domain knowledge..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="competitive-advantages">Competitive Advantages</Label>
+                    <Textarea
+                      id="competitive-advantages"
+                      value={selectedAgent.business_knowledge?.competitive_advantages || ''}
+                      onChange={(e) => updateBusinessKnowledge('competitive_advantages', e.target.value)}
+                      placeholder="What sets us apart from competitors..."
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Target Market & Customers */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Target Market & Customers</CardTitle>
+                  <CardDescription>Who we serve and their characteristics</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="target-markets">Target Markets</Label>
+                    <Textarea
+                      id="target-markets"
+                      value={selectedAgent.business_knowledge?.target_markets || ''}
+                      onChange={(e) => updateBusinessKnowledge('target_markets', e.target.value)}
+                      placeholder="Primary customer segments, business sizes, industries..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="ideal-customers">Ideal Customer Profile</Label>
+                    <Textarea
+                      id="ideal-customers"
+                      value={selectedAgent.business_knowledge?.ideal_customers || ''}
+                      onChange={(e) => updateBusinessKnowledge('ideal_customers', e.target.value)}
+                      placeholder="Characteristics of our best customers..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="success-stories">Success Stories & Testimonials</Label>
+                    <Textarea
+                      id="success-stories"
+                      value={selectedAgent.business_knowledge?.success_stories || ''}
+                      onChange={(e) => updateBusinessKnowledge('success_stories', e.target.value)}
+                      placeholder="Customer success stories, testimonials, case studies..."
+                      rows={4}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Services & Offerings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Services & Offerings</CardTitle>
+                  <CardDescription>Detailed service information and value propositions</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="service-catalog">Service Catalog</Label>
+                    <Textarea
+                      id="service-catalog"
+                      value={selectedAgent.business_knowledge?.service_catalog || ''}
+                      onChange={(e) => updateBusinessKnowledge('service_catalog', e.target.value)}
+                      placeholder="Detailed list of services, packages, and offerings..."
+                      rows={4}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="value-propositions">Value Propositions</Label>
+                    <Textarea
+                      id="value-propositions"
+                      value={selectedAgent.business_knowledge?.value_propositions || ''}
+                      onChange={(e) => updateBusinessKnowledge('value_propositions', e.target.value)}
+                      placeholder="Unique benefits and value we provide to customers..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="pricing-structure">Pricing Structure</Label>
+                    <Textarea
+                      id="pricing-structure"
+                      value={selectedAgent.business_knowledge?.pricing_structure || ''}
+                      onChange={(e) => updateBusinessKnowledge('pricing_structure', e.target.value)}
+                      placeholder="Pricing models, packages, typical ranges..."
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Company Achievements */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Company Achievements</CardTitle>
+                  <CardDescription>Awards, certifications, and recognition</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="awards-certifications">Awards & Certifications</Label>
+                    <Textarea
+                      id="awards-certifications"
+                      value={selectedAgent.business_knowledge?.awards_certifications || ''}
+                      onChange={(e) => updateBusinessKnowledge('awards_certifications', e.target.value)}
+                      placeholder="Industry awards, certifications, recognition..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="partnerships">Key Partnerships</Label>
+                    <Textarea
+                      id="partnerships"
+                      value={selectedAgent.business_knowledge?.partnerships || ''}
+                      onChange={(e) => updateBusinessKnowledge('partnerships', e.target.value)}
+                      placeholder="Strategic partnerships, technology integrations..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="team-expertise">Team Expertise</Label>
+                    <Textarea
+                      id="team-expertise"
+                      value={selectedAgent.business_knowledge?.team_expertise || ''}
+                      onChange={(e) => updateBusinessKnowledge('team_expertise', e.target.value)}
+                      placeholder="Team background, expertise, leadership experience..."
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Dynamic Content */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Dynamic Content</CardTitle>
+                  <CardDescription>Current promotions, policies, and FAQ</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="current-promotions">Current Promotions</Label>
+                    <Textarea
+                      id="current-promotions"
+                      value={selectedAgent.business_knowledge?.current_promotions || ''}
+                      onChange={(e) => updateBusinessKnowledge('current_promotions', e.target.value)}
+                      placeholder="Active promotions, special offers, seasonal deals..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="company-policies">Company Policies</Label>
+                    <Textarea
+                      id="company-policies"
+                      value={selectedAgent.business_knowledge?.company_policies || ''}
+                      onChange={(e) => updateBusinessKnowledge('company_policies', e.target.value)}
+                      placeholder="Refund policy, terms of service, privacy policy highlights..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="faq-highlights">FAQ Highlights</Label>
+                    <Textarea
+                      id="faq-highlights"
+                      value={selectedAgent.business_knowledge?.faq_highlights || ''}
+                      onChange={(e) => updateBusinessKnowledge('faq_highlights', e.target.value)}
+                      placeholder="Most common questions and answers..."
+                      rows={4}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">

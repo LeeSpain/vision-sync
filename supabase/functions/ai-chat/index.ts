@@ -154,6 +154,87 @@ serve(async (req) => {
       conversational: 'Write in a natural, conversational style.'
     };
 
+    // Build comprehensive business context from agent's business knowledge
+    const businessKnowledge = agent?.business_knowledge || {};
+    
+    const buildBusinessContext = () => {
+      let context = `We offer custom-built applications, investment opportunities, and ready-to-deploy solutions across various industries including Healthcare, Retail, E-commerce, Real Estate, Emergency Services, Technology, Finance, Education, Food & Beverage, Beauty & Wellness, Entertainment, and Professional Services.\n\n`;
+      
+      if (businessKnowledge.company_vision) {
+        context += `COMPANY VISION: ${businessKnowledge.company_vision}\n\n`;
+      }
+      
+      if (businessKnowledge.company_mission) {
+        context += `COMPANY MISSION: ${businessKnowledge.company_mission}\n\n`;
+      }
+      
+      if (businessKnowledge.company_values) {
+        context += `CORE VALUES: ${businessKnowledge.company_values}\n\n`;
+      }
+      
+      if (businessKnowledge.company_history) {
+        context += `COMPANY BACKGROUND: ${businessKnowledge.company_history}\n\n`;
+      }
+      
+      if (businessKnowledge.industry_expertise) {
+        context += `INDUSTRY EXPERTISE: ${businessKnowledge.industry_expertise}\n\n`;
+      }
+      
+      if (businessKnowledge.competitive_advantages) {
+        context += `COMPETITIVE ADVANTAGES: ${businessKnowledge.competitive_advantages}\n\n`;
+      }
+      
+      if (businessKnowledge.target_markets) {
+        context += `TARGET MARKETS: ${businessKnowledge.target_markets}\n\n`;
+      }
+      
+      if (businessKnowledge.ideal_customers) {
+        context += `IDEAL CUSTOMERS: ${businessKnowledge.ideal_customers}\n\n`;
+      }
+      
+      if (businessKnowledge.value_propositions) {
+        context += `VALUE PROPOSITIONS: ${businessKnowledge.value_propositions}\n\n`;
+      }
+      
+      if (businessKnowledge.service_catalog) {
+        context += `SERVICES & OFFERINGS: ${businessKnowledge.service_catalog}\n\n`;
+      }
+      
+      if (businessKnowledge.pricing_structure) {
+        context += `PRICING INFORMATION: ${businessKnowledge.pricing_structure}\n\n`;
+      }
+      
+      if (businessKnowledge.success_stories) {
+        context += `SUCCESS STORIES: ${businessKnowledge.success_stories}\n\n`;
+      }
+      
+      if (businessKnowledge.awards_certifications) {
+        context += `AWARDS & CERTIFICATIONS: ${businessKnowledge.awards_certifications}\n\n`;
+      }
+      
+      if (businessKnowledge.partnerships) {
+        context += `KEY PARTNERSHIPS: ${businessKnowledge.partnerships}\n\n`;
+      }
+      
+      if (businessKnowledge.team_expertise) {
+        context += `TEAM EXPERTISE: ${businessKnowledge.team_expertise}\n\n`;
+      }
+      
+      if (businessKnowledge.current_promotions) {
+        context += `CURRENT PROMOTIONS: ${businessKnowledge.current_promotions}\n\n`;
+      }
+      
+      if (businessKnowledge.company_policies) {
+        context += `COMPANY POLICIES: ${businessKnowledge.company_policies}\n\n`;
+      }
+      
+      if (businessKnowledge.faq_highlights) {
+        context += `FAQ HIGHLIGHTS: ${businessKnowledge.faq_highlights}\n\n`;
+      }
+      
+      return context.trim();
+    };
+
     const systemPrompt = `You are ${agent?.name || 'an AI assistant'} for Vision-Sync, a business platform helping customers find digital solutions.
 
 PERSONALITY & TONE: ${agent?.personality || 'helpful and professional'}
@@ -166,8 +247,8 @@ ${hasEscalationTrigger ? `
 🚨 ESCALATION DETECTED: The user is asking to speak with a human. Acknowledge their request politely and let them know someone will contact them soon. Collect their contact information if not already provided.
 ` : ''}
 
-BUSINESS CONTEXT:
-We offer custom-built applications, investment opportunities, and ready-to-deploy solutions across various industries including Healthcare, Retail, E-commerce, Real Estate, Emergency Services, Technology, Finance, Education, Food & Beverage, Beauty & Wellness, Entertainment, and Professional Services.
+COMPREHENSIVE BUSINESS CONTEXT:
+${buildBusinessContext()}
 
 CURRENT PROJECTS AND SERVICES:
 ${projectRecommendations}
