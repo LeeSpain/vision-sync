@@ -52,57 +52,117 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
   };
 
   return (
-    <Card className="group hover:shadow-hover transition-all duration-300 hover:scale-105 bg-gradient-card border-soft-lilac/30">
-      {image && (
-        <div className="aspect-video bg-gradient-hero rounded-t-xl flex items-center justify-center">
-          <div className="text-6xl opacity-20">{getCategoryIcon(category, billing_type)}</div>
-        </div>
-      )}
+    <Card className="group hover:shadow-glow transition-all duration-500 hover:scale-[1.02] bg-gradient-to-br from-slate-white via-slate-white to-soft-lilac/20 border-2 border-soft-lilac/30 hover:border-royal-purple/40 relative overflow-hidden">
+      {/* Premium Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-xl"></div>
       
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <CardTitle className="text-lg font-heading text-midnight-navy group-hover:text-royal-purple transition-colors">
-              {title}
-            </CardTitle>
-            <div className="flex items-center space-x-2">
-              <Badge className={getStatusColor(status)}>
-                {status}
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                {category}
-              </Badge>
-            </div>
+      {/* Featured Badge */}
+      {category === 'Featured' && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-gradient-primary text-white px-3 py-1 rounded-full text-xs font-bold shadow-elegant animate-pulse">
+            ⭐ FEATURED
           </div>
         </div>
-        <CardDescription className="text-cool-gray">
-          {description}
-        </CardDescription>
+      )}
+
+      {/* Hero Image/Icon Section */}
+      <div className="relative aspect-video bg-gradient-to-br from-royal-purple/10 via-electric-blue/10 to-emerald-green/10 rounded-t-xl flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+        <div className="relative z-10">
+          <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-elegant">
+            <div className="text-white text-2xl">{getCategoryIcon(category, billing_type)}</div>
+          </div>
+        </div>
+        {/* Floating Elements */}
+        <div className="absolute top-4 left-4 w-3 h-3 bg-emerald-green rounded-full opacity-60 group-hover:animate-bounce"></div>
+        <div className="absolute bottom-4 right-8 w-2 h-2 bg-coral-orange rounded-full opacity-40 group-hover:animate-ping"></div>
+        <div className="absolute top-8 right-6 w-1.5 h-1.5 bg-electric-blue rounded-full opacity-50 group-hover:animate-pulse"></div>
+      </div>
+      
+      <CardHeader className="relative z-10 pb-4">
+        <div className="space-y-3">
+          <CardTitle className="text-xl font-heading font-bold text-midnight-navy group-hover:text-royal-purple transition-colors duration-300 leading-tight">
+            {title}
+          </CardTitle>
+          
+          {/* Status and Category Badges */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge className={`${getStatusColor(status)} shadow-sm font-medium px-3 py-1`}>
+              {status}
+            </Badge>
+            {billing_type === 'investment' && (
+              <Badge className="bg-gradient-to-r from-emerald-green to-emerald-green/80 text-white border-0 shadow-sm font-medium px-3 py-1">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                Investment
+              </Badge>
+            )}
+            {billing_type === 'subscription' && (
+              <Badge className="bg-gradient-to-r from-electric-blue to-electric-blue/80 text-white border-0 shadow-sm font-medium px-3 py-1">
+                <RefreshCw className="h-3 w-3 mr-1" />
+                SaaS
+              </Badge>
+            )}
+          </div>
+          
+          <CardDescription className="text-cool-gray leading-relaxed text-sm line-clamp-3">
+            {description}
+          </CardDescription>
+        </div>
       </CardHeader>
 
-      <CardFooter className="flex justify-center">
-        {actions.subscribe && (
-          <Button 
-            variant="premium" 
-            size="sm" 
-            onClick={handleViewClick}
-            className="w-full max-w-32"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Subscribe
-          </Button>
-        )}
-        {actions.view && !actions.subscribe && (
-          <Button 
-            variant="view" 
-            size="sm" 
-            onClick={handleViewClick}
-            className="w-full max-w-32"
-          >
-            <Eye className="h-4 w-4" />
-            View
-          </Button>
-        )}
+      {/* Enhanced Footer with Investment-style CTA */}
+      <CardFooter className="relative z-10 pt-0 pb-6">
+        <div className="w-full space-y-3">
+          {/* Investment Amount Display for Featured */}
+          {category === 'Featured' && (
+            <div className="bg-gradient-to-r from-soft-lilac/20 to-soft-lilac/10 rounded-lg p-3 border border-soft-lilac/30">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-cool-gray uppercase tracking-wide">Starting Investment</span>
+                <span className="text-lg font-bold text-royal-purple">From $25K</span>
+              </div>
+            </div>
+          )}
+          
+          {actions.subscribe && (
+            <Button 
+              variant="premium" 
+              size="lg" 
+              onClick={handleViewClick}
+              className="w-full group-hover:shadow-glow transition-all duration-300 font-semibold"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Subscribe Now
+              <ExternalLink className="h-4 w-4 ml-2" />
+            </Button>
+          )}
+          
+          {actions.view && !actions.subscribe && (
+            <Button 
+              variant="hero" 
+              size="lg" 
+              onClick={handleViewClick}
+              className="w-full group-hover:shadow-glow transition-all duration-300 font-semibold"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              View Details
+              <ExternalLink className="h-4 w-4 ml-2" />
+            </Button>
+          )}
+          
+          {/* Investment Actions for Featured */}
+          {category === 'Featured' && (
+            <div className="flex gap-2 mt-2">
+              <Button variant="outline" size="sm" className="flex-1 text-xs font-medium">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                Invest
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1 text-xs font-medium">
+                <Eye className="h-3 w-3 mr-1" />
+                Details
+              </Button>
+            </div>
+          )}
+        </div>
       </CardFooter>
     </Card>
   );
