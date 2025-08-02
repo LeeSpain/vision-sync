@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Brain, MessageSquare, Settings, Database, Mic, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import ConversationsAnalytics from './ConversationsAnalytics';
 
 interface AiAgent {
   id: string;
@@ -499,17 +500,7 @@ const AiAgentManager: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="conversations" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Coming Soon</CardTitle>
-              <CardDescription>Conversation analytics and monitoring will be available here</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                This section will show real-time conversations, lead qualification status, and conversion analytics.
-              </p>
-            </CardContent>
-          </Card>
+          <ConversationsAnalytics />
         </TabsContent>
       </Tabs>
     </div>
