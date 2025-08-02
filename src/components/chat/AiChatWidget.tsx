@@ -35,23 +35,34 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   const [agentData, setAgentData] = useState<any>(null);
   const [contactInfo, setContactInfo] = useState<any>({});
   const [showContactBadge, setShowContactBadge] = useState(false);
+  const [welcomeSettings, setWelcomeSettings] = useState({
+    message: "Hello! I'm here to help you discover amazing digital solutions. What kind of project are you looking for today?",
+    quickActions: ["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"],
+    delay: 1000
+  });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognition = useRef<any>(null);
 
   useEffect(() => {
     loadAgentData();
+    loadWelcomeSettings();
     initializeSpeechRecognition();
-    
-    // Add initial greeting
-    const greeting: ChatMessage = {
-      id: `msg_${Date.now()}`,
-      type: 'ai',
-      content: "👋 Welcome! I'm your AI assistant, ready to help you discover our services and answer any questions. What can I help you with today?",
-      timestamp: new Date()
-    };
-    setMessages([greeting]);
   }, []);
+
+  useEffect(() => {
+    if (welcomeSettings.message && messages.length === 0) {
+      setTimeout(() => {
+        const greeting: ChatMessage = {
+          id: `msg_${Date.now()}`,
+          type: 'ai',
+          content: welcomeSettings.message,
+          timestamp: new Date()
+        };
+        setMessages([greeting]);
+      }, welcomeSettings.delay);
+    }
+  }, [welcomeSettings, messages.length]);
 
   useEffect(() => {
     scrollToBottom();
@@ -70,6 +81,30 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       }
     } catch (error) {
       console.error('Error loading agent data:', error);
+    }
+  };
+
+  const loadWelcomeSettings = async () => {
+    try {
+      const { data } = await supabase
+        .from('ai_agent_settings')
+        .select('setting_key, setting_value')
+        .in('setting_key', ['welcome_message', 'quick_actions', 'greeting_delay']);
+      
+      if (data) {
+        const settingsMap = data.reduce((acc: any, setting) => {
+          acc[setting.setting_key] = setting.setting_value;
+          return acc;
+        }, {});
+
+        setWelcomeSettings({
+          message: JSON.parse(settingsMap.welcome_message || '"Hello! I\'m here to help you discover amazing digital solutions. What kind of project are you looking for today?"'),
+          quickActions: JSON.parse(settingsMap.quick_actions || '["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"]'),
+          delay: parseInt(settingsMap.greeting_delay || '1000')
+        });
+      }
+    } catch (error) {
+      console.error('Error loading welcome settings:', error);
     }
   };
 
@@ -315,33 +350,18 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           <div className="space-y-3">
             {/* Quick Suggestions */}
             <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => sendMessage("Tell me about your services")}
-                disabled={isLoading}
-                className="text-xs rounded-full bg-gray-50 hover:bg-primary/5 border-gray-200 hover:border-primary/30 transition-all"
-              >
-                Our Services
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => sendMessage("What are your pricing options?")}
-                disabled={isLoading}
-                className="text-xs rounded-full bg-gray-50 hover:bg-primary/5 border-gray-200 hover:border-primary/30 transition-all"
-              >
-                Pricing
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => sendMessage("How can I get started?")}
-                disabled={isLoading}
-                className="text-xs rounded-full bg-gray-50 hover:bg-primary/5 border-gray-200 hover:border-primary/30 transition-all"
-              >
-                Get Started
-              </Button>
+              {welcomeSettings.quickActions.map((action, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => sendMessage(action)}
+                  disabled={isLoading}
+                  className="text-xs rounded-full bg-gray-50 hover:bg-primary/5 border-gray-200 hover:border-primary/30 transition-all"
+                >
+                  {action}
+                </Button>
+              ))}
             </div>
 
             {/* Input Row */}

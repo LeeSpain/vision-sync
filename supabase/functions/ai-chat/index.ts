@@ -51,9 +51,20 @@ serve(async (req) => {
     const projects = projectsRes.data || [];
     const leadCount = leadsRes.data?.length || 0;
 
-    // Get OpenAI API key from settings
-    const openaiSetting = settings.find(s => s.setting_key === 'openai_api_key');
-    const openaiApiKey = openaiSetting?.setting_value || Deno.env.get('OPENAI_API_KEY');
+    // Convert settings to map for easy access
+    const settingsMap = settings.reduce((acc: any, setting) => {
+      acc[setting.setting_key] = setting.setting_value;
+      return acc;
+    }, {});
+
+    // Get configuration from settings
+    const openaiApiKey = settingsMap.openai_api_key || Deno.env.get('OPENAI_API_KEY');
+    const maxResponseLength = parseInt(settingsMap.max_response_length || '250');
+    const responseTone = JSON.parse(settingsMap.response_tone || '"friendly_professional"');
+    const responseFormat = JSON.parse(settingsMap.response_format || '"conversational"');
+    const emojiUsage = JSON.parse(settingsMap.emoji_usage || '"minimal"');
+    const contactCollectionTiming = JSON.parse(settingsMap.contact_collection_timing || '"after_3_messages"');
+    const escalationTriggers = JSON.parse(settingsMap.escalation_triggers || '[]');
 
     if (!openaiApiKey) {
       throw new Error('OpenAI API key not configured');
@@ -84,9 +95,17 @@ serve(async (req) => {
     const contactInfo = extractContactInfo(fullHistory);
     const hasContactInfo = contactInfo.email || contactInfo.phone || contactInfo.name;
     
-    // Determine conversation stage
+    // Determine conversation stage based on settings
     const messageCount = fullHistory.length;
-    const needsContactInfo = messageCount > 2 && !hasContactInfo;
+    const contactThreshold = contactCollectionTiming === 'immediate' ? 0 :
+                           contactCollectionTiming === 'after_2_messages' ? 2 :
+                           contactCollectionTiming === 'after_5_messages' ? 5 : 3;
+    const needsContactInfo = messageCount >= contactThreshold && !hasContactInfo;
+
+    // Check for escalation triggers
+    const hasEscalationTrigger = escalationTriggers.some((trigger: string) => 
+      message.toLowerCase().includes(trigger.toLowerCase())
+    );
 
     // Build context for the AI
     const businessContext = {
@@ -114,7 +133,38 @@ serve(async (req) => {
       Lead Interest: ${project.leads_count || 0} inquiries`;
     }).join('\n\n') || 'No projects available';
 
+    // Dynamic tone and emoji settings
+    const toneInstructions = {
+      professional: 'Maintain a professional, business-focused tone.',
+      friendly: 'Be warm, approachable, and personable.',
+      casual: 'Use casual, relaxed language.',
+      friendly_professional: 'Balance professionalism with warmth and approachability.'
+    };
+
+    const emojiInstructions = {
+      disabled: 'Do not use any emojis.',
+      minimal: 'Use emojis sparingly (1-2 per conversation).',
+      moderate: 'Use emojis naturally to enhance communication.',
+      frequent: 'Use emojis regularly to create an engaging, expressive tone.'
+    };
+
+    const formatInstructions = {
+      bullet_points: 'Structure responses using bullet points when listing information.',
+      paragraphs: 'Use full paragraphs for explanations.',
+      conversational: 'Write in a natural, conversational style.'
+    };
+
     const systemPrompt = `You are ${agent?.name || 'an AI assistant'} for Vision-Sync, a business platform helping customers find digital solutions.
+
+PERSONALITY & TONE: ${agent?.personality || 'helpful and professional'}
+COMMUNICATION STYLE:
+- Tone: ${toneInstructions[responseTone] || toneInstructions.friendly_professional}
+- Format: ${formatInstructions[responseFormat] || formatInstructions.conversational}
+- Emoji Usage: ${emojiInstructions[emojiUsage] || emojiInstructions.minimal}
+
+${hasEscalationTrigger ? `
+🚨 ESCALATION DETECTED: The user is asking to speak with a human. Acknowledge their request politely and let them know someone will contact them soon. Collect their contact information if not already provided.
+` : ''}
 
 BUSINESS CONTEXT:
 We offer custom-built applications, investment opportunities, and ready-to-deploy solutions across various industries including Healthcare, Retail, E-commerce, Real Estate, Emergency Services, Technology, Finance, Education, Food & Beverage, Beauty & Wellness, Entertainment, and Professional Services.
@@ -131,30 +181,29 @@ CONTACT INFORMATION COLLECTED:
 - Phone: ${contactInfo.phone || 'Not provided'}
 
 CONVERSATION RULES:
-1. Keep responses VERY concise (1-2 sentences max) - be helpful but brief
-2. Naturally ask for contact information (name, email, phone) during conversation
-3. Recommend relevant projects based on user's industry/business type
+1. Response Length: Keep responses under ${Math.floor(maxResponseLength / 4)} words (${maxResponseLength} tokens max)
+2. Contact Collection: ${needsContactInfo ? 'Naturally ask for contact information (name, email, phone)' : 'Focus on qualifying their needs and budget'}
+3. Project Recommendations: Match projects to user's industry and needs
 4. Always include project links when suggesting solutions
-5. For specific industries, recommend these projects:
-   - Hairdresser/Salon/Beauty → CustomBuilds Platform + Beauty & Wellness templates
+5. Industry-specific recommendations:
+   - Beauty/Salon/Wellness → CustomBuilds Platform + Beauty & Wellness templates
    - Healthcare/Medical → Global Health-Sync, Nurse-Sync
    - Real Estate → AI Spain Homes
    - Emergency Services → ICE-SOS Lite
    - E-commerce/Marketplace → ForSale Portal, CustomBuilds Platform
    - Investment/Finance → ForInvestors Platform
-6. Use format: "Check out [Project Name](https://yoursite.com/project-route) - it's perfect for [their industry]"
+6. Link format: "Check out [Project Name](https://yoursite.com/project-route)"
 7. Qualify leads by understanding budget, timeline, and specific needs
-8. Guide toward consultation or project inquiry
 
 ${needsContactInfo ? `
 CONTACT COLLECTION STRATEGY:
-- After answering their question, mention you'd love to follow up personally
-- Ask: "I'd love to follow up with more information. Could I get your name and email address?"
-- If they hesitate: "It helps me provide more personalized recommendations for your business needs"
-- Be natural and conversational, not pushy
-` : 'LEAD QUALIFICATION: Focus on understanding their business needs, budget, and timeline. Provide targeted project recommendations with links.'}
+- After answering their question, naturally mention following up
+- Ask: "I'd love to follow up with more details. Could I get your name and email?"
+- If hesitant: "It helps me provide personalized recommendations for your business"
+- Stay conversational, not pushy
+` : 'LEAD QUALIFICATION: Focus on understanding business needs, budget, timeline, and decision-making process.'}
 
-RESPONSE LENGTH: Keep ALL responses under 50 words. Be helpful but extremely concise.`;
+RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -170,7 +219,7 @@ RESPONSE LENGTH: Keep ALL responses under 50 words. Be helpful but extremely con
           ...fullHistory.slice(-10), // Keep last 10 messages for context
           { role: 'user', content: message }
         ],
-        max_tokens: 250,
+        max_tokens: maxResponseLength,
         temperature: 0.8,
       }),
     });

@@ -298,7 +298,7 @@ const AiAgentManager: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4">
             {settings.map((setting) => (
               <Card key={setting.id}>
                 <CardHeader>
@@ -319,11 +319,73 @@ const AiAgentManager: React.FC = () => {
                         {setting.setting_value === true || setting.setting_value === 'true' ? 'Enabled' : 'Disabled'}
                       </Label>
                     </div>
+                  ) : setting.setting_key === 'quick_actions' || setting.setting_key === 'initial_prompts' || setting.setting_key === 'escalation_triggers' ? (
+                    <Textarea
+                      value={typeof setting.setting_value === 'string' ? setting.setting_value : JSON.stringify(setting.setting_value, null, 2)}
+                      onChange={(e) => {
+                        try {
+                          const parsed = JSON.parse(e.target.value);
+                          updateSetting(setting.setting_key, parsed);
+                        } catch {
+                          updateSetting(setting.setting_key, e.target.value);
+                        }
+                      }}
+                      placeholder={`Enter ${setting.setting_key.replace(/_/g, ' ')} as JSON array`}
+                      rows={4}
+                    />
+                  ) : setting.setting_key === 'welcome_message' ? (
+                    <Textarea
+                      value={typeof setting.setting_value === 'string' ? JSON.parse(setting.setting_value || '""') : setting.setting_value}
+                      onChange={(e) => updateSetting(setting.setting_key, JSON.stringify(e.target.value))}
+                      placeholder="Enter welcome message"
+                      rows={3}
+                    />
+                  ) : setting.setting_key === 'response_tone' || setting.setting_key === 'response_format' || setting.setting_key === 'emoji_usage' || setting.setting_key === 'contact_collection_timing' ? (
+                    <Select
+                      value={typeof setting.setting_value === 'string' ? JSON.parse(setting.setting_value || '""') : setting.setting_value}
+                      onValueChange={(value) => updateSetting(setting.setting_key, JSON.stringify(value))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {setting.setting_key === 'response_tone' && [
+                          <SelectItem key="professional" value="professional">Professional</SelectItem>,
+                          <SelectItem key="friendly" value="friendly">Friendly</SelectItem>,
+                          <SelectItem key="casual" value="casual">Casual</SelectItem>,
+                          <SelectItem key="friendly_professional" value="friendly_professional">Friendly Professional</SelectItem>
+                        ]}
+                        {setting.setting_key === 'response_format' && [
+                          <SelectItem key="bullet_points" value="bullet_points">Bullet Points</SelectItem>,
+                          <SelectItem key="paragraphs" value="paragraphs">Paragraphs</SelectItem>,
+                          <SelectItem key="conversational" value="conversational">Conversational</SelectItem>
+                        ]}
+                        {setting.setting_key === 'emoji_usage' && [
+                          <SelectItem key="disabled" value="disabled">Disabled</SelectItem>,
+                          <SelectItem key="minimal" value="minimal">Minimal</SelectItem>,
+                          <SelectItem key="moderate" value="moderate">Moderate</SelectItem>,
+                          <SelectItem key="frequent" value="frequent">Frequent</SelectItem>
+                        ]}
+                        {setting.setting_key === 'contact_collection_timing' && [
+                          <SelectItem key="immediate" value="immediate">Immediate</SelectItem>,
+                          <SelectItem key="after_2_messages" value="after_2_messages">After 2 Messages</SelectItem>,
+                          <SelectItem key="after_3_messages" value="after_3_messages">After 3 Messages</SelectItem>,
+                          <SelectItem key="after_5_messages" value="after_5_messages">After 5 Messages</SelectItem>,
+                          <SelectItem key="on_trigger" value="on_trigger">On Trigger</SelectItem>
+                        ]}
+                      </SelectContent>
+                    </Select>
                   ) : (
                     <Input
-                      type={setting.setting_key.includes('api_key') ? 'password' : 'text'}
-                      value={setting.setting_value || ''}
-                      onChange={(e) => updateSetting(setting.setting_key, e.target.value)}
+                      type={setting.setting_key.includes('api_key') ? 'password' : setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length' ? 'number' : 'text'}
+                      value={typeof setting.setting_value === 'string' && (setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length') ? setting.setting_value : (typeof setting.setting_value === 'string' ? JSON.parse(setting.setting_value || '""') : setting.setting_value)}
+                      onChange={(e) => {
+                        if (setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length') {
+                          updateSetting(setting.setting_key, parseInt(e.target.value) || 0);
+                        } else {
+                          updateSetting(setting.setting_key, JSON.stringify(e.target.value));
+                        }
+                      }}
                       placeholder={`Enter ${setting.setting_key.replace(/_/g, ' ')}`}
                     />
                   )}
