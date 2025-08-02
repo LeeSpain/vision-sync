@@ -199,6 +199,9 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   const sendMessage = async (content: string = inputMessage) => {
     if (!content.trim()) return;
 
+    // Emit event to prevent page scrolling during chat
+    window.dispatchEvent(new CustomEvent('ai-chat-message-sent'));
+
     const userMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
       type: 'user',
@@ -300,9 +303,11 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     if (isListening) {
       recognition.current.stop();
       setIsListening(false);
+      window.dispatchEvent(new CustomEvent('ai-chat-end'));
     } else {
       recognition.current.start();
       setIsListening(true);
+      window.dispatchEvent(new CustomEvent('ai-chat-start'));
     }
   };
 
@@ -413,7 +418,10 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                       key={index}
                       variant="outline"
                       size="sm"
-                      onClick={() => sendMessage(action)}
+                      onClick={() => {
+                        window.dispatchEvent(new CustomEvent('ai-chat-start'));
+                        sendMessage(action);
+                      }}
                       className="text-xs bg-white hover:bg-gray-50 border-gray-200 text-gray-700 h-8"
                     >
                       {action}
