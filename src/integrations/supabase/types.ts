@@ -72,6 +72,7 @@ export type Database = {
           content: Json | null
           created_at: string
           description: string | null
+          featured: boolean
           features: Json | null
           gallery_images: string[] | null
           hero_image_url: string | null
@@ -98,6 +99,7 @@ export type Database = {
           content?: Json | null
           created_at?: string
           description?: string | null
+          featured?: boolean
           features?: Json | null
           gallery_images?: string[] | null
           hero_image_url?: string | null
@@ -124,6 +126,7 @@ export type Database = {
           content?: Json | null
           created_at?: string
           description?: string | null
+          featured?: boolean
           features?: Json | null
           gallery_images?: string[] | null
           hero_image_url?: string | null

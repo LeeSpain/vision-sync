@@ -27,6 +27,7 @@ export interface Project {
   subscription_price: number | null;
   subscription_period: string | null;
   billing_type: string;
+  featured: boolean;
 }
 
 export interface CreateProjectData {
@@ -50,6 +51,7 @@ export interface CreateProjectData {
   subscription_price?: number;
   subscription_period?: string;
   billing_type?: string;
+  featured?: boolean;
 }
 
 export const projectManager = {

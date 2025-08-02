@@ -40,8 +40,9 @@ const Index = () => {
     try {
       setLoading(true);
       
-      // Load featured projects
-      const featured = await projectManager.getFeaturedProjects();
+      // Load featured projects (projects marked as featured)
+      const allProjects = await projectManager.getPublicProjects();
+      const featured = allProjects.filter(p => p.featured);
       setFeaturedProjects(featured.slice(0, 3)); // Limit to 3 for featured
       
       // Load projects by category
