@@ -1,18 +1,28 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import TemplateCard from '@/components/TemplateCard';
+import { TemplateCardAdapter } from '@/components/TemplateCardAdapter';
+import { AppTemplate } from '@/utils/appTemplates';
 import TemplateDetailModal from '@/components/TemplateDetailModal';
-import TemplateCategoryFilter from '@/components/TemplateCategoryFilter';
+import TemplateCategoryFilterAdapter from '@/components/TemplateCategoryFilterAdapter';
 import TemplateInquiryForm from '@/components/TemplateInquiryForm';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { appTemplates, getTemplatesByCategory, getAllCategories, TemplateCategory, AppTemplate } from '@/utils/appTemplates';
+import { useTemplates, Template } from '@/hooks/useTemplates';
 import { Package, Star, Rocket, Sparkles, ArrowLeft, CheckCircle, TrendingUp, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Templates = () => {
+  const { 
+    templates, 
+    loading, 
+    error, 
+    getTemplatesByCategory, 
+    getAllCategories, 
+    getTemplateCounts 
+  } = useTemplates();
+  
   // Template state
-  const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | 'all'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
   const [showTemplateDetail, setShowTemplateDetail] = useState(false);
   const [showTemplateInquiry, setShowTemplateInquiry] = useState(false);
@@ -20,19 +30,9 @@ const Templates = () => {
   // Template handlers
   const getFilteredTemplates = () => {
     if (selectedCategory === 'all') {
-      return appTemplates;
+      return templates;
     }
     return getTemplatesByCategory(selectedCategory);
-  };
-
-  const getTemplateCounts = () => {
-    const counts: Partial<Record<TemplateCategory | 'all', number>> = {
-      all: appTemplates.length
-    };
-    getAllCategories().forEach(category => {
-      counts[category] = getTemplatesByCategory(category).length;
-    });
-    return counts;
   };
 
   const handleTemplateLearnMore = (template: AppTemplate) => {
@@ -44,6 +44,36 @@ const Templates = () => {
     setSelectedTemplate(template);
     setShowTemplateInquiry(true);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-royal-purple mx-auto mb-4"></div>
+            <p className="text-cool-gray">Loading templates...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <p className="text-coral-orange mb-4">{error}</p>
+            <p className="text-cool-gray">Please try again later.</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -105,11 +135,11 @@ const Templates = () => {
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                <div className="text-4xl font-bold text-white mb-2">9</div>
+                <div className="text-4xl font-bold text-white mb-2">{templates.length}</div>
                 <div className="text-white/80 font-medium">App Templates</div>
               </div>
               <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                <div className="text-4xl font-bold text-white mb-2">3</div>
+                <div className="text-4xl font-bold text-white mb-2">{getAllCategories().length}</div>
                 <div className="text-white/80 font-medium">Industry Categories</div>
               </div>
               <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
@@ -126,10 +156,11 @@ const Templates = () => {
         <div className="max-w-7xl mx-auto">
           {/* Category Filter */}
           <div className="mb-12">
-            <TemplateCategoryFilter
+            <TemplateCategoryFilterAdapter
               selectedCategory={selectedCategory}
               onCategoryChange={setSelectedCategory}
               templateCounts={getTemplateCounts()}
+              availableCategories={getAllCategories()}
             />
           </div>
 
@@ -141,7 +172,7 @@ const Templates = () => {
                 className="animate-slide-up"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <TemplateCard
+                <TemplateCardAdapter
                   template={template}
                   onLearnMore={handleTemplateLearnMore}
                   onRequestTemplate={handleTemplateRequest}

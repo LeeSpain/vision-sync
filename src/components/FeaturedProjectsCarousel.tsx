@@ -89,7 +89,7 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
       if (project.billing_type === 'deposit-subscription' && (project as any).deposit_amount && project.subscription_price) {
         return `$${(project as any).deposit_amount} + $${project.subscription_price}/mo`;
       }
-      return generatePricing(project.category); // Fallback for projects without pricing
+      return 'Price on request'; // Minimal fallback for projects without pricing
     };
 
     const getActions = () => {
@@ -124,7 +124,7 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
           return "Deadline passed";
         }
       }
-      return generateTimeLeft(); // Fallback
+      return null; // No deadline set
     };
     
     return {
@@ -136,12 +136,12 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
       category: project.category,
       route: project.route,
       pricing: getPricing(),
-      roi: project.expected_roi ? `${project.expected_roi}%` : generateROI(),
-      fundingProgress: project.funding_progress || Math.floor(Math.random() * 40) + 45,
-      investorsViewing: project.investor_count || Math.floor(Math.random() * 50) + 15,
+      roi: project.expected_roi ? `${project.expected_roi}%` : 'TBD',
+      fundingProgress: project.funding_progress || 0,
+      investorsViewing: project.investor_count || 0,
       timeLeft: getTimeLeft(),
-      isHot: project.funding_progress ? project.funding_progress > 70 : Math.random() > 0.6,
-      limitedSpots: Math.floor(Math.random() * 5) + 2,
+      isHot: project.funding_progress ? project.funding_progress > 70 : false,
+      limitedSpots: null,
       socialProof: project.social_proof,
       actions: getActions()
     };

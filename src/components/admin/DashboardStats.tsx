@@ -187,19 +187,19 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
                 <div className="flex justify-between text-xs">
                   <span className="text-cool-gray">Investment:</span>
                   <span className="font-medium text-royal-purple">
-                    {formatPrice(stats.projectStats.revenueByCategory?.Investment || 0)}
+                    {formatPrice(stats.projectStats.revenueByBilling?.investment || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-cool-gray">For Sale:</span>
+                  <span className="text-cool-gray">One-time:</span>
                   <span className="font-medium text-emerald-green">
-                    {formatPrice(stats.projectStats.revenueByCategory?.['For Sale'] || 0)}
+                    {formatPrice(stats.projectStats.revenueByBilling?.['one-time'] || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-cool-gray">Subscription:</span>
                   <span className="font-medium text-sky-blue">
-                    {formatPrice(stats.projectStats.subscriptionRevenue || 0)}
+                    {formatPrice(stats.projectStats.revenueByBilling?.subscription || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">

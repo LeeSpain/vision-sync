@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { appTemplates, templateCategories, getTemplatesByCategory, getPopularTemplates } from '@/utils/appTemplates';
+import { useTemplates } from '@/hooks/useTemplates';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { Link } from 'react-router-dom';
 import { 
@@ -21,12 +21,26 @@ import { useState, useEffect } from 'react';
 
 const EnhancedTemplatesShowcase = () => {
   const { formatPrice } = useCurrency();
+  const { templates, getPopularTemplates, getAllCategories, loading } = useTemplates();
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
   const [animationPhase, setAnimationPhase] = useState(0);
   
   const popularTemplates = getPopularTemplates();
-  const totalTemplates = appTemplates.length;
-  const categories = Object.entries(templateCategories);
+  const totalTemplates = templates.length;
+  const categories = getAllCategories();
+
+  if (loading) {
+    return (
+      <div className="mb-20">
+        <div className="bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-emerald-green/5 rounded-3xl p-8 md:p-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-royal-purple mx-auto mb-4"></div>
+            <p className="text-cool-gray">Loading templates...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   // Animated statistics
   useEffect(() => {
@@ -105,7 +119,6 @@ const EnhancedTemplatesShowcase = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {popularTemplates.slice(0, 2).map((template, index) => {
-                const IconComponent = template.icon;
                 const isHovered = hoveredTemplate === template.id;
                 
                 return (
@@ -124,7 +137,7 @@ const EnhancedTemplatesShowcase = () => {
                     <CardContent className="p-6 relative">
                       <div className="flex items-start gap-4">
                         <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center flex-shrink-0 shadow-glow">
-                          <IconComponent className="h-8 w-8 text-white" />
+                          <Package className="h-8 w-8 text-white" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
@@ -137,7 +150,7 @@ const EnhancedTemplatesShowcase = () => {
                             </Badge>
                           </div>
                           <p className="text-cool-gray text-sm mb-3 line-clamp-2">
-                            {template.overview}
+                            {template.description}
                           </p>
                           <div className="flex items-center justify-between">
                             <div className="text-sm">
@@ -146,7 +159,7 @@ const EnhancedTemplatesShowcase = () => {
                               </span>
                             </div>
                             <div className="text-xs text-cool-gray">
-                              {template.idealFor.length} Industries
+                              {template.category}
                             </div>
                           </div>
                         </div>
@@ -164,25 +177,24 @@ const EnhancedTemplatesShowcase = () => {
               🎯 Industry Categories
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {categories.map(([key, category], index) => {
-                const IconComponent = category.icon;
-                const templateCount = getTemplatesByCategory(key as any).length;
+              {categories.slice(0, 3).map((category, index) => {
+                const templateCount = templates.filter(t => t.category === category).length;
                 
                 return (
                   <Card 
-                    key={key}
+                    key={category}
                     className="group bg-white/70 backdrop-blur-sm border-0 hover:shadow-card transition-all duration-300 hover:scale-105 animate-slide-up"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <CardContent className="p-6 text-center">
                       <div className="w-16 h-16 bg-gradient-to-br from-royal-purple to-electric-blue rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform duration-300">
-                        <IconComponent className="h-8 w-8 text-white" />
+                        <Package className="h-8 w-8 text-white" />
                       </div>
                       <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2 group-hover:text-royal-purple transition-colors">
-                        {category.label}
+                        {category}
                       </h4>
                       <p className="text-cool-gray text-sm mb-3">
-                        {category.description}
+                        Professional templates for {category.toLowerCase()}
                       </p>
                       <Badge variant="outline" className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
                         {templateCount} Templates

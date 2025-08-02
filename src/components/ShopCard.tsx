@@ -164,21 +164,26 @@ const ShopCard: React.FC<ShopCardProps> = ({
             </div>
           )}
           
-          {/* Payment Options Hint */}
-          <div className="flex flex-wrap gap-1 text-xs">
-            <span className="bg-emerald-green/10 text-emerald-green px-2 py-0.5 rounded-full">
-              One-time
-            </span>
-            <span className="bg-royal-purple/10 text-royal-purple px-2 py-0.5 rounded-full">
-              Monthly
-            </span>
-            <span className="bg-coral-orange/10 text-coral-orange px-2 py-0.5 rounded-full">
-              Deposit+Monthly
-            </span>
-            <span className="bg-midnight-navy/10 text-midnight-navy px-2 py-0.5 rounded-full">
-              Flexible
-            </span>
-          </div>
+          {/* Payment Options Based on Available Data */}
+          {(price || subscription_price || deposit_amount) && (
+            <div className="flex flex-wrap gap-1 text-xs">
+              {price && (
+                <span className="bg-emerald-green/10 text-emerald-green px-2 py-0.5 rounded-full">
+                  One-time
+                </span>
+              )}
+              {billing_type === 'subscription' && subscription_price && (
+                <span className="bg-royal-purple/10 text-royal-purple px-2 py-0.5 rounded-full">
+                  Monthly
+                </span>
+              )}
+              {billing_type === 'deposit-subscription' && deposit_amount && subscription_price && (
+                <span className="bg-coral-orange/10 text-coral-orange px-2 py-0.5 rounded-full">
+                  Deposit+Monthly
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* CTA Button */}

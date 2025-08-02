@@ -217,10 +217,11 @@ export const projectManager = {
       byStatus: {} as Record<string, number>,
       byCategory: {} as Record<string, number>,
       revenueByCategory: {} as Record<string, number>,
+      revenueByBilling: {} as Record<string, number>,
       subscriptionRevenue: data?.reduce((sum, p) => sum + (p.subscription_price || 0), 0) || 0,
     };
 
-    // Count by status and category, calculate revenue by category
+    // Count by status and category, calculate revenue by category and billing type
     data?.forEach(project => {
       stats.byStatus[project.status] = (stats.byStatus[project.status] || 0) + 1;
       stats.byCategory[project.category] = (stats.byCategory[project.category] || 0) + 1;
@@ -228,6 +229,16 @@ export const projectManager = {
       // Calculate revenue by category
       const projectRevenue = (project.investment_amount || 0) + (project.price || 0) + (project.subscription_price || 0);
       stats.revenueByCategory[project.category] = (stats.revenueByCategory[project.category] || 0) + projectRevenue;
+      
+      // Calculate revenue by billing type
+      const billingType = project.billing_type || 'investment';
+      if (billingType === 'investment' && project.investment_amount) {
+        stats.revenueByBilling[billingType] = (stats.revenueByBilling[billingType] || 0) + project.investment_amount;
+      } else if (billingType === 'one-time' && project.price) {
+        stats.revenueByBilling[billingType] = (stats.revenueByBilling[billingType] || 0) + project.price;
+      } else if (billingType === 'subscription' && project.subscription_price) {
+        stats.revenueByBilling[billingType] = (stats.revenueByBilling[billingType] || 0) + project.subscription_price;
+      }
     });
 
     return stats;
