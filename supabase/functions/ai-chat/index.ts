@@ -112,12 +112,15 @@ serve(async (req) => {
     const contactInfo = extractContactInfo(fullHistory);
     const hasContactInfo = contactInfo.email || contactInfo.phone || contactInfo.name;
     
-    // Determine conversation stage based on settings
+    // Determine conversation stage based on settings - AGGRESSIVE CONTACT COLLECTION
     const messageCount = fullHistory.length;
     const contactThreshold = contactCollectionTiming === 'immediate' ? 0 :
-                           contactCollectionTiming === 'after_2_messages' ? 2 :
-                           contactCollectionTiming === 'after_5_messages' ? 5 : 3;
+                           contactCollectionTiming === 'after_2_messages' ? 1 : // Changed from 2 to 1
+                           contactCollectionTiming === 'after_5_messages' ? 3 : 1; // Changed default from 3 to 1
     const needsContactInfo = messageCount >= contactThreshold && !hasContactInfo;
+    
+    // ALWAYS prioritize contact collection if we don't have email
+    const shouldAskForContact = !contactInfo.email && messageCount >= 1;
 
     // Check for escalation triggers
     const hasEscalationTrigger = escalationTriggers.some((trigger: string) => 
@@ -286,12 +289,12 @@ CONTACT INFORMATION COLLECTED:
 🚀 PROACTIVE CONVERSATION STRATEGY:
 1. **IMMEDIATE ENGAGEMENT**: Within first 2 messages, present the three service options
 2. **EARLY QUALIFICATION**: Ask about industry, business size, timeline, and budget range
-3. **CONTACT COLLECTION**: Request contact info after showing relevant solutions (2nd-3rd message)
+3. **AGGRESSIVE CONTACT COLLECTION**: Request contact info in the FIRST or SECOND response
 4. **DECISION GUIDANCE**: Help them choose the best service type based on their needs
 
 CONVERSATION RULES:
 1. Response Length: Keep responses under ${Math.floor(maxResponseLength / 4)} words (${maxResponseLength} tokens max)
-2. **PROACTIVE CONTACT COLLECTION**: ${needsContactInfo ? 'PRIORITY: Ask for contact information (name, email, phone) - present it as necessary for personalized recommendations' : 'Continue qualifying and guiding toward service selection'}
+2. **IMMEDIATE CONTACT PRIORITY**: ${shouldAskForContact ? '🚨 CRITICAL: Ask for name and email address NOW - frame as essential for personalized service' : 'Continue building relationship and guiding toward solutions'}
 3. **SERVICE OPTION GUIDANCE**: Always relate responses back to which of the 3 main service types fits their needs
 4. Project Recommendations: Match projects to user's industry and service type preference
 5. Always include project links when suggesting solutions
@@ -305,13 +308,26 @@ CONVERSATION RULES:
 7. Link format: "Check out [Project Name](https://yoursite.com/project-route)"
 8. **URGENCY & VALUE**: Emphasize limited-time opportunities, exclusive solutions, and competitive advantages
 
-${needsContactInfo ? `
-⚡ CONTACT COLLECTION STRATEGY (HIGH PRIORITY):
-- "To show you the perfect solution for your business, I'll need your contact details"
-- "Let me connect you with our specialist - what's your name and email?"
-- "I can send you a detailed proposal - may I have your contact information?"
-- Frame it as value-add: "personalized recommendations", "exclusive access", "priority consultation"
-- If hesitant: "This helps me match you with solutions that have helped similar businesses succeed"
+${shouldAskForContact ? `
+🚨 IMMEDIATE CONTACT COLLECTION STRATEGY (HIGHEST PRIORITY):
+YOU MUST ASK FOR CONTACT INFORMATION IN THIS RESPONSE. Use these natural approaches:
+
+BUSINESS VALUE APPROACH:
+- "I'd love to send you a personalized quote and demo access - what's your name and email?"
+- "To show you pricing and give you exclusive access, I'll need your contact details"
+- "Let me set up a free consultation for you - what's your name and email address?"
+
+URGENCY APPROACH:
+- "We have a limited-time promotion I can share - what's your email so I can send details?"
+- "I can give you priority access to our beta features - may I have your contact information?"
+- "Our specialist can call you today with a custom solution - what's your name and phone number?"
+
+HELPFUL APPROACH:
+- "I can send you detailed case studies from similar businesses - what's your email?"
+- "Let me share our complete pricing guide with you - what's your contact information?"
+- "I'll send you a personalized recommendation report - what's your name and email?"
+
+MAKE IT FEEL ESSENTIAL, NOT OPTIONAL. Frame contact collection as the natural next step to provide value.
 ` : `
 🎯 DECISION ACCELERATION STRATEGY:
 - Present clear next steps for each service option
