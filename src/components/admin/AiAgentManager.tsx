@@ -678,13 +678,42 @@ const AiAgentManager: React.FC = () => {
                       value={typeof setting.setting_value === 'string' ? setting.setting_value : JSON.stringify(setting.setting_value, null, 2)}
                       onChange={(e) => {
                         try {
-                          const parsed = JSON.parse(e.target.value);
+                          // Clean the input by removing trailing commas and fixing common JSON issues
+                          let cleanValue = e.target.value.trim();
+                          
+                          // Remove trailing commas before closing brackets
+                          cleanValue = cleanValue.replace(/,(\s*[\]}])/g, '$1');
+                          
+                          const parsed = JSON.parse(cleanValue);
                           updateSetting(setting.setting_key, parsed);
-                        } catch {
-                          updateSetting(setting.setting_key, e.target.value);
+                        } catch (error) {
+                          // If JSON parsing fails, try to fix common issues
+                          try {
+                            let fixedValue = e.target.value.trim();
+                            
+                            // Remove trailing commas
+                            fixedValue = fixedValue.replace(/,(\s*[\]}])/g, '$1');
+                            
+                            // Add missing quotes around strings if needed
+                            if (setting.setting_key === 'quick_actions' && !fixedValue.startsWith('[')) {
+                              // If it's not already an array, try to make it one
+                              const lines = fixedValue.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('[') && !line.startsWith(']'));
+                              if (lines.length > 0) {
+                                const quotedLines = lines.map(line => `"${line.replace(/"/g, '\\"')}"`);
+                                fixedValue = `[${quotedLines.join(',\n')}]`;
+                              }
+                            }
+                            
+                            const parsed = JSON.parse(fixedValue);
+                            updateSetting(setting.setting_key, parsed);
+                          } catch {
+                            // If all else fails, save as string but show error
+                            console.error('Invalid JSON format for', setting.setting_key);
+                            updateSetting(setting.setting_key, e.target.value);
+                          }
                         }
                       }}
-                      placeholder={`Enter ${setting.setting_key.replace(/_/g, ' ')} as JSON array`}
+                      placeholder={`Enter ${setting.setting_key.replace(/_/g, ' ')} as JSON array (e.g., ["Action 1", "Action 2"])`}
                       rows={4}
                     />
                   ) : setting.setting_key === 'welcome_message' ? (

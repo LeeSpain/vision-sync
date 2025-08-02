@@ -105,12 +105,28 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             parsedQuickActions = settingsMap.quick_actions;
           } else if (typeof settingsMap.quick_actions === 'string') {
             try {
-              const parsed = JSON.parse(settingsMap.quick_actions);
+              // Clean the JSON string before parsing
+              let cleanJson = settingsMap.quick_actions.trim();
+              
+              // Remove trailing commas before closing brackets
+              cleanJson = cleanJson.replace(/,(\s*[\]}])/g, '$1');
+              
+              const parsed = JSON.parse(cleanJson);
               if (Array.isArray(parsed)) {
                 parsedQuickActions = parsed.filter(action => action && action.trim()); // Remove empty actions
               }
             } catch (e) {
               console.error('Error parsing quick_actions:', e);
+              // Try alternative parsing for malformed JSON
+              try {
+                // Extract text between quotes as fallback
+                const matches = settingsMap.quick_actions.match(/"([^"]+)"/g);
+                if (matches) {
+                  parsedQuickActions = matches.map(match => match.replace(/"/g, ''));
+                }
+              } catch (fallbackError) {
+                console.error('Fallback parsing also failed:', fallbackError);
+              }
             }
           }
         }
