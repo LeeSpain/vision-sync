@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { NavLink, useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { 
   LayoutDashboard, 
   FolderOpen, 
@@ -55,6 +55,7 @@ export function AdminSidebar() {
   const { state } = useSidebar()
   const collapsed = state === "collapsed"
   const location = useLocation()
+  const navigate = useNavigate()
   const hash = location.hash || "#overview"
   
   const [projectStats, setProjectStats] = useState({
@@ -123,6 +124,11 @@ export function AdminSidebar() {
   };
 
   const isActive = (path: string) => hash === path
+  
+  const handleNavigation = (section: string) => {
+    const newHash = section.replace('#', '');
+    window.location.hash = newHash;
+  }
 
   return (
     <Sidebar
@@ -159,18 +165,14 @@ export function AdminSidebar() {
             <SidebarMenu>
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <a 
-                    href={item.url}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.hash = item.url.replace('#', '');
-                    }}
-                    className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                  <button 
+                    onClick={() => handleNavigation(item.url)}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                       isActive(item.url) 
                         ? "bg-royal-purple text-white" 
                         : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
                     }`}
-                  >
+                    >
                     <div className="flex items-center space-x-3">
                       <item.icon className="h-5 w-5" />
                       {!collapsed && <span>{item.title}</span>}
@@ -190,7 +192,7 @@ export function AdminSidebar() {
                         {conversationStats.totalConversations}
                       </Badge>
                     )}
-                  </a>
+                  </button>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -217,15 +219,15 @@ export function AdminSidebar() {
                       <item.icon className="h-5 w-5" />
                       {!collapsed && <span>{item.title}</span>}
                     </a>
-                  ) : (
-                    <a 
-                      href={item.url}
-                      className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </a>
-                  )}
+                   ) : (
+                     <button 
+                       onClick={() => handleNavigation(item.url)}
+                       className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
+                     >
+                       <item.icon className="h-5 w-5" />
+                       {!collapsed && <span>{item.title}</span>}
+                     </button>
+                   )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -236,13 +238,9 @@ export function AdminSidebar() {
         <div className="mt-auto p-4 border-t border-slate-white/10">
           <SidebarMenu>
             <SidebarMenuItem>
-                <a 
-                  href="#settings"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location.hash = 'settings';
-                  }}
-                  className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                <button 
+                  onClick={() => handleNavigation('#settings')}
+                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
                     isActive("#settings") 
                       ? "bg-royal-purple text-white" 
                       : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
@@ -250,7 +248,7 @@ export function AdminSidebar() {
                 >
                   <Settings className="h-5 w-5" />
                   {!collapsed && <span>Settings</span>}
-                </a>
+                </button>
             </SidebarMenuItem>
           </SidebarMenu>
         </div>
