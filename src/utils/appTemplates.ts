@@ -20,6 +20,13 @@ export interface AppTemplate {
   icon: LucideIcon;
   keyFeatures: string[];
   personalizationOptions: string[];
+  // New pricing structure
+  sale_price?: number;
+  customization_price?: number;
+  foundation_features?: string[];
+  core_industry_features?: string[];
+  premium_features?: {name: string, price: number}[];
+  // Legacy pricing (for backward compatibility)
   pricing: {
     base: number;
     customization: number;
