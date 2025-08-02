@@ -58,6 +58,9 @@ export function AdminSidebar() {
   const navigate = useNavigate()
   const hash = location.hash || "#overview"
   
+  // Ensure we're on the admin page for hash navigation to work
+  const isOnAdminPage = location.pathname === '/admin'
+  
   const [projectStats, setProjectStats] = useState({
     totalProjects: 0,
     activeProjects: 0
@@ -127,11 +130,11 @@ export function AdminSidebar() {
   
   const handleNavigation = (section: string) => {
     const newHash = section.replace('#', '');
-    // Ensure we stay on the admin route and only change the hash
-    if (window.location.pathname !== '/admin') {
-      window.location.href = `/admin#${newHash}`;
+    // Use React Router navigate to avoid page redirects
+    if (isOnAdminPage) {
+      navigate(`/admin#${newHash}`, { replace: true });
     } else {
-      window.location.hash = newHash;
+      navigate(`/admin#${newHash}`);
     }
   }
 
