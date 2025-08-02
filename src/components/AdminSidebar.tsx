@@ -161,6 +161,10 @@ export function AdminSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <a 
                     href={item.url}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = item.url.replace('#', '');
+                    }}
                     className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                       isActive(item.url) 
                         ? "bg-royal-purple text-white" 
@@ -234,6 +238,10 @@ export function AdminSidebar() {
             <SidebarMenuItem>
                 <a 
                   href="#settings"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.hash = 'settings';
+                  }}
                   className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
                     isActive("#settings") 
                       ? "bg-royal-purple text-white" 
