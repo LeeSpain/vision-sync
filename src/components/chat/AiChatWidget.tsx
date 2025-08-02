@@ -44,7 +44,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     const greeting: ChatMessage = {
       id: `msg_${Date.now()}`,
       type: 'ai',
-      content: "Hello! I'm here to help you with any questions about our services. How can I assist you today?",
+      content: "👋 Welcome! I'm your AI assistant, ready to help you discover our services and answer any questions. What can I help you with today?",
       timestamp: new Date()
     };
     setMessages([greeting]);
@@ -200,34 +200,60 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onClick={onToggleMinimize}
-          size="lg"
-          className="rounded-full h-14 w-14 shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90"
-        >
-          <MessageSquare className="h-6 w-6" />
-        </Button>
+      <div className="fixed top-6 right-6 z-50 animate-fade-in">
+        <div className="relative">
+          <Button
+            onClick={onToggleMinimize}
+            size="lg"
+            className="rounded-full h-16 w-16 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border-2 border-white/20 hover-scale group"
+          >
+            <MessageSquare className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" />
+          </Button>
+          
+          {/* Welcoming pulse indicator */}
+          <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+          
+          {/* Floating tooltip */}
+          <div className="absolute -left-2 top-1/2 -translate-y-1/2 -translate-x-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="bg-white text-gray-800 px-3 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap border">
+              Chat with our AI Assistant
+              <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-white"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 h-[500px] flex flex-col">
-      <Card className="flex-1 flex flex-col shadow-xl">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="/placeholder.svg" />
-              <AvatarFallback>AI</AvatarFallback>
-            </Avatar>
+    <div className="fixed top-6 right-6 z-50 w-96 h-[600px] flex flex-col animate-scale-in">
+      <Card className="flex-1 flex flex-col shadow-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
+          <CardTitle className="flex items-center gap-3">
+            <div className="relative">
+              <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2">
+                <AvatarImage src="/placeholder.svg" />
+                <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-white font-bold">
+                  🤖
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
             <div>
-              <p className="font-medium">{agentData?.name || 'AI Assistant'}</p>
-              <p className="text-xs text-muted-foreground">Online</p>
+              <p className="font-semibold text-gray-900">{agentData?.name || 'AI Assistant'}</p>
+              <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+                Ready to help
+              </p>
             </div>
           </CardTitle>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={onToggleMinimize}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onToggleMinimize}
+              className="hover:bg-primary/10 rounded-full h-8 w-8 p-0"
+            >
               <Minimize2 className="h-4 w-4" />
             </Button>
           </div>
@@ -236,20 +262,21 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         <CardContent className="flex-1 flex flex-col space-y-4 p-4">
           <ScrollArea className="flex-1 pr-4">
             <div className="space-y-4">
-              {messages.map((message) => (
+              {messages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div
-                    className={`max-w-[80%] rounded-lg px-3 py-2 ${
+                    className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
                       message.type === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                        ? 'bg-gradient-to-br from-primary to-primary/90 text-white rounded-br-md'
+                        : 'bg-white border border-gray-100 text-gray-800 rounded-bl-md'
                     } ${message.isTyping ? 'animate-pulse' : ''}`}
                   >
-                    <p className="text-sm">{message.content}</p>
-                    <p className="text-xs opacity-70 mt-1">
+                    <p className="text-sm leading-relaxed">{message.content}</p>
+                    <p className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/80' : 'text-gray-500'}`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -259,39 +286,44 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             </div>
           </ScrollArea>
 
-          <div className="flex items-center space-x-2">
-            <Input
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              disabled={isLoading}
-              className="flex-1"
-            />
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleVoiceRecognition}
-              disabled={isLoading}
-              className={isListening ? 'bg-red-500 text-white' : ''}
-            >
-              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-            </Button>
-            
-            <Button
-              onClick={() => sendMessage()}
-              disabled={isLoading || !inputMessage.trim()}
-              size="sm"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
+          <div className="border-t border-gray-100 pt-4">
+            <div className="flex items-center space-x-2 mb-3">
+              <Input
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask me anything about our services..."
+                disabled={isLoading}
+                className="flex-1 border-gray-200 focus:border-primary focus:ring-primary/20 rounded-xl"
+              />
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleVoiceRecognition}
+                disabled={isLoading}
+                className={`rounded-xl border-gray-200 hover:border-primary transition-all duration-200 ${
+                  isListening ? 'bg-red-500 border-red-500 text-white animate-pulse' : 'hover:bg-primary/5'
+                }`}
+              >
+                {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </Button>
+              
+              <Button
+                onClick={() => sendMessage()}
+                disabled={isLoading || !inputMessage.trim()}
+                size="sm"
+                className="rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 transition-all duration-200 hover-scale"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
 
-          <div className="flex justify-center">
-            <Badge variant="outline" className="text-xs">
-              Powered by AI • Secure & Private
-            </Badge>
+            <div className="flex justify-center">
+              <Badge variant="outline" className="text-xs border-primary/20 text-primary/80 bg-primary/5">
+                🔒 Secure & Private • Powered by AI
+              </Badge>
+            </div>
           </div>
         </CardContent>
       </Card>
