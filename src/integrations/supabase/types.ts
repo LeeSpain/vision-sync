@@ -396,6 +396,7 @@ export type Database = {
           installment_plans: Json | null
           investment_amount: number | null
           investment_deadline: string | null
+          investment_received: number | null
           investor_count: number | null
           key_features: Json | null
           leads_count: number
@@ -435,6 +436,7 @@ export type Database = {
           installment_plans?: Json | null
           investment_amount?: number | null
           investment_deadline?: string | null
+          investment_received?: number | null
           investor_count?: number | null
           key_features?: Json | null
           leads_count?: number
@@ -474,6 +476,7 @@ export type Database = {
           installment_plans?: Json | null
           investment_amount?: number | null
           investment_deadline?: string | null
+          investment_received?: number | null
           investor_count?: number | null
           key_features?: Json | null
           leads_count?: number

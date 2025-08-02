@@ -260,6 +260,8 @@ const DynamicProjectPage = () => {
               market: purchaseInfo.market_size || 'Growing market',
               timeline: purchaseInfo.timeline || 'Contact for timeline',
               roi: purchaseInfo.projected_roi || 'Significant potential',
+              investmentReceived: (project as any).investment_received || 0,
+              investmentAmount: project.investment_amount || 0,
             }}
             onRequestDetails={handleInvestmentInfo}
           />

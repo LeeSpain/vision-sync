@@ -12,6 +12,8 @@ interface InvestmentSectionProps {
     timeline?: string;
     roi?: string;
     market?: string;
+    investmentReceived?: number;
+    investmentAmount?: number;
   };
   onRequestDetails: () => void;
 }
@@ -22,6 +24,11 @@ const InvestmentSection = ({
   metrics,
   onRequestDetails 
 }: InvestmentSectionProps) => {
+  // Calculate funding progress percentage
+  const fundingProgress = metrics.investmentAmount && metrics.investmentReceived 
+    ? Math.round((metrics.investmentReceived / metrics.investmentAmount) * 100)
+    : 0;
+
   const investmentMetrics = [
     { icon: DollarSign, label: 'Seeking', value: metrics.seeking },
     ...(metrics.valuation ? [{ icon: TrendingUp, label: 'Valuation', value: metrics.valuation }] : []),
@@ -29,6 +36,7 @@ const InvestmentSection = ({
     ...(metrics.timeline ? [{ icon: Calendar, label: 'Timeline', value: metrics.timeline }] : []),
     ...(metrics.roi ? [{ icon: TrendingUp, label: 'Expected ROI', value: metrics.roi }] : []),
     ...(metrics.market ? [{ icon: Target, label: 'Market Size', value: metrics.market }] : []),
+    { icon: TrendingUp, label: 'Funding Progress', value: `${fundingProgress}%` },
   ];
 
   return (

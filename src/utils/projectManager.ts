@@ -34,6 +34,7 @@ export interface Project {
   expected_roi: number | null;
   investment_deadline: string | null;
   investor_count: number;
+  investment_received?: number;
   social_proof: string | null;
 }
 
@@ -64,6 +65,7 @@ export interface CreateProjectData {
   expected_roi?: number;
   investment_deadline?: string;
   investor_count?: number;
+  investment_received?: number;
   social_proof?: string;
 }
 

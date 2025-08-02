@@ -50,11 +50,12 @@ export function ProjectManager() {
     use_cases: [] as any[],
     purchase_info: {} as any,
     content: {} as any,
-    funding_progress: '',
-    expected_roi: '',
-    investment_deadline: '',
-    investor_count: '',
-    social_proof: ''
+        funding_progress: '',
+        expected_roi: '',
+        investment_deadline: '',
+        investor_count: '',
+        investment_received: '',
+        social_proof: ''
   });
 
   // Load projects on component mount
@@ -87,6 +88,7 @@ export function ProjectManager() {
         expected_roi: newProject.expected_roi ? parseFloat(newProject.expected_roi) : undefined,
         investment_deadline: newProject.investment_deadline || undefined,
         investor_count: newProject.investor_count ? parseInt(newProject.investor_count) : undefined,
+        investment_received: newProject.investment_received ? parseFloat(newProject.investment_received) : undefined,
         social_proof: newProject.social_proof || undefined,
       };
       
@@ -125,6 +127,7 @@ export function ProjectManager() {
         expected_roi: '',
         investment_deadline: '',
         investor_count: '',
+        investment_received: '',
         social_proof: ''
       });
       setIsAddDialogOpen(false);
@@ -169,6 +172,7 @@ export function ProjectManager() {
       expected_roi: project.expected_roi?.toString() || '',
       investment_deadline: project.investment_deadline || '',
       investor_count: project.investor_count?.toString() || '',
+      investment_received: (project as any).investment_received?.toString() || '',
       social_proof: project.social_proof || ''
     });
   };
@@ -215,6 +219,7 @@ export function ProjectManager() {
         funding_progress: newProject.funding_progress ? parseFloat(newProject.funding_progress) : undefined,
         expected_roi: newProject.expected_roi ? parseFloat(newProject.expected_roi) : undefined,
         investor_count: newProject.investor_count ? parseInt(newProject.investor_count) : undefined,
+        investment_received: newProject.investment_received ? parseFloat(newProject.investment_received) : undefined,
         
         // Handle date fields
         investment_deadline: newProject.investment_deadline || undefined,
@@ -269,6 +274,7 @@ export function ProjectManager() {
         expected_roi: '',
         investment_deadline: '',
         investor_count: '',
+        investment_received: '',
         social_proof: ''
       });
       toast.success('Project updated successfully!');
@@ -451,15 +457,26 @@ export function ProjectManager() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Investor Count</label>
+              <label className="block text-sm font-medium mb-2">Investment Received</label>
               <Input
                 type="number"
-                value={newProject.investor_count}
-                onChange={(e) => setNewProject({ ...newProject, investor_count: e.target.value })}
+                value={newProject.investment_received}
+                onChange={(e) => setNewProject({ ...newProject, investment_received: e.target.value })}
                 placeholder="0"
               />
-              <p className="text-xs text-muted-foreground mt-1">Number of current investors</p>
+              <p className="text-xs text-muted-foreground mt-1">Actual amount already raised</p>
             </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-2">Investor Count</label>
+            <Input
+              type="number"
+              value={newProject.investor_count}
+              onChange={(e) => setNewProject({ ...newProject, investor_count: e.target.value })}
+              placeholder="0"
+            />
+            <p className="text-xs text-muted-foreground mt-1">Number of current investors</p>
           </div>
           
           <div>
@@ -628,6 +645,7 @@ export function ProjectManager() {
             expected_roi: '',
             investment_deadline: '',
             investor_count: '',
+            investment_received: '',
             social_proof: ''
           });
         }}>
