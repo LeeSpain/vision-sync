@@ -17,6 +17,7 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 
 const Index = () => {
   const { formatPrice } = useCurrency();
+  const [isChatMinimized, setIsChatMinimized] = useState(true);
   // Clean build - template components moved to /templates page
   const [contactForm, setContactForm] = useState({
     name: '',

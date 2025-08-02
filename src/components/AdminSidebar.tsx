@@ -12,7 +12,8 @@ import {
   LogOut,
   Mail,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  Brain
 } from "lucide-react"
 
 import {
@@ -37,6 +38,7 @@ const mainItems = [
   { title: "Messages", url: "#messages", icon: Mail },
   { title: "Projects", url: "#projects", icon: FolderOpen },
   { title: "Leads", url: "#leads", icon: Users },
+  { title: "AI Agent", url: "#ai-agent", icon: Brain },
   { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
 ]

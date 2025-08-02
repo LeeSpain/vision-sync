@@ -9,6 +9,7 @@ import { RecentActivity } from '@/components/admin/RecentActivity';
 import { QuickActions } from '@/components/admin/QuickActions';
 import { LeadSourceChart } from '@/components/admin/LeadSourceChart';
 import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
+import AiAgentManager from '@/components/admin/AiAgentManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -204,6 +205,9 @@ const Admin = () => {
 
       case 'analytics':
         return <RealTimeAnalytics />;
+
+      case 'ai-agent':
+        return <AiAgentManager />;
 
       case 'settings':
         return (

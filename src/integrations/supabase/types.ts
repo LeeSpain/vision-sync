@@ -14,6 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_agent_settings: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ai_agents: {
+        Row: {
+          avatar_config: Json | null
+          business_knowledge: Json | null
+          conversation_rules: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          personality: string | null
+          updated_at: string
+          voice_id: string | null
+        }
+        Insert: {
+          avatar_config?: Json | null
+          business_knowledge?: Json | null
+          conversation_rules?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          personality?: string | null
+          updated_at?: string
+          voice_id?: string | null
+        }
+        Update: {
+          avatar_config?: Json | null
+          business_knowledge?: Json | null
+          conversation_rules?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          personality?: string | null
+          updated_at?: string
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
+      ai_conversations: {
+        Row: {
+          agent_id: string | null
+          conversation_data: Json | null
+          conversion_score: number | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          lead_id: string | null
+          lead_qualified: boolean | null
+          session_id: string
+          started_at: string
+          status: string | null
+          updated_at: string
+          visitor_id: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          conversation_data?: Json | null
+          conversion_score?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          lead_id?: string | null
+          lead_qualified?: boolean | null
+          session_id: string
+          started_at?: string
+          status?: string | null
+          updated_at?: string
+          visitor_id?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          conversation_data?: Json | null
+          conversion_score?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          lead_id?: string | null
+          lead_qualified?: boolean | null
+          session_id?: string
+          started_at?: string
+          status?: string | null
+          updated_at?: string
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_conversations_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_training_data: {
+        Row: {
+          answer: string
+          category: string
+          context: Json | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          priority: number | null
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          category: string
+          context?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          context?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           company: string | null
