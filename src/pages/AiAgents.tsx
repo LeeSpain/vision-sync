@@ -141,9 +141,14 @@ const AiAgents = () => {
               <Calculator className="mr-2 h-5 w-5" />
               Calculate My Savings
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg"
+              onClick={() => window.location.href = '/admin#ai-agent'}
+            >
               <Play className="mr-2 h-5 w-5" />
-              See AI in Action
+              Admin Panel
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
