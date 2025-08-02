@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { AdminErrorBoundary } from '@/components/AdminErrorBoundary';
 import { AdminLayout } from '@/components/AdminLayout';
 import { ProjectManager } from '@/components/admin/ProjectManager';
 import { ContentManager } from '@/components/admin/ContentManager';
@@ -38,6 +39,16 @@ const Admin = () => {
       behavior: 'smooth'
     });
   }, [activeSection]);
+
+  // Add error boundary logging
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      console.error('Global error caught:', event.error);
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
 
 
   const handleLogin = (e: React.FormEvent) => {
@@ -275,11 +286,13 @@ const Admin = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="p-6">
-        {renderContent()}
-      </div>
-    </AdminLayout>
+    <AdminErrorBoundary>
+      <AdminLayout>
+        <div className="p-6">
+          {renderContent()}
+        </div>
+      </AdminLayout>
+    </AdminErrorBoundary>
   );
 };
 

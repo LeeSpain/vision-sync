@@ -49,7 +49,6 @@ const mainItems = [
 
 const quickActions = [
   { title: "Add Project", url: "#add-project", icon: Plus },
-  { title: "View Site", url: "/", icon: Eye, external: true },
 ]
 
 export function AdminSidebar() {
@@ -214,25 +213,13 @@ export function AdminSidebar() {
               {quickActions.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    {item.external ? (
-                      <a 
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                      >
-                        <item.icon className="h-5 w-5" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </a>
-                     ) : (
-                       <button 
-                         onClick={() => handleNavigation(item.url)}
-                         className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                       >
-                         <item.icon className="h-5 w-5" />
-                         {!collapsed && <span>{item.title}</span>}
-                       </button>
-                     )}
+                    <button 
+                      onClick={() => handleNavigation(item.url)}
+                      className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
