@@ -385,7 +385,7 @@ const Contact = () => {
 
             {/* AI Assistant Section */}
             <div className="order-1 lg:order-2 lg:sticky lg:top-8">
-              <div className="bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-2xl p-8 text-white shadow-2xl">
+              <div className="bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-2xl p-6 text-white shadow-2xl">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
                     <Sparkles className="h-8 w-8 text-coral-orange" />
@@ -398,9 +398,11 @@ const Contact = () => {
                   </p>
                 </div>
                 
-                {/* AI Chat Widget */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
-                  <AiChatWidget />
+                {/* AI Chat Widget - Always Open */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 h-[500px] flex flex-col">
+                  <div className="flex-1 relative">
+                    <AiChatWidget isMinimized={false} />
+                  </div>
                 </div>
                 
                 <div className="mt-6 text-center">
