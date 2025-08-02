@@ -58,9 +58,10 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
     is_popular: false,
     is_active: true,
     pricing: {
-      oneTime: '',
+      base: '',
+      customization: '',
       monthly: '',
-      setup: ''
+      deposit: ''
     }
   });
   const [keyFeatures, setKeyFeatures] = useState<string[]>([]);
@@ -94,7 +95,42 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
           gallery_images: galleryImages,
           is_popular: formData.is_popular,
           is_active: formData.is_active,
-          pricing: formData.pricing,
+          pricing: {
+            base: parseInt(formData.pricing.base) || 2500,
+            customization: parseInt(formData.pricing.customization) || 500,
+            subscription: {
+              monthly: parseInt(formData.pricing.monthly) || 199,
+              benefits: ['Monthly updates', 'Priority support', 'Feature requests', 'Backup & maintenance']
+            },
+            deposit: {
+              amount: parseInt(formData.pricing.deposit) || Math.floor((parseInt(formData.pricing.base) || 2500) * 0.3),
+              serviceMonthly: Math.floor((parseInt(formData.pricing.monthly) || 199) * 0.75),
+              description: 'Pay deposit + monthly service fee for ongoing management'
+            },
+            installments: {
+              available: true,
+              plans: [
+                {
+                  months: 6,
+                  monthlyAmount: Math.floor(((parseInt(formData.pricing.base) || 2500) / 6) * 1.08),
+                  totalAmount: Math.floor((parseInt(formData.pricing.base) || 2500) * 1.08)
+                },
+                {
+                  months: 12,
+                  monthlyAmount: Math.floor(((parseInt(formData.pricing.base) || 2500) / 12) * 1.15),
+                  totalAmount: Math.floor((parseInt(formData.pricing.base) || 2500) * 1.15)
+                }
+              ]
+            },
+            ownership: {
+              buyOutright: parseInt(formData.pricing.base) || 2500,
+              serviceContract: {
+                deposit: parseInt(formData.pricing.deposit) || Math.floor((parseInt(formData.pricing.base) || 2500) * 0.3),
+                monthly: Math.floor((parseInt(formData.pricing.monthly) || 199) * 0.75),
+                benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Feature additions']
+              }
+            }
+          },
           questionnaire_weight: {},
           ai_generated_content: {},
           template_config: {
@@ -128,7 +164,7 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
       image_url: '',
       is_popular: false,
       is_active: true,
-      pricing: { oneTime: '', monthly: '', setup: '' }
+      pricing: { base: '', customization: '', monthly: '', deposit: '' }
     });
     setKeyFeatures([]);
     setGalleryImages([]);
@@ -470,22 +506,35 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="oneTime">One-time Price ($)</Label>
+              <Label htmlFor="base">Base Price ($)</Label>
               <Input
-                id="oneTime"
+                id="base"
                 type="number"
-                value={formData.pricing.oneTime}
+                value={formData.pricing.base}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
-                  pricing: { ...prev.pricing, oneTime: e.target.value }
+                  pricing: { ...prev.pricing, base: e.target.value }
                 }))}
                 placeholder="2500"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="monthly">Monthly Price ($)</Label>
+              <Label htmlFor="customization">Customization ($)</Label>
+              <Input
+                id="customization"
+                type="number"
+                value={formData.pricing.customization}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  pricing: { ...prev.pricing, customization: e.target.value }
+                }))}
+                placeholder="500"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="monthly">Monthly Subscription ($)</Label>
               <Input
                 id="monthly"
                 type="number"
@@ -494,20 +543,20 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
                   ...prev,
                   pricing: { ...prev.pricing, monthly: e.target.value }
                 }))}
-                placeholder="99"
+                placeholder="199"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="setup">Setup Fee ($)</Label>
+              <Label htmlFor="deposit">Deposit Amount ($)</Label>
               <Input
-                id="setup"
+                id="deposit"
                 type="number"
-                value={formData.pricing.setup}
+                value={formData.pricing.deposit}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
-                  pricing: { ...prev.pricing, setup: e.target.value }
+                  pricing: { ...prev.pricing, deposit: e.target.value }
                 }))}
-                placeholder="500"
+                placeholder="750"
               />
             </div>
           </div>

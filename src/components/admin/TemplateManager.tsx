@@ -10,6 +10,8 @@ import { TemplateCreationModal } from './TemplateCreationModal';
 import { TemplateEditModal } from './TemplateEditModal';
 import { TemplateAnalytics } from './TemplateAnalytics';
 import { TemplatePreviewModal } from './TemplatePreviewModal';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { CurrencySelector } from '@/components/ui/currency-selector';
 
 interface AppTemplate {
   id: string;
@@ -32,6 +34,7 @@ interface AppTemplate {
 }
 
 export function TemplateManager() {
+  const { formatPrice } = useCurrency();
   const [templates, setTemplates] = useState<AppTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -204,6 +207,7 @@ export function TemplateManager() {
           <p className="text-muted-foreground">Manage your app templates and track performance</p>
         </div>
         <div className="flex gap-2">
+          <CurrencySelector />
           <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filter by industry" />
@@ -304,6 +308,15 @@ export function TemplateManager() {
                     +{template.key_features.length - 3} more
                   </Badge>
                 )}
+              </div>
+              <div className="mb-4 p-3 border rounded-lg bg-muted/30">
+                <h4 className="text-sm font-medium mb-2">Pricing Structure</h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>Base: {template.pricing?.base ? formatPrice(template.pricing.base) : 'N/A'}</div>
+                  <div>Customization: {template.pricing?.customization ? formatPrice(template.pricing.customization) : 'N/A'}</div>
+                  <div>Monthly: {template.pricing?.subscription?.monthly ? formatPrice(template.pricing.subscription.monthly) : 'N/A'}</div>
+                  <div>Deposit: {template.pricing?.deposit?.amount ? formatPrice(template.pricing.deposit.amount) : 'N/A'}</div>
+                </div>
               </div>
               <div className="space-y-2">
                 <div className="flex gap-2">

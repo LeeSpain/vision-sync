@@ -7,7 +7,7 @@ import { ContentManager } from '@/components/admin/ContentManager';
 import { MessagesManager } from '@/components/admin/MessagesManager';
 import { ConversationsManager } from '@/components/admin/ConversationsManager';
 import { LeadsManager } from '@/components/admin/LeadsManager';
-import { TemplateManager } from '@/components/admin/TemplateManager';
+import { CurrencyAwareTemplateManager } from '@/components/admin/CurrencyAwareTemplateManager';
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { RecentActivity } from '@/components/admin/RecentActivity';
 import { QuickActions } from '@/components/admin/QuickActions';
@@ -215,7 +215,7 @@ const Admin = () => {
         return <ProjectManager />;
 
       case 'templates':
-        return <TemplateManager />;
+        return <CurrencyAwareTemplateManager />;
 
       case 'leads':
         return <LeadsManager />;

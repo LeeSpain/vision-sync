@@ -44,14 +44,20 @@ export const useTemplates = () => {
 
       // Transform the data to match our interface
       const transformedTemplates: Template[] = (data || []).map(template => {
+        // Use the standardized pricing structure from the database
         let pricing = { base: 5000, customization: 2000 };
         
         if (template.pricing && typeof template.pricing === 'object' && !Array.isArray(template.pricing)) {
           const pricingData = template.pricing as any;
           pricing = {
-            base: pricingData.base || 5000,
+            base: pricingData.base || pricingData.ownership?.buyOutright || 5000,
             customization: pricingData.customization || 2000
           };
+          
+          // Add premium pricing if available
+          if (pricingData.subscription?.monthly) {
+            (pricing as any).premium = pricingData.subscription.monthly;
+          }
         }
 
         return {
