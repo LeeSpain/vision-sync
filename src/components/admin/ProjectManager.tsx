@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Edit, Trash2, Eye, ExternalLink, Loader2, Star } from 'lucide-react';
+import { ImageUpload } from '@/components/ui/image-upload';
 import { Checkbox } from '@/components/ui/checkbox';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { toast } from 'sonner';
@@ -26,6 +27,7 @@ export function ProjectManager() {
     visibility: 'Public',
     description: '',
     route: '',
+    domain_url: '',
     investment_amount: '',
     price: '',
     subscription_price: '',
@@ -80,6 +82,7 @@ export function ProjectManager() {
         visibility: 'Public',
         description: '',
         route: '',
+        domain_url: '',
         investment_amount: '',
         price: '',
         subscription_price: '',
@@ -112,6 +115,7 @@ export function ProjectManager() {
       visibility: project.visibility,
       description: project.description || '',
       route: project.route || '',
+      domain_url: project.domain_url || '',
       investment_amount: project.investment_amount?.toString() || '',
       price: project.price?.toString() || '',
       subscription_price: project.subscription_price?.toString() || '',
@@ -151,6 +155,7 @@ export function ProjectManager() {
           visibility: 'Public',
           description: '',
           route: '',
+          domain_url: '',
           investment_amount: '',
           price: '',
           subscription_price: '',
@@ -207,36 +212,42 @@ export function ProjectManager() {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-2">Route Path</label>
-        <Input
-          value={newProject.route}
-          onChange={(e) => setNewProject({ ...newProject, route: e.target.value })}
-          placeholder="/project-name (auto-generated if empty)"
-        />
-      </div>
-
-      {/* Homepage Display Settings */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Project Thumbnail Image</label>
+          <label className="block text-sm font-medium mb-2">Route Path</label>
           <Input
-            value={newProject.image_url}
-            onChange={(e) => setNewProject({ ...newProject, image_url: e.target.value })}
-            placeholder="https://example.com/image.jpg"
+            value={newProject.route}
+            onChange={(e) => setNewProject({ ...newProject, route: e.target.value })}
+            placeholder="/project-name (auto-generated if empty)"
           />
-          <p className="text-xs text-cool-gray mt-1">Used in project cards on homepage</p>
         </div>
         
         <div>
-          <label className="block text-sm font-medium mb-2">Hero Image URL</label>
+          <label className="block text-sm font-medium mb-2">Domain URL</label>
           <Input
-            value={newProject.hero_image_url}
-            onChange={(e) => setNewProject({ ...newProject, hero_image_url: e.target.value })}
-            placeholder="https://example.com/hero-image.jpg"
+            value={newProject.domain_url}
+            onChange={(e) => setNewProject({ ...newProject, domain_url: e.target.value })}
+            placeholder="https://example.com"
           />
-          <p className="text-xs text-cool-gray mt-1">Used on detailed project pages</p>
+          <p className="text-xs text-muted-foreground mt-1">Live website URL for this project</p>
         </div>
+      </div>
+
+      {/* Image Upload Settings */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ImageUpload
+          currentUrl={newProject.image_url}
+          onImageChange={(url) => setNewProject({ ...newProject, image_url: url })}
+          label="Project Thumbnail"
+          description="Used in project cards on homepage (recommended: 400x300px)"
+        />
+        
+        <ImageUpload
+          currentUrl={newProject.hero_image_url}
+          onImageChange={(url) => setNewProject({ ...newProject, hero_image_url: url })}
+          label="Hero Image"
+          description="Used on detailed project pages (recommended: 1200x600px)"
+        />
       </div>
 
       <div>
@@ -374,6 +385,7 @@ export function ProjectManager() {
             visibility: 'Public',
             description: '',
             route: '',
+            domain_url: '',
             investment_amount: '',
             price: '',
             subscription_price: '',
