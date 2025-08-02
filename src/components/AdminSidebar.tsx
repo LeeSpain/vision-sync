@@ -13,7 +13,8 @@ import {
   Mail,
   TrendingUp,
   DollarSign,
-  Brain
+  Brain,
+  MessageCircle
 } from "lucide-react"
 
 import {
@@ -32,10 +33,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { projectManager } from "@/utils/projectManager"
 import { supabaseLeadManager } from "@/utils/supabaseLeadManager"
+import { supabase } from "@/integrations/supabase/client"
 
 const mainItems = [
   { title: "Dashboard", url: "#overview", icon: LayoutDashboard },
   { title: "Messages", url: "#messages", icon: Mail },
+  { title: "AI Conversations", url: "#conversations", icon: MessageCircle },
   { title: "Projects", url: "#projects", icon: FolderOpen },
   { title: "Leads", url: "#leads", icon: Users },
   { title: "AI Agent", url: "#ai-agent", icon: Brain },
@@ -63,9 +66,14 @@ export function AdminSidebar() {
     totalLeads: 0
   });
 
+  const [conversationStats, setConversationStats] = useState({
+    totalConversations: 0
+  });
+
   useEffect(() => {
     loadProjectStats();
     loadLeadStats();
+    loadConversationStats();
   }, []);
 
   const loadProjectStats = async () => {
@@ -95,6 +103,22 @@ export function AdminSidebar() {
       });
     } catch (error) {
       console.error('Error loading lead stats:', error);
+    }
+  };
+
+  const loadConversationStats = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('ai_conversations')
+        .select('id');
+      
+      if (error) throw error;
+      
+      setConversationStats({
+        totalConversations: data?.length || 0
+      });
+    } catch (error) {
+      console.error('Error loading conversation stats:', error);
     }
   };
 
@@ -155,6 +179,11 @@ export function AdminSidebar() {
                     {!collapsed && item.title === "Leads" && (
                       <Badge variant="secondary" className="bg-emerald-green/20 text-emerald-green border-0">
                         {leadStats.totalLeads}
+                      </Badge>
+                    )}
+                    {!collapsed && item.title === "AI Conversations" && (
+                      <Badge variant="secondary" className="bg-electric-blue/20 text-electric-blue border-0">
+                        {conversationStats.totalConversations}
                       </Badge>
                     )}
                   </a>

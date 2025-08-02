@@ -3,6 +3,7 @@ import { AdminLayout } from '@/components/AdminLayout';
 import { ProjectManager } from '@/components/admin/ProjectManager';
 import { ContentManager } from '@/components/admin/ContentManager';
 import { MessagesManager } from '@/components/admin/MessagesManager';
+import { ConversationsManager } from '@/components/admin/ConversationsManager';
 import { LeadsManager } from '@/components/admin/LeadsManager';
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { RecentActivity } from '@/components/admin/RecentActivity';
@@ -193,6 +194,9 @@ const Admin = () => {
 
       case 'messages':
         return <MessagesManager />;
+
+      case 'conversations':
+        return <ConversationsManager />;
 
       case 'projects':
         return <ProjectManager />;
