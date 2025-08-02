@@ -131,8 +131,30 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           }
         }
 
+        // Parse welcome message safely
+        let welcomeMessage = "Hello! I'm here to help you discover amazing digital solutions. What kind of project are you looking for today?";
+        if (settingsMap.welcome_message) {
+          if (typeof settingsMap.welcome_message === 'string') {
+            try {
+              // Remove extra quotes and parse
+              let cleanMessage = settingsMap.welcome_message.trim();
+              // Remove outer quotes if present
+              if (cleanMessage.startsWith('"') && cleanMessage.endsWith('"')) {
+                cleanMessage = cleanMessage.slice(1, -1);
+              }
+              // Remove escaped quotes
+              cleanMessage = cleanMessage.replace(/\\"/g, '"');
+              welcomeMessage = cleanMessage;
+            } catch (e) {
+              console.error('Error parsing welcome_message:', e);
+            }
+          } else {
+            welcomeMessage = settingsMap.welcome_message;
+          }
+        }
+
         setWelcomeSettings({
-          message: settingsMap.welcome_message || "Hello! I'm here to help you discover amazing digital solutions. What kind of project are you looking for today?",
+          message: welcomeMessage,
           quickActions: parsedQuickActions,
           delay: parseInt(settingsMap.greeting_delay || '1000')
         });
