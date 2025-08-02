@@ -37,9 +37,16 @@ export interface CreateProjectData {
   visibility: string;
   route?: string;
   image_url?: string;
+  hero_image_url?: string;
+  gallery_images?: string[];
   investment_amount?: number;
   price?: number;
   features?: any;
+  key_features?: any;
+  stats?: any;
+  use_cases?: any;
+  purchase_info?: any;
+  content?: any;
   subscription_price?: number;
   subscription_period?: string;
   billing_type?: string;

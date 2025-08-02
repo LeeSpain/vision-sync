@@ -7,7 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Edit, Trash2, Eye, ExternalLink, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, ExternalLink, Loader2, Star } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { toast } from 'sonner';
 import { useCurrency } from '@/contexts/CurrencyContext';
@@ -29,7 +30,16 @@ export function ProjectManager() {
     price: '',
     subscription_price: '',
     subscription_period: 'monthly',
-    billing_type: 'one-time'
+    billing_type: 'one-time',
+    image_url: '',
+    hero_image_url: '',
+    featured: false,
+    gallery_images: [] as string[],
+    key_features: [] as any[],
+    stats: [] as any[],
+    use_cases: [] as any[],
+    purchase_info: {} as any,
+    content: {} as any
   });
 
   // Load projects on component mount
@@ -74,7 +84,16 @@ export function ProjectManager() {
         price: '',
         subscription_price: '',
         subscription_period: 'monthly',
-        billing_type: 'one-time'
+        billing_type: 'one-time',
+        image_url: '',
+        hero_image_url: '',
+        featured: false,
+        gallery_images: [],
+        key_features: [],
+        stats: [],
+        use_cases: [],
+        purchase_info: {},
+        content: {}
       });
       setIsAddDialogOpen(false);
       toast.success('Project created successfully!');
@@ -97,7 +116,16 @@ export function ProjectManager() {
       price: project.price?.toString() || '',
       subscription_price: project.subscription_price?.toString() || '',
       subscription_period: project.subscription_period || 'monthly',
-      billing_type: project.billing_type || 'one-time'
+      billing_type: project.billing_type || 'one-time',
+      image_url: project.image_url || '',
+      hero_image_url: project.hero_image_url || '',
+      featured: false, // We'll add this logic based on current featured projects
+      gallery_images: project.gallery_images || [],
+      key_features: project.key_features || [],
+      stats: project.stats || [],
+      use_cases: project.use_cases || [],
+      purchase_info: project.purchase_info || {},
+      content: project.content || {}
     });
   };
 
@@ -116,19 +144,28 @@ export function ProjectManager() {
       await loadProjects();
       
       setEditingProject(null);
-      setNewProject({
-        name: '',
-        status: 'Concept',
-        category: 'Investment',
-        visibility: 'Public',
-        description: '',
-        route: '',
-        investment_amount: '',
-        price: '',
-        subscription_price: '',
-        subscription_period: 'monthly',
-        billing_type: 'one-time'
-      });
+        setNewProject({
+          name: '',
+          status: 'Concept',
+          category: 'Investment',
+          visibility: 'Public',
+          description: '',
+          route: '',
+          investment_amount: '',
+          price: '',
+          subscription_price: '',
+          subscription_period: 'monthly',
+          billing_type: 'one-time',
+          image_url: '',
+          hero_image_url: '',
+          featured: false,
+          gallery_images: [],
+          key_features: [],
+          stats: [],
+          use_cases: [],
+          purchase_info: {},
+          content: {}
+        });
       toast.success('Project updated successfully!');
     } catch (error) {
       toast.error('Failed to update project');
@@ -177,6 +214,29 @@ export function ProjectManager() {
           onChange={(e) => setNewProject({ ...newProject, route: e.target.value })}
           placeholder="/project-name (auto-generated if empty)"
         />
+      </div>
+
+      {/* Homepage Display Settings */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">Project Thumbnail Image</label>
+          <Input
+            value={newProject.image_url}
+            onChange={(e) => setNewProject({ ...newProject, image_url: e.target.value })}
+            placeholder="https://example.com/image.jpg"
+          />
+          <p className="text-xs text-cool-gray mt-1">Used in project cards on homepage</p>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium mb-2">Hero Image URL</label>
+          <Input
+            value={newProject.hero_image_url}
+            onChange={(e) => setNewProject({ ...newProject, hero_image_url: e.target.value })}
+            placeholder="https://example.com/hero-image.jpg"
+          />
+          <p className="text-xs text-cool-gray mt-1">Used on detailed project pages</p>
+        </div>
       </div>
 
       <div>
@@ -290,6 +350,19 @@ export function ProjectManager() {
         </div>
       </div>
 
+      {/* Homepage Display Control */}
+      <div className="flex items-center space-x-2 p-4 bg-gradient-to-r from-royal-purple/5 to-emerald-green/5 rounded-lg border border-soft-lilac/20">
+        <Checkbox
+          id="featured"
+          checked={newProject.featured}
+          onCheckedChange={(checked) => setNewProject({ ...newProject, featured: !!checked })}
+        />
+        <label htmlFor="featured" className="text-sm font-medium cursor-pointer flex items-center gap-2">
+          <Star className="h-4 w-4 text-coral-orange" />
+          Mark as Featured Project (displays prominently on homepage)
+        </label>
+      </div>
+
       <div className="flex justify-end space-x-2 pt-4">
         <Button variant="outline" onClick={() => {
           setIsAddDialogOpen(false);
@@ -305,7 +378,16 @@ export function ProjectManager() {
             price: '',
             subscription_price: '',
             subscription_period: 'monthly',
-            billing_type: 'one-time'
+            billing_type: 'one-time',
+            image_url: '',
+            hero_image_url: '',
+            featured: false,
+            gallery_images: [],
+            key_features: [],
+            stats: [],
+            use_cases: [],
+            purchase_info: {},
+            content: {}
           });
         }}>
           Cancel
@@ -414,13 +496,14 @@ export function ProjectManager() {
             <span className="ml-2 text-cool-gray">Loading projects...</span>
           </div>
         ) : (
-        <Table>
+          <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Project Name</TableHead>
+              <TableHead>Project</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Visibility</TableHead>
+              <TableHead>Homepage Display</TableHead>
               <TableHead>Leads</TableHead>
               <TableHead>Revenue</TableHead>
               <TableHead>Actions</TableHead>
@@ -433,18 +516,52 @@ export function ProjectManager() {
                   <div>
                     <div className="font-medium">{project.name}</div>
                     <div className="text-sm text-cool-gray">{project.description}</div>
+                    <div className="text-xs text-royal-purple">{project.visibility}</div>
                   </div>
+                </TableCell>
+                <TableCell>
+                  {project.image_url ? (
+                    <img 
+                      src={project.image_url} 
+                      alt={project.name}
+                      className="w-12 h-12 object-cover rounded-lg shadow-sm"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-soft-lilac/20 rounded-lg flex items-center justify-center">
+                      <span className="text-xs text-cool-gray">No img</span>
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline">{project.status}</Badge>
                 </TableCell>
                 <TableCell>{project.category}</TableCell>
                 <TableCell>
-                  <Badge variant={project.visibility === 'Public' ? 'default' : 'secondary'}>
-                    {project.visibility}
-                  </Badge>
+                  <div className="space-y-1">
+                    {/* Show which homepage sections this project appears in */}
+                    {project.visibility === 'Public' && project.category === 'Investment' && (
+                      <Badge variant="secondary" className="text-xs">Investment Ops</Badge>
+                    )}
+                    {project.visibility === 'Public' && project.category === 'For Sale' && ['Live', 'Beta'].includes(project.status) && (
+                      <Badge variant="secondary" className="text-xs">For Sale</Badge>
+                    )}
+                    {project.visibility === 'Public' && project.category === 'Internal' && (
+                      <Badge variant="secondary" className="text-xs">Internal Tools</Badge>
+                    )}
+                    {project.visibility === 'Public' && ['Live', 'MVP', 'Beta'].includes(project.status) && project.leads_count > 0 && (
+                      <Badge variant="default" className="text-xs bg-coral-orange">Featured Candidate</Badge>
+                    )}
+                  </div>
                 </TableCell>
-                <TableCell>{project.leads_count}</TableCell>
+                <TableCell>
+                  <div className="text-center">
+                    <div className="font-medium">{project.leads_count}</div>
+                    <div className="text-xs text-cool-gray">leads</div>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="text-sm">
                     {project.investment_amount && (
