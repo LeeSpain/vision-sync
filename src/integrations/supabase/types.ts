@@ -73,19 +73,24 @@ export type Database = {
           created_at: string
           description: string | null
           domain_url: string | null
+          expected_roi: number | null
           featured: boolean
           features: Json | null
+          funding_progress: number | null
           gallery_images: string[] | null
           hero_image_url: string | null
           id: string
           image_url: string | null
           investment_amount: number | null
+          investment_deadline: string | null
+          investor_count: number | null
           key_features: Json | null
           leads_count: number
           name: string
           price: number | null
           purchase_info: Json | null
           route: string | null
+          social_proof: string | null
           stats: Json | null
           status: string
           subscription_period: string | null
@@ -101,19 +106,24 @@ export type Database = {
           created_at?: string
           description?: string | null
           domain_url?: string | null
+          expected_roi?: number | null
           featured?: boolean
           features?: Json | null
+          funding_progress?: number | null
           gallery_images?: string[] | null
           hero_image_url?: string | null
           id?: string
           image_url?: string | null
           investment_amount?: number | null
+          investment_deadline?: string | null
+          investor_count?: number | null
           key_features?: Json | null
           leads_count?: number
           name: string
           price?: number | null
           purchase_info?: Json | null
           route?: string | null
+          social_proof?: string | null
           stats?: Json | null
           status?: string
           subscription_period?: string | null
@@ -129,19 +139,24 @@ export type Database = {
           created_at?: string
           description?: string | null
           domain_url?: string | null
+          expected_roi?: number | null
           featured?: boolean
           features?: Json | null
+          funding_progress?: number | null
           gallery_images?: string[] | null
           hero_image_url?: string | null
           id?: string
           image_url?: string | null
           investment_amount?: number | null
+          investment_deadline?: string | null
+          investor_count?: number | null
           key_features?: Json | null
           leads_count?: number
           name?: string
           price?: number | null
           purchase_info?: Json | null
           route?: string | null
+          social_proof?: string | null
           stats?: Json | null
           status?: string
           subscription_period?: string | null

@@ -41,7 +41,12 @@ export function ProjectManager() {
     stats: [] as any[],
     use_cases: [] as any[],
     purchase_info: {} as any,
-    content: {} as any
+    content: {} as any,
+    funding_progress: '',
+    expected_roi: '',
+    investment_deadline: '',
+    investor_count: '',
+    social_proof: ''
   });
 
   // Load projects on component mount
@@ -70,6 +75,11 @@ export function ProjectManager() {
         investment_amount: newProject.investment_amount ? parseFloat(newProject.investment_amount) : undefined,
         price: newProject.price ? parseFloat(newProject.price) : undefined,
         subscription_price: newProject.subscription_price ? parseFloat(newProject.subscription_price) : undefined,
+        funding_progress: newProject.funding_progress ? parseFloat(newProject.funding_progress) : undefined,
+        expected_roi: newProject.expected_roi ? parseFloat(newProject.expected_roi) : undefined,
+        investment_deadline: newProject.investment_deadline || undefined,
+        investor_count: newProject.investor_count ? parseInt(newProject.investor_count) : undefined,
+        social_proof: newProject.social_proof || undefined,
       };
       
       await projectManager.createProject(projectData);
@@ -96,7 +106,12 @@ export function ProjectManager() {
         stats: [],
         use_cases: [],
         purchase_info: {},
-        content: {}
+        content: {},
+        funding_progress: '',
+        expected_roi: '',
+        investment_deadline: '',
+        investor_count: '',
+        social_proof: ''
       });
       setIsAddDialogOpen(false);
       toast.success('Project created successfully!');
@@ -129,7 +144,12 @@ export function ProjectManager() {
       stats: project.stats || [],
       use_cases: project.use_cases || [],
       purchase_info: project.purchase_info || {},
-      content: project.content || {}
+      content: project.content || {},
+      funding_progress: project.funding_progress?.toString() || '',
+      expected_roi: project.expected_roi?.toString() || '',
+      investment_deadline: project.investment_deadline || '',
+      investor_count: project.investor_count?.toString() || '',
+      social_proof: project.social_proof || ''
     });
   };
 
@@ -142,6 +162,11 @@ export function ProjectManager() {
         investment_amount: newProject.investment_amount ? parseFloat(newProject.investment_amount) : undefined,
         price: newProject.price ? parseFloat(newProject.price) : undefined,
         subscription_price: newProject.subscription_price ? parseFloat(newProject.subscription_price) : undefined,
+        funding_progress: newProject.funding_progress ? parseFloat(newProject.funding_progress) : undefined,
+        expected_roi: newProject.expected_roi ? parseFloat(newProject.expected_roi) : undefined,
+        investment_deadline: newProject.investment_deadline || undefined,
+        investor_count: newProject.investor_count ? parseInt(newProject.investor_count) : undefined,
+        social_proof: newProject.social_proof || undefined,
       };
       
       await projectManager.updateProject(editingProject.id, projectData);
@@ -169,7 +194,12 @@ export function ProjectManager() {
           stats: [],
           use_cases: [],
           purchase_info: {},
-          content: {}
+          content: {},
+          funding_progress: '',
+          expected_roi: '',
+          investment_deadline: '',
+          investor_count: '',
+          social_proof: ''
         });
       toast.success('Project updated successfully!');
     } catch (error) {
@@ -265,14 +295,74 @@ export function ProjectManager() {
       </div>
 
       {newProject.billing_type === 'investment' && (
-        <div>
-          <label className="block text-sm font-medium mb-2">Investment Amount</label>
-          <Input
-            type="number"
-            value={newProject.investment_amount}
-            onChange={(e) => setNewProject({ ...newProject, investment_amount: e.target.value })}
-            placeholder="500000"
-          />
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Investment Amount</label>
+            <Input
+              type="number"
+              value={newProject.investment_amount}
+              onChange={(e) => setNewProject({ ...newProject, investment_amount: e.target.value })}
+              placeholder="500000"
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Funding Progress (%)</label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={newProject.funding_progress}
+                onChange={(e) => setNewProject({ ...newProject, funding_progress: e.target.value })}
+                placeholder="0"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Current funding percentage (0-100)</p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Expected ROI (%)</label>
+              <Input
+                type="number"
+                value={newProject.expected_roi}
+                onChange={(e) => setNewProject({ ...newProject, expected_roi: e.target.value })}
+                placeholder="25"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Expected return on investment</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Investment Deadline</label>
+              <Input
+                type="date"
+                value={newProject.investment_deadline}
+                onChange={(e) => setNewProject({ ...newProject, investment_deadline: e.target.value })}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Investor Count</label>
+              <Input
+                type="number"
+                value={newProject.investor_count}
+                onChange={(e) => setNewProject({ ...newProject, investor_count: e.target.value })}
+                placeholder="0"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Number of current investors</p>
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-2">Social Proof Text</label>
+            <Input
+              value={newProject.social_proof}
+              onChange={(e) => setNewProject({ ...newProject, social_proof: e.target.value })}
+              placeholder="127 investors viewing this opportunity"
+            />
+            <p className="text-xs text-muted-foreground mt-1">Text to display for social proof</p>
+          </div>
         </div>
       )}
 
@@ -399,7 +489,12 @@ export function ProjectManager() {
             stats: [],
             use_cases: [],
             purchase_info: {},
-            content: {}
+            content: {},
+            funding_progress: '',
+            expected_roi: '',
+            investment_deadline: '',
+            investor_count: '',
+            social_proof: ''
           });
         }}>
           Cancel

@@ -21,6 +21,16 @@ interface ProjectData {
   status: string;
   category: string;
   route?: string;
+  billing_type?: string;
+  investment_amount?: number;
+  price?: number;
+  subscription_price?: number;
+  subscription_period?: string;
+  funding_progress?: number;
+  expected_roi?: number;
+  investment_deadline?: string;
+  investor_count?: number;
+  social_proof?: string;
 }
 
 interface FeaturedProjectsCarouselProps {
@@ -55,6 +65,63 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
   }, [api]);
 
   const convertToFeaturedCard = (project: ProjectData) => {
+    // Use real project data with smart fallbacks
+    const getPricing = () => {
+      if (project.billing_type === 'investment' && project.investment_amount) {
+        const amount = project.investment_amount;
+        if (amount >= 1000000) {
+          return `Seeking $${(amount / 1000000).toFixed(1)}M`;
+        } else if (amount >= 1000) {
+          return `Seeking $${(amount / 1000)}K`;
+        }
+        return `Seeking $${amount}`;
+      }
+      if (project.billing_type === 'one-time' && project.price) {
+        const price = project.price;
+        if (price >= 1000) {
+          return `Listed at $${(price / 1000)}K`;
+        }
+        return `Listed at $${price}`;
+      }
+      if (project.billing_type === 'subscription' && project.subscription_price) {
+        return `$${project.subscription_price}/${project.subscription_period || 'month'}`;
+      }
+      return generatePricing(project.category); // Fallback for projects without pricing
+    };
+
+    const getActions = () => {
+      const actions = { view: true, invest: false, buy: false, subscribe: false };
+      
+      if (project.billing_type === 'investment') {
+        actions.invest = true;
+      } else if (project.billing_type === 'one-time') {
+        actions.buy = true;
+      } else if (project.billing_type === 'subscription') {
+        actions.subscribe = true;
+      } else {
+        // Default fallback for projects without billing_type
+        actions.invest = true;
+      }
+      
+      return actions;
+    };
+
+    const getTimeLeft = () => {
+      if (project.investment_deadline) {
+        const deadline = new Date(project.investment_deadline);
+        const now = new Date();
+        const diffTime = deadline.getTime() - now.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays > 0) {
+          return `${diffDays} days left`;
+        } else {
+          return "Deadline passed";
+        }
+      }
+      return generateTimeLeft(); // Fallback
+    };
+    
     return {
       id: project.id,
       title: project.name,
@@ -63,15 +130,15 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
       status: project.status,
       category: project.category,
       route: project.route,
-      // Generate realistic e-commerce data
-      pricing: generatePricing(project.category),
-      roi: generateROI(),
-      fundingProgress: Math.floor(Math.random() * 40) + 45, // 45-85%
-      investorsViewing: Math.floor(Math.random() * 50) + 15,
-      timeLeft: generateTimeLeft(),
-      isHot: Math.random() > 0.6, // 40% chance of being hot
+      pricing: getPricing(),
+      roi: project.expected_roi ? `${project.expected_roi}%` : generateROI(),
+      fundingProgress: project.funding_progress || Math.floor(Math.random() * 40) + 45,
+      investorsViewing: project.investor_count || Math.floor(Math.random() * 50) + 15,
+      timeLeft: getTimeLeft(),
+      isHot: project.funding_progress ? project.funding_progress > 70 : Math.random() > 0.6,
       limitedSpots: Math.floor(Math.random() * 5) + 2,
-      actions: { view: true, invest: true }
+      socialProof: project.social_proof,
+      actions: getActions()
     };
   };
 

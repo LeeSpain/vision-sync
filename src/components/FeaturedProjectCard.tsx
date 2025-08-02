@@ -33,6 +33,7 @@ interface FeaturedProjectCardProps {
   timeLeft?: string;
   isHot?: boolean;
   limitedSpots?: number;
+  socialProof?: string;
   actions?: {
     view?: boolean;
     invest?: boolean;
@@ -57,6 +58,7 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
   timeLeft = "5 days",
   isHot = true,
   limitedSpots = Math.floor(Math.random() * 5) + 3,
+  socialProof,
   actions = { view: true, invest: true }
 }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -205,11 +207,11 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
               <Progress value={fundingProgress} className="h-2" />
             </div>
 
-            {/* Limited Spots */}
+            {/* Social Proof and Time Left */}
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-coral-orange">
+              <div className="flex items-center gap-2 text-emerald-green">
                 <Users className="h-4 w-4" />
-                <span className="font-medium">Only {limitedSpots} spots left</span>
+                <span className="font-medium">{socialProof || `${investorsViewing} viewing`}</span>
               </div>
               <div className="flex items-center gap-2 text-cool-gray">
                 <Clock className="h-4 w-4" />

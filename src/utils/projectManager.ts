@@ -29,6 +29,12 @@ export interface Project {
   billing_type: string;
   featured: boolean;
   domain_url: string | null;
+  // Investment tracking fields
+  funding_progress: number | null;
+  expected_roi: number | null;
+  investment_deadline: string | null;
+  investor_count: number;
+  social_proof: string | null;
 }
 
 export interface CreateProjectData {
@@ -54,6 +60,11 @@ export interface CreateProjectData {
   billing_type?: string;
   featured?: boolean;
   domain_url?: string;
+  funding_progress?: number;
+  expected_roi?: number;
+  investment_deadline?: string;
+  investor_count?: number;
+  social_proof?: string;
 }
 
 export const projectManager = {
@@ -111,7 +122,7 @@ export const projectManager = {
       .from('projects')
       .select('*')
       .eq('visibility', 'Public')
-      .in('status', ['Live', 'MVP', 'Beta'])
+      .eq('featured', true)
       .order('leads_count', { ascending: false })
       .limit(6);
 
