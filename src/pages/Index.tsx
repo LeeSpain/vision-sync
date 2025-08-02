@@ -10,6 +10,7 @@ import { FeaturedProjectsCarousel } from '@/components/FeaturedProjectsCarousel'
 import EnhancedTemplatesShowcase from '@/components/EnhancedTemplatesShowcase';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import AiChatWidget from '@/components/chat/AiChatWidget';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package, CheckCircle } from 'lucide-react';
@@ -473,6 +474,12 @@ const Index = () => {
       </section>
 
       <Footer />
+      
+      {/* AI Chat Widget */}
+      <AiChatWidget 
+        isMinimized={isChatMinimized}
+        onToggleMinimize={() => setIsChatMinimized(!isChatMinimized)}
+      />
     </div>
   );
 };
