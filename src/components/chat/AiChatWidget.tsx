@@ -21,11 +21,13 @@ interface ChatMessage {
 interface AiChatWidgetProps {
   isMinimized?: boolean;
   onToggleMinimize?: () => void;
+  embedded?: boolean;
 }
 
 const AiChatWidget: React.FC<AiChatWidgetProps> = ({ 
   isMinimized = true, 
-  onToggleMinimize 
+  onToggleMinimize,
+  embedded = false
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -310,6 +312,171 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       sendMessage();
     }
   };
+
+  // For embedded mode, don't show the minimized state
+  if (embedded) {
+    return (
+      <div className="w-full h-full flex flex-col">
+        <Card className="flex flex-col h-full shadow-lg border bg-white overflow-hidden">
+          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
+            <CardTitle className="flex items-center gap-3">
+              <div className="relative">
+                <Shield className="h-6 w-6 text-primary" />
+                <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-yellow-500 animate-pulse" />
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-gray-800">AI Guardian</div>
+                <div className="text-sm text-gray-600 font-normal">Your AI Assistant</div>
+              </div>
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
+                Online
+              </Badge>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="flex-1 p-0 flex flex-col min-h-0">
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                  >
+                    <div className={`flex items-start gap-3 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
+                      <Avatar className={`h-8 w-8 flex-shrink-0 ${message.type === 'user' ? 'order-last' : ''}`}>
+                        {message.type === 'user' ? (
+                          <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
+                            U
+                          </AvatarFallback>
+                        ) : (
+                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/40 text-primary text-xs font-medium">
+                            <Shield className="h-4 w-4" />
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                      
+                      <div className={`rounded-xl px-4 py-3 max-w-full break-words ${
+                        message.type === 'user' 
+                          ? 'bg-primary text-primary-foreground shadow-md' 
+                          : 'bg-gray-50 text-gray-800 border border-gray-100 shadow-sm'
+                      }`}>
+                        <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                          {message.content}
+                        </div>
+                        <div className={`text-xs mt-2 opacity-70 ${
+                          message.type === 'user' ? 'text-primary-foreground/70' : 'text-gray-500'
+                        }`}>
+                          {message.timestamp.toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="flex justify-start animate-fade-in">
+                    <div className="flex items-start gap-3 max-w-[85%]">
+                      <Avatar className="h-8 w-8 flex-shrink-0">
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/40 text-primary text-xs font-medium">
+                          <Shield className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="bg-gray-50 rounded-xl px-4 py-3 border border-gray-100 shadow-sm">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                          <span className="text-sm text-gray-500">AI Guardian is thinking...</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
+            
+            {/* Quick Actions */}
+            {welcomeSettings.quickActions && welcomeSettings.quickActions.length > 0 && messages.length === 1 && (
+              <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+                <div className="text-xs font-medium text-gray-600 mb-2">Quick Actions:</div>
+                <div className="flex flex-wrap gap-2">
+                  {welcomeSettings.quickActions.map((action, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => sendMessage(action)}
+                      className="text-xs bg-white hover:bg-gray-50 border-gray-200 text-gray-700 h-8"
+                    >
+                      {action}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Input Area */}
+            <div className="flex-shrink-0 p-4 border-t border-gray-100 bg-white">
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  placeholder="Ask AI Guardian anything..."
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={isLoading}
+                  className="flex-1 border-gray-200 focus:border-primary/50 focus:ring-primary/20 bg-white"
+                />
+                <Button
+                  onClick={toggleVoiceRecognition}
+                  variant="outline"
+                  size="sm"
+                  disabled={isLoading}
+                  className={`h-10 w-10 p-0 border-gray-200 ${
+                    isListening 
+                      ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' 
+                      : 'hover:bg-gray-50'
+                  }`}
+                >
+                  {isListening ? (
+                    <MicOff className="h-4 w-4" />
+                  ) : (
+                    <Mic className="h-4 w-4" />
+                  )}
+                </Button>
+                <Button
+                  onClick={() => sendMessage()}
+                  disabled={isLoading || !inputMessage.trim()}
+                  size="sm"
+                  className="h-10 w-10 p-0 bg-primary hover:bg-primary/90"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Status Badges */}
+              <div className="flex justify-center gap-4 mt-3">
+                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                  🛡️ AI Security
+                </Badge>
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  📞 Contact Info Protected
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isMinimized) {
     return (

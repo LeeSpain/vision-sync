@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight, Sparkles, MessageSquare, Building2, Users, Target } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight, Sparkles, MessageSquare, Building2, Users, Target, Shield } from 'lucide-react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';
@@ -322,9 +322,9 @@ const Contact = () => {
       {/* Contact Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
             {/* Contact Questionnaire */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1 flex flex-col">
               {/* Progress Bar */}
               {currentStep < 4 && (
                 <div className="mb-8">
@@ -345,8 +345,10 @@ const Contact = () => {
                 </div>
               )}
 
-              <Card className="p-8 shadow-lg border-slate-200/60">
-                {renderStep()}
+              <Card className="p-8 shadow-lg border-slate-200/60 flex-1 flex flex-col">
+                <div className="flex-1">
+                  {renderStep()}
+                </div>
                 
                 {/* Navigation Buttons */}
                 {currentStep < 4 && (
@@ -383,12 +385,12 @@ const Contact = () => {
               </Card>
             </div>
 
-            {/* AI Assistant Section */}
-            <div className="order-1 lg:order-2 lg:sticky lg:top-8">
-              <div className="bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-2xl p-6 text-white shadow-2xl">
+            {/* AI Guardian Section */}
+            <div className="order-1 lg:order-2 flex flex-col">
+              <div className="bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-2xl p-6 text-white shadow-2xl flex-1 flex flex-col">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-                    <Sparkles className="h-8 w-8 text-coral-orange" />
+                    <Shield className="h-8 w-8 text-coral-orange" />
                   </div>
                   <h2 className="text-2xl font-heading font-bold mb-2">
                     AI Guardian Assistant
@@ -398,13 +400,9 @@ const Contact = () => {
                   </p>
                 </div>
                 
-                {/* AI Chat Widget - Always Open */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 h-[500px] flex flex-col overflow-hidden">
-                  <div className="flex-1 relative overflow-hidden">
-                    <div className="absolute inset-0 overflow-hidden">
-                      <AiChatWidget isMinimized={false} />
-                    </div>
-                  </div>
+                {/* Embedded AI Guardian Chat */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 flex-1 min-h-[500px] overflow-hidden">
+                  <AiChatWidget embedded={true} />
                 </div>
                 
                 <div className="mt-6 text-center">
