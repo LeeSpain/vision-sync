@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectCard from '@/components/ProjectCard';
+import ShopCard from '@/components/ShopCard';
 import { FeaturedProjectsCarousel } from '@/components/FeaturedProjectsCarousel';
 import EnhancedTemplatesShowcase from '@/components/EnhancedTemplatesShowcase';
 import Header from '@/components/Layout/Header';
@@ -75,6 +76,23 @@ const Index = () => {
     image: project.image_url || project.hero_image_url,
     billing_type: project.billing_type as any,
     actions: { view: true },
+  });
+
+  // Convert database project to ShopCard format
+  const convertToShopCard = (project: Project) => ({
+    title: project.name,
+    description: project.description || '',
+    status: project.status as any,
+    category: project.category as any,
+    route: project.route || `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+    image: project.image_url || project.hero_image_url,
+    onViewClick: () => {
+      if (project.route) {
+        window.location.href = project.route;
+      } else {
+        window.location.href = `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+      }
+    }
   });
 
   const handleContactSubmit = async (e: React.FormEvent) => {
@@ -316,18 +334,16 @@ const Index = () => {
               <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🛒 Platforms for Sale</h2>
               <p className="text-xl text-cool-gray max-w-2xl mx-auto">Complete solutions ready for immediate deployment and ownership transfer</p>
             </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {loading ? (
-                  [...Array(2)].map((_, i) => (
-                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                  ))
-                ) : (
-                  platformsForSale.map((project, index) => (
-                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
-                  ))
-                )}
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {loading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                platformsForSale.map((project, index) => (
+                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
+                ))
+              )}
             </div>
           </div>
 
@@ -337,18 +353,16 @@ const Index = () => {
               <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🧠 Internal Tools</h2>
               <p className="text-xl text-cool-gray max-w-2xl mx-auto">Proprietary systems powering our operations and workflows</p>
             </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {loading ? (
-                  [...Array(2)].map((_, i) => (
-                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                  ))
-                ) : (
-                  internalTools.map((project, index) => (
-                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
-                  ))
-                )}
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {loading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                internalTools.map((project, index) => (
+                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
+                ))
+              )}
             </div>
           </div>
 
@@ -358,18 +372,16 @@ const Index = () => {
               <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">💼 Investment Ops</h2>
               <p className="text-xl text-cool-gray max-w-2xl mx-auto">Strategic investment opportunities and financial partnerships</p>
             </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {loading ? (
-                  [...Array(2)].map((_, i) => (
-                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                  ))
-                ) : (
-                  investmentOps.map((project, index) => (
-                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
-                  ))
-                )}
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {loading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                investmentOps.map((project, index) => (
+                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
+                ))
+              )}
             </div>
           </div>
         </div>
