@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectCard from '@/components/ProjectCard';
 import { FeaturedProjectsCarousel } from '@/components/FeaturedProjectsCarousel';
+import EnhancedTemplatesShowcase from '@/components/EnhancedTemplatesShowcase';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
@@ -306,95 +307,8 @@ const Index = () => {
             />
           </div>
 
-          {/* Off the Shelf Templates */}
-          <div className="mb-20">
-            <div className="bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-emerald-green/5 rounded-3xl p-12 relative overflow-hidden">
-              {/* Background Elements */}
-              <div className="absolute top-6 right-6 w-32 h-32 bg-coral-orange/10 rounded-full blur-xl"></div>
-              <div className="absolute bottom-6 left-6 w-24 h-24 bg-emerald-green/10 rounded-full blur-xl"></div>
-              
-              <div className="relative text-center">
-                <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
-                  <Package className="h-4 w-4" />
-                  Ready-to-Deploy Apps
-                </div>
-                
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-midnight-navy mb-6">
-                  📦 Off the Shelf Templates
-                </h2>
-                
-                <p className="text-xl text-cool-gray max-w-3xl mx-auto mb-8">
-                  Skip months of development with our professional app templates. 
-                  <span className="font-semibold text-royal-purple"> 9 industry-specific solutions</span> ready for 
-                  immediate customization and deployment.
-                </p>
-
-                {/* Preview Grid - Sample Templates */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
-                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-soft-lilac/30 hover:shadow-card transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <Sparkles className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="font-semibold text-midnight-navy mb-2">Beauty & Wellness</h3>
-                    <p className="text-sm text-cool-gray">Hair salons, spas, massage therapy</p>
-                  </div>
-                  
-                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-soft-lilac/30 hover:shadow-card transition-all duration-300">
-                    <div className="w-12 h-12 bg-emerald-green rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <TrendingUp className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="font-semibold text-midnight-navy mb-2">Service Industry</h3>
-                    <p className="text-sm text-cool-gray">Trades, cleaning, landscaping</p>
-                  </div>
-                  
-                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-soft-lilac/30 hover:shadow-card transition-all duration-300">
-                    <div className="w-12 h-12 bg-coral-orange rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <Star className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="font-semibold text-midnight-navy mb-2">Care & Food</h3>
-                    <p className="text-sm text-cool-gray">Childcare, mobile food services</p>
-                  </div>
-                </div>
-
-                {/* Key Benefits */}
-                <div className="flex flex-wrap items-center justify-center gap-6 text-cool-gray mb-8">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-green" />
-                    <span className="text-sm font-medium">Professional Design</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-green" />
-                    <span className="text-sm font-medium">72h Delivery</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-green" />
-                    <span className="text-sm font-medium">Full Customization</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-green" />
-                    <span className="text-sm font-medium">Starting {formatPrice(2200)}</span>
-                  </div>
-                </div>
-
-                {/* Call to Action */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link to="/templates">
-                    <Button variant="hero" size="lg" className="animate-float">
-                      <Package className="h-5 w-5" />
-                      Browse All Templates
-                      <ArrowRight className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <Link to="/contact">
-                    <Button variant="outline" size="lg" className="bg-white/50 hover:bg-white/70">
-                      <Sparkles className="h-5 w-5" />
-                      Get Custom Quote
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Enhanced Templates Showcase */}
+          <EnhancedTemplatesShowcase />
 
           {/* Platforms for Sale */}
           <div className="mb-20">
