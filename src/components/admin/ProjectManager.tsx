@@ -410,14 +410,28 @@ export function ProjectManager() {
 
       {newProject.billing_type === 'investment' && (
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">Investment Amount</label>
-            <Input
-              type="number"
-              value={newProject.investment_amount}
-              onChange={(e) => setNewProject({ ...newProject, investment_amount: e.target.value })}
-              placeholder="500000"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Investment Amount</label>
+              <Input
+                type="number"
+                value={newProject.investment_amount}
+                onChange={(e) => setNewProject({ ...newProject, investment_amount: e.target.value })}
+                placeholder="500000"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Total investment amount needed</p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Sale Price</label>
+              <Input
+                type="number"
+                value={newProject.price}
+                onChange={(e) => setNewProject({ ...newProject, price: e.target.value })}
+                placeholder="50000"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Listed sale price</p>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
