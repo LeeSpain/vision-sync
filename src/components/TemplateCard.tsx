@@ -4,8 +4,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AppTemplate } from '@/utils/appTemplates';
 import { Star, ArrowRight, CheckCircle, Calendar, Sparkles, Settings } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
-import { PricingToggle } from '@/components/ui/pricing-toggle';
-import { useState } from 'react';
 
 interface TemplateCardProps {
   template: AppTemplate;
@@ -15,7 +13,6 @@ interface TemplateCardProps {
 
 const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCardProps) => {
   const { formatPrice } = useCurrency();
-  const [isSubscription, setIsSubscription] = useState(false);
   const IconComponent = template.icon;
 
   return (
@@ -94,61 +91,60 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
             </div>
           </div>
 
-          <div className="space-y-3">
-            <PricingToggle 
-              isSubscription={isSubscription} 
-              onToggle={setIsSubscription} 
-            />
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-midnight-navy mb-3">Pricing Options:</h4>
             
+            {/* One-time Purchase */}
             <div className="bg-gradient-to-r from-slate-50 to-blue-50/50 rounded-xl p-4 border border-slate-200/60">
-              {isSubscription ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="text-sm font-semibold text-midnight-navy flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-royal-purple" />
-                        Monthly Subscription
-                      </div>
-                      <div className="text-2xl font-bold text-royal-purple">
-                        {formatPrice(template.pricing.subscription.monthly)}
-                        <span className="text-sm font-medium text-cool-gray">/month</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-cool-gray mb-1">Setup Fee</div>
-                      <div className="text-sm font-semibold text-midnight-navy">
-                        {formatPrice(typeof template.pricing.deposit === 'number' ? template.pricing.deposit : template.pricing.deposit?.amount || 0)}
-                      </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="text-sm font-semibold text-midnight-navy">One-time Purchase</div>
+                    <div className="text-2xl font-bold text-royal-purple">
+                      {formatPrice(template.pricing.base)}
                     </div>
                   </div>
-                  <div className="text-xs text-cool-gray bg-white/60 rounded-lg p-2">
-                    <span className="font-medium">Includes:</span> {template.pricing.subscription.benefits.slice(0, 2).join(', ')}
-                    {template.pricing.subscription.benefits.length > 2 && ' + more'}
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="text-sm font-semibold text-midnight-navy">Base Template</div>
-                      <div className="text-2xl font-bold text-royal-purple">
-                        {formatPrice(template.pricing.base)}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-cool-gray mb-1">Customization</div>
-                      <div className="text-sm font-semibold text-emerald-green">
-                        from {formatPrice(template.pricing.customization)}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-emerald-green/5 rounded-lg p-2 border border-emerald-green/20">
-                    <div className="text-xs text-emerald-green font-medium">
-                      ✓ Ready to deploy • ✓ Full source code • ✓ Commercial license
+                  <div className="text-right">
+                    <div className="text-xs text-cool-gray mb-1">Customization</div>
+                    <div className="text-sm font-semibold text-emerald-green">
+                      from {formatPrice(template.pricing.customization)}
                     </div>
                   </div>
                 </div>
-              )}
+                <div className="bg-emerald-green/5 rounded-lg p-2 border border-emerald-green/20">
+                  <div className="text-xs text-emerald-green font-medium">
+                    ✓ Ready to deploy • ✓ Full source code • ✓ Commercial license
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Monthly Subscription */}
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-50/50 rounded-xl p-4 border border-purple-200/60">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="text-sm font-semibold text-midnight-navy flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-royal-purple" />
+                      Monthly Subscription
+                    </div>
+                    <div className="text-2xl font-bold text-royal-purple">
+                      {formatPrice(template.pricing.subscription.monthly)}
+                      <span className="text-sm font-medium text-cool-gray">/month</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-cool-gray mb-1">Setup Fee</div>
+                    <div className="text-sm font-semibold text-midnight-navy">
+                      {formatPrice(typeof template.pricing.deposit === 'number' ? template.pricing.deposit : template.pricing.deposit?.amount || 0)}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-cool-gray bg-white/60 rounded-lg p-2">
+                  <span className="font-medium">Includes:</span> {template.pricing.subscription.benefits.slice(0, 2).join(', ')}
+                  {template.pricing.subscription.benefits.length > 2 && ' + more'}
+                </div>
+              </div>
             </div>
           </div>
         </div>
