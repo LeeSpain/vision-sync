@@ -40,6 +40,7 @@ const mainItems = [
   { title: "Messages", url: "#messages", icon: Mail },
   { title: "AI Conversations", url: "#conversations", icon: MessageCircle },
   { title: "Projects", url: "#projects", icon: FolderOpen },
+  { title: "Templates", url: "#templates", icon: FileText },
   { title: "Leads", url: "#leads", icon: Users },
   { title: "AI Agent", url: "#ai-agent", icon: Brain },
   { title: "Content", url: "#content", icon: FileText },

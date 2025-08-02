@@ -264,6 +264,66 @@ export type Database = {
           },
         ]
       }
+      app_templates: {
+        Row: {
+          ai_generated_content: Json | null
+          category: string
+          created_at: string
+          description: string | null
+          detailed_description: string | null
+          gallery_images: string[] | null
+          id: string
+          image_url: string | null
+          industry: string | null
+          is_active: boolean | null
+          is_popular: boolean | null
+          key_features: Json | null
+          pricing: Json | null
+          questionnaire_weight: Json | null
+          template_config: Json | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          ai_generated_content?: Json | null
+          category: string
+          created_at?: string
+          description?: string | null
+          detailed_description?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          image_url?: string | null
+          industry?: string | null
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          key_features?: Json | null
+          pricing?: Json | null
+          questionnaire_weight?: Json | null
+          template_config?: Json | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          ai_generated_content?: Json | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          detailed_description?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          image_url?: string | null
+          industry?: string | null
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          key_features?: Json | null
+          pricing?: Json | null
+          questionnaire_weight?: Json | null
+          template_config?: Json | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           company: string | null
@@ -432,6 +492,36 @@ export type Database = {
           updated_at?: string
           use_cases?: Json | null
           visibility?: string
+        }
+        Relationships: []
+      }
+      template_questionnaire_responses: {
+        Row: {
+          created_at: string
+          id: string
+          recommended_templates: Json | null
+          responses: Json
+          selected_template_id: string | null
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recommended_templates?: Json | null
+          responses?: Json
+          selected_template_id?: string | null
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recommended_templates?: Json | null
+          responses?: Json
+          selected_template_id?: string | null
+          session_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
