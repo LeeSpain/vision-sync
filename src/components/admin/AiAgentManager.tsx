@@ -9,9 +9,10 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Brain, MessageSquare, Settings, Database, Mic, User } from "lucide-react";
+import { Brain, MessageSquare, Settings, Database, Mic, User, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ConversationsAnalytics from './ConversationsAnalytics';
+import AgentCreationModal from './AgentCreationModal';
 
 interface AiAgent {
   id: string;
@@ -23,6 +24,9 @@ interface AiAgent {
   is_active: boolean;
   business_knowledge: any;
   conversation_rules: any;
+  category?: string;
+  role?: string;
+  department?: string;
   created_at: string;
   updated_at: string;
 }
@@ -32,6 +36,7 @@ interface AiSetting {
   setting_key: string;
   setting_value: any;
   description: string;
+  agent_id?: string;
 }
 
 interface TrainingData {
@@ -42,6 +47,7 @@ interface TrainingData {
   context: any;
   is_active: boolean;
   priority: number;
+  agent_id?: string;
 }
 
 const AiAgentManager: React.FC = () => {
@@ -49,12 +55,20 @@ const AiAgentManager: React.FC = () => {
   const [settings, setSettings] = useState<AiSetting[]>([]);
   const [trainingData, setTrainingData] = useState<TrainingData[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<AiAgent | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newTrainingData, setNewTrainingData] = useState({
     category: '',
     question: '',
     answer: '',
     priority: 1
   });
+
+  // Automatically select first agent if none selected
+  useEffect(() => {
+    if (agents.length > 0 && !selectedAgent) {
+      setSelectedAgent(agents[0]);
+    }
+  }, [agents, selectedAgent]);
 
   useEffect(() => {
     loadData();
@@ -76,6 +90,15 @@ const AiAgentManager: React.FC = () => {
       toast.error('Failed to load AI agent data');
     }
   };
+
+  // Filter settings and training data by selected agent
+  const filteredSettings = settings.filter(setting => 
+    !setting.agent_id || setting.agent_id === selectedAgent?.id
+  );
+  
+  const filteredTrainingData = trainingData.filter(data => 
+    !data.agent_id || data.agent_id === selectedAgent?.id
+  );
 
   const updateAgentField = async (field: string, value: any) => {
     if (!selectedAgent) return;
@@ -123,11 +146,21 @@ const AiAgentManager: React.FC = () => {
       toast.error('Please fill in question and answer');
       return;
     }
+    
+    if (!selectedAgent) {
+      toast.error('Please select an agent first');
+      return;
+    }
 
     try {
+      const dataToInsert = {
+        ...newTrainingData,
+        agent_id: selectedAgent.id
+      };
+      
       const { data, error } = await supabase
         .from('ai_training_data')
-        .insert([newTrainingData])
+        .insert([dataToInsert])
         .select()
         .single();
 
@@ -203,8 +236,20 @@ const AiAgentManager: React.FC = () => {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Available Agents</CardTitle>
-                <CardDescription>Select an agent to configure</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Available Agents</CardTitle>
+                    <CardDescription>Select an agent to configure</CardDescription>
+                  </div>
+                  <Button 
+                    onClick={() => setIsCreateModalOpen(true)}
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create Agent
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-2">
                 {agents.map((agent) => (
@@ -299,8 +344,14 @@ const AiAgentManager: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
+          {selectedAgent && (
+            <div className="mb-4">
+              <h3 className="text-lg font-medium">Settings for {selectedAgent.name}</h3>
+              <p className="text-sm text-muted-foreground">Configure agent-specific behavior</p>
+            </div>
+          )}
           <div className="grid gap-4">
-            {settings.map((setting) => (
+            {filteredSettings.map((setting) => (
               <Card key={setting.id}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -409,6 +460,12 @@ const AiAgentManager: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="training" className="space-y-4">
+          {selectedAgent && (
+            <div className="mb-4">
+              <h3 className="text-lg font-medium">Training Data for {selectedAgent.name}</h3>
+              <p className="text-sm text-muted-foreground">Agent-specific knowledge and responses</p>
+            </div>
+          )}
           <Card>
             <CardHeader>
               <CardTitle>Add Training Data</CardTitle>
@@ -475,7 +532,7 @@ const AiAgentManager: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {trainingData.map((item) => (
+                {filteredTrainingData.map((item) => (
                   <div key={item.id} className="border rounded-lg p-4 space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -503,6 +560,12 @@ const AiAgentManager: React.FC = () => {
           <ConversationsAnalytics />
         </TabsContent>
       </Tabs>
+      
+      <AgentCreationModal 
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onAgentCreated={loadData}
+      />
     </div>
   );
 };

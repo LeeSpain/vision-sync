@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       ai_agent_settings: {
         Row: {
+          agent_id: string | null
           created_at: string
           description: string | null
           id: string
@@ -24,6 +25,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          agent_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -32,6 +34,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          agent_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -39,45 +42,113 @@ export type Database = {
           setting_value?: Json
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "ai_agent_settings_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_agent_templates: {
+        Row: {
+          business_knowledge: Json | null
+          category: string
+          conversation_rules: Json | null
+          created_at: string
+          default_settings: Json | null
+          department: string
+          description: string | null
+          id: string
+          name: string
+          personality: string
+          role: string
+          training_data: Json | null
+          updated_at: string
+          voice_id: string | null
+        }
+        Insert: {
+          business_knowledge?: Json | null
+          category: string
+          conversation_rules?: Json | null
+          created_at?: string
+          default_settings?: Json | null
+          department: string
+          description?: string | null
+          id?: string
+          name: string
+          personality: string
+          role: string
+          training_data?: Json | null
+          updated_at?: string
+          voice_id?: string | null
+        }
+        Update: {
+          business_knowledge?: Json | null
+          category?: string
+          conversation_rules?: Json | null
+          created_at?: string
+          default_settings?: Json | null
+          department?: string
+          description?: string | null
+          id?: string
+          name?: string
+          personality?: string
+          role?: string
+          training_data?: Json | null
+          updated_at?: string
+          voice_id?: string | null
+        }
         Relationships: []
       }
       ai_agents: {
         Row: {
           avatar_config: Json | null
           business_knowledge: Json | null
+          category: string | null
           conversation_rules: Json | null
           created_at: string
+          department: string | null
           description: string | null
           id: string
           is_active: boolean | null
           name: string
           personality: string | null
+          role: string | null
           updated_at: string
           voice_id: string | null
         }
         Insert: {
           avatar_config?: Json | null
           business_knowledge?: Json | null
+          category?: string | null
           conversation_rules?: Json | null
           created_at?: string
+          department?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
           name: string
           personality?: string | null
+          role?: string | null
           updated_at?: string
           voice_id?: string | null
         }
         Update: {
           avatar_config?: Json | null
           business_knowledge?: Json | null
+          category?: string | null
           conversation_rules?: Json | null
           created_at?: string
+          department?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
           name?: string
           personality?: string | null
+          role?: string | null
           updated_at?: string
           voice_id?: string | null
         }
@@ -148,6 +219,7 @@ export type Database = {
       }
       ai_training_data: {
         Row: {
+          agent_id: string | null
           answer: string
           category: string
           context: Json | null
@@ -159,6 +231,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          agent_id?: string | null
           answer: string
           category: string
           context?: Json | null
@@ -170,6 +243,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          agent_id?: string | null
           answer?: string
           category?: string
           context?: Json | null
@@ -180,7 +254,15 @@ export type Database = {
           question?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ai_training_data_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
