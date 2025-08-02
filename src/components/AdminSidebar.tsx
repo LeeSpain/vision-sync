@@ -56,15 +56,7 @@ export function AdminSidebar() {
   const collapsed = state === "collapsed"
   const location = useLocation()
   const navigate = useNavigate()
-  
-  // Route guard: Only show admin sidebar when on admin route
-  const isOnAdminPage = location.pathname === '/admin'
   const hash = location.hash || "#overview"
-  
-  // Don't render sidebar if not on admin page
-  if (!isOnAdminPage) {
-    return null
-  }
   
   const [projectStats, setProjectStats] = useState({
     totalProjects: 0,
@@ -131,18 +123,13 @@ export function AdminSidebar() {
     }
   };
 
-  // Improved active state detection - must be on admin page AND have matching hash
-  const isActive = (path: string) => {
-    return isOnAdminPage && hash === path
-  }
+  // Simple active state detection based on hash
+  const isActive = (path: string) => hash === path
   
   const handleNavigation = (section: string) => {
     const newHash = section.replace('#', '');
-    
-    // Always navigate to admin route with hash - this ensures we're on the right page
-    // Use replace: true to avoid adding extra history entries when already on admin
-    const shouldReplace = isOnAdminPage
-    navigate(`/admin#${newHash}`, { replace: shouldReplace })
+    // Simply navigate to the admin route with the hash
+    navigate(`/admin#${newHash}`)
   }
 
   return (
