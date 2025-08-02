@@ -12,8 +12,15 @@ export interface Template {
     base: number;
     customization: number;
     premium?: number;
+    subscription?: {
+      monthly: number;
+      benefits: string[];
+    };
   };
   key_features: string[];
+  foundation_features?: string[];
+  core_industry_features?: string[];
+  premium_features?: string[];
   is_popular: boolean;
   is_active: boolean;
   image_url?: string;
@@ -21,6 +28,8 @@ export interface Template {
   ai_generated_content?: any;
   template_config?: any;
   questionnaire_weight?: any;
+  sale_price?: number;
+  customization_price?: number;
   created_at: string;
   updated_at: string;
 }
@@ -45,18 +54,22 @@ export const useTemplates = () => {
       // Transform the data to match our interface
       const transformedTemplates: Template[] = (data || []).map(template => {
         // Use the standardized pricing structure from the database
-        let pricing = { base: 5000, customization: 2000 };
+        let pricing = { base: 2999, customization: 999 };
         
         if (template.pricing && typeof template.pricing === 'object' && !Array.isArray(template.pricing)) {
           const pricingData = template.pricing as any;
           pricing = {
-            base: pricingData.base || pricingData.ownership?.buyOutright || 5000,
-            customization: pricingData.customization || 2000
+            base: pricingData.base || template.sale_price || 2999,
+            customization: pricingData.customization || template.customization_price || 999
           };
           
           // Add premium pricing if available
           if (pricingData.subscription?.monthly) {
             (pricing as any).premium = pricingData.subscription.monthly;
+            (pricing as any).subscription = {
+              monthly: pricingData.subscription.monthly,
+              benefits: pricingData.subscription.benefits || ['Regular updates', 'Premium support']
+            };
           }
         }
 
@@ -69,6 +82,9 @@ export const useTemplates = () => {
           industry: template.industry,
           pricing,
           key_features: Array.isArray(template.key_features) ? template.key_features.filter(f => typeof f === 'string') : [],
+          foundation_features: Array.isArray(template.foundation_features) ? template.foundation_features.filter(f => typeof f === 'string') : [],
+          core_industry_features: Array.isArray(template.core_industry_features) ? template.core_industry_features.filter(f => typeof f === 'string') : [],
+          premium_features: Array.isArray(template.premium_features) ? template.premium_features.filter(f => typeof f === 'string') : [],
           is_popular: template.is_popular,
           is_active: template.is_active,
           image_url: template.image_url,
@@ -76,6 +92,8 @@ export const useTemplates = () => {
           ai_generated_content: template.ai_generated_content,
           template_config: template.template_config,
           questionnaire_weight: template.questionnaire_weight,
+          sale_price: template.sale_price,
+          customization_price: template.customization_price,
           created_at: template.created_at,
           updated_at: template.updated_at
         };

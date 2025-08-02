@@ -2,7 +2,7 @@ import React from 'react';
 import { Template } from '@/hooks/useTemplates';
 import { AppTemplate, templateCategories } from '@/utils/appTemplates';
 import TemplateCard from '@/components/TemplateCard';
-import { Package } from 'lucide-react';
+import { Package, Sparkles, UtensilsCrossed, Dumbbell, Home, ShoppingCart, Heart, MapPin } from 'lucide-react';
 
 interface TemplateCardAdapterProps {
   template: Template;
@@ -15,6 +15,27 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
   onLearnMore,
   onRequestTemplate
 }) => {
+  // Get category-specific icon
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'Hairdressing & Beauty': return Sparkles;
+      case 'Restaurant & Food Service': return UtensilsCrossed;
+      case 'Fitness & Wellness': return Dumbbell;
+      case 'Home Services': return Home;
+      case 'Retail & E-commerce': return ShoppingCart;
+      case 'Healthcare': return Heart;
+      case 'Real Estate': return MapPin;
+      default: return Package;
+    }
+  };
+
+  // Combine all features from database
+  const allFeatures = [
+    ...(template.foundation_features || []),
+    ...(template.core_industry_features || []),
+    ...(template.key_features || [])
+  ].filter((feature, index, self) => self.indexOf(feature) === index); // Remove duplicates
+
   // Convert Template to AppTemplate format
   const adaptedTemplate: AppTemplate = {
     id: template.id,
@@ -25,8 +46,8 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
       base: template.pricing.base,
       customization: template.pricing.customization,
       subscription: {
-        monthly: 299,
-        benefits: ['Regular updates', 'Support']
+        monthly: template.pricing.subscription?.monthly || 299,
+        benefits: template.pricing.subscription?.benefits || ['Regular updates', 'Premium support', 'Monthly consultations']
       },
       deposit: {
         amount: template.pricing.base * 0.3,
@@ -49,10 +70,10 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
         }
       }
     },
-    keyFeatures: template.key_features || [],
+    keyFeatures: allFeatures,
     idealFor: [template.industry || template.category],
     personalizationOptions: [],
-    icon: Package, // Default icon
+    icon: getCategoryIcon(template.category),
     popular: template.is_popular
   };
 

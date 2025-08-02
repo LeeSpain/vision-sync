@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Package, Users, Brain, LucideIcon } from 'lucide-react';
+import { Package, Users, Brain, LucideIcon, Sparkles, UtensilsCrossed, Dumbbell, Home, ShoppingCart, Heart, MapPin } from 'lucide-react';
 
 interface TemplateCategoryFilterAdapterProps {
   selectedCategory: string | 'all';
@@ -17,9 +17,24 @@ const TemplateCategoryFilterAdapter = ({
   availableCategories
 }: TemplateCategoryFilterAdapterProps) => {
   const getCategoryIcon = (category: string): LucideIcon => {
-    if (category.toLowerCase().includes('ai')) return Brain;
-    if (category.toLowerCase().includes('business')) return Users;
-    return Package;
+    switch (category) {
+      case 'Hairdressing & Beauty':
+        return Sparkles;
+      case 'Restaurant & Food Service':
+        return UtensilsCrossed;
+      case 'Fitness & Wellness':
+        return Dumbbell;
+      case 'Home Services':
+        return Home;
+      case 'Retail & E-commerce':
+        return ShoppingCart;
+      case 'Healthcare':
+        return Heart;
+      case 'Real Estate':
+        return MapPin;
+      default:
+        return Package;
+    }
   };
 
   const categories = [
