@@ -70,6 +70,8 @@ const Index = () => {
     status: project.status as any,
     category: project.category as any,
     route: project.route || `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+    image: project.image_url || project.hero_image_url,
+    billing_type: project.billing_type as any,
     actions: { view: true },
   });
 

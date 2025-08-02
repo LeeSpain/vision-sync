@@ -8,6 +8,7 @@ interface HeroBannerProps {
   description: string;
   status: 'MVP' | 'Live' | 'Beta' | 'Private' | 'For Sale' | 'Concept';
   category: 'Featured' | 'Investment' | 'For Sale' | 'Internal';
+  heroImage?: string;
   primaryCTA?: {
     text: string;
     action: () => void;
@@ -26,6 +27,7 @@ const HeroBanner = ({
   description, 
   status, 
   category, 
+  heroImage,
   primaryCTA, 
   secondaryCTA,
   backgroundPattern 
@@ -44,6 +46,18 @@ const HeroBanner = ({
 
   return (
     <section className="relative overflow-hidden bg-gradient-primary py-20 lg:py-32">
+      {/* Hero Background Image */}
+      {heroImage && (
+        <div className="absolute inset-0">
+          <img 
+            src={heroImage} 
+            alt={title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-midnight-navy/80 via-royal-purple/60 to-midnight-navy/80"></div>
+        </div>
+      )}
+      
       {/* Background Pattern */}
       {backgroundPattern && (
         <div className="absolute inset-0 opacity-10">

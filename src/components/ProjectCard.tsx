@@ -66,13 +66,30 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
       )}
 
       {/* Hero Image/Icon Section */}
-      <div className="relative aspect-video bg-gradient-to-br from-royal-purple/10 via-electric-blue/10 to-emerald-green/10 rounded-t-xl flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
-        <div className="relative z-10">
-          <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-elegant">
-            <div className="text-white text-2xl">{getCategoryIcon(category, billing_type)}</div>
-          </div>
-        </div>
+      <div className="relative aspect-video bg-gradient-to-br from-royal-purple/10 via-electric-blue/10 to-emerald-green/10 rounded-t-xl overflow-hidden">
+        {image ? (
+          <>
+            <img 
+              src={image} 
+              alt={title}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/40 via-transparent to-transparent"></div>
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+            <div className="relative z-10 flex items-center justify-center h-full">
+              <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-elegant">
+                <div className="text-white text-2xl">{getCategoryIcon(category, billing_type)}</div>
+              </div>
+            </div>
+          </>
+        )}
+        
         {/* Floating Elements */}
         <div className="absolute top-4 left-4 w-3 h-3 bg-emerald-green rounded-full opacity-60 group-hover:animate-bounce"></div>
         <div className="absolute bottom-4 right-8 w-2 h-2 bg-coral-orange rounded-full opacity-40 group-hover:animate-ping"></div>

@@ -220,6 +220,7 @@ const DynamicProjectPage = () => {
           description={project.description || 'No description available'}
           status={project.status as any}
           category={project.category as any}
+          heroImage={project.hero_image_url}
           primaryCTA={getPrimaryCTA()}
           secondaryCTA={getSecondaryCTA()}
         />
