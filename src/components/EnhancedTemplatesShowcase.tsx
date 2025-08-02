@@ -81,17 +81,33 @@ const EnhancedTemplatesShowcase = () => {
             </div>
             
             <h2 className="text-4xl md:text-6xl font-heading font-bold text-midnight-navy mb-6 leading-tight">
-              📦 Off the Shelf
+              🎨 Customize Your App
               <span className="block bg-gradient-to-r from-coral-orange via-emerald-green to-electric-blue bg-clip-text text-transparent mt-2">
-                Templates
+                In Minutes
               </span>
             </h2>
             
             <p className="text-xl md:text-2xl text-cool-gray max-w-4xl mx-auto mb-8 leading-relaxed">
-              Skip months of development with our professional app templates. 
-              <span className="font-semibold text-royal-purple"> {totalTemplates} industry-specific solutions</span> ready for 
-              immediate customization and deployment.
+              Transform any industry template into your perfect app. Add your logo, colors, and content in minutes.
+              <span className="font-semibold text-royal-purple"> {totalTemplates} professional templates</span> ready for 
+              instant customization and deployment.
             </p>
+            
+            {/* Customization Features */}
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+              <div className="flex items-center gap-2 bg-emerald-green/10 backdrop-blur-sm rounded-full px-4 py-2 border border-emerald-green/30">
+                <Palette className="h-4 w-4 text-emerald-green" />
+                <span className="text-emerald-green font-medium">Add Your Branding</span>
+              </div>
+              <div className="flex items-center gap-2 bg-royal-purple/10 backdrop-blur-sm rounded-full px-4 py-2 border border-royal-purple/30">
+                <Zap className="h-4 w-4 text-royal-purple" />
+                <span className="text-royal-purple font-medium">Instant Preview</span>
+              </div>
+              <div className="flex items-center gap-2 bg-coral-orange/10 backdrop-blur-sm rounded-full px-4 py-2 border border-coral-orange/30">
+                <Clock className="h-4 w-4 text-coral-orange" />
+                <span className="text-coral-orange font-medium">Live in 72hrs</span>
+              </div>
+            </div>
           </div>
 
           {/* Animated Statistics */}
@@ -113,10 +129,40 @@ const EnhancedTemplatesShowcase = () => {
             </div>
           </div>
 
+          {/* Customization Process Preview */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-heading font-bold text-midnight-navy text-center mb-8">
+              ✨ See How Easy It Is
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-green to-emerald-green/80 rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow">
+                  <span className="text-2xl font-bold text-white">1</span>
+                </div>
+                <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2">Choose Template</h4>
+                <p className="text-cool-gray text-sm">Pick from {totalTemplates} industry-specific templates</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-royal-purple to-royal-purple/80 rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow">
+                  <span className="text-2xl font-bold text-white">2</span>
+                </div>
+                <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2">Customize Live</h4>
+                <p className="text-cool-gray text-sm">Add your logo, colors, and content with live preview</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-coral-orange to-coral-orange/80 rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow">
+                  <span className="text-2xl font-bold text-white">3</span>
+                </div>
+                <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2">Launch Fast</h4>
+                <p className="text-cool-gray text-sm">Your customized app live in 72 hours</p>
+              </div>
+            </div>
+          </div>
+
           {/* Featured Templates Preview */}
           <div className="mb-12">
             <h3 className="text-2xl font-heading font-bold text-midnight-navy text-center mb-8">
-              🌟 Most Popular Templates
+              🌟 Most Customized Templates
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {popularTemplates.slice(0, 2).map((template, index) => {
@@ -172,38 +218,62 @@ const EnhancedTemplatesShowcase = () => {
             </div>
           </div>
 
-          {/* Industry Categories */}
+          {/* Industry Adaptation Examples */}
           <div className="mb-12">
             <h3 className="text-2xl font-heading font-bold text-midnight-navy text-center mb-8">
-              🎯 Industry Categories
+              🎯 One Template, Multiple Industries
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {categories.slice(0, 3).map((category, index) => {
-                const templateCount = templates.filter(t => t.category === category).length;
-                
-                return (
-                  <Card 
-                    key={category}
-                    className="group bg-white/70 backdrop-blur-sm border-0 hover:shadow-card transition-all duration-300 hover:scale-105 animate-slide-up"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <CardContent className="p-6 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-royal-purple to-electric-blue rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform duration-300">
-                        <Package className="h-8 w-8 text-white" />
-                      </div>
-                      <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2 group-hover:text-royal-purple transition-colors">
-                        {category}
-                      </h4>
-                      <p className="text-cool-gray text-sm mb-3">
-                        Professional templates for {category.toLowerCase()}
-                      </p>
-                      <Badge variant="outline" className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
-                        {templateCount} Templates
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              <Card className="group bg-white/70 backdrop-blur-sm border-0 hover:shadow-card transition-all duration-300 hover:scale-105">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-green to-emerald-green/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform duration-300">
+                    <Users className="h-8 w-8 text-white" />
+                  </div>
+                  <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2 group-hover:text-emerald-green transition-colors">
+                    Service Business
+                  </h4>
+                  <p className="text-cool-gray text-sm mb-3">
+                    Hair salon, massage, cleaning, consulting
+                  </p>
+                  <Badge variant="outline" className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
+                    Booking & Payments
+                  </Badge>
+                </CardContent>
+              </Card>
+              
+              <Card className="group bg-white/70 backdrop-blur-sm border-0 hover:shadow-card transition-all duration-300 hover:scale-105">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-royal-purple to-royal-purple/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform duration-300">
+                    <Package className="h-8 w-8 text-white" />
+                  </div>
+                  <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2 group-hover:text-royal-purple transition-colors">
+                    Retail Business
+                  </h4>
+                  <p className="text-cool-gray text-sm mb-3">
+                    Shop, restaurant, pharmacy, boutique
+                  </p>
+                  <Badge variant="outline" className="bg-royal-purple/10 text-royal-purple border-royal-purple/30">
+                    E-commerce Ready
+                  </Badge>
+                </CardContent>
+              </Card>
+              
+              <Card className="group bg-white/70 backdrop-blur-sm border-0 hover:shadow-card transition-all duration-300 hover:scale-105">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-coral-orange to-coral-orange/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="h-8 w-8 text-white" />
+                  </div>
+                  <h4 className="font-heading font-bold text-lg text-midnight-navy mb-2 group-hover:text-coral-orange transition-colors">
+                    Professional
+                  </h4>
+                  <p className="text-cool-gray text-sm mb-3">
+                    Lawyer, doctor, accountant, coach
+                  </p>
+                  <Badge variant="outline" className="bg-coral-orange/10 text-coral-orange border-coral-orange/30">
+                    Client Portal
+                  </Badge>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
@@ -242,25 +312,25 @@ const EnhancedTemplatesShowcase = () => {
                   Limited Time: Professional Setup Included
                 </div>
                 <h3 className="text-2xl font-heading font-bold text-midnight-navy mb-2">
-                  Transform Your Business Today
+                  Start Customizing Your App Now
                 </h3>
                 <p className="text-cool-gray">
-                  Join hundreds of businesses who've launched with our templates
+                  See your personalized app with live preview before you buy
                 </p>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/templates">
                   <Button variant="hero" size="lg" className="group animate-float shadow-glow">
-                    <Package className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                    Browse All {totalTemplates} Templates
+                    <Palette className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                    Customize Your App Now
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/contact">
+                <Link to="/templates">
                   <Button variant="outline" size="lg" className="bg-white/70 hover:bg-white/90 border-royal-purple/30 text-royal-purple hover:text-royal-purple">
                     <Sparkles className="h-5 w-5" />
-                    Get Custom Quote
+                    See All {totalTemplates} Templates
                   </Button>
                 </Link>
               </div>

@@ -103,8 +103,8 @@ const Templates = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
-              Professional app templates designed for immediate deployment. Choose from 9 industry-specific solutions 
-              with full customization options and professional support.
+              Professional app templates ready for instant customization. Choose from {templates.length} industry-specific solutions 
+              and see your personalized app with live preview before deployment.
             </p>
             
             {/* Key Benefits */}
@@ -119,11 +119,11 @@ const Templates = () => {
               </div>
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
                 <Sparkles className="h-5 w-5 text-royal-purple" />
-                <span className="font-semibold">Full Customization</span>
+                <span className="font-semibold">Live Preview</span>
               </div>
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
                 <CheckCircle className="h-5 w-5 text-electric-blue" />
-                <span className="font-semibold">Ready to Launch</span>
+                <span className="font-semibold">Your Branding</span>
               </div>
             </div>
 
@@ -180,10 +180,10 @@ const Templates = () => {
           <div className="mt-20 text-center">
             <div className="bg-gradient-card p-8 rounded-3xl border border-soft-lilac/30 max-w-4xl mx-auto">
               <h3 className="text-3xl font-heading font-bold text-midnight-navy mb-4">
-                Don't See What You Need?
+                Need Something Unique?
               </h3>
               <p className="text-xl text-cool-gray mb-6">
-                We can create a custom app template specifically for your industry or use case.
+                Can't find the perfect fit? We'll create a custom template specifically for your business needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/contact">
