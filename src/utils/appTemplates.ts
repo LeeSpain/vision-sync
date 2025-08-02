@@ -27,6 +27,27 @@ export interface AppTemplate {
       monthly: number;
       benefits: string[];
     };
+    deposit: {
+      amount: number;
+      serviceMonthly: number;
+      description: string;
+    };
+    installments: {
+      available: boolean;
+      plans: {
+        months: number;
+        monthlyAmount: number;
+        totalAmount: number;
+      }[];
+    };
+    ownership: {
+      buyOutright: number;
+      serviceContract: {
+        deposit: number;
+        monthly: number;
+        benefits: string[];
+      };
+    };
   };
   popular?: boolean;
 }
@@ -90,6 +111,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 199,
         benefits: ['Monthly updates', 'Priority support', 'Feature requests', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 750,
+        serviceMonthly: 149,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 450, totalAmount: 2700 },
+          { months: 12, monthlyAmount: 240, totalAmount: 2880 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2500,
+        serviceContract: {
+          deposit: 750,
+          monthly: 149,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Feature additions']
+        }
       }
     },
     popular: true
@@ -125,6 +166,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 249,
         benefits: ['Monthly updates', 'Priority support', 'Job tracking analytics', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 900,
+        serviceMonthly: 199,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 540, totalAmount: 3240 },
+          { months: 12, monthlyAmount: 280, totalAmount: 3360 }
+        ]
+      },
+      ownership: {
+        buyOutright: 3000,
+        serviceContract: {
+          deposit: 900,
+          monthly: 199,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Job tracking tools']
+        }
       }
     }
   },
@@ -158,6 +219,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 229,
         benefits: ['Monthly updates', 'Priority support', 'Team management tools', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 840,
+        serviceMonthly: 179,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 500, totalAmount: 3000 },
+          { months: 12, monthlyAmount: 260, totalAmount: 3120 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2800,
+        serviceContract: {
+          deposit: 840,
+          monthly: 179,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Team coordination']
+        }
       }
     }
   },
@@ -191,6 +272,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 269,
         benefits: ['Monthly updates', 'Priority support', 'Advanced reporting', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 960,
+        serviceMonthly: 219,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 580, totalAmount: 3480 },
+          { months: 12, monthlyAmount: 300, totalAmount: 3600 }
+        ]
+      },
+      ownership: {
+        buyOutright: 3200,
+        serviceContract: {
+          deposit: 960,
+          monthly: 219,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Advanced reporting tools']
+        }
       }
     },
     popular: true
@@ -225,6 +326,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 179,
         benefits: ['Monthly updates', 'Priority support', 'Portfolio enhancements', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 660,
+        serviceMonthly: 129,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 400, totalAmount: 2400 },
+          { months: 12, monthlyAmount: 210, totalAmount: 2520 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2200,
+        serviceContract: {
+          deposit: 660,
+          monthly: 129,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Portfolio tools']
+        }
       }
     }
   },
@@ -258,6 +379,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 239,
         benefits: ['Monthly updates', 'Priority support', 'Weather integrations', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 870,
+        serviceMonthly: 189,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 520, totalAmount: 3120 },
+          { months: 12, monthlyAmount: 270, totalAmount: 3240 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2900,
+        serviceContract: {
+          deposit: 870,
+          monthly: 189,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Weather features']
+        }
       }
     }
   },
@@ -291,6 +432,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 209,
         benefits: ['Monthly updates', 'Priority support', 'Health integrations', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 780,
+        serviceMonthly: 159,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 470, totalAmount: 2820 },
+          { months: 12, monthlyAmount: 245, totalAmount: 2940 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2600,
+        serviceContract: {
+          deposit: 780,
+          monthly: 159,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Health features']
+        }
       }
     }
   },
@@ -324,6 +485,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 189,
         benefits: ['Monthly updates', 'Priority support', 'Safety features', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 720,
+        serviceMonthly: 139,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 430, totalAmount: 2580 },
+          { months: 12, monthlyAmount: 225, totalAmount: 2700 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2400,
+        serviceContract: {
+          deposit: 720,
+          monthly: 139,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Safety monitoring']
+        }
       }
     }
   },
@@ -357,6 +538,26 @@ export const appTemplates: AppTemplate[] = [
       subscription: {
         monthly: 219,
         benefits: ['Monthly updates', 'Priority support', 'Location analytics', 'Backup & maintenance']
+      },
+      deposit: {
+        amount: 810,
+        serviceMonthly: 169,
+        description: 'Pay deposit + monthly service fee for ongoing management'
+      },
+      installments: {
+        available: true,
+        plans: [
+          { months: 6, monthlyAmount: 485, totalAmount: 2910 },
+          { months: 12, monthlyAmount: 250, totalAmount: 3000 }
+        ]
+      },
+      ownership: {
+        buyOutright: 2700,
+        serviceContract: {
+          deposit: 810,
+          monthly: 169,
+          benefits: ['App hosting', 'Updates & maintenance', 'Technical support', 'Location tracking']
+        }
       }
     }
   }

@@ -9,6 +9,7 @@ import { AppTemplate } from '@/utils/appTemplates';
 import { useProjectInquiry } from '@/hooks/useProjectInquiry';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { Loader2, Send } from 'lucide-react';
+import { PaymentMethodSelector, PaymentMethod } from '@/components/ui/payment-method-selector';
 
 interface TemplateInquiryFormProps {
   template: AppTemplate | null;
@@ -26,8 +27,9 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
     company: '',
     phone: '',
     inquiryType: 'purchase' as 'purchase' | 'demo' | 'partnership',
-    billingPreference: 'one-time' as 'one-time' | 'subscription',
-    customizationLevel: 'basic' as 'basic' | 'moderate' | 'extensive',
+    paymentMethod: 'one-time' as PaymentMethod,
+    ownershipPreference: 'full-ownership' as 'full-ownership' | 'managed-service' | 'hybrid',
+    serviceLevel: 'standard' as 'basic' | 'standard' | 'premium',
     message: ''
   });
 
@@ -35,15 +37,32 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
     e.preventDefault();
     if (!template) return;
 
-    const customizationPricing = {
-      basic: template.pricing.customization,
-      moderate: template.pricing.customization * 1.5,
-      extensive: template.pricing.customization * 2.5
-    };
-
-    const estimatedTotal = formData.billingPreference === 'subscription' 
-      ? template.pricing.subscription.monthly 
-      : template.pricing.base + customizationPricing[formData.customizationLevel];
+    // Calculate pricing based on payment method
+    let estimatedPrice = 0;
+    let priceDescription = '';
+    
+    switch (formData.paymentMethod) {
+      case 'one-time':
+        estimatedPrice = template.pricing.base;
+        priceDescription = 'One-time purchase';
+        break;
+      case 'subscription':
+        estimatedPrice = template.pricing.subscription.monthly;
+        priceDescription = 'Monthly subscription';
+        break;
+      case 'deposit-service':
+        estimatedPrice = template.pricing.deposit.amount;
+        priceDescription = `Deposit + ${formatPrice(template.pricing.deposit.serviceMonthly)}/month`;
+        break;
+      case 'installments':
+        estimatedPrice = template.pricing.installments.plans[0]?.monthlyAmount || 0;
+        priceDescription = `${template.pricing.installments.plans[0]?.months} monthly payments`;
+        break;
+      case 'service-contract':
+        estimatedPrice = template.pricing.ownership.serviceContract.deposit;
+        priceDescription = `Service deposit + ${formatPrice(template.pricing.ownership.serviceContract.monthly)}/month`;
+        break;
+    }
 
     const result = await submitInquiry({
       projectName: template.title,
@@ -54,21 +73,17 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
       message: `Template Inquiry: ${template.title}
 
 Phone: ${formData.phone}
-Billing Preference: ${formData.billingPreference}
-Customization Level: ${formData.customizationLevel}
-${formData.billingPreference === 'subscription' 
-  ? `Monthly Subscription: ${formatPrice(template.pricing.subscription.monthly)}/month` 
-  : `Estimated Budget: ${formatPrice(estimatedTotal)}`}
+Payment Method: ${formData.paymentMethod}
+Ownership Preference: ${formData.ownershipPreference}
+Service Level: ${formData.serviceLevel}
+Estimated Pricing: ${priceDescription}
 
 Message: ${formData.message}
 
-Template Details:
-${formData.billingPreference === 'subscription' 
-  ? `- Monthly Subscription: ${formatPrice(template.pricing.subscription.monthly)}
-- Benefits: ${template.pricing.subscription.benefits.join(', ')}` 
-  : `- Base Price: ${formatPrice(template.pricing.base)}
-- Customization: ${formatPrice(customizationPricing[formData.customizationLevel])}
-- Total Estimate: ${formatPrice(estimatedTotal)}`}`
+Payment Method Details:
+- Selected Method: ${formData.paymentMethod}
+- Estimated Price: ${formatPrice(estimatedPrice)}
+- Description: ${priceDescription}`
     });
 
     if (result.success) {
@@ -78,8 +93,9 @@ ${formData.billingPreference === 'subscription'
         company: '',
         phone: '',
         inquiryType: 'purchase',
-        billingPreference: 'one-time',
-        customizationLevel: 'basic',
+        paymentMethod: 'one-time',
+        ownershipPreference: 'full-ownership',
+        serviceLevel: 'standard',
         message: ''
       });
       onClose();
@@ -88,15 +104,32 @@ ${formData.billingPreference === 'subscription'
 
   if (!template) return null;
 
-  const customizationPricing = {
-    basic: template.pricing.customization,
-    moderate: template.pricing.customization * 1.5,
-    extensive: template.pricing.customization * 2.5
-  };
-
-  const estimatedTotal = formData.billingPreference === 'subscription' 
-    ? template.pricing.subscription.monthly 
-    : template.pricing.base + customizationPricing[formData.customizationLevel];
+  // Calculate current pricing estimate
+  let currentEstimate = 0;
+  let currentDescription = '';
+  
+  switch (formData.paymentMethod) {
+    case 'one-time':
+      currentEstimate = template.pricing.base;
+      currentDescription = 'One-time purchase';
+      break;
+    case 'subscription':
+      currentEstimate = template.pricing.subscription.monthly;
+      currentDescription = 'Monthly subscription';
+      break;
+    case 'deposit-service':
+      currentEstimate = template.pricing.deposit.amount;
+      currentDescription = `Deposit + ${formatPrice(template.pricing.deposit.serviceMonthly)}/month`;
+      break;
+    case 'installments':
+      currentEstimate = template.pricing.installments.plans[0]?.monthlyAmount || 0;
+      currentDescription = `${template.pricing.installments.plans[0]?.months} monthly payments`;
+      break;
+    case 'service-contract':
+      currentEstimate = template.pricing.ownership.serviceContract.deposit;
+      currentDescription = `Service deposit + ${formatPrice(template.pricing.ownership.serviceContract.monthly)}/month`;
+      break;
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -178,82 +211,76 @@ ${formData.billingPreference === 'subscription'
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="billingPreference">Billing Preference *</Label>
-                <Select 
-                  value={formData.billingPreference} 
-                  onValueChange={(value: 'one-time' | 'subscription') => 
-                    setFormData(prev => ({ ...prev, billingPreference: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="one-time">One-time Purchase</SelectItem>
-                    <SelectItem value="subscription">Monthly Subscription</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <Label>Payment Method *</Label>
+              <PaymentMethodSelector
+                pricing={template.pricing}
+                selectedMethod={formData.paymentMethod}
+                onMethodChange={(method) => setFormData(prev => ({ ...prev, paymentMethod: method }))}
+              />
             </div>
 
-            {formData.billingPreference === 'one-time' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="customizationLevel">Customization Level *</Label>
+                <Label htmlFor="ownershipPreference">Ownership Preference *</Label>
                 <Select 
-                  value={formData.customizationLevel} 
-                  onValueChange={(value: 'basic' | 'moderate' | 'extensive') => 
-                    setFormData(prev => ({ ...prev, customizationLevel: value }))
+                  value={formData.ownershipPreference} 
+                  onValueChange={(value: 'full-ownership' | 'managed-service' | 'hybrid') => 
+                    setFormData(prev => ({ ...prev, ownershipPreference: value }))
                   }
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="basic">Basic ({formatPrice(customizationPricing.basic)})</SelectItem>
-                    <SelectItem value="moderate">Moderate ({formatPrice(customizationPricing.moderate)})</SelectItem>
-                    <SelectItem value="extensive">Extensive ({formatPrice(customizationPricing.extensive)})</SelectItem>
+                    <SelectItem value="full-ownership">Full Ownership (I manage everything)</SelectItem>
+                    <SelectItem value="managed-service">Managed Service (You handle everything)</SelectItem>
+                    <SelectItem value="hybrid">Hybrid Approach (Shared responsibilities)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            )}
+              
+              {(formData.paymentMethod === 'service-contract' || formData.ownershipPreference === 'managed-service') && (
+                <div className="space-y-2">
+                  <Label htmlFor="serviceLevel">Service Level *</Label>
+                  <Select 
+                    value={formData.serviceLevel} 
+                    onValueChange={(value: 'basic' | 'standard' | 'premium') => 
+                      setFormData(prev => ({ ...prev, serviceLevel: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="basic">Basic (Hosting + Updates)</SelectItem>
+                      <SelectItem value="standard">Standard (+ Support + Monitoring)</SelectItem>
+                      <SelectItem value="premium">Premium (+ Custom features + Priority)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="bg-gradient-card p-4 rounded-lg border border-soft-lilac/30">
-            <h4 className="font-semibold text-midnight-navy mb-2">Pricing Estimate</h4>
-            {formData.billingPreference === 'subscription' ? (
-              <div className="space-y-3">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-royal-purple">
-                    {formatPrice(template.pricing.subscription.monthly)}/month
-                  </div>
-                  <div className="text-sm text-cool-gray">Monthly subscription</div>
-                </div>
-                <div className="space-y-1 text-sm">
-                  <div className="font-semibold text-midnight-navy">Included benefits:</div>
-                  {template.pricing.subscription.benefits.map((benefit, index) => (
-                    <div key={index} className="text-cool-gray">• {benefit}</div>
-                  ))}
-                </div>
+            <h4 className="font-semibold text-midnight-navy mb-2">Selected Pricing</h4>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-royal-purple">
+                {formatPrice(currentEstimate)}
+                {formData.paymentMethod === 'subscription' && '/month'}
+                {formData.paymentMethod === 'installments' && `/month for ${template.pricing.installments.plans[0]?.months} months`}
               </div>
-            ) : (
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-cool-gray">Base Template:</span>
-                  <span className="font-semibold">{formatPrice(template.pricing.base)}</span>
+              <div className="text-sm text-cool-gray mb-3">{currentDescription}</div>
+              
+              {(formData.paymentMethod === 'deposit-service' || formData.paymentMethod === 'service-contract') && (
+                <div className="text-xs text-royal-purple">
+                  + Monthly service fees as displayed above
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-cool-gray">Customization ({formData.customizationLevel}):</span>
-                  <span className="font-semibold">{formatPrice(customizationPricing[formData.customizationLevel])}</span>
-                </div>
-                <div className="border-t border-soft-lilac/30 pt-1 mt-2">
-                  <div className="flex justify-between font-bold text-royal-purple">
-                    <span>Estimated Total:</span>
-                    <span>{formatPrice(estimatedTotal)}</span>
-                  </div>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
