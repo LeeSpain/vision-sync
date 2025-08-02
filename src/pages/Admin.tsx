@@ -27,10 +27,12 @@ const Admin = () => {
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '') || 'overview';
+    console.log('Admin: Initial hash detected:', hash);
     setActiveSection(hash);
 
     const handleHashChange = () => {
       const newHash = window.location.hash.replace('#', '') || 'overview';
+      console.log('Admin: Hash changed to:', newHash);
       setActiveSection(newHash);
     };
 
@@ -110,6 +112,7 @@ const Admin = () => {
   }
 
   const renderContent = () => {
+    console.log('Admin: Rendering content for section:', activeSection);
     switch (activeSection) {
       case 'overview':
         return (

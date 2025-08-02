@@ -128,8 +128,11 @@ export function AdminSidebar() {
   
   const handleNavigation = (section: string) => {
     const newHash = section.replace('#', '');
+    console.log('AdminSidebar: Navigating to section:', newHash);
+    console.log('AdminSidebar: Current location before navigate:', window.location.href);
     // Simply navigate to the admin route with the hash
     navigate(`/admin#${newHash}`)
+    console.log('AdminSidebar: Navigate called with:', `/admin#${newHash}`);
   }
 
   return (
