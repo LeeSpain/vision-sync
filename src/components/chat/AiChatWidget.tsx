@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2 } from "lucide-react";
+import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Shield, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -313,23 +313,33 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
   if (isMinimized) {
     return (
-      <div className="fixed top-6 right-6 z-50 animate-fade-in">
+      <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
         <div className="relative">
           <Button
             onClick={onToggleMinimize}
             size="lg"
-            className="rounded-full h-16 w-16 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border-2 border-white/20 hover-scale group"
+            className="rounded-full h-16 w-16 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border-2 border-white/20 hover-scale group relative overflow-hidden"
           >
-            <MessageSquare className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" />
+            <div className="relative z-10 flex items-center justify-center">
+              <Shield className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+              <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+            </div>
           </Button>
           
           {/* Welcoming pulse indicator */}
           <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
           
+          {/* AI Guardian Label */}
+          <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="bg-gray-900 text-white px-2 py-1 rounded text-xs font-medium whitespace-nowrap">
+              AI Guardian
+            </div>
+          </div>
+          
           {/* Floating tooltip */}
           <div className="absolute -left-2 top-1/2 -translate-y-1/2 -translate-x-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             <div className="bg-white text-gray-800 px-3 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap border">
-              Chat with our AI Assistant
+              Chat with AI Guardian
               <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-white"></div>
             </div>
           </div>
@@ -339,7 +349,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   }
 
   return (
-    <div className="fixed top-6 right-6 z-50 w-96 h-[600px] flex flex-col animate-scale-in">
+    <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] flex flex-col animate-scale-in">
       <Card className="flex flex-col h-full shadow-2xl border-0 bg-white backdrop-blur-sm overflow-hidden">
         <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
           <CardTitle className="flex items-center gap-3">
