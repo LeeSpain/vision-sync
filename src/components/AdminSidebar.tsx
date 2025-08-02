@@ -56,10 +56,15 @@ export function AdminSidebar() {
   const collapsed = state === "collapsed"
   const location = useLocation()
   const navigate = useNavigate()
+  
+  // Route guard: Only show admin sidebar when on admin route
+  const isOnAdminPage = location.pathname === '/admin'
   const hash = location.hash || "#overview"
   
-  // Ensure we're on the admin page for hash navigation to work
-  const isOnAdminPage = location.pathname === '/admin'
+  // Don't render sidebar if not on admin page
+  if (!isOnAdminPage) {
+    return null
+  }
   
   const [projectStats, setProjectStats] = useState({
     totalProjects: 0,
@@ -126,16 +131,18 @@ export function AdminSidebar() {
     }
   };
 
-  const isActive = (path: string) => hash === path
+  // Improved active state detection - must be on admin page AND have matching hash
+  const isActive = (path: string) => {
+    return isOnAdminPage && hash === path
+  }
   
   const handleNavigation = (section: string) => {
     const newHash = section.replace('#', '');
-    // Use React Router navigate to avoid page redirects
-    if (isOnAdminPage) {
-      navigate(`/admin#${newHash}`, { replace: true });
-    } else {
-      navigate(`/admin#${newHash}`);
-    }
+    
+    // Always navigate to admin route with hash - this ensures we're on the right page
+    // Use replace: true to avoid adding extra history entries when already on admin
+    const shouldReplace = isOnAdminPage
+    navigate(`/admin#${newHash}`, { replace: shouldReplace })
   }
 
   return (
@@ -173,14 +180,15 @@ export function AdminSidebar() {
             <SidebarMenu>
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <button 
-                    onClick={() => handleNavigation(item.url)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                      isActive(item.url) 
-                        ? "bg-royal-purple text-white" 
-                        : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
-                    }`}
-                    >
+                  <SidebarMenuButton asChild>
+                    <button 
+                      onClick={() => handleNavigation(item.url)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                        isActive(item.url) 
+                          ? "bg-royal-purple text-white" 
+                          : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
+                      }`}
+                      >
                     <div className="flex items-center space-x-3">
                       <item.icon className="h-5 w-5" />
                       {!collapsed && <span>{item.title}</span>}
@@ -200,7 +208,8 @@ export function AdminSidebar() {
                         {conversationStats.totalConversations}
                       </Badge>
                     )}
-                  </button>
+                    </button>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -217,25 +226,27 @@ export function AdminSidebar() {
             <SidebarMenu>
               {quickActions.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  {item.external ? (
-                    <a 
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </a>
-                   ) : (
-                     <button 
-                       onClick={() => handleNavigation(item.url)}
-                       className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                     >
-                       <item.icon className="h-5 w-5" />
-                       {!collapsed && <span>{item.title}</span>}
-                     </button>
-                   )}
+                  <SidebarMenuButton asChild>
+                    {item.external ? (
+                      <a 
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
+                      >
+                        <item.icon className="h-5 w-5" />
+                        {!collapsed && <span>{item.title}</span>}
+                      </a>
+                     ) : (
+                       <button 
+                         onClick={() => handleNavigation(item.url)}
+                         className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
+                       >
+                         <item.icon className="h-5 w-5" />
+                         {!collapsed && <span>{item.title}</span>}
+                       </button>
+                     )}
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -246,6 +257,7 @@ export function AdminSidebar() {
         <div className="mt-auto p-4 border-t border-slate-white/10">
           <SidebarMenu>
             <SidebarMenuItem>
+              <SidebarMenuButton asChild>
                 <button 
                   onClick={() => handleNavigation('#settings')}
                   className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
@@ -257,6 +269,7 @@ export function AdminSidebar() {
                   <Settings className="h-5 w-5" />
                   {!collapsed && <span>Settings</span>}
                 </button>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </div>
