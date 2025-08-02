@@ -127,7 +127,12 @@ export function AdminSidebar() {
   
   const handleNavigation = (section: string) => {
     const newHash = section.replace('#', '');
-    window.location.hash = newHash;
+    // Ensure we stay on the admin route and only change the hash
+    if (window.location.pathname !== '/admin') {
+      window.location.href = `/admin#${newHash}`;
+    } else {
+      window.location.hash = newHash;
+    }
   }
 
   return (
