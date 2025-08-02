@@ -331,11 +331,11 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">{agentData?.name || 'AI Assistant'}</p>
-              <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+              <div className="font-semibold text-gray-900 text-sm">{agentData?.name || 'AI Assistant'}</div>
+              <div className="text-xs text-green-600 font-medium flex items-center gap-1">
                 <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
                 {showContactBadge ? 'Contact saved' : 'Ready to help'}
-              </p>
+              </div>
             </div>
           </CardTitle>
           <div className="flex items-center gap-1">
@@ -350,10 +350,10 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           </div>
         </CardHeader>
         
-        {/* Messages Area - Scrollable */}
-        <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-          <ScrollArea className="flex-1 h-full">
-            <div className="space-y-3 px-4 py-2 min-h-[300px]">
+        {/* Messages Area - Fixed height with proper scrolling */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <ScrollArea className="h-full w-full">
+            <div className="px-4 py-3 space-y-4 min-h-[300px]">
               {messages.map((message, index) => (
                 <div
                   key={message.id}
@@ -367,10 +367,10 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                         : 'bg-gray-50 border border-gray-100 text-gray-800 rounded-bl-md hover:bg-gray-100'
                     } ${message.isTyping ? 'animate-pulse' : ''}`}
                   >
-                    <p className="text-sm leading-relaxed">{message.content}</p>
-                    <p className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
+                    <div className="text-sm leading-relaxed">{message.content}</div>
+                    <div className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
+                    </div>
                   </div>
                 </div>
               ))}
