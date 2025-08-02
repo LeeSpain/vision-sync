@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Edit, Trash2, Eye, ExternalLink, Loader2, Star } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { AutoImageGenerator } from '@/components/admin/AutoImageGenerator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { toast } from 'sonner';
@@ -288,7 +289,15 @@ export function ProjectManager() {
         </div>
       </div>
 
-      {/* Image Upload Settings */}
+      {/* AI Image Generation */}
+      <AutoImageGenerator
+        onThumbnailGenerated={(url) => setNewProject({ ...newProject, image_url: url })}
+        onHeroGenerated={(url) => setNewProject({ ...newProject, hero_image_url: url })}
+        projectName={newProject.name}
+        projectDescription={newProject.description}
+      />
+
+      {/* Manual Image Upload Settings */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ImageUpload
           currentUrl={newProject.image_url}
