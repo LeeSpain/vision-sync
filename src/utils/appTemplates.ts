@@ -23,6 +23,10 @@ export interface AppTemplate {
   pricing: {
     base: number;
     customization: number;
+    subscription: {
+      monthly: number;
+      benefits: string[];
+    };
   };
   popular?: boolean;
 }
@@ -82,7 +86,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2500,
-      customization: 500
+      customization: 500,
+      subscription: {
+        monthly: 199,
+        benefits: ['Monthly updates', 'Priority support', 'Feature requests', 'Backup & maintenance']
+      }
     },
     popular: true
   },
@@ -113,7 +121,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 3000,
-      customization: 750
+      customization: 750,
+      subscription: {
+        monthly: 249,
+        benefits: ['Monthly updates', 'Priority support', 'Job tracking analytics', 'Backup & maintenance']
+      }
     }
   },
   {
@@ -142,7 +154,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2800,
-      customization: 600
+      customization: 600,
+      subscription: {
+        monthly: 229,
+        benefits: ['Monthly updates', 'Priority support', 'Team management tools', 'Backup & maintenance']
+      }
     }
   },
   {
@@ -171,7 +187,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 3200,
-      customization: 800
+      customization: 800,
+      subscription: {
+        monthly: 269,
+        benefits: ['Monthly updates', 'Priority support', 'Advanced reporting', 'Backup & maintenance']
+      }
     },
     popular: true
   },
@@ -201,7 +221,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2200,
-      customization: 450
+      customization: 450,
+      subscription: {
+        monthly: 179,
+        benefits: ['Monthly updates', 'Priority support', 'Portfolio enhancements', 'Backup & maintenance']
+      }
     }
   },
   {
@@ -230,7 +254,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2900,
-      customization: 650
+      customization: 650,
+      subscription: {
+        monthly: 239,
+        benefits: ['Monthly updates', 'Priority support', 'Weather integrations', 'Backup & maintenance']
+      }
     }
   },
   {
@@ -259,7 +287,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2600,
-      customization: 550
+      customization: 550,
+      subscription: {
+        monthly: 209,
+        benefits: ['Monthly updates', 'Priority support', 'Health integrations', 'Backup & maintenance']
+      }
     }
   },
   {
@@ -288,7 +320,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2400,
-      customization: 500
+      customization: 500,
+      subscription: {
+        monthly: 189,
+        benefits: ['Monthly updates', 'Priority support', 'Safety features', 'Backup & maintenance']
+      }
     }
   },
   {
@@ -317,7 +353,11 @@ export const appTemplates: AppTemplate[] = [
     ],
     pricing: {
       base: 2700,
-      customization: 600
+      customization: 600,
+      subscription: {
+        monthly: 219,
+        benefits: ['Monthly updates', 'Priority support', 'Location analytics', 'Backup & maintenance']
+      }
     }
   }
 ];

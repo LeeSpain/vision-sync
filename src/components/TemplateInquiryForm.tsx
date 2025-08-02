@@ -26,6 +26,7 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
     company: '',
     phone: '',
     inquiryType: 'purchase' as 'purchase' | 'demo' | 'partnership',
+    billingPreference: 'one-time' as 'one-time' | 'subscription',
     customizationLevel: 'basic' as 'basic' | 'moderate' | 'extensive',
     message: ''
   });
@@ -40,7 +41,9 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
       extensive: template.pricing.customization * 2.5
     };
 
-    const estimatedTotal = template.pricing.base + customizationPricing[formData.customizationLevel];
+    const estimatedTotal = formData.billingPreference === 'subscription' 
+      ? template.pricing.subscription.monthly 
+      : template.pricing.base + customizationPricing[formData.customizationLevel];
 
     const result = await submitInquiry({
       projectName: template.title,
@@ -51,15 +54,21 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
       message: `Template Inquiry: ${template.title}
 
 Phone: ${formData.phone}
+Billing Preference: ${formData.billingPreference}
 Customization Level: ${formData.customizationLevel}
-Estimated Budget: ${formatPrice(estimatedTotal)}
+${formData.billingPreference === 'subscription' 
+  ? `Monthly Subscription: ${formatPrice(template.pricing.subscription.monthly)}/month` 
+  : `Estimated Budget: ${formatPrice(estimatedTotal)}`}
 
 Message: ${formData.message}
 
 Template Details:
-- Base Price: ${formatPrice(template.pricing.base)}
+${formData.billingPreference === 'subscription' 
+  ? `- Monthly Subscription: ${formatPrice(template.pricing.subscription.monthly)}
+- Benefits: ${template.pricing.subscription.benefits.join(', ')}` 
+  : `- Base Price: ${formatPrice(template.pricing.base)}
 - Customization: ${formatPrice(customizationPricing[formData.customizationLevel])}
-- Total Estimate: ${formatPrice(estimatedTotal)}`
+- Total Estimate: ${formatPrice(estimatedTotal)}`}`
     });
 
     if (result.success) {
@@ -69,6 +78,7 @@ Template Details:
         company: '',
         phone: '',
         inquiryType: 'purchase',
+        billingPreference: 'one-time',
         customizationLevel: 'basic',
         message: ''
       });
@@ -84,7 +94,9 @@ Template Details:
     extensive: template.pricing.customization * 2.5
   };
 
-  const estimatedTotal = template.pricing.base + customizationPricing[formData.customizationLevel];
+  const estimatedTotal = formData.billingPreference === 'subscription' 
+    ? template.pricing.subscription.monthly 
+    : template.pricing.base + customizationPricing[formData.customizationLevel];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -146,63 +158,102 @@ Template Details:
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="inquiryType">Inquiry Type *</Label>
-              <Select 
-                value={formData.inquiryType} 
-                onValueChange={(value: 'purchase' | 'demo' | 'partnership') => 
-                  setFormData(prev => ({ ...prev, inquiryType: value }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="purchase">Purchase Template</SelectItem>
-                  <SelectItem value="demo">Request Demo</SelectItem>
-                  <SelectItem value="partnership">Partnership Inquiry</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="inquiryType">Inquiry Type *</Label>
+                <Select 
+                  value={formData.inquiryType} 
+                  onValueChange={(value: 'purchase' | 'demo' | 'partnership') => 
+                    setFormData(prev => ({ ...prev, inquiryType: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="purchase">Purchase Template</SelectItem>
+                    <SelectItem value="demo">Request Demo</SelectItem>
+                    <SelectItem value="partnership">Partnership Inquiry</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="billingPreference">Billing Preference *</Label>
+                <Select 
+                  value={formData.billingPreference} 
+                  onValueChange={(value: 'one-time' | 'subscription') => 
+                    setFormData(prev => ({ ...prev, billingPreference: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="one-time">One-time Purchase</SelectItem>
+                    <SelectItem value="subscription">Monthly Subscription</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="customizationLevel">Customization Level *</Label>
-              <Select 
-                value={formData.customizationLevel} 
-                onValueChange={(value: 'basic' | 'moderate' | 'extensive') => 
-                  setFormData(prev => ({ ...prev, customizationLevel: value }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basic">Basic ({formatPrice(customizationPricing.basic)})</SelectItem>
-                  <SelectItem value="moderate">Moderate ({formatPrice(customizationPricing.moderate)})</SelectItem>
-                  <SelectItem value="extensive">Extensive ({formatPrice(customizationPricing.extensive)})</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
+            {formData.billingPreference === 'one-time' && (
+              <div className="space-y-2">
+                <Label htmlFor="customizationLevel">Customization Level *</Label>
+                <Select 
+                  value={formData.customizationLevel} 
+                  onValueChange={(value: 'basic' | 'moderate' | 'extensive') => 
+                    setFormData(prev => ({ ...prev, customizationLevel: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="basic">Basic ({formatPrice(customizationPricing.basic)})</SelectItem>
+                    <SelectItem value="moderate">Moderate ({formatPrice(customizationPricing.moderate)})</SelectItem>
+                    <SelectItem value="extensive">Extensive ({formatPrice(customizationPricing.extensive)})</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <div className="bg-gradient-card p-4 rounded-lg border border-soft-lilac/30">
             <h4 className="font-semibold text-midnight-navy mb-2">Pricing Estimate</h4>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-cool-gray">Base Template:</span>
-                <span className="font-semibold">{formatPrice(template.pricing.base)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-cool-gray">Customization ({formData.customizationLevel}):</span>
-                <span className="font-semibold">{formatPrice(customizationPricing[formData.customizationLevel])}</span>
-              </div>
-              <div className="border-t border-soft-lilac/30 pt-1 mt-2">
-                <div className="flex justify-between font-bold text-royal-purple">
-                  <span>Estimated Total:</span>
-                  <span>{formatPrice(estimatedTotal)}</span>
+            {formData.billingPreference === 'subscription' ? (
+              <div className="space-y-3">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-royal-purple">
+                    {formatPrice(template.pricing.subscription.monthly)}/month
+                  </div>
+                  <div className="text-sm text-cool-gray">Monthly subscription</div>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div className="font-semibold text-midnight-navy">Included benefits:</div>
+                  {template.pricing.subscription.benefits.map((benefit, index) => (
+                    <div key={index} className="text-cool-gray">• {benefit}</div>
+                  ))}
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-cool-gray">Base Template:</span>
+                  <span className="font-semibold">{formatPrice(template.pricing.base)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-cool-gray">Customization ({formData.customizationLevel}):</span>
+                  <span className="font-semibold">{formatPrice(customizationPricing[formData.customizationLevel])}</span>
+                </div>
+                <div className="border-t border-soft-lilac/30 pt-1 mt-2">
+                  <div className="flex justify-between font-bold text-royal-purple">
+                    <span>Estimated Total:</span>
+                    <span>{formatPrice(estimatedTotal)}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

@@ -2,8 +2,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AppTemplate } from '@/utils/appTemplates';
-import { Star, ArrowRight, CheckCircle } from 'lucide-react';
+import { Star, ArrowRight, CheckCircle, Calendar } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { PricingToggle } from '@/components/ui/pricing-toggle';
+import { useState } from 'react';
 
 interface TemplateCardProps {
   template: AppTemplate;
@@ -13,6 +15,7 @@ interface TemplateCardProps {
 
 const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCardProps) => {
   const { formatPrice } = useCurrency();
+  const [isSubscription, setIsSubscription] = useState(false);
   const IconComponent = template.icon;
 
   return (
@@ -90,18 +93,45 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
             </div>
           </div>
 
-          <div className="bg-soft-lilac/10 rounded-lg p-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold text-midnight-navy">Starting at</div>
-                <div className="text-lg font-bold text-royal-purple">
-                  {formatPrice(template.pricing.base)}
+          <div className="space-y-3">
+            <PricingToggle 
+              isSubscription={isSubscription} 
+              onToggle={setIsSubscription} 
+            />
+            
+            <div className="bg-soft-lilac/10 rounded-lg p-3">
+              {isSubscription ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-midnight-navy flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        Monthly subscription
+                      </div>
+                      <div className="text-lg font-bold text-royal-purple">
+                        {formatPrice(template.pricing.subscription.monthly)}/month
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-cool-gray">
+                    Includes: {template.pricing.subscription.benefits.slice(0, 2).join(', ')}
+                    {template.pricing.subscription.benefits.length > 2 && '...'}
+                  </div>
                 </div>
-              </div>
-              <div className="text-xs text-cool-gray">
-                + customization from<br />
-                <span className="font-semibold text-midnight-navy">{formatPrice(template.pricing.customization)}</span>
-              </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-semibold text-midnight-navy">One-time purchase</div>
+                    <div className="text-lg font-bold text-royal-purple">
+                      {formatPrice(template.pricing.base)}
+                    </div>
+                  </div>
+                  <div className="text-xs text-cool-gray">
+                    + customization from<br />
+                    <span className="font-semibold text-midnight-navy">{formatPrice(template.pricing.customization)}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

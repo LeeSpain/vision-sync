@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { AppTemplate } from '@/utils/appTemplates';
-import { CheckCircle, Palette, Star, Users, DollarSign } from 'lucide-react';
+import { CheckCircle, Palette, Star, Users, DollarSign, Calendar } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { PricingToggle } from '@/components/ui/pricing-toggle';
+import { useState } from 'react';
 
 interface TemplateDetailModalProps {
   template: AppTemplate | null;
@@ -16,6 +18,7 @@ interface TemplateDetailModalProps {
 
 const TemplateDetailModal = ({ template, isOpen, onClose, onRequestTemplate }: TemplateDetailModalProps) => {
   const { formatPrice } = useCurrency();
+  const [isSubscription, setIsSubscription] = useState(false);
 
   if (!template) return null;
 
@@ -107,28 +110,65 @@ const TemplateDetailModal = ({ template, isOpen, onClose, onRequestTemplate }: T
             <div>
               <div className="flex items-center space-x-2 mb-3">
                 <DollarSign className="h-5 w-5 text-royal-purple" />
-                <h3 className="text-lg font-semibold text-midnight-navy">Pricing</h3>
+                <h3 className="text-lg font-semibold text-midnight-navy">Pricing Options</h3>
               </div>
-              <div className="bg-gradient-card p-4 rounded-lg border border-soft-lilac/30">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="text-sm text-cool-gray">Base Template</div>
-                    <div className="text-2xl font-bold text-royal-purple">
-                      {formatPrice(template.pricing.base)}
+              
+              <div className="space-y-4">
+                <PricingToggle 
+                  isSubscription={isSubscription} 
+                  onToggle={setIsSubscription} 
+                />
+                
+                <div className="bg-gradient-card p-4 rounded-lg border border-soft-lilac/30">
+                  {isSubscription ? (
+                    <div className="space-y-4">
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <Calendar className="h-5 w-5 text-royal-purple" />
+                          <h4 className="text-lg font-semibold text-midnight-navy">Monthly Subscription</h4>
+                        </div>
+                        <div className="text-3xl font-bold text-royal-purple mb-2">
+                          {formatPrice(template.pricing.subscription.monthly)}/month
+                        </div>
+                        <div className="text-sm text-cool-gray">
+                          Ongoing service with continuous support
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <h5 className="font-semibold text-midnight-navy">Subscription Benefits:</h5>
+                        <div className="grid gap-2">
+                          {template.pricing.subscription.benefits.map((benefit, index) => (
+                            <div key={index} className="flex items-center space-x-2">
+                              <CheckCircle className="h-4 w-4 text-emerald-green flex-shrink-0" />
+                              <span className="text-sm text-cool-gray">{benefit}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-xs text-cool-gray">
-                      Includes all core features and basic setup
+                  ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="text-sm text-cool-gray">Base Template</div>
+                        <div className="text-2xl font-bold text-royal-purple">
+                          {formatPrice(template.pricing.base)}
+                        </div>
+                        <div className="text-xs text-cool-gray">
+                          Includes all core features and basic setup
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-sm text-cool-gray">Customization</div>
+                        <div className="text-xl font-semibold text-midnight-navy">
+                          From {formatPrice(template.pricing.customization)}
+                        </div>
+                        <div className="text-xs text-cool-gray">
+                          Personalization, branding, and feature modifications
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm text-cool-gray">Customization</div>
-                    <div className="text-xl font-semibold text-midnight-navy">
-                      From {formatPrice(template.pricing.customization)}
-                    </div>
-                    <div className="text-xs text-cool-gray">
-                      Personalization, branding, and feature modifications
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

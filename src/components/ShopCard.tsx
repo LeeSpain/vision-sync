@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Package, Zap, TrendingUp, Building2 } from 'lucide-react';
+import { ArrowRight, Package, Zap, TrendingUp, Building2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ShopCardProps {
@@ -12,6 +12,8 @@ interface ShopCardProps {
   category: 'For Sale' | 'Internal' | 'Investment';
   image?: string;
   route?: string;
+  billing_type?: 'one-time' | 'subscription' | 'investment';
+  subscription_price?: number;
   onViewClick?: () => void;
 }
 
@@ -22,6 +24,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
   category,
   image,
   route,
+  billing_type,
+  subscription_price,
   onViewClick
 }) => {
   const getStatusColor = (status: string) => {
@@ -37,7 +41,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
     }
   };
 
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIcon = (category: string, billingType?: string) => {
+    if (billingType === 'subscription') return <RefreshCw className="h-4 w-4" />;
     switch (category) {
       case 'For Sale':
         return <Package className="h-4 w-4" />;
@@ -74,7 +79,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
           />
         ) : (
           <div className="w-full h-full bg-gradient-primary flex items-center justify-center">
-            {getCategoryIcon(category)}
+            {getCategoryIcon(category, billing_type)}
           </div>
         )}
         
@@ -100,12 +105,19 @@ const ShopCard: React.FC<ShopCardProps> = ({
           {description}
         </p>
 
-        {/* Category Badge */}
+        {/* Category and Billing Type Badges */}
         <div className="flex items-center justify-between">
-          <Badge variant="outline" className="text-xs">
-            {getCategoryIcon(category)}
-            <span className="ml-1">{category}</span>
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {getCategoryIcon(category, billing_type)}
+              <span className="ml-1">{category}</span>
+            </Badge>
+            {billing_type === 'subscription' && subscription_price && (
+              <Badge className="bg-electric-blue/10 text-electric-blue border-electric-blue/30 text-xs">
+                ${subscription_price}/mo
+              </Badge>
+            )}
+          </div>
 
           {/* CTA Button */}
           <Button 
