@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, sessionId, agentId } = await req.json();
+    const { message, sessionId, agentId, conversationHistory } = await req.json();
 
     if (!message) {
       throw new Error('Message is required');
@@ -24,6 +24,17 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Get existing conversation if available
+    let existingConversation = null;
+    if (sessionId) {
+      const { data } = await supabase
+        .from('ai_conversations')
+        .select('*')
+        .eq('session_id', sessionId)
+        .single();
+      existingConversation = data;
+    }
 
     // Get agent configuration and training data
     const [agentRes, settingsRes, trainingRes, projectsRes, leadsRes] = await Promise.all([
@@ -48,17 +59,48 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
+    // Extract contact information from conversation history
+    const extractContactInfo = (messages: any[]) => {
+      const allText = messages.map(m => m.content || m.message || '').join(' ').toLowerCase();
+      
+      // Extract email
+      const emailMatch = allText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+      
+      // Extract phone (various formats)
+      const phoneMatch = allText.match(/\b(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b/);
+      
+      // Extract name (look for "my name is", "I'm", "I am", etc.)
+      const nameMatch = allText.match(/(?:my name is|i'm|i am|call me|this is)\s+([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i);
+      
+      return {
+        email: emailMatch ? emailMatch[0] : null,
+        phone: phoneMatch ? phoneMatch[0].replace(/[^\d+]/g, '') : null,
+        name: nameMatch ? nameMatch[1].trim() : null
+      };
+    };
+
+    // Build conversation context
+    const fullHistory = conversationHistory || [];
+    const contactInfo = extractContactInfo(fullHistory);
+    const hasContactInfo = contactInfo.email || contactInfo.phone || contactInfo.name;
+    
+    // Determine conversation stage
+    const messageCount = fullHistory.length;
+    const needsContactInfo = messageCount > 2 && !hasContactInfo;
+
     // Build context for the AI
     const businessContext = {
       company_info: agent?.business_knowledge || {},
       services: projects.map(p => ({ name: p.name, description: p.description, category: p.category, price: p.price })),
       training_data: trainingData,
       current_leads: leadCount,
-      agent_personality: agent?.personality || 'helpful and professional'
+      agent_personality: agent?.personality || 'helpful and professional',
+      contact_info: contactInfo,
+      needs_contact_info: needsContactInfo
     };
 
-    // Create system prompt
-    const systemPrompt = `You are ${agent?.name || 'an AI assistant'} for a business platform. Your personality is: ${agent?.personality}.
+    // Create system prompt with contact collection logic
+    const systemPrompt = `You are ${agent?.name || 'an AI assistant'} for Vision-Sync, a business platform. Your personality is: ${agent?.personality}.
 
 BUSINESS CONTEXT:
 - Services: ${businessContext.services.map(s => `${s.name} (${s.category}) - ${s.description}`).join(', ')}
@@ -67,15 +109,28 @@ BUSINESS CONTEXT:
 TRAINING DATA:
 ${trainingData.map(t => `Q: ${t.question}\nA: ${t.answer}`).join('\n\n')}
 
-CONVERSATION RULES:
-1. Be ${agent?.personality}
-2. Focus on lead qualification and conversion
-3. Offer relevant services based on customer needs
-4. Always try to capture contact information
-5. If asked complex technical questions, offer to connect with a specialist
-6. Keep responses concise but informative
+CONTACT INFORMATION COLLECTED:
+- Name: ${contactInfo.name || 'Not provided'}
+- Email: ${contactInfo.email || 'Not provided'}  
+- Phone: ${contactInfo.phone || 'Not provided'}
 
-Your goal is to help customers, qualify leads, and convert prospects into sales.`;
+CONVERSATION RULES:
+1. Be ${agent?.personality} and engaging
+2. Help customers with their questions about our services
+3. ${needsContactInfo ? 'IMPORTANT: After helping with their question, naturally ask for their contact information (name, email, phone) to follow up and provide better assistance. Be conversational about it.' : 'You have their contact info, focus on providing great service and qualifying their needs.'}
+4. If they show interest in services, qualify their needs and budget
+5. Keep responses concise but informative
+6. Always be helpful and professional
+
+${needsContactInfo ? `
+CONTACT COLLECTION STRATEGY:
+- After answering their question, mention you'd love to follow up personally
+- Ask: "I'd love to follow up with more information. Could I get your name and email address?"
+- If they hesitate: "It helps me provide more personalized recommendations for your business needs"
+- Be natural and conversational, not pushy
+` : ''}
+
+Your goal is to help customers, collect contact information, and convert prospects into sales.`;
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -88,10 +143,11 @@ Your goal is to help customers, qualify leads, and convert prospects into sales.
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
+          ...fullHistory.slice(-10), // Keep last 10 messages for context
           { role: 'user', content: message }
         ],
         max_tokens: 500,
-        temperature: 0.7,
+        temperature: 0.8,
       }),
     });
 
@@ -103,35 +159,100 @@ Your goal is to help customers, qualify leads, and convert prospects into sales.
     const aiResponse = await response.json();
     const aiMessage = aiResponse.choices[0]?.message?.content || 'I apologize, but I\'m having trouble responding right now.';
 
+    // Update conversation history
+    const updatedHistory = [
+      ...fullHistory,
+      { role: 'user', content: message, timestamp: new Date().toISOString() },
+      { role: 'assistant', content: aiMessage, timestamp: new Date().toISOString() }
+    ];
+
+    // Re-extract contact info from updated conversation
+    const updatedContactInfo = extractContactInfo(updatedHistory);
+    const hasCompleteContact = updatedContactInfo.email && updatedContactInfo.name;
+
     // Check if this looks like a qualified lead
     const isQualified = message.toLowerCase().includes('price') || 
                        message.toLowerCase().includes('cost') ||
                        message.toLowerCase().includes('buy') ||
                        message.toLowerCase().includes('interested') ||
-                       message.toLowerCase().includes('contact');
+                       message.toLowerCase().includes('contact') ||
+                       hasCompleteContact;
+
+    // Calculate conversion score
+    let conversionScore = 25;
+    if (updatedContactInfo.email) conversionScore += 30;
+    if (updatedContactInfo.phone) conversionScore += 25;
+    if (updatedContactInfo.name) conversionScore += 20;
+    if (isQualified) conversionScore += 20;
+
+    // Save contact as lead if we have email
+    let leadId = null;
+    if (updatedContactInfo.email && !existingConversation?.lead_id) {
+      try {
+        const leadData = {
+          name: updatedContactInfo.name || 'Anonymous User',
+          email: updatedContactInfo.email,
+          phone: updatedContactInfo.phone,
+          source: 'ai-agent',
+          status: 'new',
+          priority: hasCompleteContact ? 'high' : 'medium',
+          form_data: {
+            conversation_summary: `AI chat conversation. Contact provided: ${updatedContactInfo.name || 'name not provided'}, ${updatedContactInfo.email}, ${updatedContactInfo.phone || 'phone not provided'}`,
+            session_id: sessionId,
+            agent_id: agentId,
+            qualification_score: conversionScore
+          },
+          notes: `Contact collected via AI chat widget. Conversation score: ${conversionScore}/100`
+        };
+
+        const { data: leadResult, error: leadError } = await supabase
+          .from('leads')
+          .insert(leadData)
+          .select('id')
+          .single();
+
+        if (!leadError && leadResult) {
+          leadId = leadResult.id;
+          console.log('Lead created successfully:', leadId);
+        } else {
+          console.error('Error creating lead:', leadError);
+        }
+      } catch (leadErr) {
+        console.error('Error in lead creation:', leadErr);
+      }
+    }
 
     // Update conversation in database
     if (sessionId) {
+      const conversationData = {
+        session_id: sessionId,
+        agent_id: agentId,
+        lead_id: leadId || existingConversation?.lead_id,
+        conversation_data: updatedHistory,
+        status: 'active',
+        lead_qualified: isQualified,
+        conversion_score: conversionScore,
+        visitor_id: `visitor_${sessionId.slice(0, 8)}`
+      };
+
       const { error: convError } = await supabase
         .from('ai_conversations')
-        .upsert({
-          session_id: sessionId,
-          agent_id: agentId,
-          conversation_data: JSON.stringify([{ type: 'user', message }, { type: 'ai', message: aiMessage }]),
-          status: 'active',
-          lead_qualified: isQualified,
-          conversion_score: isQualified ? 75 : 25
-        }, { onConflict: 'session_id' });
+        .upsert(conversationData, { onConflict: 'session_id' });
 
       if (convError) {
         console.error('Error saving conversation:', convError);
+      } else {
+        console.log('Conversation saved successfully');
       }
     }
 
     return new Response(JSON.stringify({ 
       response: aiMessage,
       qualified: isQualified,
-      sessionId 
+      sessionId,
+      conversionScore,
+      contactInfo: updatedContactInfo,
+      leadCreated: !!leadId
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

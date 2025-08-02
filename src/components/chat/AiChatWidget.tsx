@@ -15,6 +15,7 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   isTyping?: boolean;
+  role?: 'user' | 'assistant';
 }
 
 interface AiChatWidgetProps {
@@ -32,6 +33,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   const [isListening, setIsListening] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [agentData, setAgentData] = useState<any>(null);
+  const [contactInfo, setContactInfo] = useState<any>({});
+  const [showContactBadge, setShowContactBadge] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognition = useRef<any>(null);
@@ -107,7 +110,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       id: `msg_${Date.now()}`,
       type: 'user',
       content: content.trim(),
-      timestamp: new Date()
+      timestamp: new Date(),
+      role: 'user'
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -120,17 +124,26 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       type: 'ai',
       content: 'AI is typing...',
       timestamp: new Date(),
-      isTyping: true
+      isTyping: true,
+      role: 'assistant'
     };
     setMessages(prev => [...prev, typingMessage]);
 
     try {
+      // Prepare conversation history for API
+      const conversationHistory = [...messages, userMessage].map(msg => ({
+        role: msg.type === 'user' ? 'user' : 'assistant',
+        content: msg.content,
+        timestamp: msg.timestamp.toISOString()
+      }));
+
       // Call AI chat endpoint
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: {
           message: content,
           sessionId,
-          agentId: agentData?.id
+          agentId: agentData?.id,
+          conversationHistory
         }
       });
 
@@ -143,22 +156,30 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         id: `msg_${Date.now()}`,
         type: 'ai',
         content: data.response || 'I apologize, but I\'m having trouble responding right now. Please try again.',
-        timestamp: new Date()
+        timestamp: new Date(),
+        role: 'assistant'
       };
 
       setMessages(prev => [...prev, aiResponse]);
 
-      // Save conversation to database
-      try {
-        await supabase.from('ai_conversations').insert({
-          session_id: sessionId,
-          agent_id: agentData?.id,
-          conversation_data: JSON.stringify([userMessage, aiResponse]),
-          status: 'active'
-        });
-      } catch (dbError) {
-        console.error('Error saving conversation:', dbError);
+      // Handle contact information and lead creation feedback
+      if (data.contactInfo) {
+        setContactInfo(data.contactInfo);
+        if (data.contactInfo.email || data.contactInfo.phone || data.contactInfo.name) {
+          setShowContactBadge(true);
+        }
       }
+
+      // Show success message if lead was created
+      if (data.leadCreated) {
+        toast.success('Thanks! We\'ve saved your contact information and will follow up soon.', {
+          duration: 5000,
+          position: 'top-right'
+        });
+      }
+
+      // Note: Conversation saving is now handled by the edge function
+      console.log('Message sent successfully, conversation saved on server');
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -168,7 +189,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         id: `msg_${Date.now()}`,
         type: 'ai',
         content: 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.',
-        timestamp: new Date()
+        timestamp: new Date(),
+        role: 'assistant'
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -243,7 +265,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               <p className="font-semibold text-gray-900 text-sm">{agentData?.name || 'AI Assistant'}</p>
               <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                 <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                Ready to help
+                {showContactBadge ? 'Contact saved' : 'Ready to help'}
               </p>
             </div>
           </CardTitle>
@@ -361,9 +383,16 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
             {/* Status Badge */}
             <div className="flex justify-center pt-1">
-              <Badge variant="outline" className="text-xs border-primary/20 text-primary/70 bg-primary/5">
-                🔒 Secure & Private • Powered by AI
-              </Badge>
+              <div className="flex gap-2">
+                {showContactBadge && (
+                  <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
+                    ✓ Contact Saved
+                  </Badge>
+                )}
+                <Badge variant="outline" className="text-xs border-primary/20 text-primary/70 bg-primary/5">
+                  🔒 Secure & Private • Powered by AI
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
