@@ -177,17 +177,61 @@ export function ProjectManager() {
     if (!editingProject) return;
     
     try {
+      // Parse JSON fields safely
+      let installmentPlans, ownershipOptions, paymentMethods;
+      
+      try {
+        installmentPlans = JSON.parse(newProject.installment_plans);
+      } catch (e) {
+        console.error('Error parsing installment_plans:', e);
+        toast.error('Invalid installment plans format');
+        return;
+      }
+      
+      try {
+        ownershipOptions = JSON.parse(newProject.ownership_options);
+      } catch (e) {
+        console.error('Error parsing ownership_options:', e);
+        toast.error('Invalid ownership options format');
+        return;
+      }
+      
+      try {
+        paymentMethods = JSON.parse(newProject.payment_methods);
+      } catch (e) {
+        console.error('Error parsing payment_methods:', e);
+        toast.error('Invalid payment methods format');
+        return;
+      }
+
       const projectData = {
         ...newProject,
+        // Parse numeric fields
         investment_amount: newProject.investment_amount ? parseFloat(newProject.investment_amount) : undefined,
         price: newProject.price ? parseFloat(newProject.price) : undefined,
         subscription_price: newProject.subscription_price ? parseFloat(newProject.subscription_price) : undefined,
+        deposit_amount: newProject.deposit_amount ? parseFloat(newProject.deposit_amount) : undefined,
+        service_monthly: newProject.service_monthly ? parseFloat(newProject.service_monthly) : undefined,
         funding_progress: newProject.funding_progress ? parseFloat(newProject.funding_progress) : undefined,
         expected_roi: newProject.expected_roi ? parseFloat(newProject.expected_roi) : undefined,
-        investment_deadline: newProject.investment_deadline || undefined,
         investor_count: newProject.investor_count ? parseInt(newProject.investor_count) : undefined,
+        
+        // Handle date fields
+        investment_deadline: newProject.investment_deadline || undefined,
+        
+        // Handle text fields - convert empty strings to undefined
         social_proof: newProject.social_proof || undefined,
+        domain_url: newProject.domain_url || undefined,
+        industry: newProject.industry || undefined,
+        route: newProject.route || undefined,
+        
+        // Parse JSON fields
+        installment_plans: installmentPlans,
+        ownership_options: ownershipOptions,
+        payment_methods: paymentMethods,
       };
+
+      console.log('Updating project with data:', projectData);
       
       await projectManager.updateProject(editingProject.id, projectData);
       await loadProjects();
