@@ -7,6 +7,7 @@ import {
   StatsShowcase
 } from '@/components/project-template';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
+import { useCurrency } from '@/hooks/useCurrency';
 import { 
   Globe2, 
   Shield, 
@@ -26,6 +27,7 @@ import {
 } from 'lucide-react';
 
 const GlobalHealthSync = () => {
+  const { formatPrice } = useCurrency();
   const handleViewDemo = async () => {
     await supabaseLeadManager.saveProjectLead({
       project_id: 'global-health-sync',
@@ -92,9 +94,9 @@ const GlobalHealthSync = () => {
   ];
 
   const investmentMetrics = {
-    seeking: '$2.5M',
+    seeking: formatPrice(2500000),
     stage: 'MVP Stage',
-    market: '$50B Market',
+    market: `${formatPrice(50000000000)} Market`,
     timeline: '18 months',
     roi: '300% projected',
   };

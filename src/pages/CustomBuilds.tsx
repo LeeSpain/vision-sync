@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useCurrency } from '@/hooks/useCurrency';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +12,7 @@ import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { ArrowRight, Code, Smartphone, Globe, Database, Zap, Shield, Users, DollarSign } from 'lucide-react';
 
 const CustomBuilds = () => {
+  const { formatPrice } = useCurrency();
   const [projectForm, setProjectForm] = useState({
     name: '',
     email: '',
@@ -302,11 +304,11 @@ const CustomBuilds = () => {
                         <SelectValue placeholder="Select budget" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="under-25k">Under $25K</SelectItem>
-                        <SelectItem value="25k-50k">$25K - $50K</SelectItem>
-                        <SelectItem value="50k-100k">$50K - $100K</SelectItem>
-                        <SelectItem value="100k-250k">$100K - $250K</SelectItem>
-                        <SelectItem value="over-250k">Over $250K</SelectItem>
+                        <SelectItem value="under-25k">Under {formatPrice(25000)}</SelectItem>
+                        <SelectItem value="25k-50k">{formatPrice(25000)} - {formatPrice(50000)}</SelectItem>
+                        <SelectItem value="50k-100k">{formatPrice(50000)} - {formatPrice(100000)}</SelectItem>
+                        <SelectItem value="100k-250k">{formatPrice(100000)} - {formatPrice(250000)}</SelectItem>
+                        <SelectItem value="over-250k">Over {formatPrice(250000)}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

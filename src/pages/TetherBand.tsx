@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Wifi, Link, DollarSign, Eye, ExternalLink, Shield, Zap, Radio } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const TetherBand = () => {
+  const { formatPrice } = useCurrency();
   return (
     <div className="min-h-screen">
       <Header />
@@ -212,7 +214,7 @@ const TetherBand = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="text-center">
-              <div className="text-3xl font-bold text-electric-blue mb-2">$150K</div>
+              <div className="text-3xl font-bold text-electric-blue mb-2">{formatPrice(150000)}</div>
               <div className="text-cool-gray">Beta License</div>
             </div>
             <div className="text-center">

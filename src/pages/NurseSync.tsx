@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Clock, Heart, TrendingUp, Eye, ExternalLink, Users, Shield, Zap } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const NurseSync = () => {
+  const { formatPrice } = useCurrency();
   return (
     <div className="min-h-screen">
       <Header />
@@ -163,7 +165,7 @@ const NurseSync = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-green mb-2">$15M</div>
+              <div className="text-3xl font-bold text-emerald-green mb-2">{formatPrice(15000000)}</div>
               <div className="text-cool-gray">Market Opportunity</div>
             </div>
             <div className="text-center">

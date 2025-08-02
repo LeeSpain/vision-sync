@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const AiAgents = () => {
+  const { formatPrice } = useCurrency();
   const [roiInputs, setRoiInputs] = useState({
     employees: 5,
     avgSalary: 50000,
@@ -16,14 +18,14 @@ const AiAgents = () => {
 
   const calculateROI = () => {
     const annualEmployeeCost = roiInputs.employees * roiInputs.avgSalary;
-    const aiAgentCost = roiInputs.employees * 6000; // $500/month per agent
+    const aiAgentCost = roiInputs.employees * 6000; // €500/month per agent
     const annualSavings = annualEmployeeCost - aiAgentCost;
     const monthlySavings = annualSavings / 12;
     const paybackDays = Math.round((aiAgentCost / annualSavings) * 365);
     
     return {
-      annualSavings: annualSavings.toLocaleString(),
-      monthlySavings: monthlySavings.toLocaleString(),
+      annualSavings: formatPrice(annualSavings),
+      monthlySavings: formatPrice(monthlySavings),
       paybackDays,
       roiPercentage: Math.round((annualSavings / aiAgentCost) * 100)
     };
@@ -35,21 +37,21 @@ const AiAgents = () => {
     {
       company: "TechCorp Healthcare",
       industry: "Healthcare",
-      savings: "$180,000/year",
+      savings: `${formatPrice(180000)}/year`,
       improvement: "85% faster response times",
       quote: "Our AI agent handles 3,000+ patient inquiries daily, freeing our staff for critical care."
     },
     {
       company: "Urban Realty Group",
       industry: "Real Estate", 
-      savings: "$120,000/year",
+      savings: `${formatPrice(120000)}/year`,
       improvement: "300% increase in lead conversion",
       quote: "AI agents qualify leads 24/7, resulting in 40% more closed deals per month."
     },
     {
       company: "Global Services Inc",
       industry: "Business Services",
-      savings: "$250,000/year", 
+      savings: `${formatPrice(250000)}/year`, 
       improvement: "90% reduction in processing time",
       quote: "Automated our entire customer onboarding process. What took 5 days now takes 2 hours."
     }
@@ -81,7 +83,7 @@ const AiAgents = () => {
       name: "Customer Service Revolution",
       description: "Replace entire call centers with AI that never sleeps",
       icon: <MessageSquare className="h-8 w-8" />,
-      savings: "Save $120,000+ annually per agent",
+      savings: `Save ${formatPrice(120000)}+ annually per agent`,
       features: ["24/7/365 Availability", "0-second Response Time", "50+ Languages", "100% Consistency"],
       roi: "ROI: 400% in first year"
     },
@@ -121,7 +123,7 @@ const AiAgents = () => {
         <div className="relative max-w-7xl mx-auto text-center">
           <Badge className="mb-6 bg-emerald-green/20 text-emerald-green border-emerald-green/30">
             <Star className="h-4 w-4 mr-2" />
-            Join 500+ businesses already saving $2M+ monthly
+            Join 500+ businesses already saving {formatPrice(2000000)}+ monthly
           </Badge>
           <h1 className="text-5xl md:text-7xl font-heading font-bold mb-6">
             The Future of Business is{' '}
@@ -145,7 +147,7 @@ const AiAgents = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-emerald-green">$250K+</div>
+              <div className="text-3xl font-bold text-emerald-green">{formatPrice(250000)}+</div>
               <div className="text-sm opacity-80">Average Annual Savings</div>
             </div>
             <div>
@@ -210,11 +212,11 @@ const AiAgents = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-cool-gray">Annual Savings:</span>
-                    <span className="text-2xl font-bold text-emerald-green">${roi.annualSavings}</span>
+                    <span className="text-2xl font-bold text-emerald-green">{roi.annualSavings}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-cool-gray">Monthly Savings:</span>
-                    <span className="text-xl font-semibold text-emerald-green">${roi.monthlySavings}</span>
+                    <span className="text-xl font-semibold text-emerald-green">{roi.monthlySavings}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-cool-gray">ROI Percentage:</span>

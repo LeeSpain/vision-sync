@@ -9,8 +9,10 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { TrendingUp, DollarSign, Users, BarChart3, ArrowRight, Shield, Target } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const ForInvestors = () => {
+  const { formatPrice } = useCurrency();
   const [investorForm, setInvestorForm] = useState({
     name: '',
     email: '',
@@ -56,7 +58,7 @@ const ForInvestors = () => {
       title: 'Global Health-Sync',
       description: 'Revolutionary healthcare synchronization platform',
       stage: 'MVP',
-      seeking: '$500K - $2M',
+      seeking: `${formatPrice(500000)} - ${formatPrice(2000000)}`,
       timeline: '18 months',
       potential: 'High',
       market: 'Healthcare Tech'
@@ -65,7 +67,7 @@ const ForInvestors = () => {
       title: 'Nurse-Sync',
       description: 'Advanced nursing workflow management system',
       stage: 'Live',
-      seeking: '$1M - $5M',
+      seeking: `${formatPrice(1000000)} - ${formatPrice(5000000)}`,
       timeline: '12 months',
       potential: 'Very High',
       market: 'Healthcare Operations'
@@ -74,7 +76,7 @@ const ForInvestors = () => {
       title: 'AI Spain Homes',
       description: 'AI-powered real estate investment platform',
       stage: 'Concept',
-      seeking: '$250K - $1M',
+      seeking: `${formatPrice(250000)} - ${formatPrice(1000000)}`,
       timeline: '24 months',
       potential: 'High',
       market: 'PropTech'
@@ -285,11 +287,11 @@ const ForInvestors = () => {
                         <SelectValue placeholder="Select range" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="under-100k">Under $100K</SelectItem>
-                        <SelectItem value="100k-500k">$100K - $500K</SelectItem>
-                        <SelectItem value="500k-1m">$500K - $1M</SelectItem>
-                        <SelectItem value="1m-5m">$1M - $5M</SelectItem>
-                        <SelectItem value="over-5m">Over $5M</SelectItem>
+                        <SelectItem value="under-100k">Under {formatPrice(100000)}</SelectItem>
+                        <SelectItem value="100k-500k">{formatPrice(100000)} - {formatPrice(500000)}</SelectItem>
+                        <SelectItem value="500k-1m">{formatPrice(500000)} - {formatPrice(1000000)}</SelectItem>
+                        <SelectItem value="1m-5m">{formatPrice(1000000)} - {formatPrice(5000000)}</SelectItem>
+                        <SelectItem value="over-5m">Over {formatPrice(5000000)}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

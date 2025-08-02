@@ -10,8 +10,10 @@ import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package, CheckCircle } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const Index = () => {
+  const { formatPrice } = useCurrency();
   // Clean build - template components moved to /templates page
   const [contactForm, setContactForm] = useState({
     name: '',
@@ -401,7 +403,7 @@ const Index = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-emerald-green" />
-                    <span className="text-sm font-medium">Starting $2,200</span>
+                    <span className="text-sm font-medium">Starting {formatPrice(2200)}</span>
                   </div>
                 </div>
 
