@@ -393,36 +393,46 @@ const Contact = () => {
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-emerald-green/10 rounded-lg flex items-center justify-center">
-                    <Mail className="h-6 w-6 text-emerald-green" />
+              {/* Professional Contact Cards */}
+              <div className="grid gap-4">
+                <Card className="p-6 bg-gradient-to-br from-emerald-green/5 to-emerald-green/10 border-emerald-green/20 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-14 h-14 bg-emerald-green/15 rounded-xl flex items-center justify-center">
+                      <Mail className="h-7 w-7 text-emerald-green" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-midnight-navy mb-1">Email Us</h3>
+                      <p className="text-emerald-green font-medium text-lg">hello@vision-sync.com</p>
+                      <p className="text-cool-gray text-sm">Response within 24 hours</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-midnight-navy mb-1">Email Us</h3>
-                    <p className="text-cool-gray">hello@vision-sync.com</p>
-                  </div>
-                </div>
+                </Card>
 
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-royal-purple/10 rounded-lg flex items-center justify-center">
-                    <Phone className="h-6 w-6 text-royal-purple" />
+                <Card className="p-6 bg-gradient-to-br from-royal-purple/5 to-royal-purple/10 border-royal-purple/20 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-14 h-14 bg-royal-purple/15 rounded-xl flex items-center justify-center">
+                      <Phone className="h-7 w-7 text-royal-purple" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-midnight-navy mb-1">Call Us</h3>
+                      <p className="text-royal-purple font-medium text-lg">+1 (555) 123-4567</p>
+                      <p className="text-cool-gray text-sm">Monday - Friday, 9 AM - 6 PM PST</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-midnight-navy mb-1">Call Us</h3>
-                    <p className="text-cool-gray">+1 (555) 123-4567</p>
-                  </div>
-                </div>
+                </Card>
 
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-coral-orange/10 rounded-lg flex items-center justify-center">
-                    <MapPin className="h-6 w-6 text-coral-orange" />
+                <Card className="p-6 bg-gradient-to-br from-coral-orange/5 to-coral-orange/10 border-coral-orange/20 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-14 h-14 bg-coral-orange/15 rounded-xl flex items-center justify-center">
+                      <MapPin className="h-7 w-7 text-coral-orange" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-midnight-navy mb-1">Visit Us</h3>
+                      <p className="text-coral-orange font-medium text-lg">San Francisco, CA</p>
+                      <p className="text-cool-gray text-sm">Schedule an appointment</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-midnight-navy mb-1">Visit Us</h3>
-                    <p className="text-cool-gray">San Francisco, CA</p>
-                  </div>
-                </div>
+                </Card>
               </div>
 
               <div className="bg-gradient-to-r from-royal-purple/10 to-emerald-green/10 p-6 rounded-lg">
