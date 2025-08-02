@@ -29,6 +29,15 @@ const Admin = () => {
   // Get section from URL hash, default to 'overview'
   const activeSection = location.hash.replace('#', '') || 'overview';
 
+  // Scroll to top when admin section changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, [activeSection]);
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
