@@ -665,14 +665,16 @@ export function ProjectManager() {
                 Add Project
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{editingProject ? 'Edit Project' : 'Add New Project'}</DialogTitle>
                 <DialogDescription>
                   {editingProject ? 'Update project details' : 'Create a new project to showcase on your platform'}
                 </DialogDescription>
               </DialogHeader>
-              <ProjectForm />
+              <div className="max-h-[70vh] overflow-y-auto pr-2">
+                <ProjectForm />
+              </div>
             </DialogContent>
           </Dialog>
         </div>
