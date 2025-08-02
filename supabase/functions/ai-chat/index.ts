@@ -41,7 +41,7 @@ serve(async (req) => {
       supabase.from('ai_agents').select('*').eq('id', agentId).single(),
       supabase.from('ai_agent_settings').select('*'),
       supabase.from('ai_training_data').select('*').eq('is_active', true).order('priority', { ascending: false }),
-      supabase.from('projects').select('name, description, category, price, investment_amount, features').eq('visibility', 'Public'),
+      supabase.from('projects').select('name, description, category, industry, route, domain_url, price, investment_amount, subscription_price, leads_count, key_features, billing_type').eq('visibility', 'Public'),
       supabase.from('leads').select('count').eq('status', 'new').limit(1)
     ]);
 
@@ -99,12 +99,28 @@ serve(async (req) => {
       needs_contact_info: needsContactInfo
     };
 
-    // Create system prompt with contact collection logic
-    const systemPrompt = `You are ${agent?.name || 'an AI assistant'} for Vision-Sync, a business platform. Your personality is: ${agent?.personality}.
+    // Build comprehensive system prompt with project recommendations
+    const projectRecommendations = projects?.map(project => {
+      const features = project.key_features ? project.key_features.map((f: any) => f.title || f).join(', ') : '';
+      const pricing = project.price ? `$${project.price}` : 
+                     project.investment_amount ? `Investment: $${project.investment_amount}` : 
+                     project.subscription_price ? `$${project.subscription_price}/month` : 'Contact for pricing';
+      
+      return `- ${project.name} (${project.category} - ${project.industry || 'Technology'}): ${project.description}
+      Key Features: ${features}
+      Pricing: ${pricing}
+      Page Link: https://yoursite.com${project.route}
+      ${project.domain_url ? `Live Demo: ${project.domain_url}` : ''}
+      Lead Interest: ${project.leads_count || 0} inquiries`;
+    }).join('\n\n') || 'No projects available';
+
+    const systemPrompt = `You are ${agent?.name || 'an AI assistant'} for Vision-Sync, a business platform helping customers find digital solutions.
 
 BUSINESS CONTEXT:
-- Services: ${businessContext.services.map(s => `${s.name} (${s.category}) - ${s.description}`).join(', ')}
-- Current leads in pipeline: ${leadCount}
+We offer custom-built applications, investment opportunities, and ready-to-deploy solutions across various industries including Healthcare, Retail, E-commerce, Real Estate, Emergency Services, Technology, Finance, Education, Food & Beverage, Beauty & Wellness, Entertainment, and Professional Services.
+
+CURRENT PROJECTS AND SERVICES:
+${projectRecommendations}
 
 TRAINING DATA:
 ${trainingData.map(t => `Q: ${t.question}\nA: ${t.answer}`).join('\n\n')}
@@ -115,12 +131,20 @@ CONTACT INFORMATION COLLECTED:
 - Phone: ${contactInfo.phone || 'Not provided'}
 
 CONVERSATION RULES:
-1. Be ${agent?.personality} and engaging
-2. Help customers with their questions about our services
-3. ${needsContactInfo ? 'IMPORTANT: After helping with their question, naturally ask for their contact information (name, email, phone) to follow up and provide better assistance. Be conversational about it.' : 'You have their contact info, focus on providing great service and qualifying their needs.'}
-4. If they show interest in services, qualify their needs and budget
-5. Keep responses concise but informative
-6. Always be helpful and professional
+1. Keep responses VERY concise (1-2 sentences max) - be helpful but brief
+2. Naturally ask for contact information (name, email, phone) during conversation
+3. Recommend relevant projects based on user's industry/business type
+4. Always include project links when suggesting solutions
+5. For specific industries, recommend these projects:
+   - Hairdresser/Salon/Beauty → CustomBuilds Platform + Beauty & Wellness templates
+   - Healthcare/Medical → Global Health-Sync, Nurse-Sync
+   - Real Estate → AI Spain Homes
+   - Emergency Services → ICE-SOS Lite
+   - E-commerce/Marketplace → ForSale Portal, CustomBuilds Platform
+   - Investment/Finance → ForInvestors Platform
+6. Use format: "Check out [Project Name](https://yoursite.com/project-route) - it's perfect for [their industry]"
+7. Qualify leads by understanding budget, timeline, and specific needs
+8. Guide toward consultation or project inquiry
 
 ${needsContactInfo ? `
 CONTACT COLLECTION STRATEGY:
@@ -128,9 +152,9 @@ CONTACT COLLECTION STRATEGY:
 - Ask: "I'd love to follow up with more information. Could I get your name and email address?"
 - If they hesitate: "It helps me provide more personalized recommendations for your business needs"
 - Be natural and conversational, not pushy
-` : ''}
+` : 'LEAD QUALIFICATION: Focus on understanding their business needs, budget, and timeline. Provide targeted project recommendations with links.'}
 
-Your goal is to help customers, collect contact information, and convert prospects into sales.`;
+RESPONSE LENGTH: Keep ALL responses under 50 words. Be helpful but extremely concise.`;
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -146,7 +170,7 @@ Your goal is to help customers, collect contact information, and convert prospec
           ...fullHistory.slice(-10), // Keep last 10 messages for context
           { role: 'user', content: message }
         ],
-        max_tokens: 500,
+        max_tokens: 250,
         temperature: 0.8,
       }),
     });

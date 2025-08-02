@@ -250,6 +250,7 @@ export type Database = {
           hero_image_url: string | null
           id: string
           image_url: string | null
+          industry: string | null
           installment_plans: Json | null
           investment_amount: number | null
           investment_deadline: string | null
@@ -288,6 +289,7 @@ export type Database = {
           hero_image_url?: string | null
           id?: string
           image_url?: string | null
+          industry?: string | null
           installment_plans?: Json | null
           investment_amount?: number | null
           investment_deadline?: string | null
@@ -326,6 +328,7 @@ export type Database = {
           hero_image_url?: string | null
           id?: string
           image_url?: string | null
+          industry?: string | null
           installment_plans?: Json | null
           investment_amount?: number | null
           investment_deadline?: string | null

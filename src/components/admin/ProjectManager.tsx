@@ -28,6 +28,7 @@ export function ProjectManager() {
     description: '',
     route: '',
     domain_url: '',
+    industry: '',
     investment_amount: '',
     price: '',
     subscription_price: '',
@@ -99,6 +100,7 @@ export function ProjectManager() {
         description: '',
         route: '',
         domain_url: '',
+        industry: '',
         investment_amount: '',
         price: '',
         subscription_price: '',
@@ -142,6 +144,7 @@ export function ProjectManager() {
       description: project.description || '',
       route: project.route || '',
       domain_url: project.domain_url || '',
+      industry: (project as any).industry || '',
       investment_amount: project.investment_amount?.toString() || '',
       price: project.price?.toString() || '',
       subscription_price: project.subscription_price?.toString() || '',
@@ -197,6 +200,7 @@ export function ProjectManager() {
         description: '',
         route: '',
         domain_url: '',
+        industry: '',
         investment_amount: '',
         price: '',
         subscription_price: '',
@@ -464,11 +468,9 @@ export function ProjectManager() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Concept">Concept</SelectItem>
-              <SelectItem value="MVP">MVP</SelectItem>
-              <SelectItem value="Beta">Beta</SelectItem>
+              <SelectItem value="Development">Development</SelectItem>
+              <SelectItem value="Ready">Ready</SelectItem>
               <SelectItem value="Live">Live</SelectItem>
-              <SelectItem value="For Sale">For Sale</SelectItem>
-              <SelectItem value="Private">Private</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -482,24 +484,46 @@ export function ProjectManager() {
             <SelectContent>
               <SelectItem value="Investment">Investment</SelectItem>
               <SelectItem value="For Sale">For Sale</SelectItem>
-              <SelectItem value="Internal">Internal</SelectItem>
-              <SelectItem value="Custom">Custom</SelectItem>
+              <SelectItem value="Template">Template</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Visibility</label>
-          <Select value={newProject.visibility} onValueChange={(value) => setNewProject({ ...newProject, visibility: value })}>
+          <label className="block text-sm font-medium mb-2">Industry</label>
+          <Select value={newProject.industry || ''} onValueChange={(value) => setNewProject({ ...newProject, industry: value })}>
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Select industry" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Public">Public</SelectItem>
-              <SelectItem value="Private">Private</SelectItem>
+              <SelectItem value="Healthcare">Healthcare</SelectItem>
+              <SelectItem value="Retail">Retail</SelectItem>
+              <SelectItem value="E-commerce">E-commerce</SelectItem>
+              <SelectItem value="Real Estate">Real Estate</SelectItem>
+              <SelectItem value="Emergency Services">Emergency Services</SelectItem>
+              <SelectItem value="Technology">Technology</SelectItem>
+              <SelectItem value="Finance">Finance</SelectItem>
+              <SelectItem value="Education">Education</SelectItem>
+              <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
+              <SelectItem value="Beauty & Wellness">Beauty & Wellness</SelectItem>
+              <SelectItem value="Entertainment">Entertainment</SelectItem>
+              <SelectItem value="Professional Services">Professional Services</SelectItem>
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">Visibility</label>
+        <Select value={newProject.visibility} onValueChange={(value) => setNewProject({ ...newProject, visibility: value })}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Public">Public</SelectItem>
+            <SelectItem value="Private">Private</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Homepage Display Control */}
@@ -527,6 +551,7 @@ export function ProjectManager() {
             description: '',
             route: '',
             domain_url: '',
+            industry: '',
             investment_amount: '',
             price: '',
             subscription_price: '',

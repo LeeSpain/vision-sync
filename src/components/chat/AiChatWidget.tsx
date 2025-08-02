@@ -283,8 +283,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         
         {/* Messages Area - Scrollable */}
         <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-          <ScrollArea className="flex-1 px-4 py-2">
-            <div className="space-y-3">
+          <ScrollArea className="flex-1 px-4 py-2 max-h-[400px]">
+            <div className="space-y-3 min-h-0">
               {messages.map((message, index) => (
                 <div
                   key={message.id}
