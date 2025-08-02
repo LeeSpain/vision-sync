@@ -399,9 +399,11 @@ const Contact = () => {
                 </div>
                 
                 {/* AI Chat Widget - Always Open */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 h-[500px] flex flex-col">
-                  <div className="flex-1 relative">
-                    <AiChatWidget isMinimized={false} />
+                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 h-[500px] flex flex-col overflow-hidden">
+                  <div className="flex-1 relative overflow-hidden">
+                    <div className="absolute inset-0 overflow-hidden">
+                      <AiChatWidget isMinimized={false} />
+                    </div>
                   </div>
                 </div>
                 
