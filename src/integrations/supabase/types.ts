@@ -71,6 +71,7 @@ export type Database = {
           category: string
           content: Json | null
           created_at: string
+          deposit_amount: number | null
           description: string | null
           domain_url: string | null
           expected_roi: number | null
@@ -81,15 +82,19 @@ export type Database = {
           hero_image_url: string | null
           id: string
           image_url: string | null
+          installment_plans: Json | null
           investment_amount: number | null
           investment_deadline: string | null
           investor_count: number | null
           key_features: Json | null
           leads_count: number
           name: string
+          ownership_options: Json | null
+          payment_methods: Json | null
           price: number | null
           purchase_info: Json | null
           route: string | null
+          service_monthly: number | null
           social_proof: string | null
           stats: Json | null
           status: string
@@ -104,6 +109,7 @@ export type Database = {
           category?: string
           content?: Json | null
           created_at?: string
+          deposit_amount?: number | null
           description?: string | null
           domain_url?: string | null
           expected_roi?: number | null
@@ -114,15 +120,19 @@ export type Database = {
           hero_image_url?: string | null
           id?: string
           image_url?: string | null
+          installment_plans?: Json | null
           investment_amount?: number | null
           investment_deadline?: string | null
           investor_count?: number | null
           key_features?: Json | null
           leads_count?: number
           name: string
+          ownership_options?: Json | null
+          payment_methods?: Json | null
           price?: number | null
           purchase_info?: Json | null
           route?: string | null
+          service_monthly?: number | null
           social_proof?: string | null
           stats?: Json | null
           status?: string
@@ -137,6 +147,7 @@ export type Database = {
           category?: string
           content?: Json | null
           created_at?: string
+          deposit_amount?: number | null
           description?: string | null
           domain_url?: string | null
           expected_roi?: number | null
@@ -147,15 +158,19 @@ export type Database = {
           hero_image_url?: string | null
           id?: string
           image_url?: string | null
+          installment_plans?: Json | null
           investment_amount?: number | null
           investment_deadline?: string | null
           investor_count?: number | null
           key_features?: Json | null
           leads_count?: number
           name?: string
+          ownership_options?: Json | null
+          payment_methods?: Json | null
           price?: number | null
           purchase_info?: Json | null
           route?: string | null
+          service_monthly?: number | null
           social_proof?: string | null
           stats?: Json | null
           status?: string

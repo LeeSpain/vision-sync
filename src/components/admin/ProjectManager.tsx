@@ -33,6 +33,12 @@ export function ProjectManager() {
     subscription_price: '',
     subscription_period: 'monthly',
     billing_type: 'one-time',
+    // New pricing fields
+    deposit_amount: '',
+    service_monthly: '',
+    installment_plans: '[]',
+    ownership_options: '{}',
+    payment_methods: '["one-time"]',
     image_url: '',
     hero_image_url: '',
     featured: false,
