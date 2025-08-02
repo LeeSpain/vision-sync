@@ -511,7 +511,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] flex flex-col animate-scale-in">
+    <div className="fixed bottom-4 right-4 z-50 w-80 sm:w-96 max-h-[min(85vh,600px)] h-[min(85vh,600px)] flex flex-col animate-scale-in">
       <Card className="flex flex-col h-full shadow-2xl border-0 bg-white backdrop-blur-sm overflow-hidden">
         <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
           <CardTitle className="flex items-center gap-3">
