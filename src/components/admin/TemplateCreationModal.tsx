@@ -18,6 +18,35 @@ interface TemplateCreationModalProps {
   onSuccess: () => void;
 }
 
+const industryOptions = [
+  'Hairdressing & Beauty',
+  'Restaurant & Food Service',
+  'Fitness & Wellness', 
+  'Home Services',
+  'Retail & E-commerce',
+  'Healthcare',
+  'Real Estate',
+  'Education & Training',
+  'Legal Services',
+  'Automotive',
+  'Event Planning',
+  'Photography',
+  'Construction',
+  'Consulting',
+  'Other'
+];
+
+const whitelabelFields = [
+  { key: 'logo', label: 'Logo Upload', type: 'image' },
+  { key: 'primaryColor', label: 'Primary Color', type: 'color' },
+  { key: 'secondaryColor', label: 'Secondary Color', type: 'color' },
+  { key: 'businessName', label: 'Business Name', type: 'text' },
+  { key: 'businessInfo', label: 'Business Info', type: 'textarea' },
+  { key: 'contactDetails', label: 'Contact Details', type: 'textarea' },
+  { key: 'services', label: 'Services/Products', type: 'array' },
+  { key: 'gallery', label: 'Gallery Images', type: 'images' }
+];
+
 export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCreationModalProps) {
   const [formData, setFormData] = useState({
     title: '',
@@ -38,6 +67,8 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
   const [newFeature, setNewFeature] = useState('');
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [newImage, setNewImage] = useState('');
+  const [whitelabelConfig, setWhitelabelConfig] = useState<string[]>([]);
+  const [industrySpecificFeatures, setIndustrySpecificFeatures] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [aiGenerating, setAiGenerating] = useState(false);
 
@@ -66,7 +97,11 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
           pricing: formData.pricing,
           questionnaire_weight: {},
           ai_generated_content: {},
-          template_config: {}
+          template_config: {
+            whitelabel_fields: whitelabelConfig,
+            industry_features: industrySpecificFeatures,
+            customization_level: 'full'
+          }
         });
 
       if (error) throw error;
@@ -97,6 +132,8 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
     });
     setKeyFeatures([]);
     setGalleryImages([]);
+    setWhitelabelConfig([]);
+    setIndustrySpecificFeatures({});
     setNewFeature('');
     setNewImage('');
   };
@@ -165,6 +202,72 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
     }
   };
 
+  const getIndustryDefaults = (industry: string) => {
+    const defaults: any = {
+      'Hairdressing & Beauty': {
+        booking_system: true,
+        service_menu: true,
+        gallery: true,
+        staff_profiles: true,
+        loyalty_program: true
+      },
+      'Restaurant & Food Service': {
+        menu_management: true,
+        online_ordering: true,
+        table_booking: true,
+        delivery_tracking: true,
+        payment_integration: true
+      },
+      'Fitness & Wellness': {
+        class_booking: true,
+        membership_management: true,
+        workout_plans: true,
+        progress_tracking: true,
+        trainer_profiles: true
+      },
+      'Home Services': {
+        service_areas: true,
+        quote_calculator: true,
+        before_after_gallery: true,
+        scheduling: true,
+        customer_reviews: true
+      },
+      'Retail & E-commerce': {
+        product_catalog: true,
+        inventory_management: true,
+        shopping_cart: true,
+        customer_accounts: true,
+        payment_processing: true
+      }
+    };
+    return defaults[industry] || {};
+  };
+
+  const renderIndustryFeatures = (industry: string, features: any, setFeatures: any) => {
+    const industryFeatures = getIndustryDefaults(industry);
+    
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        {Object.entries(industryFeatures).map(([key, defaultValue]) => (
+          <label key={key} className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={features[key] !== undefined ? features[key] : defaultValue}
+              onChange={(e) => {
+                setFeatures((prev: any) => ({
+                  ...prev,
+                  [key]: e.target.checked
+                }));
+              }}
+              className="rounded"
+            />
+            <span className="text-sm">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+          </label>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -209,13 +312,26 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="industry">Industry</Label>
-            <Input
-              id="industry"
+            <Label htmlFor="industry">Industry *</Label>
+            <Select
               value={formData.industry}
-              onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
-              placeholder="e.g., Food & Beverage, Healthcare, Retail"
-            />
+              onValueChange={(value) => {
+                setFormData(prev => ({ ...prev, industry: value }));
+                // Auto-populate industry-specific features
+                setIndustrySpecificFeatures(getIndustryDefaults(value));
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select industry" />
+              </SelectTrigger>
+              <SelectContent>
+                {industryOptions.map((industry) => (
+                  <SelectItem key={industry} value={industry}>
+                    {industry}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex items-center gap-2">
@@ -315,6 +431,44 @@ export function TemplateCreationModal({ isOpen, onClose, onSuccess }: TemplateCr
               ))}
             </div>
           </div>
+
+          {/* Whitelabel Configuration */}
+          <div className="space-y-4 border rounded-lg p-4">
+            <h3 className="text-lg font-semibold">Client Customization Options</h3>
+            <p className="text-sm text-muted-foreground">
+              Select which elements clients can customize in their app
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {whitelabelFields.map((field) => (
+                <label key={field.key} className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={whitelabelConfig.includes(field.key)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setWhitelabelConfig([...whitelabelConfig, field.key]);
+                      } else {
+                        setWhitelabelConfig(whitelabelConfig.filter(f => f !== field.key));
+                      }
+                    }}
+                    className="rounded"
+                  />
+                  <span className="text-sm">{field.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Industry-Specific Features */}
+          {formData.industry && (
+            <div className="space-y-4 border rounded-lg p-4">
+              <h3 className="text-lg font-semibold">Industry-Specific Features</h3>
+              <p className="text-sm text-muted-foreground">
+                Configure features specific to {formData.industry}
+              </p>
+              {renderIndustryFeatures(formData.industry, industrySpecificFeatures, setIndustrySpecificFeatures)}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">

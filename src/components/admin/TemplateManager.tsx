@@ -3,11 +3,13 @@ import { Plus, Edit, Trash2, Eye, BarChart3, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { TemplateCreationModal } from './TemplateCreationModal';
 import { TemplateEditModal } from './TemplateEditModal';
 import { TemplateAnalytics } from './TemplateAnalytics';
+import { TemplatePreviewModal } from './TemplatePreviewModal';
 
 interface AppTemplate {
   id: string;
@@ -35,7 +37,12 @@ export function TemplateManager() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
+  
+  const industryFilters = ['all', 'Hairdressing & Beauty', 'Restaurant & Food Service', 'Fitness & Wellness', 
+                          'Home Services', 'Retail & E-commerce', 'Healthcare', 'Real Estate'];
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -149,6 +156,15 @@ export function TemplateManager() {
     setIsEditModalOpen(true);
   };
 
+  const handlePreview = (template: AppTemplate) => {
+    setSelectedTemplate(template);
+    setIsPreviewOpen(true);
+  };
+
+  const filteredTemplates = selectedIndustry === 'all' 
+    ? templates 
+    : templates.filter(template => template.industry === selectedIndustry);
+
   const handleCreateSuccess = () => {
     loadTemplates();
     loadStats();
@@ -188,6 +204,18 @@ export function TemplateManager() {
           <p className="text-muted-foreground">Manage your app templates and track performance</p>
         </div>
         <div className="flex gap-2">
+          <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by industry" />
+            </SelectTrigger>
+            <SelectContent>
+              {industryFilters.map((industry) => (
+                <SelectItem key={industry} value={industry}>
+                  {industry === 'all' ? 'All Industries' : industry}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Button onClick={() => setIsAnalyticsOpen(true)} variant="outline">
             <BarChart3 className="h-4 w-4 mr-2" />
             Analytics
@@ -229,7 +257,7 @@ export function TemplateManager() {
 
       {/* Templates Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {templates.map((template) => (
+        {filteredTemplates.map((template) => (
           <Card key={template.id} className="overflow-hidden">
             <div className="aspect-video bg-muted relative">
               {template.image_url ? (
@@ -255,8 +283,12 @@ export function TemplateManager() {
             <CardHeader>
               <CardTitle className="text-lg">{template.title}</CardTitle>
               <CardDescription>
-                <Badge variant="outline" className="mb-2">{template.category}</Badge>
-                <br />
+                <div className="flex gap-2 mb-2">
+                  <Badge variant="outline">{template.category}</Badge>
+                  {template.industry && (
+                    <Badge variant="secondary" className="text-xs">{template.industry}</Badge>
+                  )}
+                </div>
                 {template.description}
               </CardDescription>
             </CardHeader>
@@ -273,42 +305,71 @@ export function TemplateManager() {
                   </Badge>
                 )}
               </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleEdit(template)}
-                  className="flex-1"
-                >
-                  <Edit className="h-3 w-3 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleToggleActive(template)}
-                >
-                  <Eye className="h-3 w-3" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleTogglePopular(template)}
-                >
-                  <Wand2 className="h-3 w-3" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(template)}
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handlePreview(template)}
+                    className="flex-1"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    Preview
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleEdit(template)}
+                    className="flex-1"
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleToggleActive(template)}
+                    className="flex-1"
+                  >
+                    {template.is_active ? 'Deactivate' : 'Activate'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleTogglePopular(template)}
+                    className="flex-1"
+                  >
+                    {template.is_popular ? 'Unpopular' : 'Popular'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleDelete(template)}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {filteredTemplates.length === 0 && templates.length > 0 && (
+        <Card className="p-12 text-center">
+          <CardContent>
+            <h3 className="text-lg font-semibold mb-2">No templates found</h3>
+            <p className="text-muted-foreground mb-4">
+              No templates match the selected industry filter
+            </p>
+            <Button onClick={() => setSelectedIndustry('all')} variant="outline">
+              Show All Templates
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {templates.length === 0 && (
         <Card className="p-12 text-center">
@@ -348,6 +409,17 @@ export function TemplateManager() {
         isOpen={isAnalyticsOpen}
         onClose={() => setIsAnalyticsOpen(false)}
       />
+
+      {selectedTemplate && (
+        <TemplatePreviewModal
+          isOpen={isPreviewOpen}
+          onClose={() => {
+            setIsPreviewOpen(false);
+            setSelectedTemplate(null);
+          }}
+          template={selectedTemplate}
+        />
+      )}
     </div>
   );
 }
