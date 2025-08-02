@@ -27,14 +27,15 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/templates" element={<Templates />} />
           
-          {/* Static pages that should remain */}
+          {/* CRITICAL: Static admin and system pages MUST come before dynamic routes */}
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/*" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/ai-agents" element={<AiAgents />} />
           <Route path="/ai-agent-questionnaire" element={<AiAgentQuestionnaire />} />
           <Route path="/contact" element={<Contact />} />
           
-          {/* Dynamic project pages - catch all project routes */}
+          {/* Specific known project routes */}
           <Route path="/global-health-sync" element={<DynamicProjectPage />} />
           <Route path="/nurse-sync" element={<DynamicProjectPage />} />
           <Route path="/conneqt-central" element={<DynamicProjectPage />} />
@@ -45,7 +46,7 @@ const App = () => (
           <Route path="/for-sale" element={<DynamicProjectPage />} />
           <Route path="/custom-builds" element={<DynamicProjectPage />} />
           
-          {/* Catch-all dynamic route for any other project URLs */}
+          {/* Catch-all dynamic route for any other project URLs - MUST be last */}
           <Route path="/:projectRoute" element={<DynamicProjectPage />} />
           
           {/* 404 fallback */}
