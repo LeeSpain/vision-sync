@@ -319,28 +319,7 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Platforms for Sale */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🛒 Platforms for Sale</h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Complete solutions ready for immediate deployment and ownership transfer</p>
-            </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-                {loading ? (
-                  [...Array(2)].map((_, i) => (
-                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                  ))
-                ) : (
-                  platformsForSale.map((project, index) => (
-                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Off the Shelf - Call to Action */}
+          {/* Off the Shelf Templates */}
           <div className="mb-20">
             <div className="bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-emerald-green/5 rounded-3xl p-12 relative overflow-hidden">
               {/* Background Elements */}
@@ -426,6 +405,27 @@ const Index = () => {
                     </Button>
                   </Link>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Platforms for Sale */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🛒 Platforms for Sale</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Complete solutions ready for immediate deployment and ownership transfer</p>
+            </div>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                {loading ? (
+                  [...Array(2)].map((_, i) => (
+                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                  ))
+                ) : (
+                  platformsForSale.map((project, index) => (
+                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
+                  ))
+                )}
               </div>
             </div>
           </div>
