@@ -97,11 +97,27 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           return acc;
         }, {});
 
+        // Parse quick actions safely
+        let parsedQuickActions = ["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"];
+        
+        if (settingsMap.quick_actions) {
+          if (Array.isArray(settingsMap.quick_actions)) {
+            parsedQuickActions = settingsMap.quick_actions;
+          } else if (typeof settingsMap.quick_actions === 'string') {
+            try {
+              const parsed = JSON.parse(settingsMap.quick_actions);
+              if (Array.isArray(parsed)) {
+                parsedQuickActions = parsed.filter(action => action && action.trim()); // Remove empty actions
+              }
+            } catch (e) {
+              console.error('Error parsing quick_actions:', e);
+            }
+          }
+        }
+
         setWelcomeSettings({
           message: settingsMap.welcome_message || "Hello! I'm here to help you discover amazing digital solutions. What kind of project are you looking for today?",
-          quickActions: Array.isArray(settingsMap.quick_actions) ? settingsMap.quick_actions : 
-                       (typeof settingsMap.quick_actions === 'string' ? JSON.parse(settingsMap.quick_actions) : 
-                       ["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"]),
+          quickActions: parsedQuickActions,
           delay: parseInt(settingsMap.greeting_delay || '1000')
         });
       }
