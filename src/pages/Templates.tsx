@@ -50,12 +50,16 @@ const Templates = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent_50%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.08),transparent_50%)] pointer-events-none"></div>
+        
+        <div className="max-w-7xl mx-auto relative">
           {/* Back Link */}
           <div className="mb-8">
             <Link to="/">
-              <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
               </Button>
@@ -63,54 +67,54 @@ const Templates = () => {
           </div>
 
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
-              <Package className="h-4 w-4" />
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-6 py-3 rounded-full text-white font-medium mb-8 animate-fade-in shadow-elegant border border-white/20">
+              <Package className="h-5 w-5 text-coral-orange" />
               Ready-to-Deploy Apps
             </div>
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6">
+            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 leading-tight">
               Off the Shelf
-              <span className="block bg-gradient-to-r from-coral-orange to-emerald-green bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-coral-orange via-emerald-green to-electric-blue bg-clip-text text-transparent mt-2">
                 App Templates
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/80 max-w-4xl mx-auto mb-8">
+            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
               Professional app templates designed for immediate deployment. Choose from 9 industry-specific solutions 
               with full customization options and professional support.
             </p>
             
             {/* Key Benefits */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-white/90 mb-12">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-8 text-white mb-16">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
                 <Star className="h-5 w-5 text-coral-orange" />
-                <span className="font-medium">Professional Design</span>
+                <span className="font-semibold">Professional Design</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
                 <Rocket className="h-5 w-5 text-emerald-green" />
-                <span className="font-medium">Quick Deployment</span>
+                <span className="font-semibold">Quick Deployment</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
                 <Sparkles className="h-5 w-5 text-royal-purple" />
-                <span className="font-medium">Full Customization</span>
+                <span className="font-semibold">Full Customization</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
                 <CheckCircle className="h-5 w-5 text-electric-blue" />
-                <span className="font-medium">Ready to Launch</span>
+                <span className="font-semibold">Ready to Launch</span>
               </div>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">9</div>
-                <div className="text-white/70">App Templates</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div className="text-4xl font-bold text-white mb-2">9</div>
+                <div className="text-white/80 font-medium">App Templates</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">3</div>
-                <div className="text-white/70">Industry Categories</div>
+              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div className="text-4xl font-bold text-white mb-2">3</div>
+                <div className="text-white/80 font-medium">Industry Categories</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">72h</div>
-                <div className="text-white/70">Avg. Delivery Time</div>
+              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div className="text-4xl font-bold text-white mb-2">72h</div>
+                <div className="text-white/80 font-medium">Avg. Delivery Time</div>
               </div>
             </div>
           </div>
