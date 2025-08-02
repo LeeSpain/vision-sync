@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Clock, Heart, TrendingUp, Eye, ExternalLink, Users, Shield, Zap } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 const NurseSync = () => {
   const { formatPrice } = useCurrency();

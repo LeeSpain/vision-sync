@@ -9,7 +9,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { TrendingUp, DollarSign, Users, BarChart3, ArrowRight, Shield, Target } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 const ForInvestors = () => {
   const { formatPrice } = useCurrency();

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Wifi, Link, DollarSign, Eye, ExternalLink, Shield, Zap, Radio } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 const TetherBand = () => {
   const { formatPrice } = useCurrency();

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Shield, Smartphone, DollarSign, Eye, ExternalLink, AlertTriangle, Clock, Users } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 const IceSosLite = () => {
   const { formatPrice } = useCurrency();

@@ -1,4 +1,4 @@
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 export const useBudgetOptions = () => {
   const { formatPrice } = useCurrency();

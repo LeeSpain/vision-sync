@@ -7,7 +7,7 @@ import {
   StatsShowcase
 } from '@/components/project-template';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import { 
   Globe2, 
   Shield, 

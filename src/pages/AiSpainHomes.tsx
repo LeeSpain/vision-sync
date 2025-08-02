@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowRight, Home, Brain, TrendingUp, Eye, ExternalLink, MapPin, Euro, BarChart3 } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 const AiSpainHomes = () => {
   const { formatPrice } = useCurrency();

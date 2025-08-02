@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AppTemplate } from '@/utils/appTemplates';
 import { useProjectInquiry } from '@/hooks/useProjectInquiry';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import { Loader2, Send } from 'lucide-react';
 
 interface TemplateInquiryFormProps {

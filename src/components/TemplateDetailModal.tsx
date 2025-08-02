@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { AppTemplate } from '@/utils/appTemplates';
 import { CheckCircle, Palette, Star, Users, DollarSign } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface TemplateDetailModalProps {
   template: AppTemplate | null;

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, Package, Shield, Headphones, CheckCircle } from 'lucide-react';
 import { CurrencySelector } from '@/components/ui/currency-selector';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface PurchaseSectionProps {
   title?: string;

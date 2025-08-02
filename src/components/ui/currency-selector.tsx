@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useCurrency, type Currency } from '@/hooks/useCurrency';
+import { useCurrency, type Currency } from '@/contexts/CurrencyContext';
 
 interface CurrencySelectorProps {
   variant?: 'default' | 'compact' | 'inline';

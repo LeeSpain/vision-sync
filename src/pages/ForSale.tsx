@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { DollarSign, ShoppingCart, Download, ArrowRight, CheckCircle, Shield, Headphones } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 
 const ForSale = () => {

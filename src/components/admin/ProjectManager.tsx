@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Edit, Trash2, Eye, ExternalLink, Loader2 } from 'lucide-react';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { toast } from 'sonner';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 export function ProjectManager() {
   const [projects, setProjects] = useState<Project[]>([]);
