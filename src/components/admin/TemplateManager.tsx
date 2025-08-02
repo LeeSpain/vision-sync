@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { TemplateCreationModal } from './TemplateCreationModal';
+import { EnhancedTemplateCreationModal } from './EnhancedTemplateCreationModal';
 import { TemplateEditModal } from './TemplateEditModal';
 import { TemplateAnalytics } from './TemplateAnalytics';
 import { TemplatePreviewModal } from './TemplatePreviewModal';
@@ -400,7 +400,7 @@ export function TemplateManager() {
       )}
 
       {/* Modals */}
-      <TemplateCreationModal
+      <EnhancedTemplateCreationModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}

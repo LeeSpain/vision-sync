@@ -268,9 +268,12 @@ export type Database = {
         Row: {
           ai_generated_content: Json | null
           category: string
+          core_industry_features: Json | null
           created_at: string
+          customization_price: number | null
           description: string | null
           detailed_description: string | null
+          foundation_features: Json | null
           gallery_images: string[] | null
           id: string
           image_url: string | null
@@ -278,8 +281,10 @@ export type Database = {
           is_active: boolean | null
           is_popular: boolean | null
           key_features: Json | null
+          premium_features: Json | null
           pricing: Json | null
           questionnaire_weight: Json | null
+          sale_price: number | null
           template_config: Json | null
           title: string
           updated_at: string
@@ -287,9 +292,12 @@ export type Database = {
         Insert: {
           ai_generated_content?: Json | null
           category: string
+          core_industry_features?: Json | null
           created_at?: string
+          customization_price?: number | null
           description?: string | null
           detailed_description?: string | null
+          foundation_features?: Json | null
           gallery_images?: string[] | null
           id?: string
           image_url?: string | null
@@ -297,8 +305,10 @@ export type Database = {
           is_active?: boolean | null
           is_popular?: boolean | null
           key_features?: Json | null
+          premium_features?: Json | null
           pricing?: Json | null
           questionnaire_weight?: Json | null
+          sale_price?: number | null
           template_config?: Json | null
           title: string
           updated_at?: string
@@ -306,9 +316,12 @@ export type Database = {
         Update: {
           ai_generated_content?: Json | null
           category?: string
+          core_industry_features?: Json | null
           created_at?: string
+          customization_price?: number | null
           description?: string | null
           detailed_description?: string | null
+          foundation_features?: Json | null
           gallery_images?: string[] | null
           id?: string
           image_url?: string | null
@@ -316,8 +329,10 @@ export type Database = {
           is_active?: boolean | null
           is_popular?: boolean | null
           key_features?: Json | null
+          premium_features?: Json | null
           pricing?: Json | null
           questionnaire_weight?: Json | null
+          sale_price?: number | null
           template_config?: Json | null
           title?: string
           updated_at?: string

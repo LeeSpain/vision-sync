@@ -1,9 +1,11 @@
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AppTemplate } from '@/utils/appTemplates';
 import { Star, ArrowRight, CheckCircle, Calendar, Sparkles, Settings } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { PricingDisplay } from '@/components/ui/pricing-display';
 
 interface TemplateCardProps {
   template: AppTemplate;
@@ -13,6 +15,7 @@ interface TemplateCardProps {
 
 const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCardProps) => {
   const { formatPrice } = useCurrency();
+  const [isSubscription, setIsSubscription] = useState(false);
   const IconComponent = template.icon;
 
   return (
@@ -43,31 +46,35 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
           
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="text-xs bg-electric-blue/10 text-electric-blue border-electric-blue/40 font-medium">
-              {template.idealFor.length} Industries
+              {template.idealFor?.length || 0} Industries
             </Badge>
             <Badge variant="outline" className="text-xs bg-emerald-green/10 text-emerald-green border-emerald-green/40 font-medium">
-              {template.keyFeatures.length} Features
+              {template.keyFeatures?.length || 0} Features
             </Badge>
           </div>
           
-          <CardDescription className="text-cool-gray/90 line-clamp-2 leading-relaxed">
+          <CardDescription className="text-cool-gray leading-relaxed text-sm line-clamp-2 group-hover:text-midnight-navy/80 transition-colors">
             {template.overview}
           </CardDescription>
         </div>
       </CardHeader>
 
-      <CardContent className="py-4">
+      <CardContent className="space-y-6">
+        {/* Features Preview */}
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-semibold text-midnight-navy mb-2">Ideal for:</h4>
+            <h4 className="text-sm font-semibold text-midnight-navy mb-2 flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-emerald-green" />
+              Ideal for
+            </h4>
             <div className="flex flex-wrap gap-1">
-              {template.idealFor.slice(0, 3).map((industry, index) => (
-                <Badge key={index} variant="outline" className="text-xs bg-soft-lilac/20 text-midnight-navy border-soft-lilac/50">
+              {template.idealFor?.slice(0, 3).map((industry, index) => (
+                <Badge key={index} variant="outline" className="text-xs bg-slate-50 text-slate-600 border-slate-200">
                   {industry}
                 </Badge>
               ))}
-              {template.idealFor.length > 3 && (
-                <Badge variant="outline" className="text-xs bg-soft-lilac/20 text-midnight-navy border-soft-lilac/50">
+              {template.idealFor && template.idealFor.length > 3 && (
+                <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
                   +{template.idealFor.length - 3} more
                 </Badge>
               )}
@@ -75,78 +82,35 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-midnight-navy mb-2">Key Features:</h4>
+            <h4 className="text-sm font-semibold text-midnight-navy mb-2 flex items-center gap-2">
+              <Star className="h-4 w-4 text-electric-blue" />
+              Key Features
+            </h4>
             <div className="space-y-1">
-              {template.keyFeatures.slice(0, 3).map((feature, index) => (
-                <div key={index} className="flex items-center space-x-2 text-xs text-cool-gray">
-                  <CheckCircle className="h-3 w-3 text-emerald-green flex-shrink-0" />
-                  <span className="truncate">{feature}</span>
+              {template.keyFeatures?.slice(0, 3).map((feature, index) => (
+                <div key={index} className="text-xs text-cool-gray flex items-center gap-2">
+                  <div className="w-1 h-1 bg-electric-blue rounded-full flex-shrink-0" />
+                  {feature}
                 </div>
               ))}
-              {template.keyFeatures.length > 3 && (
-                <div className="text-xs text-royal-purple font-medium">
+              {template.keyFeatures && template.keyFeatures.length > 3 && (
+                <div className="text-xs text-electric-blue font-medium">
                   +{template.keyFeatures.length - 3} more features
                 </div>
               )}
             </div>
           </div>
+        </div>
 
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-midnight-navy mb-3">Pricing Options:</h4>
-            
-            {/* One-time Purchase */}
-            <div className="bg-gradient-to-r from-slate-50 to-blue-50/50 rounded-xl p-4 border border-slate-200/60">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="text-sm font-semibold text-midnight-navy">One-time Purchase</div>
-                    <div className="text-2xl font-bold text-royal-purple">
-                      {formatPrice(template.pricing.base)}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs text-cool-gray mb-1">Customization</div>
-                    <div className="text-sm font-semibold text-emerald-green">
-                      from {formatPrice(template.pricing.customization)}
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-emerald-green/5 rounded-lg p-2 border border-emerald-green/20">
-                  <div className="text-xs text-emerald-green font-medium">
-                    ✓ Ready to deploy • ✓ Full source code • ✓ Commercial license
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Monthly Subscription */}
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-50/50 rounded-xl p-4 border border-purple-200/60">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="text-sm font-semibold text-midnight-navy flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-royal-purple" />
-                      Monthly Subscription
-                    </div>
-                    <div className="text-2xl font-bold text-royal-purple">
-                      {formatPrice(template.pricing.subscription.monthly)}
-                      <span className="text-sm font-medium text-cool-gray">/month</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs text-cool-gray mb-1">Setup Fee</div>
-                    <div className="text-sm font-semibold text-midnight-navy">
-                      {formatPrice(typeof template.pricing.deposit === 'number' ? template.pricing.deposit : template.pricing.deposit?.amount || 0)}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-xs text-cool-gray bg-white/60 rounded-lg p-2">
-                  <span className="font-medium">Includes:</span> {template.pricing.subscription.benefits.slice(0, 2).join(', ')}
-                  {template.pricing.subscription.benefits.length > 2 && ' + more'}
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Pricing Section */}
+        <div className="space-y-3">
+          <PricingDisplay
+            salePrice={template.sale_price || template.pricing?.base || 0}
+            customizationPrice={template.customization_price || template.pricing?.customization || 0}
+            isSubscription={isSubscription}
+            onToggle={setIsSubscription}
+            showToggle={true}
+          />
         </div>
       </CardContent>
 
