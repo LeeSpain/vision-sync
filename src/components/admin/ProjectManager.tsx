@@ -119,7 +119,7 @@ export function ProjectManager() {
       billing_type: project.billing_type || 'one-time',
       image_url: project.image_url || '',
       hero_image_url: project.hero_image_url || '',
-      featured: false, // We'll add this logic based on current featured projects
+      featured: project.featured,
       gallery_images: project.gallery_images || [],
       key_features: project.key_features || [],
       stats: project.stats || [],
@@ -551,8 +551,11 @@ export function ProjectManager() {
                     {project.visibility === 'Public' && project.category === 'Internal' && (
                       <Badge variant="secondary" className="text-xs">Internal Tools</Badge>
                     )}
-                    {project.visibility === 'Public' && ['Live', 'MVP', 'Beta'].includes(project.status) && project.leads_count > 0 && (
-                      <Badge variant="default" className="text-xs bg-coral-orange">Featured Candidate</Badge>
+                    {project.featured && (
+                      <Badge variant="default" className="text-xs bg-coral-orange flex items-center gap-1">
+                        <Star className="h-3 w-3" />
+                        Featured
+                      </Badge>
                     )}
                   </div>
                 </TableCell>
