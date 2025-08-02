@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight, Sparkles, MessageSquare, Building2, Users, Target } from 'lucide-react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
+import AiChatWidget from '@/components/chat/AiChatWidget';
 
 const Contact = () => {
   const { general: budgetOptions } = useBudgetOptions();
@@ -321,9 +322,9 @@ const Contact = () => {
       {/* Contact Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Contact Questionnaire */}
-            <div>
+            <div className="order-2 lg:order-1">
               {/* Progress Bar */}
               {currentStep < 4 && (
                 <div className="mb-8">
@@ -344,7 +345,7 @@ const Contact = () => {
                 </div>
               )}
 
-              <Card className="p-8">
+              <Card className="p-8 shadow-lg border-slate-200/60">
                 {renderStep()}
                 
                 {/* Navigation Buttons */}
@@ -382,93 +383,43 @@ const Contact = () => {
               </Card>
             </div>
 
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-6">
-                  Let's Start a Conversation
-                </h2>
-                <p className="text-lg text-cool-gray mb-8">
-                  Whether you're looking to implement AI solutions, need a custom platform, or want to discuss investment opportunities, we're here to help turn your vision into reality.
-                </p>
-              </div>
-
-              {/* Professional Contact Cards */}
-              <div className="grid gap-4">
-                <Card className="p-6 bg-gradient-to-br from-emerald-green/5 to-emerald-green/10 border-emerald-green/20 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-14 h-14 bg-emerald-green/15 rounded-xl flex items-center justify-center">
-                      <Mail className="h-7 w-7 text-emerald-green" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-heading font-semibold text-midnight-navy mb-1">Email Us</h3>
-                      <p className="text-emerald-green font-medium text-lg">hello@vision-sync.com</p>
-                      <p className="text-cool-gray text-sm">Response within 24 hours</p>
-                    </div>
+            {/* AI Assistant Section */}
+            <div className="order-1 lg:order-2 lg:sticky lg:top-8">
+              <div className="bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-2xl p-8 text-white shadow-2xl">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                    <Sparkles className="h-8 w-8 text-coral-orange" />
                   </div>
-                </Card>
-
-                <Card className="p-6 bg-gradient-to-br from-royal-purple/5 to-royal-purple/10 border-royal-purple/20 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-14 h-14 bg-royal-purple/15 rounded-xl flex items-center justify-center">
-                      <Phone className="h-7 w-7 text-royal-purple" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-heading font-semibold text-midnight-navy mb-1">Call Us</h3>
-                      <p className="text-royal-purple font-medium text-lg">+1 (555) 123-4567</p>
-                      <p className="text-cool-gray text-sm">Monday - Friday, 9 AM - 6 PM PST</p>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="p-6 bg-gradient-to-br from-coral-orange/5 to-coral-orange/10 border-coral-orange/20 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-14 h-14 bg-coral-orange/15 rounded-xl flex items-center justify-center">
-                      <MapPin className="h-7 w-7 text-coral-orange" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-heading font-semibold text-midnight-navy mb-1">Visit Us</h3>
-                      <p className="text-coral-orange font-medium text-lg">San Francisco, CA</p>
-                      <p className="text-cool-gray text-sm">Schedule an appointment</p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              <div className="bg-gradient-to-r from-royal-purple/10 to-emerald-green/10 p-6 rounded-lg">
-                <h3 className="font-heading font-semibold text-midnight-navy mb-2">
-                  Response Time
-                </h3>
-                <p className="text-cool-gray">
-                  We typically respond to all inquiries within 24 hours. For urgent matters, please mention it in your message.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="w-16 h-16 bg-emerald-green/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <MessageSquare className="h-8 w-8 text-emerald-green" />
-                  </div>
-                  <h4 className="font-semibold text-midnight-navy text-sm">Quick Response</h4>
+                  <h2 className="text-2xl font-heading font-bold mb-2">
+                    AI Guardian Assistant
+                  </h2>
+                  <p className="text-white/80">
+                    Get instant answers about our services while you fill out the form
+                  </p>
                 </div>
-                <div>
-                  <div className="w-16 h-16 bg-royal-purple/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Users className="h-8 w-8 text-royal-purple" />
-                  </div>
-                  <h4 className="font-semibold text-midnight-navy text-sm">Expert Team</h4>
+                
+                {/* AI Chat Widget */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
+                  <AiChatWidget />
                 </div>
-                <div>
-                  <div className="w-16 h-16 bg-coral-orange/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Target className="h-8 w-8 text-coral-orange" />
+                
+                <div className="mt-6 text-center">
+                  <div className="flex items-center justify-center gap-4 text-sm text-white/70">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-emerald-green rounded-full animate-pulse"></div>
+                      <span>AI Available 24/7</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="h-4 w-4" />
+                      <span>Instant Responses</span>
+                    </div>
                   </div>
-                  <h4 className="font-semibold text-midnight-navy text-sm">Custom Solutions</h4>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
       <Footer />
     </div>
   );
