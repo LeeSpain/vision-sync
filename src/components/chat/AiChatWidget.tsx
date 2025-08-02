@@ -317,8 +317,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   }
 
   return (
-    <div className="fixed top-6 right-6 z-50 w-96 max-h-[calc(100vh-3rem)] flex flex-col animate-scale-in">
-      <Card className="flex-1 flex flex-col shadow-2xl border-0 bg-white backdrop-blur-sm max-h-full overflow-hidden">
+    <div className="fixed top-6 right-6 z-50 w-96 h-[600px] flex flex-col animate-scale-in">
+      <Card className="flex flex-col h-full shadow-2xl border-0 bg-white backdrop-blur-sm overflow-hidden">
         <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
           <CardTitle className="flex items-center gap-3">
             <div className="relative">
@@ -350,10 +350,10 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           </div>
         </CardHeader>
         
-        {/* Messages Area - Fixed height with proper scrolling */}
-        <div className="flex-1 min-h-0 overflow-hidden">
-          <ScrollArea className="h-full w-full">
-            <div className="px-4 py-3 space-y-4 min-h-[300px]">
+        {/* Messages Area - Properly constrained for scrolling */}
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="px-4 py-3 space-y-4">
               {messages.map((message, index) => (
                 <div
                   key={message.id}
