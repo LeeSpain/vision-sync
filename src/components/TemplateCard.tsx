@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AppTemplate } from '@/utils/appTemplates';
-import { Star, ArrowRight, CheckCircle, Calendar } from 'lucide-react';
+import { Star, ArrowRight, CheckCircle, Calendar, Sparkles, Settings } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { PricingToggle } from '@/components/ui/pricing-toggle';
 import { useState } from 'react';
@@ -139,21 +139,22 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
 
       <CardFooter className="flex gap-2 pt-4">
         <Button 
-          variant="outline" 
+          variant="premium" 
           size="sm" 
           onClick={() => onLearnMore(template)}
           className="flex-1"
         >
-          Learn More
-          <ArrowRight className="h-4 w-4 ml-1" />
+          <Settings className="h-4 w-4 mr-1" />
+          Customize This App
         </Button>
         <Button 
-          variant="premium" 
+          variant="outline" 
           size="sm" 
           onClick={() => onRequestTemplate(template)}
           className="flex-1"
         >
-          Request Template
+          <Sparkles className="h-4 w-4 mr-1" />
+          Get Quote
         </Button>
       </CardFooter>
     </Card>

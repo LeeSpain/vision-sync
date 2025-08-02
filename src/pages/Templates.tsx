@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { TemplateCardAdapter } from '@/components/TemplateCardAdapter';
 import { AppTemplate } from '@/utils/appTemplates';
-import TemplateDetailModal from '@/components/TemplateDetailModal';
 import TemplateCategoryFilterAdapter from '@/components/TemplateCategoryFilterAdapter';
-import TemplateInquiryForm from '@/components/TemplateInquiryForm';
+import TemplateCustomizationFlow from '@/components/TemplateCustomizationFlow';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { useTemplates, Template } from '@/hooks/useTemplates';
@@ -24,8 +23,7 @@ const Templates = () => {
   // Template state
   const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
-  const [showTemplateDetail, setShowTemplateDetail] = useState(false);
-  const [showTemplateInquiry, setShowTemplateInquiry] = useState(false);
+  const [showCustomizationFlow, setShowCustomizationFlow] = useState(false);
 
   // Template handlers
   const getFilteredTemplates = () => {
@@ -35,15 +33,12 @@ const Templates = () => {
     return getTemplatesByCategory(selectedCategory);
   };
 
-  const handleTemplateLearnMore = (template: AppTemplate) => {
+  const handleTemplateCustomize = (template: AppTemplate) => {
     setSelectedTemplate(template);
-    setShowTemplateDetail(true);
+    setShowCustomizationFlow(true);
   };
 
-  const handleTemplateRequest = (template: AppTemplate) => {
-    setSelectedTemplate(template);
-    setShowTemplateInquiry(true);
-  };
+  const handleTemplateRequest = handleTemplateCustomize;
 
   if (loading) {
     return (
@@ -174,7 +169,7 @@ const Templates = () => {
               >
                 <TemplateCardAdapter
                   template={template}
-                  onLearnMore={handleTemplateLearnMore}
+                  onLearnMore={handleTemplateCustomize}
                   onRequestTemplate={handleTemplateRequest}
                 />
               </div>
@@ -211,18 +206,11 @@ const Templates = () => {
 
       <Footer />
 
-      {/* Template Modals */}
-      <TemplateDetailModal
+      {/* Template Customization Flow */}
+      <TemplateCustomizationFlow
         template={selectedTemplate}
-        isOpen={showTemplateDetail}
-        onClose={() => setShowTemplateDetail(false)}
-        onRequestTemplate={handleTemplateRequest}
-      />
-      
-      <TemplateInquiryForm
-        template={selectedTemplate}
-        isOpen={showTemplateInquiry}
-        onClose={() => setShowTemplateInquiry(false)}
+        isOpen={showCustomizationFlow}
+        onClose={() => setShowCustomizationFlow(false)}
       />
     </div>
   );
