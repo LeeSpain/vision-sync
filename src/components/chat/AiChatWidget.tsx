@@ -337,8 +337,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           </CardHeader>
           
           <CardContent className="flex-1 p-0 flex flex-col min-h-0">
-            <ScrollArea className="flex-1 px-4 pt-6 pb-4">
-              <div className="space-y-4">
+            <ScrollArea className="flex-1 px-4 pb-4">
+              <div className="space-y-4 pt-8">
                 {messages.map((message, index) => (
                   <div
                     key={index}
