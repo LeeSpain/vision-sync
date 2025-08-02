@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail, RefreshCw } from 'lucide-react';
+import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail, RefreshCw, MessageCircle } from 'lucide-react';
 
 const Admin = () => {
   const location = useLocation();
@@ -130,6 +130,69 @@ const Admin = () => {
             {/* Enhanced Stats Overview */}
             <DashboardStats key={refreshKey} onStatsLoad={handleStatsLoad} />
 
+            {/* Comprehensive Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Messages Metrics */}
+              <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-cool-gray">Messages</CardTitle>
+                    <Mail className="h-4 w-4 text-electric-blue" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-midnight-navy">42</div>
+                  <div className="text-xs text-emerald-green">+5 today</div>
+                  <div className="text-xs text-cool-gray mt-1">Avg response: 2.3h</div>
+                </CardContent>
+              </Card>
+
+              {/* AI Conversations Metrics */}
+              <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-cool-gray">AI Conversations</CardTitle>
+                    <MessageCircle className="h-4 w-4 text-royal-purple" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-midnight-navy">2</div>
+                  <div className="text-xs text-royal-purple">45% qualified</div>
+                  <div className="text-xs text-cool-gray mt-1">3.2 avg score</div>
+                </CardContent>
+              </Card>
+
+              {/* Templates Performance */}
+              <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-cool-gray">Templates</CardTitle>
+                    <FileText className="h-4 w-4 text-emerald-green" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-midnight-navy">1</div>
+                  <div className="text-xs text-emerald-green">85% usage rate</div>
+                  <div className="text-xs text-cool-gray mt-1">12 inquiries</div>
+                </CardContent>
+              </Card>
+
+              {/* Content Performance */}
+              <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-cool-gray">Content</CardTitle>
+                    <Eye className="h-4 w-4 text-sky-blue" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-midnight-navy">8.5K</div>
+                  <div className="text-xs text-sky-blue">Page views</div>
+                  <div className="text-xs text-cool-gray mt-1">4.2% CTR</div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Main Dashboard Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Recent Activity - Takes 2 columns */}
@@ -141,36 +204,132 @@ const Admin = () => {
               <QuickActions stats={dashboardStats} onRefresh={handleRefresh} />
             </div>
 
-            {/* Secondary Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Advanced Analytics Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Lead Sources Chart */}
               <LeadSourceChart 
                 sourceBreakdown={dashboardStats?.sourceBreakdown} 
                 loading={!dashboardStats}
               />
               
-              {/* Business Intelligence Card */}
+              {/* Project Performance */}
               <Card className="bg-gradient-card shadow-card">
                 <CardHeader>
-                  <CardTitle className="font-heading">Business Intelligence</CardTitle>
+                  <CardTitle className="font-heading">Project Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-cool-gray">Total Projects</span>
+                      <span className="text-2xl font-bold text-midnight-navy">1</span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Live:</span>
+                        <span className="text-emerald-green font-medium">0</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Development:</span>
+                        <span className="text-electric-blue font-medium">1</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Pipeline Value:</span>
+                        <span className="text-royal-purple font-medium">€{dashboardStats?.totalPipeline?.toLocaleString() || '0'}</span>
+                      </div>
+                    </div>
+                    <div className="pt-3 border-t border-soft-lilac/30">
+                      <div className="text-sm text-cool-gray mb-2">Recent Activity</div>
+                      <div className="text-xs text-midnight-navy">+{dashboardStats?.todayLeads || 0} leads today</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* AI Agent Performance */}
+              <Card className="bg-gradient-card shadow-card">
+                <CardHeader>
+                  <CardTitle className="font-heading">AI Agent Metrics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-3 bg-gradient-subtle rounded-lg">
+                        <div className="text-xl font-bold text-royal-purple">94%</div>
+                        <div className="text-xs text-cool-gray">Satisfaction</div>
+                      </div>
+                      <div className="text-center p-3 bg-gradient-subtle rounded-lg">
+                        <div className="text-xl font-bold text-emerald-green">1.8s</div>
+                        <div className="text-xs text-cool-gray">Avg Response</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Active Agents:</span>
+                        <span className="font-medium">3</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Total Interactions:</span>
+                        <span className="font-medium">127</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Lead Generation:</span>
+                        <span className="text-emerald-green font-medium">23%</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Business Intelligence Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Revenue & Sales Intelligence */}
+              <Card className="bg-gradient-card shadow-card">
+                <CardHeader>
+                  <CardTitle className="font-heading">Revenue Intelligence</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-4 bg-gradient-subtle rounded-lg">
-                        <div className="text-2xl font-bold text-royal-purple">
-                          {dashboardStats?.avgLeadsPerDay || 0}
+                        <div className="text-2xl font-bold text-emerald-green">
+                          €{dashboardStats?.totalPipeline?.toLocaleString() || '0'}
                         </div>
-                        <div className="text-sm text-cool-gray">Avg Leads/Day</div>
+                        <div className="text-sm text-cool-gray">Total Pipeline</div>
                       </div>
                       <div className="text-center p-4 bg-gradient-subtle rounded-lg">
-                        <div className="text-2xl font-bold text-emerald-green">
+                        <div className="text-2xl font-bold text-royal-purple">
                           {dashboardStats?.conversionRate ? `${Math.round(dashboardStats.conversionRate)}%` : '0%'}
                         </div>
                         <div className="text-sm text-cool-gray">Conversion Rate</div>
                       </div>
                     </div>
                     
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Investment Pipeline:</span>
+                        <span className="text-royal-purple font-medium">€{dashboardStats?.projectStats?.revenueByBilling?.investment?.toLocaleString() || '0'}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">One-time Revenue:</span>
+                        <span className="text-emerald-green font-medium">€{dashboardStats?.projectStats?.revenueByBilling?.['one-time']?.toLocaleString() || '0'}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Monthly Recurring:</span>
+                        <span className="text-sky-blue font-medium">€{dashboardStats?.projectStats?.revenueByBilling?.subscription?.toLocaleString() || '0'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Operational Intelligence */}
+              <Card className="bg-gradient-card shadow-card">
+                <CardHeader>
+                  <CardTitle className="font-heading">Operational Metrics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
                     {dashboardStats?.followUpNeeded > 0 && (
                       <div className="p-4 bg-coral-orange/10 border border-coral-orange/30 rounded-lg">
                         <div className="flex items-center gap-2 text-coral-orange mb-1">
@@ -183,19 +342,26 @@ const Admin = () => {
                       </div>
                     )}
                     
-                    <div className="pt-2 border-t border-soft-lilac/30">
-                      <div className="text-sm text-cool-gray mb-2">Performance This Week</div>
+                    <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span>New Leads:</span>
-                        <span className="font-medium">{dashboardStats?.weekLeads || 0}</span>
+                        <span className="text-cool-gray">Avg Leads/Day:</span>
+                        <span className="font-medium">{dashboardStats?.avgLeadsPerDay || 0}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span>Qualified:</span>
-                        <span className="font-medium">{dashboardStats?.qualified || 0}</span>
+                        <span className="text-cool-gray">This Week:</span>
+                        <span className="font-medium">{dashboardStats?.weekLeads || 0} leads</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span>Converted:</span>
-                        <span className="font-medium">{dashboardStats?.converted || 0}</span>
+                        <span className="text-cool-gray">Qualified:</span>
+                        <span className="text-emerald-green font-medium">{dashboardStats?.qualified || 0}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">Converted:</span>
+                        <span className="text-royal-purple font-medium">{dashboardStats?.converted || 0}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-cool-gray">High Priority:</span>
+                        <span className="text-coral-orange font-medium">{dashboardStats?.highPriorityCount || 0}</span>
                       </div>
                     </div>
                   </div>
