@@ -25,6 +25,15 @@ const EnhancedTemplatesShowcase = () => {
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
   const [animationPhase, setAnimationPhase] = useState(0);
   
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL LOGIC
+  // Animated statistics
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimationPhase(prev => (prev + 1) % 4);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+  
   const popularTemplates = getPopularTemplates();
   const totalTemplates = templates.length;
   const categories = getAllCategories();
@@ -41,14 +50,6 @@ const EnhancedTemplatesShowcase = () => {
       </div>
     );
   }
-  
-  // Animated statistics
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimationPhase(prev => (prev + 1) % 4);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   const getAnimatedStat = () => {
     const stats = [
