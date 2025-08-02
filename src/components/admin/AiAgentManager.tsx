@@ -13,6 +13,7 @@ import { Brain, MessageSquare, Settings, Database, Mic, User, Plus, Trash2 } fro
 import { supabase } from "@/integrations/supabase/client";
 import ConversationsAnalytics from './ConversationsAnalytics';
 import AgentCreationModal from './AgentCreationModal';
+import { QuickActionsEditor } from './QuickActionsEditor';
 
 interface AiAgent {
   id: string;
