@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectCard from '@/components/ProjectCard';
+import { FeaturedProjectsCarousel } from '@/components/FeaturedProjectsCarousel';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
@@ -297,26 +298,12 @@ const Index = () => {
       {/* Projects Section */}
       <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Featured Projects */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🔥 Featured Projects</h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Flagship platforms ready for investment and growth</p>
-            </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
-                {loading ? (
-                  // Loading skeleton
-                  [...Array(3)].map((_, i) => (
-                    <div key={i} className="h-64 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                  ))
-                ) : (
-                  featuredProjects.map((project, index) => (
-                    <ProjectCard key={project.id || index} {...convertToProjectCard(project)} />
-                  ))
-                )}
-              </div>
-            </div>
+          {/* Enhanced Featured Projects Carousel */}
+          <div className="mb-32">
+            <FeaturedProjectsCarousel 
+              projects={featuredProjects} 
+              loading={loading}
+            />
           </div>
 
           {/* Off the Shelf Templates */}
