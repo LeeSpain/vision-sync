@@ -335,14 +335,22 @@ const AiAgentManager: React.FC = () => {
                     />
                   ) : setting.setting_key === 'welcome_message' ? (
                     <Textarea
-                      value={typeof setting.setting_value === 'string' ? JSON.parse(setting.setting_value || '""') : setting.setting_value}
+                      value={typeof setting.setting_value === 'string' ? (
+                        setting.setting_value.startsWith('"') ? 
+                          JSON.parse(setting.setting_value || '""') : 
+                          setting.setting_value
+                      ) : setting.setting_value}
                       onChange={(e) => updateSetting(setting.setting_key, JSON.stringify(e.target.value))}
                       placeholder="Enter welcome message"
                       rows={3}
                     />
                   ) : setting.setting_key === 'response_tone' || setting.setting_key === 'response_format' || setting.setting_key === 'emoji_usage' || setting.setting_key === 'contact_collection_timing' ? (
                     <Select
-                      value={typeof setting.setting_value === 'string' ? JSON.parse(setting.setting_value || '""') : setting.setting_value}
+                      value={typeof setting.setting_value === 'string' ? (
+                        setting.setting_value.startsWith('"') ? 
+                          JSON.parse(setting.setting_value || '""') : 
+                          setting.setting_value
+                      ) : setting.setting_value}
                       onValueChange={(value) => updateSetting(setting.setting_key, JSON.stringify(value))}
                     >
                       <SelectTrigger>
@@ -378,7 +386,11 @@ const AiAgentManager: React.FC = () => {
                   ) : (
                     <Input
                       type={setting.setting_key.includes('api_key') ? 'password' : setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length' ? 'number' : 'text'}
-                      value={typeof setting.setting_value === 'string' && (setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length') ? setting.setting_value : (typeof setting.setting_value === 'string' ? JSON.parse(setting.setting_value || '""') : setting.setting_value)}
+                      value={typeof setting.setting_value === 'string' && (setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length') ? setting.setting_value : (typeof setting.setting_value === 'string' ? (
+                        setting.setting_value.startsWith('"') ? 
+                          JSON.parse(setting.setting_value || '""') : 
+                          setting.setting_value
+                      ) : setting.setting_value)}
                       onChange={(e) => {
                         if (setting.setting_key === 'greeting_delay' || setting.setting_key === 'max_response_length') {
                           updateSetting(setting.setting_key, parseInt(e.target.value) || 0);
