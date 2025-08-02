@@ -485,11 +485,14 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           <Button
             onClick={onToggleMinimize}
             size="lg"
-            className="rounded-full h-16 w-16 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border-2 border-white/20 hover-scale group relative overflow-hidden"
+            className="rounded-full h-16 w-auto px-6 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border-2 border-white/20 hover-scale group relative overflow-hidden"
           >
-            <div className="relative z-10 flex items-center justify-center">
-              <Shield className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
-              <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+            <div className="relative z-10 flex items-center justify-center gap-3">
+              <div className="flex items-center justify-center relative">
+                <Shield className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+              </div>
+              <span className="text-white font-medium whitespace-nowrap">Talk To Us Now</span>
             </div>
           </Button>
           
@@ -500,14 +503,6 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             <div className="bg-gray-900 text-white px-2 py-1 rounded text-xs font-medium whitespace-nowrap">
               AI Guardian
-            </div>
-          </div>
-          
-          {/* Floating tooltip */}
-          <div className="absolute -left-2 top-1/2 -translate-y-1/2 -translate-x-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="bg-white text-gray-800 px-3 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap border">
-              Chat with AI Guardian
-              <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-white"></div>
             </div>
           </div>
         </div>
