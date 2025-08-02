@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
 import { 
   ArrowLeft, ArrowRight, Sparkles, Target, DollarSign, Clock, Users, Zap, 
   Palette, CheckCircle, Star, Play, Settings, Eye, Code2, Smartphone
@@ -43,6 +44,11 @@ interface QuestionnaireData {
   techComfort: string;
   budgetRange: string;
   timeline: string;
+  contactInfo: {
+    name: string;
+    email: string;
+    phone: string;
+  };
 }
 
 interface TemplateCustomizationFlowProps {
@@ -68,7 +74,12 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
     businessSize: '',
     techComfort: '',
     budgetRange: '',
-    timeline: ''
+    timeline: '',
+    contactInfo: {
+      name: '',
+      email: '',
+      phone: ''
+    }
   });
   
   const [customizationOptions, setCustomizationOptions] = useState<CustomizationOptions>({
@@ -90,7 +101,7 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
   const [recommendations, setRecommendations] = useState<any>(null);
   const [estimatedPrice, setEstimatedPrice] = useState(0);
 
-  const totalQuestionnaireSteps = 7;
+  const totalQuestionnaireSteps = 8;
   const questionnaireProgress = (questionnaireStep / totalQuestionnaireSteps) * 100;
 
   if (!template) return null;
@@ -158,6 +169,9 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
       case 5: return questionnaireData.techComfort !== '';
       case 6: return questionnaireData.budgetRange !== '';
       case 7: return questionnaireData.timeline !== '';
+      case 8: return questionnaireData.contactInfo.name !== '' && 
+                    questionnaireData.contactInfo.email !== '' && 
+                    questionnaireData.contactInfo.phone !== '';
       default: return false;
     }
   };
@@ -200,7 +214,7 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
   const handleFinalSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Save the complete customization request
+      // Prepare the customization data for email
       const customizationRequest = {
         template: template,
         questionnaire: questionnaireData,
@@ -208,10 +222,26 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
         estimatedPrice: estimatedPrice
       };
 
-      sessionStorage.setItem('templateCustomizationRequest', JSON.stringify(customizationRequest));
-      navigate('/contact');
+      // Send email with customization details
+      const { error } = await supabase.functions.invoke('send-customization-email', {
+        body: {
+          clientInfo: questionnaireData.contactInfo,
+          customizationData: customizationRequest
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success(
+        `Thank you ${questionnaireData.contactInfo.name}! We've sent your customization proposal to ${questionnaireData.contactInfo.email}. We'll contact you within 24 hours to discuss next steps.`
+      );
+      
+      onClose();
     } catch (error) {
       console.error('Error submitting customization:', error);
+      toast.error('Something went wrong. Please try again or contact us directly.');
     } finally {
       setIsSubmitting(false);
     }
@@ -482,6 +512,60 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
                 </Label>
               </div>
             </RadioGroup>
+          </div>
+        );
+
+      case 8:
+        return (
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <Users className="h-12 w-12 text-primary mx-auto" />
+              <h3 className="text-2xl font-bold">Your Contact Information</h3>
+              <p className="text-muted-foreground">We'll use this to send you the customization proposal</p>
+            </div>
+            <div className="space-y-4 max-w-md mx-auto">
+              <div>
+                <Label htmlFor="contact-name">Full Name *</Label>
+                <Input
+                  id="contact-name"
+                  value={questionnaireData.contactInfo.name}
+                  onChange={(e) => setQuestionnaireData(prev => ({
+                    ...prev,
+                    contactInfo: { ...prev.contactInfo, name: e.target.value }
+                  }))}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="contact-email">Email Address *</Label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  value={questionnaireData.contactInfo.email}
+                  onChange={(e) => setQuestionnaireData(prev => ({
+                    ...prev,
+                    contactInfo: { ...prev.contactInfo, email: e.target.value }
+                  }))}
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="contact-phone">Phone Number *</Label>
+                <Input
+                  id="contact-phone"
+                  type="tel"
+                  value={questionnaireData.contactInfo.phone}
+                  onChange={(e) => setQuestionnaireData(prev => ({
+                    ...prev,
+                    contactInfo: { ...prev.contactInfo, phone: e.target.value }
+                  }))}
+                  placeholder="Enter your phone number"
+                  required
+                />
+              </div>
+            </div>
           </div>
         );
 
