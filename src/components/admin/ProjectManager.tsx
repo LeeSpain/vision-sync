@@ -310,10 +310,40 @@ export function ProjectManager() {
           <SelectContent>
             <SelectItem value="one-time">One-time Purchase</SelectItem>
             <SelectItem value="subscription">Subscription</SelectItem>
+            <SelectItem value="deposit-subscription">Deposit + Subscription</SelectItem>
             <SelectItem value="investment">Investment</SelectItem>
           </SelectContent>
         </Select>
       </div>
+
+      {/* Deposit + Subscription Fields */}
+      {newProject.billing_type === 'deposit-subscription' && (
+        <div className="space-y-4 p-4 bg-soft-lilac/10 rounded-lg border border-soft-lilac/30">
+          <h4 className="font-semibold text-midnight-navy">Deposit + Subscription Pricing</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Initial Deposit</label>
+              <Input
+                type="number"
+                value={newProject.deposit_amount}
+                onChange={(e) => setNewProject({ ...newProject, deposit_amount: e.target.value })}
+                placeholder="1000"
+              />
+              <p className="text-xs text-muted-foreground mt-1">One-time deposit to get started</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Monthly Subscription</label>
+              <Input
+                type="number"
+                value={newProject.subscription_price}
+                onChange={(e) => setNewProject({ ...newProject, subscription_price: e.target.value })}
+                placeholder="99"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Ongoing monthly fee</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {newProject.billing_type === 'investment' && (
         <div className="space-y-4">

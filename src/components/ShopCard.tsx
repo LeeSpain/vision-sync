@@ -13,9 +13,10 @@ interface ShopCardProps {
   category: 'For Sale' | 'Internal' | 'Investment';
   image?: string;
   route?: string;
-  billing_type?: 'one-time' | 'subscription' | 'investment';
+  billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription';
   subscription_price?: number;
   price?: number;
+  deposit_amount?: number;
   onViewClick?: () => void;
 }
 
@@ -29,6 +30,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
   billing_type,
   subscription_price,
   price,
+  deposit_amount,
   onViewClick
 }) => {
   const { formatPrice } = useCurrency();
@@ -148,6 +150,20 @@ const ShopCard: React.FC<ShopCardProps> = ({
             </div>
           )}
           
+          {billing_type === 'deposit-subscription' && deposit_amount && subscription_price && (
+            <div className="bg-coral-orange/10 p-2 rounded-lg border border-coral-orange/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-xs text-coral-orange">
+                  <CreditCard className="h-3 w-3" />
+                  <span>Deposit + Monthly</span>
+                </div>
+                <div className="text-sm font-bold text-coral-orange">
+                  {formatPrice(deposit_amount)} + {formatPrice(subscription_price)}/mo
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Payment Options Hint */}
           <div className="flex flex-wrap gap-1 text-xs">
             <span className="bg-emerald-green/10 text-emerald-green px-2 py-0.5 rounded-full">
@@ -157,7 +173,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
               Monthly
             </span>
             <span className="bg-coral-orange/10 text-coral-orange px-2 py-0.5 rounded-full">
-              Service
+              Deposit+Monthly
             </span>
             <span className="bg-midnight-navy/10 text-midnight-navy px-2 py-0.5 rounded-full">
               Flexible

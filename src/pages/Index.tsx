@@ -89,6 +89,7 @@ const Index = () => {
     billing_type: project.billing_type as any,
     subscription_price: project.subscription_price,
     price: project.price,
+    deposit_amount: (project as any).deposit_amount,
     onViewClick: () => {
       if (project.route) {
         window.location.href = project.route;

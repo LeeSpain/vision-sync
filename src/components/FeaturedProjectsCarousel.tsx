@@ -86,6 +86,9 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
       if (project.billing_type === 'subscription' && project.subscription_price) {
         return `$${project.subscription_price}/${project.subscription_period || 'month'}`;
       }
+      if (project.billing_type === 'deposit-subscription' && (project as any).deposit_amount && project.subscription_price) {
+        return `$${(project as any).deposit_amount} + $${project.subscription_price}/mo`;
+      }
       return generatePricing(project.category); // Fallback for projects without pricing
     };
 
@@ -97,6 +100,8 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
       } else if (project.billing_type === 'one-time') {
         actions.buy = true;
       } else if (project.billing_type === 'subscription') {
+        actions.subscribe = true;
+      } else if (project.billing_type === 'deposit-subscription') {
         actions.subscribe = true;
       } else {
         // Default fallback for projects without billing_type

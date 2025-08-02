@@ -11,7 +11,7 @@ interface ProjectCardProps {
   category: 'Featured' | 'Investment' | 'For Sale' | 'Internal';
   route?: string;
   image?: string;
-  billing_type?: 'one-time' | 'subscription' | 'investment';
+  billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription';
   actions: {
     view?: boolean;
     invest?: boolean;
@@ -43,7 +43,7 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
   };
 
   const getCategoryIcon = (category: string, billingType?: string) => {
-    if (billingType === 'subscription') return <RefreshCw className="h-4 w-4" />;
+    if (billingType === 'subscription' || billingType === 'deposit-subscription') return <RefreshCw className="h-4 w-4" />;
     switch (category) {
       case 'Investment': return <TrendingUp className="h-4 w-4" />;
       case 'For Sale': return <DollarSign className="h-4 w-4" />;
@@ -113,10 +113,10 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
                 Investment
               </Badge>
             )}
-            {billing_type === 'subscription' && (
+            {(billing_type === 'subscription' || billing_type === 'deposit-subscription') && (
               <Badge className="bg-gradient-to-r from-electric-blue to-electric-blue/80 text-white border-0 shadow-sm font-medium px-3 py-1">
                 <RefreshCw className="h-3 w-3 mr-1" />
-                SaaS
+                {billing_type === 'deposit-subscription' ? 'Deposit+Sub' : 'SaaS'}
               </Badge>
             )}
           </div>
