@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { AdminLayout } from '@/components/AdminLayout';
 import { ProjectManager } from '@/components/admin/ProjectManager';
 import { ContentManager } from '@/components/admin/ContentManager';
@@ -19,26 +20,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail, RefreshCw } from 'lucide-react';
 
 const Admin = () => {
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(true); // Bypass login for testing
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
-  const [activeSection, setActiveSection] = useState('overview');
   const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  
+  // Get section from URL hash, default to 'overview'
+  const activeSection = location.hash.replace('#', '') || 'overview';
 
-  useEffect(() => {
-    const hash = window.location.hash.replace('#', '') || 'overview';
-    console.log('Admin: Initial hash detected:', hash);
-    setActiveSection(hash);
-
-    const handleHashChange = () => {
-      const newHash = window.location.hash.replace('#', '') || 'overview';
-      console.log('Admin: Hash changed to:', newHash);
-      setActiveSection(newHash);
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +102,6 @@ const Admin = () => {
   }
 
   const renderContent = () => {
-    console.log('Admin: Rendering content for section:', activeSection);
     switch (activeSection) {
       case 'overview':
         return (
