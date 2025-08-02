@@ -337,7 +337,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           </CardHeader>
           
           <CardContent className="flex-1 p-0 flex flex-col min-h-0">
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea className="flex-1 px-4 pt-6 pb-4">
               <div className="space-y-4">
                 {messages.map((message, index) => (
                   <div
@@ -357,12 +357,12 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                         )}
                       </Avatar>
                       
-                      <div className={`rounded-xl px-4 py-3 max-w-full break-words ${
+                      <div className={`rounded-xl px-4 py-3 max-w-full break-words leading-relaxed ${
                         message.type === 'user' 
                           ? 'bg-primary text-primary-foreground shadow-md' 
                           : 'bg-gray-50 text-gray-800 border border-gray-100 shadow-sm'
                       }`}>
-                        <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                        <div className="text-sm leading-6 whitespace-pre-wrap word-break">
                           {message.content}
                         </div>
                         <div className={`text-xs mt-2 opacity-70 ${
