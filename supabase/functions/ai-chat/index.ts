@@ -57,14 +57,31 @@ serve(async (req) => {
       return acc;
     }, {});
 
-    // Get configuration from settings
-    const openaiApiKey = settingsMap.openai_api_key || Deno.env.get('OPENAI_API_KEY');
+    // Safe parsing for settings that might be strings or JSON
+    const safeParseValue = (value: any, defaultValue: any) => {
+      if (!value) return defaultValue;
+      if (typeof value === 'string') {
+        // If it starts with a quote or bracket, try to parse as JSON
+        if (value.startsWith('"') || value.startsWith('[') || value.startsWith('{')) {
+          try {
+            return JSON.parse(value);
+          } catch (e) {
+            return value;
+          }
+        }
+        return value;
+      }
+      return value;
+    };
+
+    // Get configuration from settings with safe parsing
+    const openaiApiKey = safeParseValue(settingsMap.openai_api_key, null) || Deno.env.get('OPENAI_API_KEY');
     const maxResponseLength = parseInt(settingsMap.max_response_length || '250');
-    const responseTone = JSON.parse(settingsMap.response_tone || '"friendly_professional"');
-    const responseFormat = JSON.parse(settingsMap.response_format || '"conversational"');
-    const emojiUsage = JSON.parse(settingsMap.emoji_usage || '"minimal"');
-    const contactCollectionTiming = JSON.parse(settingsMap.contact_collection_timing || '"after_3_messages"');
-    const escalationTriggers = JSON.parse(settingsMap.escalation_triggers || '[]');
+    const responseTone = safeParseValue(settingsMap.response_tone, 'friendly_professional');
+    const responseFormat = safeParseValue(settingsMap.response_format, 'conversational');
+    const emojiUsage = safeParseValue(settingsMap.emoji_usage, 'minimal');
+    const contactCollectionTiming = safeParseValue(settingsMap.contact_collection_timing, 'after_3_messages');
+    const escalationTriggers = safeParseValue(settingsMap.escalation_triggers, []);
 
     if (!openaiApiKey) {
       throw new Error('OpenAI API key not configured');
