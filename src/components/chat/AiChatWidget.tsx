@@ -98,8 +98,10 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         }, {});
 
         setWelcomeSettings({
-          message: JSON.parse(settingsMap.welcome_message || '"Hello! I\'m here to help you discover amazing digital solutions. What kind of project are you looking for today?"'),
-          quickActions: JSON.parse(settingsMap.quick_actions || '["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"]'),
+          message: settingsMap.welcome_message || "Hello! I'm here to help you discover amazing digital solutions. What kind of project are you looking for today?",
+          quickActions: Array.isArray(settingsMap.quick_actions) ? settingsMap.quick_actions : 
+                       (typeof settingsMap.quick_actions === 'string' ? JSON.parse(settingsMap.quick_actions) : 
+                       ["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"]),
           delay: parseInt(settingsMap.greeting_delay || '1000')
         });
       }
