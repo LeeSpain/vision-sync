@@ -24,7 +24,7 @@ export function ProjectManager() {
   const [newProject, setNewProject] = useState({
     name: '',
     status: 'Concept',
-    category: 'Investment',
+    category: 'Featured',
     visibility: 'Public',
     description: '',
     route: '',
@@ -98,7 +98,7 @@ export function ProjectManager() {
       setNewProject({
         name: '',
         status: 'Concept',
-        category: 'Investment',
+            category: 'Featured',
         visibility: 'Public',
         description: '',
         route: '',
@@ -245,7 +245,7 @@ export function ProjectManager() {
       setNewProject({
         name: '',
         status: 'Concept',
-        category: 'Investment',
+        category: 'Featured',
         visibility: 'Public',
         description: '',
         route: '',
@@ -566,9 +566,10 @@ export function ProjectManager() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Investment">Investment</SelectItem>
-              <SelectItem value="For Sale">For Sale</SelectItem>
-              <SelectItem value="Template">Template</SelectItem>
+              <SelectItem value="Investment">💼 Investment Ops</SelectItem>
+              <SelectItem value="For Sale">🏪 Platforms for Sale</SelectItem>
+              <SelectItem value="Internal">🧠 Internal Tools</SelectItem>
+              <SelectItem value="Featured">⭐ Featured Projects</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -630,7 +631,7 @@ export function ProjectManager() {
           setNewProject({
             name: '',
             status: 'Concept',
-            category: 'Investment',
+            category: 'Featured',
             visibility: 'Public',
             description: '',
             route: '',
