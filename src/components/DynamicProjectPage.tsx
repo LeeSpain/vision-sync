@@ -65,62 +65,82 @@ const DynamicProjectPage = () => {
   const handleDemoRequest = async () => {
     if (!project) return;
     
-    await supabaseLeadManager.saveProjectLead({
-      project_id: project.id,
-      name: 'Demo Request',
-      email: 'demo@placeholder.com',
-      inquiry_type: 'demo',
-      message: 'Requested demo from project page'
-    });
-    
-    // Increment lead count
-    await projectManager.incrementLeadCount(project.name);
-    alert('Demo request captured! In a real implementation, this would show a form to collect contact details.');
+    try {
+      await supabaseLeadManager.saveProjectLead({
+        project_id: project.id,
+        name: 'Demo Request',
+        email: 'demo@placeholder.com',
+        inquiry_type: 'demo',
+        message: 'Requested demo from project page'
+      });
+      
+      // Increment lead count
+      await projectManager.incrementLeadCount(project.name);
+      alert('Demo request captured! In a real implementation, this would show a form to collect contact details.');
+    } catch (error) {
+      console.error('Error handling demo request:', error);
+      alert('Error processing request. Please try again.');
+    }
   };
 
   const handleInvestmentInfo = async () => {
     if (!project) return;
     
-    await supabaseLeadManager.saveProjectLead({
-      project_id: project.id,
-      name: 'Investment Inquiry',
-      email: 'investment@placeholder.com',
-      inquiry_type: 'investment',
-      message: 'Requested investment information from project page'
-    });
-    
-    await projectManager.incrementLeadCount(project.name);
-    alert('Investment inquiry captured! In a real implementation, this would show a form to collect investor details.');
+    try {
+      await supabaseLeadManager.saveProjectLead({
+        project_id: project.id,
+        name: 'Investment Inquiry',
+        email: 'investment@placeholder.com',
+        inquiry_type: 'investment',
+        message: 'Requested investment information from project page'
+      });
+      
+      await projectManager.incrementLeadCount(project.name);
+      alert('Investment inquiry captured! In a real implementation, this would show a form to collect investor details.');
+    } catch (error) {
+      console.error('Error handling investment request:', error);
+      alert('Error processing request. Please try again.');
+    }
   };
 
   const handlePurchaseInquiry = async () => {
     if (!project) return;
     
-    await supabaseLeadManager.saveProjectLead({
-      project_id: project.id,
-      name: 'Purchase Inquiry',
-      email: 'purchase@placeholder.com',
-      inquiry_type: 'purchase',
-      message: 'Requested purchase information from project page'
-    });
-    
-    await projectManager.incrementLeadCount(project.name);
-    alert('Purchase inquiry captured! In a real implementation, this would show a form to collect purchase details.');
+    try {
+      await supabaseLeadManager.saveProjectLead({
+        project_id: project.id,
+        name: 'Purchase Inquiry',
+        email: 'purchase@placeholder.com',
+        inquiry_type: 'purchase',
+        message: 'Requested purchase information from project page'
+      });
+      
+      await projectManager.incrementLeadCount(project.name);
+      alert('Purchase inquiry captured! In a real implementation, this would show a form to collect purchase details.');
+    } catch (error) {
+      console.error('Error handling purchase request:', error);
+      alert('Error processing request. Please try again.');
+    }
   };
 
   const handleContactUs = async () => {
     if (!project) return;
     
-    await supabaseLeadManager.saveProjectLead({
-      project_id: project.id,
-      name: 'General Inquiry',
-      email: 'contact@placeholder.com',
-      inquiry_type: 'partnership',
-      message: 'General contact request from project page'
-    });
-    
-    await projectManager.incrementLeadCount(project.name);
-    alert('Contact request captured! In a real implementation, this would show a contact form.');
+    try {
+      await supabaseLeadManager.saveProjectLead({
+        project_id: project.id,
+        name: 'General Inquiry',
+        email: 'contact@placeholder.com',
+        inquiry_type: 'partnership',
+        message: 'General contact request from project page'
+      });
+      
+      await projectManager.incrementLeadCount(project.name);
+      alert('Contact request captured! In a real implementation, this would show a contact form.');
+    } catch (error) {
+      console.error('Error handling contact request:', error);
+      alert('Error processing request. Please try again.');
+    }
   };
 
   // Loading state
