@@ -98,8 +98,9 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+  const getStatusColor = (status?: string) => {
+    const normalized = (status ?? 'active').toLowerCase();
+    switch (normalized) {
       case 'active':
         return 'bg-emerald-green/10 text-emerald-green border-emerald-green/20';
       case 'hot':

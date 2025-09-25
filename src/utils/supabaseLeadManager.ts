@@ -39,28 +39,22 @@ export interface ProjectLead {
   next_follow_up?: string | null;
 }
 
+const inferPriority = (inquiryType?: string, investmentAmount?: number): 'low' | 'medium' | 'high' | 'urgent' => {
+  if (inquiryType === 'investment' && investmentAmount && investmentAmount > 1000000) return 'urgent';
+  if (inquiryType === 'investment') return 'high';
+  if (inquiryType === 'purchase') return 'medium';
+  return 'low';
+};
+
 export const supabaseLeadManager = {
   // Save general lead
   async saveLead(leadData: Omit<Lead, 'id' | 'created_at' | 'updated_at'>): Promise<Lead | null> {
     try {
-      // Determine priority based on form data
-      let priority: Lead['priority'] = 'medium';
-      if (leadData.form_data?.urgency === 'critical' || leadData.form_data?.urgency === 'high') {
-        priority = 'urgent';
-      } else if (leadData.form_data?.budget === 'over-250k' || leadData.form_data?.investmentRange === 'over-5m') {
-        priority = 'high';
-      } else if (leadData.form_data?.budget === '100k-250k' || leadData.form_data?.investmentRange === '1m-5m') {
-        priority = 'medium';
-      } else {
-        priority = 'low';
-      }
-
       const { data, error } = await supabase
         .from('leads')
         .insert([{
           ...leadData,
-          status: 'new',
-          priority
+          status: 'new'
         }])
         .select()
         .single();
@@ -98,17 +92,7 @@ export const supabaseLeadManager = {
   // Save project-specific lead (using leads table with project data in form_data)
   async saveProjectLead(leadData: Omit<ProjectLead, 'id' | 'created_at' | 'updated_at'>): Promise<ProjectLead | null> {
     try {
-      // Determine priority based on inquiry type and investment amount
-      let priority: ProjectLead['priority'] = 'medium';
-      if (leadData.inquiry_type === 'investment' && leadData.investment_amount && leadData.investment_amount > 1000000) {
-        priority = 'urgent';
-      } else if (leadData.inquiry_type === 'investment') {
-        priority = 'high';
-      } else if (leadData.inquiry_type === 'purchase') {
-        priority = 'medium';
-      } else {
-        priority = 'low';
-      }
+      // Priority is inferred dynamically; not stored in DB
 
       // Store project lead data in the regular leads table with special source
       const { data, error } = await supabase
@@ -120,7 +104,6 @@ export const supabaseLeadManager = {
           phone: leadData.phone,
           source: 'contact', // Use existing enum value
           status: 'new',
-          priority,
           form_data: {
             type: 'project_inquiry',
             project_id: leadData.project_id,
@@ -157,7 +140,7 @@ export const supabaseLeadManager = {
         inquiry_type: formData?.inquiry_type || 'demo',
         message: formData?.message,
         status: data.status as ProjectLead['status'],
-        priority: data.priority as ProjectLead['priority'],
+        priority: inferPriority(formData?.inquiry_type, formData?.investment_amount),
         investment_amount: formData?.investment_amount,
         form_data: data.form_data
       };
@@ -239,7 +222,7 @@ export const supabaseLeadManager = {
             inquiry_type: formData?.inquiry_type || 'demo',
             message: formData?.message,
             status: lead.status as ProjectLead['status'],
-            priority: lead.priority as ProjectLead['priority'],
+            priority: inferPriority(formData?.inquiry_type, formData?.investment_amount),
             investment_amount: formData?.investment_amount,
             form_data: lead.form_data
           };
@@ -277,10 +260,8 @@ export const supabaseLeadManager = {
   // Update project lead (updates the lead in leads table)
   async updateProjectLead(leadId: string, updates: Partial<ProjectLead>): Promise<ProjectLead | null> {
     try {
-      // Convert ProjectLead updates to Lead format
       const leadUpdates: any = {};
       if (updates.status) leadUpdates.status = updates.status;
-      if (updates.priority) leadUpdates.priority = updates.priority;
       if (updates.notes) leadUpdates.notes = updates.notes;
       if (updates.last_contact) leadUpdates.last_contact = updates.last_contact;
       if (updates.next_follow_up) leadUpdates.next_follow_up = updates.next_follow_up;
@@ -297,7 +278,6 @@ export const supabaseLeadManager = {
         return null;
       }
 
-      // Convert back to ProjectLead format
       const formData = data.form_data as any;
       return {
         id: data.id,
@@ -311,7 +291,7 @@ export const supabaseLeadManager = {
         inquiry_type: formData?.inquiry_type || 'demo',
         message: formData?.message,
         status: data.status as ProjectLead['status'],
-        priority: data.priority as ProjectLead['priority'],
+        priority: inferPriority(formData?.inquiry_type, formData?.investment_amount),
         investment_amount: formData?.investment_amount,
         form_data: data.form_data
       } as ProjectLead;

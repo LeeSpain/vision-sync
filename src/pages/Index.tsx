@@ -68,37 +68,62 @@ const Index = () => {
   };
 
   // Convert database project to ProjectCard format
-  const convertToProjectCard = (project: Project) => ({
-    title: project.name,
-    description: project.description || '',
-    status: project.status as any,
-    category: project.category as any,
-    route: project.route || `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
-    image: project.image_url || project.hero_image_url,
-    billing_type: project.billing_type as any,
-    actions: { view: true },
-  });
+  const convertToProjectCard = (project: Project) => {
+    const slug = `/${(project.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    return {
+      title: project.title,
+      description: project.description || '',
+      status: 'Live' as const,
+      category: (project.category as any) || 'Featured',
+      route: slug,
+      image: project.image_url || undefined,
+      billing_type: undefined,
+      actions: { view: true },
+    };
+  };
 
   // Convert database project to ShopCard format
-  const convertToShopCard = (project: Project) => ({
-    title: project.name,
-    description: project.description || '',
-    status: project.status as any,
-    category: project.category as any,
-    route: project.route || `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
-    image: project.image_url || project.hero_image_url,
-    billing_type: project.billing_type as any,
-    subscription_price: project.subscription_price,
-    price: project.price,
-    deposit_amount: (project as any).deposit_amount,
-    onViewClick: () => {
-      if (project.route) {
-        window.location.href = project.route;
-      } else {
-        window.location.href = `/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-      }
-    }
-  });
+  const convertToShopCard = (project: Project) => {
+    const slug = `/${(project.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    return {
+      title: project.title,
+      description: project.description || '',
+      status: 'Live' as const,
+      category: (project.category as any) || 'For Sale',
+      route: slug,
+      image: project.image_url || undefined,
+      billing_type: undefined,
+      subscription_price: undefined,
+      price: undefined,
+      deposit_amount: undefined,
+      onViewClick: () => { window.location.href = slug; }
+    };
+  };
+
+  // Convert database project to FeaturedProjectsCarousel ProjectData
+  const convertToCarouselProject = (project: Project) => {
+    const slug = `/${(project.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    return {
+      id: project.id,
+      name: project.title,
+      description: project.description || '',
+      image_url: project.image_url || undefined,
+      hero_image_url: undefined,
+      status: 'Active',
+      category: project.category || 'Featured',
+      route: slug,
+      billing_type: undefined,
+      investment_amount: undefined,
+      price: undefined,
+      subscription_price: undefined,
+      subscription_period: undefined,
+      funding_progress: undefined,
+      expected_roi: undefined,
+      investment_deadline: undefined,
+      investor_count: undefined,
+      social_proof: undefined,
+    };
+  };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -325,7 +350,7 @@ const Index = () => {
           {/* Enhanced Featured Projects Carousel */}
           <div className="mb-32">
             <FeaturedProjectsCarousel 
-              projects={featuredProjects} 
+              projects={featuredProjects.map(convertToCarouselProject)} 
               loading={loading}
             />
           </div>
