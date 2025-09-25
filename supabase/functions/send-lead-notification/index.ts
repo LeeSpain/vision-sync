@@ -1,7 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+// Note: To use Resend, add the RESEND_API_KEY secret and uncomment the Resend import
+// import { Resend } from "npm:resend@2.0.0";
+// const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -79,17 +80,23 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
-    const emailResponse = await resend.emails.send({
-      from: "Vision-Sync Lead Manager <leads@vision-sync.com>",
-      to: ["lee@vision-sync.com"],
-      subject: subject,
-      html: emailContent,
-      replyTo: lead.email, // Allow direct replies to the lead
-    });
+    // TODO: Uncomment when RESEND_API_KEY is configured
+    // const emailResponse = await resend.emails.send({
+    //   from: "Vision-Sync Lead Manager <leads@vision-sync.com>",
+    //   to: ["lee@vision-sync.com"],
+    //   subject: subject,
+    //   html: emailContent,
+    //   replyTo: lead.email, // Allow direct replies to the lead
+    // });
 
-    console.log("Email sent successfully:", emailResponse);
+    console.log("Lead notification logged:", { type, subject, lead: lead.name });
 
-    return new Response(JSON.stringify(emailResponse), {
+    return new Response(JSON.stringify({ 
+      success: true, 
+      message: "Lead notification logged successfully",
+      subject,
+      type 
+    }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
