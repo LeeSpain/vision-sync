@@ -21,13 +21,10 @@ interface AiAgent {
   description: string;
   personality: string;
   voice_id: string;
-  avatar_config: any;
   is_active: boolean;
-  business_knowledge: any;
-  conversation_rules: any;
-  category?: string;
-  role?: string;
-  department?: string;
+  category: string;
+  role: string;
+  department: string;
   created_at: string;
   updated_at: string;
 }

@@ -88,7 +88,7 @@ serve(async (req) => {
     console.error('Error in generate-project-images function:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to generate image',
+        error: error instanceof Error ? error.message : 'Failed to generate image',
         success: false 
       }),
       {

@@ -259,9 +259,9 @@ serve(async (req) => {
 
 PERSONALITY & TONE: ${agent?.personality || 'helpful and professional'}
 COMMUNICATION STYLE:
-- Tone: ${toneInstructions[responseTone] || toneInstructions.friendly_professional}
-- Format: ${formatInstructions[responseFormat] || formatInstructions.conversational}
-- Emoji Usage: ${emojiInstructions[emojiUsage] || emojiInstructions.minimal}
+- Tone: ${toneInstructions[responseTone as keyof typeof toneInstructions] || toneInstructions.friendly_professional}
+- Format: ${formatInstructions[responseFormat as keyof typeof formatInstructions] || formatInstructions.conversational}
+- Emoji Usage: ${emojiInstructions[emojiUsage as keyof typeof emojiInstructions] || emojiInstructions.minimal}
 
 ${hasEscalationTrigger ? `
 🚨 ESCALATION DETECTED: The user is asking to speak with a human. Acknowledge their request politely and let them know someone will contact them soon. Collect their contact information if not already provided.
@@ -472,7 +472,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
   } catch (error) {
     console.error('Error in ai-chat function:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
       response: 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.'
     }), {
       status: 500,
