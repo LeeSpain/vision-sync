@@ -45,15 +45,14 @@ const Index = () => {
     try {
       setLoading(true);
       
-      // Load featured projects (projects marked as featured)
       const allProjects = await projectManager.getPublicProjects();
-      const featured = allProjects.filter(p => p.featured);
-      setFeaturedProjects(featured.slice(0, 3)); // Limit to 3 for featured
+      const featured = allProjects.filter(p => p.is_featured);
+      setFeaturedProjects(featured.slice(0, 3));
       
-      // Load projects by category
-      const forSale = await projectManager.getProjectsByCategory('For Sale');
-      setPlatformsForSale(forSale.filter(p => p.status === 'Live' || p.status === 'Beta'));
-      setOffTheShelf(forSale.filter(p => p.status === 'Live'));
+      // For now, use simple filtering by category until project schema is updated
+      const forSale = allProjects.filter(p => p.category === 'For Sale');
+      setPlatformsForSale(forSale);
+      setOffTheShelf(forSale);
       
       const internal = await projectManager.getProjectsByCategory('Internal');
       setInternalTools(internal);

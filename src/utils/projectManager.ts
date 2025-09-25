@@ -1,76 +1,35 @@
 import { supabase } from '@/integrations/supabase/client';
 
+// Updated interface to match actual database schema
 export interface Project {
   id: string;
-  name: string;
+  title: string;
   description: string | null;
-  status: string;
-  category: string;
-  visibility: string;
-  route: string | null;
+  category: string | null;
   image_url: string | null;
-  leads_count: number;
-  investment_amount: number | null;
-  price: number | null;
-  features: any;
+  demo_url: string | null;
+  github_url: string | null;
+  technologies: string[] | null;
+  is_public: boolean;
+  is_featured: boolean;
   created_at: string;
   updated_at: string;
-  // New rich content fields
-  content: any;
-  hero_image_url: string | null;
-  gallery_images: string[] | null;
-  key_features: any;
-  stats: any;
-  use_cases: any;
-  purchase_info: any;
-  // Subscription fields
-  subscription_price: number | null;
-  subscription_period: string | null;
-  billing_type: string;
-  featured: boolean;
-  domain_url: string | null;
-  // Investment tracking fields
-  funding_progress: number | null;
-  expected_roi: number | null;
-  investment_deadline: string | null;
-  investor_count: number;
-  investment_received?: number;
-  social_proof: string | null;
 }
 
 export interface CreateProjectData {
-  name: string;
+  title: string;
   description?: string;
-  status: string;
-  category: string;
-  visibility: string;
-  route?: string;
+  category?: string;
   image_url?: string;
-  hero_image_url?: string;
-  gallery_images?: string[];
-  investment_amount?: number;
-  price?: number;
-  features?: any;
-  key_features?: any;
-  stats?: any;
-  use_cases?: any;
-  purchase_info?: any;
-  content?: any;
-  subscription_price?: number;
-  subscription_period?: string;
-  billing_type?: string;
-  featured?: boolean;
-  domain_url?: string;
-  funding_progress?: number;
-  expected_roi?: number;
-  investment_deadline?: string;
-  investor_count?: number;
-  investment_received?: number;
-  social_proof?: string;
+  demo_url?: string;
+  github_url?: string;
+  technologies?: string[];
+  is_public?: boolean;
+  is_featured?: boolean;
 }
 
 export const projectManager = {
-  // Get all projects (respects visibility)
+  // Get all projects
   async getAllProjects(): Promise<Project[]> {
     const { data, error } = await supabase
       .from('projects')
@@ -90,7 +49,7 @@ export const projectManager = {
     const { data, error } = await supabase
       .from('projects')
       .select('*')
-      .eq('visibility', 'Public')
+      .eq('is_public', true)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -107,7 +66,7 @@ export const projectManager = {
       .from('projects')
       .select('*')
       .eq('category', category)
-      .eq('visibility', 'Public')
+      .eq('is_public', true)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -118,14 +77,14 @@ export const projectManager = {
     return data || [];
   },
 
-  // Get featured projects (you can define criteria for featured)
+  // Get featured projects
   async getFeaturedProjects(): Promise<Project[]> {
     const { data, error } = await supabase
       .from('projects')
       .select('*')
-      .eq('visibility', 'Public')
-      .eq('featured', true)
-      .order('leads_count', { ascending: false })
+      .eq('is_public', true)
+      .eq('is_featured', true)
+      .order('created_at', { ascending: false })
       .limit(6);
 
     if (error) {
@@ -182,28 +141,27 @@ export const projectManager = {
     }
   },
 
-  // Increment lead count for a project
-  async incrementLeadCount(projectName: string): Promise<void> {
-    // Find project by name and increment leads_count
-    const { data: project } = await supabase
+  // Get project by ID
+  async getProjectById(id: string): Promise<Project | null> {
+    const { data, error } = await supabase
       .from('projects')
-      .select('id, leads_count')
-      .eq('name', projectName)
+      .select('*')
+      .eq('id', id)
       .single();
 
-    if (project) {
-      await supabase
-        .from('projects')
-        .update({ leads_count: project.leads_count + 1 })
-        .eq('id', project.id);
+    if (error) {
+      console.error('Error fetching project by ID:', error);
+      return null;
     }
+
+    return data;
   },
 
   // Get project statistics
   async getProjectStats() {
     const { data, error } = await supabase
       .from('projects')
-      .select('status, category, leads_count, investment_amount, price, subscription_price, billing_type');
+      .select('category, is_public, is_featured, created_at');
 
     if (error) {
       console.error('Error fetching project stats:', error);
@@ -212,37 +170,59 @@ export const projectManager = {
 
     const stats = {
       totalProjects: data?.length || 0,
-      totalLeads: data?.reduce((sum, p) => sum + p.leads_count, 0) || 0,
-      totalRevenuePipeline: data?.reduce((sum, p) => {
-        return sum + (p.investment_amount || 0) + (p.price || 0) + (p.subscription_price || 0);
-      }, 0) || 0,
-      byStatus: {} as Record<string, number>,
+      publicProjects: data?.filter(p => p.is_public).length || 0,
+      featuredProjects: data?.filter(p => p.is_featured).length || 0,
+      privateProjects: data?.filter(p => !p.is_public).length || 0,
       byCategory: {} as Record<string, number>,
-      revenueByCategory: {} as Record<string, number>,
-      revenueByBilling: {} as Record<string, number>,
-      subscriptionRevenue: data?.reduce((sum, p) => sum + (p.subscription_price || 0), 0) || 0,
+      recentProjects: data?.filter(p => {
+        const createdAt = new Date(p.created_at);
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return createdAt >= weekAgo;
+      }).length || 0,
     };
 
-    // Count by status and category, calculate revenue by category and billing type
+    // Count by category
     data?.forEach(project => {
-      stats.byStatus[project.status] = (stats.byStatus[project.status] || 0) + 1;
-      stats.byCategory[project.category] = (stats.byCategory[project.category] || 0) + 1;
-      
-      // Calculate revenue by category
-      const projectRevenue = (project.investment_amount || 0) + (project.price || 0) + (project.subscription_price || 0);
-      stats.revenueByCategory[project.category] = (stats.revenueByCategory[project.category] || 0) + projectRevenue;
-      
-      // Calculate revenue by billing type
-      const billingType = project.billing_type || 'investment';
-      if (billingType === 'investment' && project.investment_amount) {
-        stats.revenueByBilling[billingType] = (stats.revenueByBilling[billingType] || 0) + project.investment_amount;
-      } else if (billingType === 'one-time' && project.price) {
-        stats.revenueByBilling[billingType] = (stats.revenueByBilling[billingType] || 0) + project.price;
-      } else if (billingType === 'subscription' && project.subscription_price) {
-        stats.revenueByBilling[billingType] = (stats.revenueByBilling[billingType] || 0) + project.subscription_price;
+      if (project.category) {
+        stats.byCategory[project.category] = (stats.byCategory[project.category] || 0) + 1;
       }
     });
 
     return stats;
+  },
+
+  // Search projects by title or description
+  async searchProjects(query: string): Promise<Project[]> {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('is_public', true)
+      .or(`title.ilike.%${query}%, description.ilike.%${query}%`)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error searching projects:', error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  // Get projects by technology
+  async getProjectsByTechnology(tech: string): Promise<Project[]> {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('is_public', true)
+      .contains('technologies', [tech])
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching projects by technology:', error);
+      throw error;
+    }
+
+    return data || [];
   }
 };

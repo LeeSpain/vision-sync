@@ -61,7 +61,7 @@ export function DashboardStats({ onStatsLoad }: DashboardStatsProps) {
       }, 0);
 
       // Add project revenue pipeline
-      const totalPipeline = leadsPipeline + projectStats.totalRevenuePipeline;
+      const totalPipeline = leadsPipeline;
 
       // Calculate source breakdown
       const sourceBreakdown = allLeads.reduce((acc, lead) => {

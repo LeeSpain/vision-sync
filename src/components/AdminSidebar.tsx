@@ -80,9 +80,7 @@ export function AdminSidebar() {
   const loadProjectStats = async () => {
     try {
       const stats = await projectManager.getProjectStats();
-      const activeCount = Object.entries(stats.byStatus)
-        .filter(([status]) => ['Live', 'MVP', 'Beta'].includes(status))
-        .reduce((sum, [, count]) => sum + count, 0);
+      const activeCount = stats.publicProjects || 0;
       
       setProjectStats({
         totalProjects: stats.totalProjects,
