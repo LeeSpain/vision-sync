@@ -1,374 +1,296 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  MessageCircle, 
-  Users, 
-  TrendingUp, 
-  Clock, 
-  CheckCircle, 
-  XCircle,
-  Eye,
-  RefreshCw,
-  BarChart3
-} from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import type { Database } from '@/integrations/supabase/types';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { MessageSquare, TrendingUp, Users, Clock } from "lucide-react";
 
-type Conversation = Database['public']['Tables']['ai_conversations']['Row'];
-
-interface ConversationStats {
-  total: number;
-  active: number;
-  qualified: number;
-  avgScore: number;
-  todayTotal: number;
+interface ConversationsAnalyticsProps {
+  agentId: string;
 }
 
-const ConversationsAnalytics: React.FC = () => {
+interface Conversation {
+  id: string;
+  agent_id: string;
+  user_message: string;
+  ai_response: string;
+  context: any;
+  session_id: string;
+  created_at: string;
+}
+
+const ConversationsAnalytics: React.FC<ConversationsAnalyticsProps> = ({ agentId }) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [stats, setStats] = useState<ConversationStats>({
-    total: 0,
-    active: 0,
-    qualified: 0,
-    avgScore: 0,
-    todayTotal: 0
-  });
   const [loading, setLoading] = useState(true);
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const { toast } = useToast();
+  const [stats, setStats] = useState({
+    totalConversations: 0,
+    uniqueSessions: 0,
+    avgMessagesPerSession: 0,
+    totalMessages: 0
+  });
+
+  useEffect(() => {
+    loadConversations();
+  }, [agentId]);
 
   const loadConversations = async () => {
     try {
       const { data, error } = await supabase
         .from('ai_conversations')
         .select('*')
+        .eq('agent_id', agentId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-
+      
       setConversations(data || []);
-      
-      // Calculate stats
-      const today = new Date().toISOString().split('T')[0];
-      const todayConversations = data?.filter(conv => 
-        conv.created_at.startsWith(today)
-      ) || [];
-      
-      const qualified = data?.filter(conv => conv.lead_qualified) || [];
-      const active = data?.filter(conv => conv.status === 'active') || [];
-      const avgScore = data?.length > 0 
-        ? data.reduce((sum, conv) => sum + (conv.conversion_score || 0), 0) / data.length 
-        : 0;
-
-      setStats({
-        total: data?.length || 0,
-        active: active.length,
-        qualified: qualified.length,
-        avgScore: Math.round(avgScore),
-        todayTotal: todayConversations.length
-      });
+      calculateStats(data || []);
     } catch (error) {
       console.error('Error loading conversations:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load conversations",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadConversations();
-
-    // Set up real-time subscription
-    const channel = supabase
-      .channel('conversations-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'ai_conversations'
-        },
-        () => {
-          loadConversations();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const formatDuration = (startedAt: string, endedAt: string | null) => {
-    const start = new Date(startedAt);
-    const end = endedAt ? new Date(endedAt) : new Date();
-    const diffMs = end.getTime() - start.getTime();
-    const diffMins = Math.round(diffMs / (1000 * 60));
-    return `${diffMins}m`;
-  };
-
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      active: 'default',
-      completed: 'secondary',
-      abandoned: 'outline'
-    } as const;
+  const calculateStats = (data: Conversation[]) => {
+    const totalConversations = data.length;
+    const uniqueSessions = new Set(data.map(conv => conv.session_id)).size;
+    const avgMessagesPerSession = uniqueSessions > 0 ? totalConversations / uniqueSessions : 0;
     
-    return (
-      <Badge variant={variants[status as keyof typeof variants] || 'outline'}>
-        {status}
-      </Badge>
-    );
+    setStats({
+      totalConversations,
+      uniqueSessions,
+      avgMessagesPerSession: Math.round(avgMessagesPerSession * 10) / 10,
+      totalMessages: totalConversations * 2 // Each conversation has user message + AI response
+    });
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-emerald-green';
-    if (score >= 60) return 'text-coral-orange';
-    return 'text-cool-gray';
+  const getHourlyData = () => {
+    const hourlyCount: { [key: string]: number } = {};
+    
+    conversations.forEach(conv => {
+      const hour = new Date(conv.created_at).getHours();
+      const key = `${hour}:00`;
+      hourlyCount[key] = (hourlyCount[key] || 0) + 1;
+    });
+
+    return Object.entries(hourlyCount)
+      .map(([hour, count]) => ({ hour, conversations: count }))
+      .sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
+  };
+
+  const getDailyData = () => {
+    const dailyCount: { [key: string]: number } = {};
+    
+    conversations.forEach(conv => {
+      const date = new Date(conv.created_at).toDateString();
+      dailyCount[date] = (dailyCount[date] || 0) + 1;
+    });
+
+    return Object.entries(dailyCount)
+      .map(([date, count]) => ({ date: date.slice(0, 10), conversations: count }))
+      .slice(-7); // Last 7 days
+  };
+
+  const getSessionLengthData = () => {
+    const sessionData: { [key: string]: number } = {};
+    
+    conversations.forEach(conv => {
+      const sessionId = conv.session_id;
+      sessionData[sessionId] = (sessionData[sessionId] || 0) + 1;
+    });
+
+    const lengths = Object.values(sessionData);
+    const ranges = [
+      { range: '1 message', count: lengths.filter(l => l === 1).length },
+      { range: '2-5 messages', count: lengths.filter(l => l >= 2 && l <= 5).length },
+      { range: '6-10 messages', count: lengths.filter(l => l >= 6 && l <= 10).length },
+      { range: '10+ messages', count: lengths.filter(l => l > 10).length }
+    ];
+
+    return ranges.filter(r => r.count > 0);
+  };
+
+  const getRecentConversations = () => {
+    return conversations.slice(0, 10); // Most recent 10 conversations
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <RefreshCw className="h-6 w-6 animate-spin" />
-      </div>
-    );
+    return <div className="p-6">Loading analytics...</div>;
   }
+
+  const hourlyData = getHourlyData();
+  const dailyData = getDailyData();
+  const sessionLengthData = getSessionLengthData();
+  const recentConversations = getRecentConversations();
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
     <div className="space-y-6">
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <MessageCircle className="h-4 w-4 text-royal-purple" />
-              <div>
-                <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">Total Conversations</p>
-              </div>
-            </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Conversations</CardTitle>
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalConversations}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4 text-coral-orange" />
-              <div>
-                <p className="text-2xl font-bold">{stats.active}</p>
-                <p className="text-xs text-muted-foreground">Active Now</p>
-              </div>
-            </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Unique Sessions</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.uniqueSessions}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="h-4 w-4 text-emerald-green" />
-              <div>
-                <p className="text-2xl font-bold">{stats.qualified}</p>
-                <p className="text-xs text-muted-foreground">Qualified Leads</p>
-              </div>
-            </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg Messages/Session</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgMessagesPerSession}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="h-4 w-4 text-royal-purple" />
-              <div>
-                <p className="text-2xl font-bold">{stats.avgScore}%</p>
-                <p className="text-xs text-muted-foreground">Avg Score</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <BarChart3 className="h-4 w-4 text-emerald-green" />
-              <div>
-                <p className="text-2xl font-bold">{stats.todayTotal}</p>
-                <p className="text-xs text-muted-foreground">Today</p>
-              </div>
-            </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Messages</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalMessages}</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Conversations Table */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Recent Conversations</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Real-time conversation monitoring and analytics
-            </p>
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="patterns">Patterns</TabsTrigger>
+          <TabsTrigger value="recent">Recent</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Daily Conversations (Last 7 Days)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={dailyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="conversations" stroke="#8884d8" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Session Length Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={sessionLengthData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ range, count }) => `${range}: ${count}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="count"
+                    >
+                      {sessionLengthData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           </div>
-          <Button onClick={loadConversations} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[400px]">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Session ID</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Started</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Qualified</TableHead>
-                  <TableHead>Score</TableHead>
-                  <TableHead>Messages</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {conversations.map((conversation) => (
-                  <TableRow key={conversation.id}>
-                    <TableCell className="font-mono text-xs">
-                      {conversation.session_id.slice(0, 8)}...
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(conversation.status)}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {new Date(conversation.started_at).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      {formatDuration(conversation.started_at, conversation.ended_at)}
-                    </TableCell>
-                    <TableCell>
-                      {conversation.lead_qualified ? (
-                        <CheckCircle className="h-4 w-4 text-emerald-green" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-cool-gray" />
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <span className={getScoreColor(conversation.conversion_score)}>
-                        {conversation.conversion_score}%
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {(() => {
-                        try {
-                          const data = typeof conversation.conversation_data === 'string' 
-                            ? JSON.parse(conversation.conversation_data) 
-                            : conversation.conversation_data;
-                          return Array.isArray(data) ? data.length : 0;
-                        } catch {
-                          return 0;
-                        }
-                      })()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => setSelectedConversation(conversation)}
-                        variant="ghost"
-                        size="sm"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
-        </CardContent>
-      </Card>
+        </TabsContent>
 
-      {/* Conversation Detail Modal */}
-      {selectedConversation && (
-        <Card className="fixed inset-4 z-50 bg-background border shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Conversation Details</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Session: {selectedConversation.session_id}
-              </p>
-            </div>
-            <Button 
-              onClick={() => setSelectedConversation(null)}
-              variant="ghost"
-              size="sm"
-            >
-              ×
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[60vh]">
+        <TabsContent value="patterns" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Hourly Activity Pattern</CardTitle>
+              <CardDescription>
+                Shows when users are most active throughout the day
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={hourlyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hour" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="conversations" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="recent" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Conversations</CardTitle>
+              <CardDescription>
+                Latest {recentConversations.length} conversations with this agent
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium">Status</p>
-                    <p className="text-sm text-muted-foreground">{selectedConversation.status}</p>
+                {recentConversations.map((conversation) => (
+                  <div key={conversation.id} className="border rounded-lg p-4 space-y-2">
+                    <div className="flex justify-between items-start">
+                      <Badge variant="outline">
+                        Session: {conversation.session_id?.slice(-8) || 'Unknown'}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">
+                        {new Date(conversation.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-sm font-medium text-blue-600">User:</p>
+                        <p className="text-sm">{conversation.user_message}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-green-600">AI:</p>
+                        <p className="text-sm">{conversation.ai_response || 'No response recorded'}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">Lead Qualified</p>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedConversation.lead_qualified ? 'Yes' : 'No'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Conversion Score</p>
-                    <p className="text-sm text-muted-foreground">{selectedConversation.conversion_score}%</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Visitor ID</p>
-                    <p className="text-sm text-muted-foreground font-mono">
-                      {selectedConversation.visitor_id || 'Anonymous'}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium mb-2">Conversation Data</p>
-                  <div className="space-y-2">
-                    {(() => {
-                      try {
-                        const data = typeof selectedConversation.conversation_data === 'string' 
-                          ? JSON.parse(selectedConversation.conversation_data) 
-                          : selectedConversation.conversation_data;
-                        
-                        if (Array.isArray(data) && data.length > 0) {
-                          return data.map((message, index) => (
-                            <div key={index} className="p-3 bg-muted rounded-lg">
-                              <pre className="text-xs whitespace-pre-wrap">
-                                {JSON.stringify(message, null, 2)}
-                              </pre>
-                            </div>
-                          ));
-                        }
-                        return <p className="text-sm text-muted-foreground">No conversation data available</p>;
-                      } catch {
-                        return <p className="text-sm text-muted-foreground">Invalid conversation data format</p>;
-                      }
-                    })()}
-                  </div>
-                </div>
+                ))}
+                {recentConversations.length === 0 && (
+                  <p className="text-muted-foreground text-center py-8">
+                    No conversations found for this agent
+                  </p>
+                )}
               </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
