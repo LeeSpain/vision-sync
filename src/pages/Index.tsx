@@ -45,19 +45,20 @@ const Index = () => {
     try {
       setLoading(true);
       
-      const allProjects = await projectManager.getPublicProjects();
-      const featured = allProjects.filter(p => p.is_featured);
+      // Load projects by content section with new schema
+      const featured = await projectManager.getProjectsByContentSection('featured');
       setFeaturedProjects(featured.slice(0, 3));
       
-      // For now, use simple filtering by category until project schema is updated
-      const forSale = allProjects.filter(p => p.category === 'For Sale');
+      const forSale = await projectManager.getProjectsByContentSection('platforms-for-sale');
       setPlatformsForSale(forSale);
-      setOffTheShelf(forSale);
       
-      const internal = await projectManager.getProjectsByCategory('Internal');
+      const offShelf = await projectManager.getProjectsByContentSection('off-the-shelf');
+      setOffTheShelf(offShelf);
+      
+      const internal = await projectManager.getProjectsByContentSection('internal-tools');
       setInternalTools(internal);
       
-      const investment = await projectManager.getProjectsByCategory('Investment');
+      const investment = await projectManager.getProjectsByContentSection('investment-opportunities');
       setInvestmentOps(investment);
       
     } catch (error) {

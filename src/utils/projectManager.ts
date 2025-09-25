@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 
-// Updated interface to match actual database schema
+// Enhanced interface to match updated database schema
 export interface Project {
   id: string;
   title: string;
@@ -14,6 +14,22 @@ export interface Project {
   is_featured: boolean;
   created_at: string;
   updated_at: string;
+  content_section: string | null;
+  pricing: any | null;
+  billing_type: string | null;
+  investment_amount: number | null;
+  funding_progress: number | null;
+  subscription_price: number | null;
+  subscription_period: string | null;
+  price: number | null;
+  deposit_amount: number | null;
+  priority_order: number | null;
+  status: string | null;
+  route: string | null;
+  expected_roi: number | null;
+  investment_deadline: string | null;
+  investor_count: number | null;
+  social_proof: any | null;
 }
 
 export interface CreateProjectData {
@@ -26,6 +42,22 @@ export interface CreateProjectData {
   technologies?: string[];
   is_public?: boolean;
   is_featured?: boolean;
+  content_section?: string;
+  pricing?: any;
+  billing_type?: string;
+  investment_amount?: number;
+  funding_progress?: number;
+  subscription_price?: number;
+  subscription_period?: string;
+  price?: number;
+  deposit_amount?: number;
+  priority_order?: number;
+  status?: string;
+  route?: string;
+  expected_roi?: number;
+  investment_deadline?: string;
+  investor_count?: number;
+  social_proof?: any;
 }
 
 export const projectManager = {
@@ -67,10 +99,30 @@ export const projectManager = {
       .select('*')
       .eq('category', category)
       .eq('is_public', true)
+      .order('priority_order', { ascending: false })
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching projects by category:', error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  // Get projects by content section
+  async getProjectsByContentSection(section: string): Promise<Project[]> {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('content_section', section)
+      .eq('is_public', true)
+      .eq('status', 'active')
+      .order('priority_order', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching projects by content section:', error);
       throw error;
     }
 

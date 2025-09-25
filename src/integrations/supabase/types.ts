@@ -301,43 +301,91 @@ export type Database = {
       }
       projects: {
         Row: {
+          billing_type: string | null
           category: string | null
+          content_section: string | null
           created_at: string | null
           demo_url: string | null
+          deposit_amount: number | null
           description: string | null
+          expected_roi: number | null
+          funding_progress: number | null
           github_url: string | null
           id: string
           image_url: string | null
+          investment_amount: number | null
+          investment_deadline: string | null
+          investor_count: number | null
           is_featured: boolean | null
           is_public: boolean | null
+          price: number | null
+          pricing: Json | null
+          priority_order: number | null
+          route: string | null
+          social_proof: Json | null
+          status: string | null
+          subscription_period: string | null
+          subscription_price: number | null
           technologies: string[] | null
           title: string
           updated_at: string | null
         }
         Insert: {
+          billing_type?: string | null
           category?: string | null
+          content_section?: string | null
           created_at?: string | null
           demo_url?: string | null
+          deposit_amount?: number | null
           description?: string | null
+          expected_roi?: number | null
+          funding_progress?: number | null
           github_url?: string | null
           id?: string
           image_url?: string | null
+          investment_amount?: number | null
+          investment_deadline?: string | null
+          investor_count?: number | null
           is_featured?: boolean | null
           is_public?: boolean | null
+          price?: number | null
+          pricing?: Json | null
+          priority_order?: number | null
+          route?: string | null
+          social_proof?: Json | null
+          status?: string | null
+          subscription_period?: string | null
+          subscription_price?: number | null
           technologies?: string[] | null
           title: string
           updated_at?: string | null
         }
         Update: {
+          billing_type?: string | null
           category?: string | null
+          content_section?: string | null
           created_at?: string | null
           demo_url?: string | null
+          deposit_amount?: number | null
           description?: string | null
+          expected_roi?: number | null
+          funding_progress?: number | null
           github_url?: string | null
           id?: string
           image_url?: string | null
+          investment_amount?: number | null
+          investment_deadline?: string | null
+          investor_count?: number | null
           is_featured?: boolean | null
           is_public?: boolean | null
+          price?: number | null
+          pricing?: Json | null
+          priority_order?: number | null
+          route?: string | null
+          social_proof?: Json | null
+          status?: string | null
+          subscription_period?: string | null
+          subscription_price?: number | null
           technologies?: string[] | null
           title?: string
           updated_at?: string | null

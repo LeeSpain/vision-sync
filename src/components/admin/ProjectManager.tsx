@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { projectManager, Project, CreateProjectData } from '@/utils/projectManager';
-import ProjectCreationModal from './ProjectCreationModal';
-import ProjectEditModal from './ProjectEditModal';
+import EnhancedProjectCreationModal from './EnhancedProjectCreationModal';
+import EnhancedProjectEditModal from './EnhancedProjectEditModal';
 import { 
   Plus, 
   Search, 
@@ -388,14 +388,14 @@ export function ProjectManager() {
       </Card>
 
       {/* Modals */}
-      <ProjectCreationModal
+      <EnhancedProjectCreationModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSubmit={handleCreateProject}
         loading={actionLoading}
       />
       
-      <ProjectEditModal
+      <EnhancedProjectEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSubmit={handleEditProject}
