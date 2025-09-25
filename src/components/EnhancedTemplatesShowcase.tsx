@@ -73,26 +73,6 @@ const EnhancedTemplatesShowcase = () => {
         <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-royal-purple/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }}></div>
         
         <div className="relative">
-          {/* Header Section */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-3 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
-              <Package className="h-5 w-5" />
-              Professional Templates
-            </div>
-            
-            <h2 className="text-4xl md:text-6xl font-heading font-bold text-midnight-navy mb-6 leading-tight">
-              Transform Your Ideas
-              <span className="block bg-gradient-to-r from-coral-orange via-emerald-green to-electric-blue bg-clip-text text-transparent mt-2">
-                Into Reality
-              </span>
-            </h2>
-            
-            <p className="text-xl md:text-2xl text-cool-gray max-w-4xl mx-auto mb-8 leading-relaxed">
-              Choose from our collection of industry-specific templates and launch your vision faster than ever.
-              <span className="font-semibold text-royal-purple"> {totalTemplates} professional templates</span> available for 
-              immediate deployment and customization.
-            </p>
-          </div>
 
           {/* Animated Statistics */}
           <div className="flex justify-center mb-12">
