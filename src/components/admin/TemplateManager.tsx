@@ -17,18 +17,16 @@ interface AppTemplate {
   id: string;
   title: string;
   category: string;
-  description: string;
-  detailed_description: string;
-  key_features: any;
   industry: string;
+  description: string;
   pricing: any;
+  features: string[];
   image_url: string;
-  gallery_images: string[];
-  is_popular: boolean;
+  demo_url: string;
+  complexity_level: string;
+  estimated_hours: number;
   is_active: boolean;
-  questionnaire_weight: any;
-  ai_generated_content: any;
-  template_config: any;
+  is_popular: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -298,14 +296,14 @@ export function TemplateManager() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2 mb-4">
-                {Array.isArray(template.key_features) ? template.key_features.slice(0, 3).map((feature, index) => (
+                {Array.isArray(template.features) ? template.features.slice(0, 3).map((feature, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
                     {feature}
                   </Badge>
                 )) : null}
-                {Array.isArray(template.key_features) && template.key_features.length > 3 && (
+                {Array.isArray(template.features) && template.features.length > 3 && (
                   <Badge variant="outline" className="text-xs">
-                    +{template.key_features.length - 3} more
+                    +{template.features.length - 3} more
                   </Badge>
                 )}
               </div>
@@ -413,7 +411,7 @@ export function TemplateManager() {
             setIsEditModalOpen(false);
             setSelectedTemplate(null);
           }}
-          template={selectedTemplate}
+          template={selectedTemplate as any}
           onSuccess={handleEditSuccess}
         />
       )}
@@ -430,7 +428,7 @@ export function TemplateManager() {
             setIsPreviewOpen(false);
             setSelectedTemplate(null);
           }}
-          template={selectedTemplate}
+          template={selectedTemplate as any}
         />
       )}
     </div>

@@ -29,42 +29,38 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
     }
   };
 
-  // Combine all features from database
-  const allFeatures = [
-    ...(template.foundation_features || []),
-    ...(template.core_industry_features || []),
-    ...(template.key_features || [])
-  ].filter((feature, index, self) => self.indexOf(feature) === index); // Remove duplicates
+  // Use features from database
+  const allFeatures = template.features || [];
 
   // Convert Template to AppTemplate format
   const adaptedTemplate: AppTemplate = {
     id: template.id,
     title: template.title,
-    overview: template.detailed_description || template.description,
+    overview: template.description,
     category: template.category as any,
     pricing: {
-      base: template.pricing.base,
-      customization: template.pricing.customization,
+      base: template.pricing.base_price,
+      customization: 999,
       subscription: {
-        monthly: template.pricing.subscription?.monthly || 299,
-        benefits: template.pricing.subscription?.benefits || ['Regular updates', 'Premium support', 'Monthly consultations']
+        monthly: 299,
+        benefits: ['Regular updates', 'Premium support', 'Monthly consultations']
       },
       deposit: {
-        amount: template.pricing.base * 0.3,
+        amount: template.pricing.base_price * 0.3,
         serviceMonthly: 199,
         description: 'Initial payment with monthly service'
       },
       installments: {
         available: true,
         plans: [
-          { months: 6, monthlyAmount: template.pricing.base / 6, totalAmount: template.pricing.base },
-          { months: 12, monthlyAmount: template.pricing.base / 12, totalAmount: template.pricing.base }
+          { months: 6, monthlyAmount: template.pricing.base_price / 6, totalAmount: template.pricing.base_price },
+          { months: 12, monthlyAmount: template.pricing.base_price / 12, totalAmount: template.pricing.base_price }
         ]
       },
       ownership: {
-        buyOutright: template.pricing.base,
+        buyOutright: template.pricing.base_price,
         serviceContract: {
-          deposit: template.pricing.base * 0.3,
+          deposit: template.pricing.base_price * 0.3,
           monthly: 199,
           benefits: ['Ongoing support', 'Updates included']
         }

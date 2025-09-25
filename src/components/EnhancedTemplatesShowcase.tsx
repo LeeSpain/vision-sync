@@ -202,7 +202,7 @@ const EnhancedTemplatesShowcase = () => {
                           <div className="flex items-center justify-between">
                             <div className="text-sm">
                               <span className="text-royal-purple font-bold">
-                                From {formatPrice(template.pricing.base)}
+                                From {formatPrice(template.pricing.base_price)}
                               </span>
                             </div>
                             <div className="text-xs text-cool-gray">
