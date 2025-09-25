@@ -77,37 +77,21 @@ const EnhancedTemplatesShowcase = () => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-3 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
               <Package className="h-5 w-5" />
-              Ready-to-Deploy Apps
+              Professional Templates
             </div>
             
             <h2 className="text-4xl md:text-6xl font-heading font-bold text-midnight-navy mb-6 leading-tight">
-              🎨 Customize Your App
+              Transform Your Ideas
               <span className="block bg-gradient-to-r from-coral-orange via-emerald-green to-electric-blue bg-clip-text text-transparent mt-2">
-                In Minutes
+                Into Reality
               </span>
             </h2>
             
             <p className="text-xl md:text-2xl text-cool-gray max-w-4xl mx-auto mb-8 leading-relaxed">
-              Transform any industry template into your perfect app. Add your logo, colors, and content in minutes.
-              <span className="font-semibold text-royal-purple"> {totalTemplates} professional templates</span> ready for 
-              instant customization and deployment.
+              Choose from our collection of industry-specific templates and launch your vision faster than ever.
+              <span className="font-semibold text-royal-purple"> {totalTemplates} professional templates</span> available for 
+              immediate deployment and customization.
             </p>
-            
-            {/* Customization Features */}
-            <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-              <div className="flex items-center gap-2 bg-emerald-green/10 backdrop-blur-sm rounded-full px-4 py-2 border border-emerald-green/30">
-                <Palette className="h-4 w-4 text-emerald-green" />
-                <span className="text-emerald-green font-medium">Add Your Branding</span>
-              </div>
-              <div className="flex items-center gap-2 bg-royal-purple/10 backdrop-blur-sm rounded-full px-4 py-2 border border-royal-purple/30">
-                <Zap className="h-4 w-4 text-royal-purple" />
-                <span className="text-royal-purple font-medium">Instant Preview</span>
-              </div>
-              <div className="flex items-center gap-2 bg-coral-orange/10 backdrop-blur-sm rounded-full px-4 py-2 border border-coral-orange/30">
-                <Clock className="h-4 w-4 text-coral-orange" />
-                <span className="text-coral-orange font-medium">Live in 72hrs</span>
-              </div>
-            </div>
           </div>
 
           {/* Animated Statistics */}
