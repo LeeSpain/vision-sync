@@ -8,9 +8,9 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel';
-import { FeaturedProjectCard } from './FeaturedProjectCard';
+import { ProfessionalProjectCard } from './ProfessionalProjectCard';
 import Autoplay from 'embla-carousel-autoplay';
-import { Sparkles, TrendingUp, Users, Timer } from 'lucide-react';
+import { Sparkles, Globe } from 'lucide-react';
 
 interface ProjectData {
   id: string;
@@ -64,69 +64,7 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
     });
   }, [api]);
 
-  const convertToFeaturedCard = (project: ProjectData) => {
-    // Use real project data with smart fallbacks
-    const getPricing = () => {
-      if (project.billing_type === 'investment' && project.investment_amount) {
-        const amount = project.investment_amount;
-        if (amount >= 1000000) {
-          return `Seeking $${(amount / 1000000).toFixed(1)}M`;
-        } else if (amount >= 1000) {
-          return `Seeking $${(amount / 1000)}K`;
-        }
-        return `Seeking $${amount}`;
-      }
-      if (project.billing_type === 'one-time' && project.price) {
-        const price = project.price;
-        if (price >= 1000) {
-          return `Listed at $${(price / 1000)}K`;
-        }
-        return `Listed at $${price}`;
-      }
-      if (project.billing_type === 'subscription' && project.subscription_price) {
-        return `$${project.subscription_price}/${project.subscription_period || 'month'}`;
-      }
-      if (project.billing_type === 'deposit-subscription' && (project as any).deposit_amount && project.subscription_price) {
-        return `$${(project as any).deposit_amount} + $${project.subscription_price}/mo`;
-      }
-      return 'Price on request'; // Minimal fallback for projects without pricing
-    };
-
-    const getActions = () => {
-      const actions = { view: true, invest: false, buy: false, subscribe: false };
-      
-      if (project.billing_type === 'investment') {
-        actions.invest = true;
-      } else if (project.billing_type === 'one-time') {
-        actions.buy = true;
-      } else if (project.billing_type === 'subscription') {
-        actions.subscribe = true;
-      } else if (project.billing_type === 'deposit-subscription') {
-        actions.subscribe = true;
-      } else {
-        // Default fallback for projects without billing_type
-        actions.invest = true;
-      }
-      
-      return actions;
-    };
-
-    const getTimeLeft = () => {
-      if (project.investment_deadline) {
-        const deadline = new Date(project.investment_deadline);
-        const now = new Date();
-        const diffTime = deadline.getTime() - now.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        if (diffDays > 0) {
-          return `${diffDays} days left`;
-        } else {
-          return "Deadline passed";
-        }
-      }
-      return null; // No deadline set
-    };
-    
+  const convertToProjectCard = (project: ProjectData) => {
     return {
       id: project.id,
       title: project.name,
@@ -135,15 +73,6 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
       status: project.status,
       category: project.category,
       route: project.route,
-      pricing: getPricing(),
-      roi: project.expected_roi ? `${project.expected_roi}%` : 'TBD',
-      fundingProgress: project.funding_progress || 0,
-      investorsViewing: project.investor_count || 0,
-      timeLeft: getTimeLeft(),
-      isHot: project.funding_progress ? project.funding_progress > 70 : false,
-      limitedSpots: null,
-      socialProof: project.social_proof,
-      actions: getActions()
     };
   };
 
@@ -213,35 +142,19 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-emerald-green/10 rounded-full blur-xl animate-float"></div>
         
         <div className="relative z-10">
-          {/* Premium Badge */}
+          {/* Professional Badge */}
           <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
-            <Sparkles className="h-4 w-4 animate-pulse" />
-            Premium Investment Opportunities
+            <Globe className="h-4 w-4" />
+            Featured Websites
           </div>
           
-          <h2 className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-midnight-navy via-royal-purple to-emerald-green bg-clip-text text-transparent mb-6 animate-slide-up">
-            🔥 Featured Projects
+          <h2 className="text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-midnight-navy via-royal-purple to-emerald-green bg-clip-text text-transparent mb-6 animate-slide-up">
+            Our Latest Projects
           </h2>
           
-          <p className="text-xl md:text-2xl text-cool-gray max-w-3xl mx-auto mb-6 animate-fade-in">
-            Flagship platforms ready for investment and explosive growth
+          <p className="text-lg md:text-xl text-cool-gray max-w-3xl mx-auto animate-fade-in">
+            Explore our portfolio of professional websites and applications
           </p>
-          
-          {/* Live Stats */}
-          <div className="flex flex-wrap justify-center gap-6 text-sm">
-            <div className="flex items-center gap-2 text-emerald-green font-medium">
-              <TrendingUp className="h-4 w-4" />
-              <span>Average ROI: 35%+</span>
-            </div>
-            <div className="flex items-center gap-2 text-royal-purple font-medium">
-              <Users className="h-4 w-4" />
-              <span>150+ Active Investors</span>
-            </div>
-            <div className="flex items-center gap-2 text-coral-orange font-medium">
-              <Timer className="h-4 w-4" />
-              <span>Limited Time Offers</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -259,8 +172,8 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
           <CarouselContent className="-ml-6">
             {projects.map((project, index) => (
               <CarouselItem key={project.id || index} className="pl-6 basis-full md:basis-1/2 lg:basis-1/3">
-                <div className="transform transition-all duration-500 hover:scale-[1.02]">
-                  <FeaturedProjectCard {...convertToFeaturedCard(project)} />
+                <div className="transform transition-all duration-300">
+                  <ProfessionalProjectCard {...convertToProjectCard(project)} />
                 </div>
               </CarouselItem>
             ))}
