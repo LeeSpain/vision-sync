@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -38,9 +38,12 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
     is_public: true,
     is_featured: false,
     content_section: '',
-    billing_type: '',
+    billing_type: null,
     status: 'active',
-    priority_order: 0
+    priority_order: 0,
+    route: '',
+    subscription_period: '',
+    investment_deadline: ''
   });
   
   const [newTech, setNewTech] = useState('');
@@ -74,18 +77,18 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
   useEffect(() => {
     if (project) {
       setFormData({
-        title: project.title,
+        title: project.title || '',
         description: project.description || '',
         category: project.category || '',
         image_url: project.image_url || '',
         demo_url: project.demo_url || '',
         github_url: project.github_url || '',
         technologies: project.technologies || [],
-        is_public: project.is_public,
-        is_featured: project.is_featured,
+        is_public: project.is_public !== undefined ? project.is_public : true,
+        is_featured: project.is_featured !== undefined ? project.is_featured : false,
         content_section: project.content_section || '',
         pricing: project.pricing || null,
-        billing_type: project.billing_type || '',
+        billing_type: project.billing_type || null,
         investment_amount: project.investment_amount || undefined,
         funding_progress: project.funding_progress || 0,
         subscription_price: project.subscription_price || undefined,
@@ -128,13 +131,30 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
       return;
     }
 
+    // Validate billing_type if provided
+    if (formData.billing_type && !['free', 'one-time', 'subscription', 'investment'].includes(formData.billing_type)) {
+      alert('Please select a valid billing type');
+      return;
+    }
+
     // Generate route from title if not provided
     const routeSlug = formData.route || `/${formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     
+    // Clean up the data before submission
     const updatedData = {
       ...formData,
       route: routeSlug,
-      investment_deadline: formData.investment_deadline || undefined
+      billing_type: formData.billing_type || null, // Ensure null instead of empty string
+      category: formData.category || null,
+      content_section: formData.content_section || null,
+      subscription_period: formData.subscription_period || null,
+      investment_deadline: formData.investment_deadline || null,
+      // Remove undefined values to prevent database issues
+      investment_amount: formData.investment_amount || null,
+      subscription_price: formData.subscription_price || null,
+      price: formData.price || null,
+      deposit_amount: formData.deposit_amount || null,
+      expected_roi: formData.expected_roi || null
     };
 
     await onSubmit(project.id, updatedData);
@@ -258,24 +278,24 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
 
   const renderPricingTab = () => (
     <div className="space-y-6">
-      <div>
-        <Label htmlFor="billing_type">Billing Type</Label>
-        <Select
-          value={formData.billing_type}
-          onValueChange={(value) => setFormData(prev => ({ ...prev, billing_type: value }))}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select billing type" />
-          </SelectTrigger>
-          <SelectContent>
-            {billingTypes.map(type => (
-              <SelectItem key={type.value} value={type.value}>
-                {type.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+        <div>
+          <Label htmlFor="billing_type">Billing Type</Label>
+          <Select
+            value={formData.billing_type || ""}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, billing_type: value || null }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select billing type" />
+            </SelectTrigger>
+            <SelectContent>
+              {billingTypes.map(type => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
       {formData.billing_type === 'one-time' && (
         <div className="grid grid-cols-2 gap-4">
@@ -317,24 +337,24 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
               placeholder="0.00"
             />
           </div>
-          <div>
-            <Label htmlFor="subscription_period">Billing Period</Label>
-            <Select
-              value={formData.subscription_period}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, subscription_period: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select period" />
-              </SelectTrigger>
-              <SelectContent>
-                {subscriptionPeriods.map(period => (
-                  <SelectItem key={period} value={period}>
-                    {period.charAt(0).toUpperCase() + period.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+            <div>
+              <Label htmlFor="subscription_period">Billing Period</Label>
+              <Select
+                value={formData.subscription_period || ""}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, subscription_period: value || null }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select period" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subscriptionPeriods.map(period => (
+                    <SelectItem key={period} value={period}>
+                      {period.charAt(0).toUpperCase() + period.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
         </div>
       )}
 
@@ -536,6 +556,9 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Edit Project - {project?.title}</DialogTitle>
+          <DialogDescription>
+            Update project details, pricing, media, and settings. Changes will be saved to the database.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex h-[600px]">
