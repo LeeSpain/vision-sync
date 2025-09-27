@@ -103,19 +103,45 @@ export default function DynamicProjectDetail() {
     );
   }
 
-  // Transform technologies into business features
-  const features = project.technologies?.map(tech => ({
-    icon: getFeatureIcon(tech),
-    title: tech,
-    description: `Powered by ${tech} for optimal performance and reliability`
-  })) || [];
+  // Extract clean business content from description
+  const cleanDescription = project.description?.split('.')[0] + '.' || '';
+  
+  // Create structured content sections from the description
+  const getContentSections = (description: string) => {
+    const sections = [];
+    
+    if (description.includes('Curated Property Listings')) {
+      sections.push({
+        title: "Curated Property Listings",
+        content: "A selection of homes with detailed descriptions, high-quality photos, and key information on size, features, and location."
+      });
+    }
+    
+    if (description.includes('Personalized Guidance')) {
+      sections.push({
+        title: "Personalized Guidance", 
+        content: "Support for buyers, renters, and investors to help you navigate the Spanish property market."
+      });
+    }
+    
+    if (description.includes('International Client Focus')) {
+      sections.push({
+        title: "International Client Focus",
+        content: "Services tailored for both local and overseas clients who may be new to purchasing or renting in Spain."
+      });
+    }
+    
+    if (description.includes('End-to-End Support')) {
+      sections.push({
+        title: "End-to-End Support",
+        content: "From your first search to finalizing the deal, we connect you with the right people, resources, and advice."
+      });
+    }
+    
+    return sections;
+  };
 
-  // Create business highlights from project data
-  const highlights = [
-    ...(project.demo_url ? [{ icon: Globe, title: "Live Platform", value: "Available" }] : []),
-    ...(project.technologies?.length ? [{ icon: Monitor, title: "Technologies", value: `${project.technologies.length}+` }] : []),
-    { icon: Shield, title: "Professional", value: "Grade" }
-  ];
+  const contentSections = getContentSections(project.description || '');
 
   const handleViewWebsite = () => {
     if (project.demo_url) {
@@ -135,61 +161,92 @@ export default function DynamicProjectDetail() {
 
   return (
     <ProjectPageTemplate>
-      {/* Professional Hero Banner */}
-      <HeroBanner
-        title={project.title}
-        description={project.description || ''}
-        status="Live"
-        category="Featured"
-        heroImage={project.image_url}
-        primaryCTA={{
-          text: project.demo_url ? "View Website" : "Learn More",
-          action: project.demo_url ? handleViewWebsite : handleLearnMore,
-          icon: project.demo_url ? ExternalLink : Monitor
-        }}
-        secondaryCTA={{
-          text: "Contact Us",
-          action: handleContact,
-          icon: Users
-        }}
-      />
+      {/* Clean Hero Section */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 tracking-tight">
+              {project.title}
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+              {cleanDescription}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {project.demo_url && (
+                <Button 
+                  size="lg" 
+                  className="bg-white text-royal-purple hover:bg-white/90 font-semibold px-8 py-4 text-lg"
+                  onClick={handleViewWebsite}
+                >
+                  <ExternalLink className="h-5 w-5 mr-2" />
+                  View Platform
+                </Button>
+              )}
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white text-white hover:bg-white hover:text-royal-purple font-semibold px-8 py-4 text-lg"
+                onClick={handleContact}
+              >
+                <Users className="h-5 w-5 mr-2" />
+                Contact Us
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Website Preview */}
+      {/* Website Preview Section */}
       {project.demo_url && (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-white/50">
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-midnight-navy mb-4 font-heading">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-midnight-navy mb-4 font-heading">
                 Live Platform Preview
               </h2>
-              <p className="text-lg text-cool-gray">
-                Experience the platform in action
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">
+                Experience our property search platform in action
               </p>
             </div>
-            <WebsitePreview 
-              url={project.demo_url} 
-              title={project.title}
-              className="mb-8"
-            />
+            <div className="bg-white rounded-2xl shadow-elegant p-8">
+              <WebsitePreview 
+                url={project.demo_url} 
+                title={project.title}
+                className="rounded-xl overflow-hidden"
+              />
+            </div>
           </div>
         </section>
       )}
 
-      {/* Overview Section */}
-      <OverviewSection
-        title="Platform Overview"
-        content={project.description || ''}
-        highlights={highlights}
-      />
-
-      {/* Features Grid */}
-      {features.length > 0 && (
-        <FeatureGrid
-          title="Platform Features"
-          description="Built with cutting-edge technology for optimal performance"
-          features={features}
-        />
-      )}
+      {/* Platform Information */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-white/30">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-midnight-navy mb-6 font-heading">
+              How We Help You Find Your Perfect Home
+            </h2>
+            <p className="text-xl text-cool-gray max-w-3xl mx-auto leading-relaxed">
+              Our comprehensive platform provides everything you need for your Spanish property journey
+            </p>
+          </div>
+          
+          {contentSections.length > 0 && (
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+              {contentSections.map((section, index) => (
+                <div key={index} className="bg-white rounded-xl p-8 shadow-card hover:shadow-hover transition-all duration-300">
+                  <h3 className="text-2xl font-bold text-midnight-navy mb-4 font-heading">
+                    {section.title}
+                  </h3>
+                  <p className="text-cool-gray leading-relaxed text-lg">
+                    {section.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     </ProjectPageTemplate>
   );
 }
