@@ -103,45 +103,77 @@ export default function DynamicProjectDetail() {
     );
   }
 
-  // Extract clean business content from description
-  const cleanDescription = project.description?.split('.')[0] + '.' || '';
-  
-  // Create structured content sections from the description
+  // Extract the opening paragraph from description
+  const getIntroText = (description: string) => {
+    const paragraphs = description.split('\n\n');
+    return paragraphs[0] || '';
+  };
+
+  // Extract structured content sections from the description
   const getContentSections = (description: string) => {
     const sections = [];
     
-    if (description.includes('Curated Property Listings')) {
-      sections.push({
-        title: "Curated Property Listings",
-        content: "A selection of homes with detailed descriptions, high-quality photos, and key information on size, features, and location."
-      });
-    }
-    
-    if (description.includes('Personalized Guidance')) {
-      sections.push({
-        title: "Personalized Guidance", 
-        content: "Support for buyers, renters, and investors to help you navigate the Spanish property market."
-      });
-    }
-    
-    if (description.includes('International Client Focus')) {
-      sections.push({
-        title: "International Client Focus",
-        content: "Services tailored for both local and overseas clients who may be new to purchasing or renting in Spain."
-      });
-    }
-    
-    if (description.includes('End-to-End Support')) {
-      sections.push({
-        title: "End-to-End Support",
-        content: "From your first search to finalizing the deal, we connect you with the right people, resources, and advice."
-      });
+    // Parse "We focus on offering:" section
+    if (description.includes('We focus on offering:')) {
+      const focusSection = description.split('We focus on offering:')[1];
+      if (focusSection) {
+        const howItWorksIndex = focusSection.indexOf('How It Works');
+        const focusContent = howItWorksIndex > -1 
+          ? focusSection.substring(0, howItWorksIndex) 
+          : focusSection;
+        
+        // Extract each focus area with its full description
+        const focusAreas = focusContent.split('\n\n').filter(item => item.trim());
+        
+        focusAreas.forEach(area => {
+          const lines = area.split(':');
+          if (lines.length >= 2) {
+            const title = lines[0].trim();
+            const content = lines.slice(1).join(':').trim();
+            if (title && content) {
+              sections.push({ title, content });
+            }
+          }
+        });
+      }
     }
     
     return sections;
   };
 
+  // Extract How It Works section
+  const getHowItWorks = (description: string) => {
+    if (description.includes('How It Works')) {
+      const howItWorksSection = description.split('How It Works')[1];
+      if (howItWorksSection) {
+        const missionIndex = howItWorksSection.indexOf('At AI Spain Homes, our mission');
+        const content = missionIndex > -1 
+          ? howItWorksSection.substring(0, missionIndex) 
+          : howItWorksSection;
+        
+        const steps = content.split('\n\n').filter(step => step.trim() && step.includes('–'));
+        return steps.map(step => {
+          const parts = step.split('–');
+          return {
+            title: parts[0].trim(),
+            content: parts.slice(1).join('–').trim()
+          };
+        });
+      }
+    }
+    return [];
+  };
+
+  // Extract mission statement
+  const getMissionStatement = (description: string) => {
+    const missionMatch = description.match(/At AI Spain Homes, our mission is to[^.]*\./);
+    return missionMatch ? missionMatch[0] : '';
+  };
+
+  const introText = getIntroText(project.description || '');
   const contentSections = getContentSections(project.description || '');
+  const howItWorksSteps = getHowItWorks(project.description || '');
+  const missionStatement = getMissionStatement(project.description || '');
 
   const handleViewWebsite = () => {
     if (project.demo_url) {
@@ -169,7 +201,7 @@ export default function DynamicProjectDetail() {
               {project.title}
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {cleanDescription}
+              {introText}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {project.demo_url && (
@@ -219,19 +251,19 @@ export default function DynamicProjectDetail() {
         </section>
       )}
 
-      {/* Platform Information */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-white/30">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-midnight-navy mb-6 font-heading">
-              How We Help You Find Your Perfect Home
-            </h2>
-            <p className="text-xl text-cool-gray max-w-3xl mx-auto leading-relaxed">
-              Our comprehensive platform provides everything you need for your Spanish property journey
-            </p>
-          </div>
-          
-          {contentSections.length > 0 && (
+      {/* What We Offer Section */}
+      {contentSections.length > 0 && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-white/30">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-midnight-navy mb-6 font-heading">
+                What We Offer
+              </h2>
+              <p className="text-xl text-cool-gray max-w-3xl mx-auto leading-relaxed">
+                We focus on providing comprehensive support for your Spanish property journey
+              </p>
+            </div>
+            
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
               {contentSections.map((section, index) => (
                 <div key={index} className="bg-white rounded-xl p-8 shadow-card hover:shadow-hover transition-all duration-300">
@@ -244,9 +276,55 @@ export default function DynamicProjectDetail() {
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
+
+      {/* How It Works Section */}
+      {howItWorksSteps.length > 0 && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-midnight-navy mb-6 font-heading">
+                How It Works
+              </h2>
+              <p className="text-xl text-cool-gray max-w-3xl mx-auto leading-relaxed">
+                Our simple 4-step process to find your perfect property in Spain
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {howItWorksSteps.map((step, index) => (
+                <div key={index} className="text-center">
+                  <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-xl font-bold text-midnight-navy mb-4 font-heading">
+                    {step.title}
+                  </h3>
+                  <p className="text-cool-gray leading-relaxed">
+                    {step.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Mission Statement Section */}
+      {missionStatement && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-white/30">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl font-bold text-midnight-navy mb-8 font-heading">
+              Our Mission
+            </h2>
+            <p className="text-2xl text-cool-gray leading-relaxed italic">
+              {missionStatement}
+            </p>
+          </div>
+        </section>
+      )}
     </ProjectPageTemplate>
   );
 }
