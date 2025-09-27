@@ -435,14 +435,15 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
       />
 
       <div>
-        <Label htmlFor="demo_url">Demo URL</Label>
+        <Label htmlFor="demo_url">Live Website URL</Label>
+        <p className="text-sm text-muted-foreground mb-2">The live/deployed website where users can access your project</p>
         <div className="flex gap-2">
           <Input
             id="demo_url"
             type="url"
             value={formData.demo_url}
             onChange={(e) => setFormData(prev => ({ ...prev, demo_url: e.target.value }))}
-            placeholder="https://demo.example.com"
+            placeholder="https://yourproject.vercel.app"
           />
           {formData.demo_url && (
             <Button
@@ -459,7 +460,8 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="github_url">GitHub URL</Label>
+        <Label htmlFor="github_url">GitHub Repository URL</Label>
+        <p className="text-sm text-muted-foreground mb-2">Link to the GitHub repository containing the source code</p>
         <div className="flex gap-2">
           <Input
             id="github_url"
