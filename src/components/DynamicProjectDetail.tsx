@@ -179,18 +179,6 @@ export default function DynamicProjectDetail() {
         </section>
       )}
 
-      {/* Project Image */}
-      {project.image_url && (
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <img 
-              src={project.image_url} 
-              alt={project.title}
-              className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-elegant"
-            />
-          </div>
-        </section>
-      )}
       
       {/* Additional Project Details */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
