@@ -129,6 +129,29 @@ export default function DynamicProjectDetail() {
         </div>
       </section>
 
+      {/* Visit Live Site Section */}
+      {project.demo_url && (
+        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-gradient-to-r from-emerald-green/10 to-electric-blue/10 rounded-xl p-8 border border-emerald-green/20">
+              <h3 className="text-2xl font-bold text-midnight-navy mb-4 font-heading">
+                Experience the Live Platform
+              </h3>
+              <p className="text-cool-gray mb-6 text-lg">
+                Ready to explore? Visit the live site and see it in action.
+              </p>
+              <Button 
+                onClick={() => window.open(project.demo_url, '_blank')}
+                className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-3 text-lg font-semibold"
+              >
+                <ExternalLink className="h-5 w-5 mr-2" />
+                Visit Live Site
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Website Preview Section */}
       {project.demo_url && (
         <section className="py-20 px-4 sm:px-6 lg:px-8">
