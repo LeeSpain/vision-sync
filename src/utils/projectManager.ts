@@ -14,7 +14,7 @@ export interface Project {
   is_featured: boolean;
   created_at: string;
   updated_at: string;
-  content_section: string | null;
+  content_section: string[] | null;
   pricing: any | null;
   billing_type: string | null;
   investment_amount: number | null;
@@ -42,7 +42,7 @@ export interface CreateProjectData {
   technologies?: string[];
   is_public?: boolean;
   is_featured?: boolean;
-  content_section?: string;
+  content_section?: string[];
   pricing?: any;
   billing_type?: string;
   investment_amount?: number;
@@ -110,12 +110,12 @@ export const projectManager = {
     return data || [];
   },
 
-  // Get projects by content section
+  // Get projects by content section (now supports arrays)
   async getProjectsByContentSection(section: string): Promise<Project[]> {
     const { data, error } = await supabase
       .from('projects')
       .select('*')
-      .eq('content_section', section)
+      .contains('content_section', [section])
       .eq('is_public', true)
       .eq('status', 'active')
       .order('priority_order', { ascending: false })

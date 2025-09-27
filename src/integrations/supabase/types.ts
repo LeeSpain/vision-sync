@@ -303,7 +303,7 @@ export type Database = {
         Row: {
           billing_type: string | null
           category: string | null
-          content_section: string | null
+          content_section: string[] | null
           created_at: string | null
           demo_url: string | null
           deposit_amount: number | null
@@ -333,7 +333,7 @@ export type Database = {
         Insert: {
           billing_type?: string | null
           category?: string | null
-          content_section?: string | null
+          content_section?: string[] | null
           created_at?: string | null
           demo_url?: string | null
           deposit_amount?: number | null
@@ -363,7 +363,7 @@ export type Database = {
         Update: {
           billing_type?: string | null
           category?: string | null
-          content_section?: string | null
+          content_section?: string[] | null
           created_at?: string | null
           demo_url?: string | null
           deposit_amount?: number | null

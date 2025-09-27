@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Project, CreateProjectData } from '@/utils/projectManager';
 import { X, Plus, Calendar, DollarSign, Package, Users, TrendingUp, ExternalLink } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/image-upload';
@@ -37,7 +38,7 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
     technologies: [],
     is_public: true,
     is_featured: false,
-    content_section: '',
+    content_section: [],
     billing_type: null,
     status: 'active',
     priority_order: 0,
@@ -86,7 +87,7 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
         technologies: project.technologies || [],
         is_public: project.is_public !== undefined ? project.is_public : true,
         is_featured: project.is_featured !== undefined ? project.is_featured : false,
-        content_section: project.content_section || '',
+        content_section: project.content_section || [],
         pricing: project.pricing || null,
         billing_type: project.billing_type || null,
         investment_amount: project.investment_amount || undefined,
@@ -146,7 +147,6 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
       route: routeSlug,
       billing_type: formData.billing_type || null, // Ensure null instead of empty string
       category: formData.category || null,
-      content_section: formData.content_section || null,
       subscription_period: formData.subscription_period || null,
       investment_deadline: formData.investment_deadline || null,
       // Remove undefined values to prevent database issues
@@ -154,7 +154,8 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
       subscription_price: formData.subscription_price || null,
       price: formData.price || null,
       deposit_amount: formData.deposit_amount || null,
-      expected_roi: formData.expected_roi || null
+      expected_roi: formData.expected_roi || null,
+      content_section: formData.content_section && formData.content_section.length > 0 ? formData.content_section : null
     };
 
     await onSubmit(project.id, updatedData);
@@ -213,22 +214,44 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
         </div>
 
         <div>
-          <Label htmlFor="content_section">Content Section</Label>
-          <Select
-            value={formData.content_section || ""}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, content_section: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select section" />
-            </SelectTrigger>
-            <SelectContent>
-              {contentSections.map(section => (
-                <SelectItem key={section} value={section}>
+          <Label>Content Sections</Label>
+          <p className="text-sm text-muted-foreground mb-3">Select all sections where this project should appear</p>
+          <div className="grid grid-cols-2 gap-3">
+            {contentSections.map(section => (
+              <div key={section} className="flex items-center space-x-2">
+                <Checkbox
+                  id={section}
+                  checked={formData.content_section?.includes(section) || false}
+                  onCheckedChange={(checked) => {
+                    const currentSections = formData.content_section || [];
+                    if (checked) {
+                      setFormData(prev => ({
+                        ...prev,
+                        content_section: [...currentSections, section]
+                      }));
+                    } else {
+                      setFormData(prev => ({
+                        ...prev,
+                        content_section: currentSections.filter(s => s !== section)
+                      }));
+                    }
+                  }}
+                />
+                <Label htmlFor={section} className="text-sm">
                   {section.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </SelectItem>
+                </Label>
+              </div>
+            ))}
+          </div>
+          {formData.content_section && formData.content_section.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {formData.content_section.map(section => (
+                <Badge key={section} variant="secondary">
+                  {section.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </Badge>
               ))}
-            </SelectContent>
-          </Select>
+            </div>
+          )}
         </div>
       </div>
 
