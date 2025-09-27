@@ -4,10 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Project, projectManager } from '@/utils/projectManager';
-import { ProjectPageTemplate, HeroBanner, OverviewSection, FeatureGrid } from '@/components/project-template';
+import { ProjectPageTemplate } from '@/components/project-template';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ArrowLeft, ExternalLink, Monitor, Globe, Users, Shield, Clock, Smartphone } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 import WebsitePreview from '@/components/WebsitePreview';
 
 export default function DynamicProjectDetail() {
@@ -112,21 +112,6 @@ export default function DynamicProjectDetail() {
 
   const introText = getIntroText(project.description || '');
 
-  const handleViewWebsite = () => {
-    if (project.demo_url) {
-      window.open(project.demo_url, '_blank');
-    }
-  };
-
-  const handleLearnMore = () => {
-    // Scroll to overview section
-    document.getElementById('overview')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleContact = () => {
-    // Navigate to contact or open contact modal
-    window.location.href = '/contact';
-  };
 
   return (
     <ProjectPageTemplate>
@@ -227,20 +212,4 @@ export default function DynamicProjectDetail() {
       </section>
     </ProjectPageTemplate>
   );
-}
-
-// Helper function to get appropriate icon for technology features
-function getFeatureIcon(tech: string) {
-  const techLower = tech.toLowerCase();
-  if (techLower.includes('react') || techLower.includes('vue') || techLower.includes('angular')) {
-    return Monitor;
-  } else if (techLower.includes('mobile') || techLower.includes('ios') || techLower.includes('android')) {
-    return Smartphone;
-  } else if (techLower.includes('secure') || techLower.includes('auth')) {
-    return Shield;
-  } else if (techLower.includes('real') || techLower.includes('time')) {
-    return Clock;
-  } else {
-    return Globe;
-  }
 }
