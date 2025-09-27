@@ -8,8 +8,9 @@ import { Project, projectManager } from '@/utils/projectManager';
 import { ProjectPageTemplate } from '@/components/project-template';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ArrowLeft, ExternalLink, Github, DollarSign, Users, TrendingUp, Calendar } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Github, DollarSign, Users, TrendingUp, Calendar, Monitor } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import WebsitePreview from '@/components/WebsitePreview';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
@@ -162,6 +163,19 @@ export default function DynamicProjectDetail() {
         </div>
       </section>
 
+      {/* Website Preview */}
+      {project.demo_url && (
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <WebsitePreview 
+              url={project.demo_url} 
+              title={project.title}
+              className="mb-8"
+            />
+          </div>
+        </section>
+      )}
+
       {/* Project Image */}
       {project.image_url && (
         <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -185,8 +199,8 @@ export default function DynamicProjectDetail() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Project Details
+                    <Monitor className="h-5 w-5" />
+                    Project Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">

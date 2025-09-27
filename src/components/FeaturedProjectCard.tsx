@@ -16,7 +16,7 @@ import {
   FlameKindling
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface FeaturedProjectCardProps {
   id: string;
@@ -61,6 +61,7 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
   socialProof,
   actions = { view: true, invest: true }
 }) => {
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const [currentViewers, setCurrentViewers] = useState(investorsViewing);
   const [animatedROI, setAnimatedROI] = useState(0);
@@ -94,7 +95,7 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
 
   const handleViewClick = () => {
     if (route) {
-      window.location.href = route;
+      navigate(route);
     }
   };
 
