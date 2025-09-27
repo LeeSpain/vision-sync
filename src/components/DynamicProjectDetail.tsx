@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import WebsitePreview from '@/components/WebsitePreview';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
+  const location = useLocation();
   const { formatPrice } = useCurrency();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,23 +22,25 @@ export default function DynamicProjectDetail() {
 
   useEffect(() => {
     loadProject();
-  }, [projectRoute]);
+  }, [projectRoute, location.pathname]);
 
   const loadProject = async () => {
-    if (!projectRoute) return;
-    
+    const routeFromParam = projectRoute;
+    const routeFromPath = location.pathname.replace(/^\//, '');
+    const effectiveRoute = routeFromParam || routeFromPath;
+
     try {
       setLoading(true);
       setError(null);
-      
+
       // Try to find project by route first, then by generated route from title
       const allProjects = await projectManager.getAllProjects();
-      const foundProject = allProjects.find(p => 
-        p.route === `/${projectRoute}` || 
-        p.route === projectRoute ||
-        p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === projectRoute
+      const foundProject = allProjects.find(p =>
+        p.route === `/${effectiveRoute}` ||
+        p.route === effectiveRoute ||
+        p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === effectiveRoute
       );
-      
+
       if (foundProject) {
         setProject(foundProject);
       } else {
