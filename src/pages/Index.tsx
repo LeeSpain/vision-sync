@@ -47,7 +47,8 @@ const Index = () => {
       
       // Load projects by content section with new schema
       const featured = await projectManager.getProjectsByContentSection('featured');
-      setFeaturedProjects(featured.slice(0, 3));
+      const fallbackFeatured = await projectManager.getFeaturedProjects();
+      setFeaturedProjects(featured.length > 0 ? featured.slice(0, 3) : fallbackFeatured.slice(0, 3));
       
       const forSale = await projectManager.getProjectsByContentSection('platforms-for-sale');
       setPlatformsForSale(forSale);
@@ -60,6 +61,8 @@ const Index = () => {
       
       const investment = await projectManager.getProjectsByContentSection('investment-opportunities');
       setInvestmentOps(investment);
+      
+      console.log('Loaded projects:', { featured, fallbackFeatured, forSale, offShelf, internal, investment });
       
     } catch (error) {
       console.error('Error loading projects:', error);

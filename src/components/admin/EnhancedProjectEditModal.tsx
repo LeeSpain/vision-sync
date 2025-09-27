@@ -194,7 +194,7 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
         <div>
           <Label htmlFor="content_section">Content Section</Label>
           <Select
-            value={formData.content_section}
+            value={formData.content_section || ""}
             onValueChange={(value) => setFormData(prev => ({ ...prev, content_section: value }))}
           >
             <SelectTrigger>
