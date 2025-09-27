@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import AiAgents from "./pages/AiAgents";
 import AiAgentQuestionnaire from "./pages/AiAgentQuestionnaire";
 import Contact from "./pages/Contact";
+import AiSpainHomes from "./pages/AiSpainHomes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,7 +47,7 @@ const App = () => (
           <Route path="/nurse-sync" element={<DynamicProjectPage />} />
           <Route path="/conneqt-central" element={<DynamicProjectPage />} />
           <Route path="/ice-sos-lite" element={<DynamicProjectPage />} />
-          <Route path="/ai-spain-homes" element={<DynamicProjectPage />} />
+          <Route path="/ai-spain-homes" element={<AiSpainHomes />} />
           <Route path="/tether-band" element={<DynamicProjectPage />} />
           <Route path="/for-investors" element={<DynamicProjectPage />} />
           <Route path="/for-sale" element={<DynamicProjectPage />} />
