@@ -8,7 +8,8 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { CreateProjectData } from '@/utils/projectManager';
-import { X, Plus, Package, DollarSign, TrendingUp, Users } from 'lucide-react';
+import { X, Plus, Package, DollarSign, TrendingUp, Users, ExternalLink } from 'lucide-react';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 interface EnhancedProjectCreationModalProps {
   isOpen: boolean;
@@ -388,37 +389,59 @@ const EnhancedProjectCreationModal: React.FC<EnhancedProjectCreationModalProps> 
 
   const renderMediaTab = () => (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor="image_url">Image URL</Label>
-        <Input
-          id="image_url"
-          type="url"
-          value={formData.image_url}
-          onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-          placeholder="https://example.com/image.jpg"
-        />
-      </div>
+      <ImageUpload
+        currentUrl={formData.image_url}
+        onImageChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+        label="Project Image"
+        description="Upload an image to represent your project"
+      />
 
       <div>
         <Label htmlFor="demo_url">Demo URL</Label>
-        <Input
-          id="demo_url"
-          type="url"
-          value={formData.demo_url}
-          onChange={(e) => setFormData(prev => ({ ...prev, demo_url: e.target.value }))}
-          placeholder="https://demo.example.com"
-        />
+        <div className="flex gap-2">
+          <Input
+            id="demo_url"
+            type="url"
+            value={formData.demo_url}
+            onChange={(e) => setFormData(prev => ({ ...prev, demo_url: e.target.value }))}
+            placeholder="https://demo.example.com"
+          />
+          {formData.demo_url && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(formData.demo_url, '_blank')}
+              className="shrink-0"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
 
       <div>
         <Label htmlFor="github_url">GitHub URL</Label>
-        <Input
-          id="github_url"
-          type="url"
-          value={formData.github_url}
-          onChange={(e) => setFormData(prev => ({ ...prev, github_url: e.target.value }))}
-          placeholder="https://github.com/username/repo"
-        />
+        <div className="flex gap-2">
+          <Input
+            id="github_url"
+            type="url"
+            value={formData.github_url}
+            onChange={(e) => setFormData(prev => ({ ...prev, github_url: e.target.value }))}
+            placeholder="https://github.com/username/repo"
+          />
+          {formData.github_url && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(formData.github_url, '_blank')}
+              className="shrink-0"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Technologies */}
