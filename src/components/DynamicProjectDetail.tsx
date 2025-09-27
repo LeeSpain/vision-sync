@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Project, projectManager } from '@/utils/projectManager';
-import { ProjectPageTemplate } from '@/components/project-template';
+import { ProjectPageTemplate, HeroBanner, OverviewSection, FeatureGrid } from '@/components/project-template';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ArrowLeft, ExternalLink, Github, DollarSign, Users, TrendingUp, Calendar, Monitor } from 'lucide-react';
-import { useCurrency } from '@/contexts/CurrencyContext';
+import { ArrowLeft, ExternalLink, Monitor, Globe, Users, Shield, Clock, Smartphone } from 'lucide-react';
 import WebsitePreview from '@/components/WebsitePreview';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
   const location = useLocation();
-  const { formatPrice } = useCurrency();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,70 +103,69 @@ export default function DynamicProjectDetail() {
     );
   }
 
-  // Convert project to template format
-  const templateData = {
-    id: project.id,
-    name: project.title,
-    description: project.description || '',
-    image_url: project.image_url,
-    hero_image_url: project.image_url,
-    status: project.status?.charAt(0).toUpperCase() + project.status?.slice(1) || 'Active',
-    category: project.category || '',
-    route: project.route || '',
-    billing_type: project.billing_type || undefined,
-    investment_amount: project.investment_amount || undefined,
-    price: project.price || undefined,
-    subscription_price: project.subscription_price || undefined,
-    subscription_period: project.subscription_period || undefined,
-    funding_progress: project.funding_progress || undefined,
-    expected_roi: project.expected_roi || undefined,
-    investment_deadline: project.investment_deadline || undefined,
-    investor_count: project.investor_count || undefined,
-    social_proof: project.social_proof || undefined,
-    demo_url: project.demo_url,
-    github_url: project.github_url,
-    technologies: project.technologies || [],
-    features: [], // Could be derived from project data
-    use_cases: [] // Could be derived from project data
+  // Transform technologies into business features
+  const features = project.technologies?.map(tech => ({
+    icon: getFeatureIcon(tech),
+    title: tech,
+    description: `Powered by ${tech} for optimal performance and reliability`
+  })) || [];
+
+  // Create business highlights from project data
+  const highlights = [
+    ...(project.demo_url ? [{ icon: Globe, title: "Live Platform", value: "Available" }] : []),
+    ...(project.technologies?.length ? [{ icon: Monitor, title: "Technologies", value: `${project.technologies.length}+` }] : []),
+    { icon: Shield, title: "Professional", value: "Grade" }
+  ];
+
+  const handleViewWebsite = () => {
+    if (project.demo_url) {
+      window.open(project.demo_url, '_blank');
+    }
+  };
+
+  const handleLearnMore = () => {
+    // Scroll to overview section
+    document.getElementById('overview')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleContact = () => {
+    // Navigate to contact or open contact modal
+    window.location.href = '/contact';
   };
 
   return (
     <ProjectPageTemplate>
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-heading font-bold text-white mb-6">
-              {project.title}
-            </h1>
-            {project.description && (
-              <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
-                {project.description}
-              </p>
-            )}
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
-              <Badge variant="secondary" className="text-lg px-4 py-2">
-                {project.status?.charAt(0).toUpperCase() + project.status?.slice(1)}
-              </Badge>
-              {project.category && (
-                <Badge variant="outline" className="text-lg px-4 py-2 text-white border-white/30">
-                  {project.category}
-                </Badge>
-              )}
-              {project.is_featured && (
-                <Badge variant="default" className="text-lg px-4 py-2 bg-yellow-500 text-yellow-900">
-                  ⭐ Featured
-                </Badge>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Professional Hero Banner */}
+      <HeroBanner
+        title={project.title}
+        description={project.description || ''}
+        status="Live"
+        category="Featured"
+        heroImage={project.image_url}
+        primaryCTA={{
+          text: project.demo_url ? "View Website" : "Learn More",
+          action: project.demo_url ? handleViewWebsite : handleLearnMore,
+          icon: project.demo_url ? ExternalLink : Monitor
+        }}
+        secondaryCTA={{
+          text: "Contact Us",
+          action: handleContact,
+          icon: Users
+        }}
+      />
 
       {/* Website Preview */}
       {project.demo_url && (
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-white/50">
           <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-midnight-navy mb-4 font-heading">
+                Live Platform Preview
+              </h2>
+              <p className="text-lg text-cool-gray">
+                Experience the platform in action
+              </p>
+            </div>
             <WebsitePreview 
               url={project.demo_url} 
               title={project.title}
@@ -179,193 +175,37 @@ export default function DynamicProjectDetail() {
         </section>
       )}
 
-      
-      {/* Additional Project Details */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Main Content */}
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Monitor className="h-5 w-5" />
-                    Project Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {project.description && (
-                    <div>
-                      <h3 className="font-semibold mb-2">Description</h3>
-                      <p className="text-muted-foreground">{project.description}</p>
-                    </div>
-                  )}
-                  
-                  {project.technologies && project.technologies.length > 0 && (
-                    <div>
-                      <h3 className="font-semibold mb-2">Technologies</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {project.technologies.map((tech, index) => (
-                          <Badge key={index} variant="secondary">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="flex flex-wrap gap-4">
-                    {project.demo_url && (
-                      <Link to={project.demo_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" size="sm">
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          View Demo
-                        </Button>
-                      </Link>
-                    )}
-                    
-                    {project.github_url && (
-                      <Link to={project.github_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" size="sm">
-                          <Github className="h-4 w-4 mr-2" />
-                          View Source
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* Sidebar */}
-            <div className="space-y-6">
-              
-              {/* Pricing Info */}
-              {project.billing_type && project.billing_type !== 'free' && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="h-5 w-5" />
-                      Pricing
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {project.billing_type === 'one-time' && project.price && (
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">
-                          {formatPrice(project.price)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">One-time purchase</div>
-                        {project.deposit_amount && (
-                          <div className="text-sm text-muted-foreground mt-1">
-                            Deposit: {formatPrice(project.deposit_amount)}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    
-                    {project.billing_type === 'subscription' && project.subscription_price && (
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">
-                          {formatPrice(project.subscription_price)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          per {project.subscription_period}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {project.billing_type === 'investment' && project.investment_amount && (
-                      <div className="space-y-4">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-primary">
-                            {formatPrice(project.investment_amount)}
-                          </div>
-                          <div className="text-sm text-muted-foreground">Investment Required</div>
-                        </div>
-                        
-                        {project.funding_progress !== undefined && (
-                          <div>
-                            <div className="flex justify-between text-sm mb-1">
-                              <span>Funding Progress</span>
-                              <span>{project.funding_progress}%</span>
-                            </div>
-                            <div className="w-full bg-secondary rounded-full h-2">
-                              <div 
-                                className="bg-primary h-2 rounded-full"
-                                style={{ width: `${project.funding_progress}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {project.expected_roi && (
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Expected ROI</span>
-                            <span className="font-semibold">{project.expected_roi}%</span>
-                          </div>
-                        )}
-                        
-                        {project.investor_count !== undefined && (
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Investors</span>
-                            <span className="font-semibold">{project.investor_count}</span>
-                          </div>
-                        )}
-                        
-                        {project.investment_deadline && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Calendar className="h-4 w-4" />
-                            Deadline: {new Date(project.investment_deadline).toLocaleDateString()}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-              
-              {/* Project Meta */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Project Info</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Status</span>
-                    <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
-                      {project.status?.charAt(0).toUpperCase() + project.status?.slice(1)}
-                    </Badge>
-                  </div>
-                  
-                  {project.category && (
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Category</span>
-                      <span className="font-medium">{project.category}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Visibility</span>
-                    <Badge variant={project.is_public ? 'default' : 'secondary'}>
-                      {project.is_public ? 'Public' : 'Private'}
-                    </Badge>
-                  </div>
-                  
-                  {project.is_featured && (
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Featured</span>
-                      <Badge variant="default">⭐ Featured</Badge>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-              
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Overview Section */}
+      <OverviewSection
+        title="Platform Overview"
+        content={project.description || ''}
+        highlights={highlights}
+      />
+
+      {/* Features Grid */}
+      {features.length > 0 && (
+        <FeatureGrid
+          title="Platform Features"
+          description="Built with cutting-edge technology for optimal performance"
+          features={features}
+        />
+      )}
     </ProjectPageTemplate>
   );
+}
+
+// Helper function to get appropriate icon for technology features
+function getFeatureIcon(tech: string) {
+  const techLower = tech.toLowerCase();
+  if (techLower.includes('react') || techLower.includes('vue') || techLower.includes('angular')) {
+    return Monitor;
+  } else if (techLower.includes('mobile') || techLower.includes('ios') || techLower.includes('android')) {
+    return Smartphone;
+  } else if (techLower.includes('secure') || techLower.includes('auth')) {
+    return Shield;
+  } else if (techLower.includes('real') || techLower.includes('time')) {
+    return Clock;
+  } else {
+    return Globe;
+  }
 }
