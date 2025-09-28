@@ -38,6 +38,18 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
     setHasError(true);
   };
 
+  // Add timeout to detect failed loads
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isLoading) {
+        setIsLoading(false);
+        setHasError(true);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
   const refreshPreview = () => {
     setIsLoading(true);
     setHasError(false);
