@@ -15,7 +15,7 @@ import Auth from "./pages/Auth";
 import AiAgents from "./pages/AiAgents";
 import AiAgentQuestionnaire from "./pages/AiAgentQuestionnaire";
 import Contact from "./pages/Contact";
-import IceSosLite from "./pages/IceSosLite";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,7 +46,7 @@ const App = () => (
           <Route path="/global-health-sync" element={<DynamicProjectPage />} />
           <Route path="/nurse-sync" element={<DynamicProjectPage />} />
           <Route path="/conneqt-central" element={<DynamicProjectPage />} />
-          <Route path="/ice-sos-lite" element={<IceSosLite />} />
+          
           <Route path="/ai-spain-homes" element={<DynamicProjectPage />} />
           <Route path="/tether-band" element={<DynamicProjectPage />} />
           <Route path="/for-investors" element={<DynamicProjectPage />} />
