@@ -88,7 +88,7 @@ const Index = () => {
 
   // Convert database project to ShopCard format
   const convertToShopCard = (project: Project) => {
-    const slug = `/${(project.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    const slug = project.route || `/${(project.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     return {
       title: project.title,
       description: project.description || '',

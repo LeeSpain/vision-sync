@@ -46,7 +46,9 @@ const App = () => (
           <Route path="/global-health-sync" element={<DynamicProjectPage />} />
           <Route path="/nurse-sync" element={<DynamicProjectPage />} />
           <Route path="/conneqt-central" element={<DynamicProjectPage />} />
-          
+          <Route path="/ice-sos-lite" element={<DynamicProjectPage />} />
+          <Route path="/puppy-rescue-spain" element={<DynamicProjectPage />} />
+          <Route path="/wakeman-capital" element={<DynamicProjectPage />} />
           <Route path="/ai-spain-homes" element={<DynamicProjectPage />} />
           <Route path="/tether-band" element={<DynamicProjectPage />} />
           <Route path="/for-investors" element={<DynamicProjectPage />} />
