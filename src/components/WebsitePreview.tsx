@@ -163,22 +163,26 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
       <CardContent className="p-0">
         <div className={`transition-all duration-300 ${getViewportClasses()}`}>
           {hasError ? (
-            <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 bg-muted rounded-b-lg">
-              <AlertTriangle className="h-12 w-12 text-muted-foreground" />
-              <div>
-                <p className="font-medium text-foreground">Unable to load preview</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  This website may block embedding or have security restrictions.
-                </p>
+            <div className="relative bg-muted rounded-b-lg overflow-hidden" style={{ height: getIframeHeight() }}>
+              {/* Fallback Screenshot/Preview */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                <div className="text-center space-y-4 p-8">
+                  <div className="text-6xl mb-4">🌐</div>
+                  <h3 className="text-xl font-semibold text-foreground">{title}</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Preview not available - site blocks embedding
+                  </p>
+                  <Button onClick={openInNewTab} className="bg-primary hover:bg-primary/90">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Visit Live Site
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2">
+              
+              {/* Retry button in corner */}
+              <div className="absolute top-4 right-4">
                 <Button variant="outline" size="sm" onClick={refreshPreview}>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Retry
-                </Button>
-                <Button size="sm" onClick={openInNewTab}>
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Open Directly
+                  <RefreshCw className="h-4 w-4" />
                 </Button>
               </div>
             </div>
