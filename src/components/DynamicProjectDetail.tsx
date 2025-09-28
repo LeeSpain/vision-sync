@@ -168,6 +168,7 @@ export default function DynamicProjectDetail() {
               <WebsitePreview 
                 url={project.demo_url} 
                 title={project.title}
+                fallbackImageUrl={project.image_url}
                 className="rounded-xl overflow-hidden"
               />
             </div>

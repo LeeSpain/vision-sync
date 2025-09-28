@@ -17,9 +17,23 @@ interface WebsitePreviewProps {
   url: string;
   title: string;
   className?: string;
+  fallbackImageUrl?: string;
 }
 
-const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className = '' }) => {
+// Domains known to block iframe embedding
+const EMBED_BLOCKED_DOMAINS = new Set([
+  'icesoslite.com',
+  'www.icesoslite.com',
+  'facebook.com',
+  'instagram.com',
+  'twitter.com',
+  'x.com',
+  'youtube.com',
+  'linkedin.com',
+  'github.com'
+]);
+
+const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className = '', fallbackImageUrl }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,6 +41,16 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
 
   // Clean URL and add protocol if missing
   const cleanUrl = url.startsWith('http') ? url : `https://${url}`;
+  
+  // Check if domain is known to block embedding
+  const isBlockedDomain = () => {
+    try {
+      const urlObj = new URL(cleanUrl);
+      return EMBED_BLOCKED_DOMAINS.has(urlObj.hostname);
+    } catch {
+      return false;
+    }
+  };
 
   const handleIframeLoad = () => {
     setIsLoading(false);
@@ -38,8 +62,15 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
     setHasError(true);
   };
 
-  // Add timeout to detect failed loads
+  // Check for blocked domains immediately
   useEffect(() => {
+    if (isBlockedDomain()) {
+      setHasError(true);
+      setIsLoading(false);
+      return;
+    }
+
+    // Add timeout to detect failed loads for non-blocked domains
     const timer = setTimeout(() => {
       if (isLoading) {
         setIsLoading(false);
@@ -48,7 +79,7 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
     }, 10000); // 10 second timeout
 
     return () => clearTimeout(timer);
-  }, [isLoading]);
+  }, [cleanUrl, isLoading]);
 
   const refreshPreview = () => {
     setIsLoading(true);
@@ -166,17 +197,39 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
             <div className="relative bg-muted rounded-b-lg overflow-hidden" style={{ height: getIframeHeight() }}>
               {/* Fallback Screenshot/Preview */}
               <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                <div className="text-center space-y-4 p-8">
-                  <div className="text-6xl mb-4">🌐</div>
-                  <h3 className="text-xl font-semibold text-foreground">{title}</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Preview not available - site blocks embedding
-                  </p>
-                  <Button onClick={openInNewTab} className="bg-primary hover:bg-primary/90">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Visit Live Site
-                  </Button>
-                </div>
+                {fallbackImageUrl ? (
+                  <div className="relative w-full h-full">
+                    <img 
+                      src={fallbackImageUrl} 
+                      alt={`Preview of ${title}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <div className="text-center space-y-4 p-8">
+                        <h3 className="text-xl font-semibold text-white">{title}</h3>
+                        <p className="text-white/80 mb-6">
+                          Preview not available - site blocks embedding
+                        </p>
+                        <Button onClick={openInNewTab} className="bg-white text-black hover:bg-white/90">
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Visit Live Site
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-4 p-8">
+                    <div className="text-6xl mb-4">🌐</div>
+                    <h3 className="text-xl font-semibold text-foreground">{title}</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Preview not available - site blocks embedding
+                    </p>
+                    <Button onClick={openInNewTab} className="bg-primary hover:bg-primary/90">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Visit Live Site
+                    </Button>
+                  </div>
+                )}
               </div>
               
               {/* Retry button in corner */}
