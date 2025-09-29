@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
   onViewClick
 }) => {
   const { formatPrice } = useCurrency();
+  const navigate = useNavigate();
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Live':
@@ -64,6 +66,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
   const handleClick = () => {
     if (onViewClick) {
       onViewClick();
+    } else if (route) {
+      navigate(route);
     }
   };
 
