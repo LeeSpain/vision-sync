@@ -100,7 +100,6 @@ const Index = () => {
       subscription_price: undefined,
       price: undefined,
       deposit_amount: undefined,
-      onViewClick: () => { window.location.href = slug; }
     };
   };
 
