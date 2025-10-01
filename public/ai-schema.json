@@ -1,0 +1,102 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://vision-sync-forge.lovable.app/#organization",
+      "name": "Vision-Sync Forge",
+      "url": "https://vision-sync-forge.lovable.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://vision-sync-forge.lovable.app/favicon.png"
+      },
+      "sameAs": [],
+      "description": "Leading provider of AI agents, chatbots, and intelligent automation solutions for businesses"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "AI Agents & Chatbots Platform",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "500",
+        "priceCurrency": "EUR",
+        "priceValidUntil": "2025-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127"
+      },
+      "description": "Enterprise-grade AI agents and conversational chatbots for customer service automation, sales support, and business process optimization"
+    },
+    {
+      "@type": "Service",
+      "serviceType": "AI Agent Development",
+      "provider": {
+        "@id": "https://vision-sync-forge.lovable.app/#organization"
+      },
+      "areaServed": "Worldwide",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "AI Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "AI Chatbot Development",
+              "description": "Custom conversational AI chatbots for 24/7 customer service"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "AI Virtual Assistant",
+              "description": "Intelligent virtual assistants for business automation"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Conversational AI Platform",
+              "description": "Enterprise conversational AI for customer engagement"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What are AI agents?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI agents are intelligent software programs that can understand, learn, and perform tasks autonomously. They use natural language processing and machine learning to interact with users, automate workflows, and make decisions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do AI chatbots improve customer service?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI chatbots provide 24/7 customer support, instantly answer common questions, route complex queries to human agents, and learn from interactions to improve over time. This reduces response times and operational costs while improving customer satisfaction."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is conversational AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Conversational AI combines natural language processing (NLP), machine learning, and dialogue management to enable human-like conversations between computers and people. It powers chatbots, virtual assistants, and voice interfaces."
+          }
+        }
+      ]
+    }
+  ]
+}

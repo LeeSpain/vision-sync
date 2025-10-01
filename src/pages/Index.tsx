@@ -155,16 +155,16 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Vision-Sync Forge | AI-Powered Web Development & Custom Software Solutions"
-        description="Transform your ideas into reality with Vision-Sync Forge. Professional AI-powered web applications, custom software development, and ready-to-deploy templates for startups and enterprises."
-        keywords="web development, AI software, custom applications, SaaS development, web templates, software solutions, AI agents, business automation"
+        title="Vision-Sync Forge | AI Agents, Chatbots & Custom Software Development"
+        description="Transform your business with AI agents and intelligent automation. Custom AI chatbots, conversational AI, business process automation, and ready-to-deploy web applications. 24/7 AI customer service solutions."
+        keywords="AI agents, AI chatbots, conversational AI, intelligent automation, business automation, AI customer service, virtual assistants, machine learning, custom software development, web applications, SaaS development"
         canonical="https://vision-sync-forge.lovable.app/"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
-            name: "Vision-Sync Forge - Home",
-            description: "Professional AI-powered web development and custom software solutions",
+            name: "Vision-Sync Forge - AI Agents & Custom Software Development",
+            description: "Leading provider of AI agents, chatbots, and intelligent automation solutions for businesses. Custom software development with cutting-edge AI technology.",
             url: "https://vision-sync-forge.lovable.app/"
           })
         ]}

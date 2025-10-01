@@ -124,22 +124,22 @@ const AiAgents = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="AI Agents & Business Automation | Vision-Sync Forge"
-        description="Enhance your business with AI-powered agents for customer service, sales support, and operations. Achieve 15-25% efficiency gains with 24/7 AI assistance. ROI calculator included."
-        keywords="AI agents, business automation, AI customer service, AI sales assistant, business efficiency, AI operations, automated workflows"
+        title="AI Agents & Chatbots | Intelligent Business Automation - Vision-Sync Forge"
+        description="Deploy AI agents and chatbots for 24/7 customer service automation. Conversational AI, virtual assistants, and intelligent automation solutions. Achieve 15-25% efficiency gains with enterprise-grade AI technology."
+        keywords="AI agents, AI chatbots, conversational AI, intelligent automation, business automation, AI customer service, virtual assistants, chatbot development, AI sales assistant, machine learning automation, enterprise AI, automated customer support"
         canonical="https://vision-sync-forge.lovable.app/ai-agents"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
-            name: "AI Agents - Vision-Sync Forge",
-            description: "AI-powered business enhancement solutions for customer service, sales, and operations",
+            name: "AI Agents & Chatbots - Vision-Sync Forge",
+            description: "Professional AI agent and chatbot development for business automation, customer service, and sales support",
             url: "https://vision-sync-forge.lovable.app/ai-agents"
           }),
           generateServiceSchema({
-            name: "AI Agent Implementation",
-            description: "Custom AI agents that enhance team capabilities and improve business efficiency by 15-25%",
-            serviceType: "Artificial Intelligence Solutions"
+            name: "AI Agent & Chatbot Development",
+            description: "Custom AI agents and conversational chatbots for business automation",
+            provider: "Vision-Sync Forge"
           })
         ]}
       />
@@ -154,14 +154,14 @@ const AiAgents = () => {
             Empowering Businesses to Achieve Excellence
           </Badge>
           <h1 className="text-5xl md:text-7xl font-heading font-bold mb-6">
-            AI-Powered Business{' '}
+            AI Agents & Chatbots for{' '}
             <span className="bg-gradient-to-r from-emerald-green to-coral-orange bg-clip-text text-transparent">
-              Enhancement
+              Business Growth
             </span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto opacity-90">
-            Partner with AI to enhance your team's capabilities, improve customer service, and grow your business.
-            <span className="text-emerald-green font-semibold"> Perfect for small businesses and enterprises alike.</span>
+            Deploy intelligent AI agents and conversational chatbots to automate customer service, qualify leads, and streamline operations.
+            <span className="text-emerald-green font-semibold"> Enterprise-grade AI automation for businesses of all sizes.</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
