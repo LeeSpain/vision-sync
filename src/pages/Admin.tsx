@@ -27,7 +27,7 @@ import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Ma
 import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
-  const { user, isAdmin, loading: authLoading, signOut } = useAuthContext();
+  const { user, adminStatus, loading: authLoading, signOut } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [dashboardStats, setDashboardStats] = useState<any>(null);
@@ -41,11 +41,11 @@ const Admin = () => {
     if (!authLoading) {
       if (!user) {
         navigate('/auth');
-      } else if (!isAdmin) {
+      } else if (adminStatus === 'user') {
         navigate('/');
       }
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [user, adminStatus, authLoading, navigate]);
 
   // Scroll to top when admin section changes
   useEffect(() => {
@@ -117,7 +117,7 @@ const Admin = () => {
     setRefreshKey(prev => prev + 1);
   };
 
-  if (authLoading || !user || !isAdmin) {
+  if (authLoading || !user || adminStatus !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
         <div className="text-white">Loading...</div>

@@ -11,6 +11,7 @@ import {
 import { ProfessionalProjectCard } from './ProfessionalProjectCard';
 import Autoplay from 'embla-carousel-autoplay';
 import { Sparkles, Globe } from 'lucide-react';
+import { analytics } from '@/utils/analytics';
 
 interface ProjectData {
   id: string;
@@ -60,9 +61,15 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
     setCurrent(api.selectedScrollSnap() + 1);
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
+      const newIndex = api.selectedScrollSnap();
+      setCurrent(newIndex + 1);
+      
+      // Track carousel interaction
+      if (projects[newIndex]) {
+        analytics.trackInteraction('button_click', 'featured_projects_carousel', projects[newIndex].id);
+      }
     });
-  }, [api]);
+  }, [api, projects]);
 
   const convertToProjectCard = (project: ProjectData) => {
     return {

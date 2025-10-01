@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { TemplateCardAdapter } from '@/components/TemplateCardAdapter';
 import SEOHead from '@/components/SEOHead';
@@ -11,6 +11,7 @@ import Footer from '@/components/Layout/Footer';
 import { useTemplates, Template } from '@/hooks/useTemplates';
 import { Package, Star, Rocket, Sparkles, ArrowLeft, CheckCircle, TrendingUp, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { analytics } from '@/utils/analytics';
 
 const Templates = () => {
   const { 
@@ -27,6 +28,11 @@ const Templates = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
   const [showCustomizationFlow, setShowCustomizationFlow] = useState(false);
 
+  // Track page view
+  useEffect(() => {
+    analytics.trackPageView('/templates');
+  }, []);
+
   // Template handlers
   const getFilteredTemplates = () => {
     if (selectedCategory === 'all') {
@@ -36,6 +42,7 @@ const Templates = () => {
   };
 
   const handleTemplateCustomize = (template: AppTemplate) => {
+    analytics.trackInteraction('button_click', 'template_customize', template.id);
     setSelectedTemplate(template);
     setShowCustomizationFlow(true);
   };

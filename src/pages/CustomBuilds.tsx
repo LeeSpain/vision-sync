@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { Button } from '@/components/ui/button';
 import SEOHead from '@/components/SEOHead';
@@ -12,6 +12,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { ArrowRight, Code, Smartphone, Globe, Database, Zap, Shield, Users, DollarSign } from 'lucide-react';
+import { analytics } from '@/utils/analytics';
 
 const CustomBuilds = () => {
   const { formatPrice } = useCurrency();
@@ -26,6 +27,11 @@ const CustomBuilds = () => {
     features: [] as string[],
     urgency: '',
   });
+
+  // Track page view
+  useEffect(() => {
+    analytics.trackPageView('/custom-builds');
+  }, []);
 
   const handleFeatureChange = (feature: string, checked: boolean) => {
     if (checked) {
@@ -45,8 +51,11 @@ const CustomBuilds = () => {
     e.preventDefault();
     
     try {
+      // Track form submission
+      analytics.trackInteraction('form_submit', 'custom_build_form');
+      
       // Save lead to database
-      await supabaseLeadManager.saveLead({
+      const result = await supabaseLeadManager.saveLead({
         source: 'custom-build',
         name: projectForm.name,
         email: projectForm.email,
@@ -60,6 +69,11 @@ const CustomBuilds = () => {
           description: projectForm.description
         }
       });
+
+      // Track conversion
+      if (result?.id) {
+        analytics.trackConversion('interest', undefined, result.id);
+      }
       
       // Reset form
       setProjectForm({

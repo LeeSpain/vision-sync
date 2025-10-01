@@ -213,6 +213,69 @@ export async function seedPerformanceMetrics(count: number = 100) {
   return data;
 }
 
+/**
+ * Seeds quotes table with sample revenue data
+ */
+export async function seedQuotes(count: number = 50) {
+  console.log(`Generating ${count} quotes with revenue data...`);
+  
+  const statuses = ['draft', 'sent', 'accepted', 'rejected'];
+  const records = [];
+  
+  for (let i = 0; i < count; i++) {
+    const status = randomElement(statuses);
+    const subtotal = randomInt(5000, 150000);
+    const tax = subtotal * 0.1;
+    const total = subtotal + tax;
+    const daysAgo = randomInt(1, 90);
+    const createdAt = getRandomDate(daysAgo);
+    
+    records.push({
+      quote_number: `Q-2025-${String(i + 1).padStart(4, '0')}`,
+      project_name: `${randomElement(sampleProjects).name} Project`,
+      project_description: 'Custom development project with full feature set',
+      status,
+      subtotal,
+      tax,
+      total,
+      line_items: [
+        {
+          description: 'Development Services',
+          quantity: 1,
+          unit_price: subtotal * 0.6,
+          total: subtotal * 0.6
+        },
+        {
+          description: 'Design & UI/UX',
+          quantity: 1,
+          unit_price: subtotal * 0.25,
+          total: subtotal * 0.25
+        },
+        {
+          description: 'Project Management',
+          quantity: 1,
+          unit_price: subtotal * 0.15,
+          total: subtotal * 0.15
+        }
+      ],
+      created_at: createdAt.toISOString(),
+      sent_at: status !== 'draft' ? new Date(createdAt.getTime() + 86400000).toISOString() : null,
+      accepted_at: status === 'accepted' ? new Date(createdAt.getTime() + 172800000).toISOString() : null,
+      valid_until: new Date(createdAt.getTime() + 2592000000).toISOString() // 30 days
+    });
+  }
+  
+  const { data, error } = await supabase.from('quotes').insert(records);
+  
+  if (error) {
+    console.error('Error seeding quotes:', error);
+    throw error;
+  }
+  
+  console.log(`✅ Successfully seeded ${count} quotes with revenue data`);
+  return data;
+}
+
 export async function seedAllAnalytics() {
   console.log('🚀 Starting analytics data seeding...');
   
@@ -220,6 +283,7 @@ export async function seedAllAnalytics() {
     await seedPageAnalytics(500);
     await seedConversionTracking(200);
     await seedPerformanceMetrics(100);
+    await seedQuotes(50);
     
     console.log('✅ All analytics data seeded successfully!');
     console.log('You can now view real data in the Real-Time Analytics dashboard.');
@@ -234,5 +298,6 @@ export default {
   seedPageAnalytics,
   seedConversionTracking,
   seedPerformanceMetrics,
+  seedQuotes,
   seedAllAnalytics,
 };
