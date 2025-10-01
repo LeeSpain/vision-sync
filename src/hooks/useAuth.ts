@@ -8,6 +8,7 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminStatus, setAdminStatus] = useState<'unknown' | 'admin' | 'user'>('unknown');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export const useAuth = () => {
           }, 0);
         } else {
           setIsAdmin(false);
+          setAdminStatus('unknown');
           setLoading(false);
         }
       }
@@ -42,6 +44,7 @@ export const useAuth = () => {
           setLoading(false);
         });
       } else {
+        setAdminStatus('unknown');
         setLoading(false);
       }
     });
@@ -58,12 +61,16 @@ export const useAuth = () => {
         .single();
       
       if (!error && data) {
-        setIsAdmin((data as any).role === 'admin');
+        const isAdminRole = (data as any).role === 'admin';
+        setIsAdmin(isAdminRole);
+        setAdminStatus(isAdminRole ? 'admin' : 'user');
       } else {
         setIsAdmin(false);
+        setAdminStatus('user');
       }
     } catch (error) {
       setIsAdmin(false);
+      setAdminStatus('user');
     }
   };
 
@@ -117,6 +124,7 @@ export const useAuth = () => {
   const signOut = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    setAdminStatus('unknown');
   };
 
   return {
@@ -124,6 +132,7 @@ export const useAuth = () => {
     session,
     loading,
     isAdmin,
+    adminStatus,
     signIn,
     signUp,
     signOut
