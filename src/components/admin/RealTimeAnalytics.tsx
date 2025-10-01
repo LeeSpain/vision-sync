@@ -15,7 +15,9 @@ export function RealTimeAnalytics() {
     revenueMetrics,
     userBehavior,
     projectPerformance,
-    loading
+    loading,
+    lastUpdate,
+    isLive
   } = useRealTimeAnalytics();
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
@@ -37,16 +39,31 @@ export function RealTimeAnalytics() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Actions */}
+      {/* Header with Live Status */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Real-Time Analytics</h2>
-          <p className="text-muted-foreground">Live business intelligence and performance metrics</p>
+          <div className="flex items-center gap-3 mb-2">
+            <h2 className="text-3xl font-bold tracking-tight">Real-Time Analytics</h2>
+            <div className="flex items-center gap-2">
+              <div className={`w-3 h-3 rounded-full animate-pulse ${isLive ? 'bg-emerald-green' : 'bg-coral-orange'}`}></div>
+              <Badge variant={isLive ? "default" : "secondary"} className="text-xs">
+                {isLive ? "LIVE" : "RECONNECTING"}
+              </Badge>
+            </div>
+          </div>
+          <p className="text-muted-foreground">
+            Live business intelligence and performance metrics
+            {lastUpdate && (
+              <span className="block text-xs text-cool-gray mt-1">
+                Last updated: {lastUpdate.toLocaleTimeString()}
+              </span>
+            )}
+          </p>
         </div>
         <AnalyticsSeedButton />
       </div>
 
-      {/* Live Metrics Overview */}
+      {/* Live Metrics Overview with Real-time Indicators */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

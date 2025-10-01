@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface LiveMetrics {
   activeUsers: number;
@@ -82,8 +83,10 @@ export function useRealTimeAnalytics() {
     topConvertingSources: [],
   });
   const [projectPerformance, setProjectPerformance] = useState<ProjectPerformance[]>([]);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const [isLive, setIsLive] = useState(true);
 
-  const fetchAnalyticsData = async () => {
+  const fetchAnalyticsData = async (showNotification = false) => {
     try {
       // Fetch live metrics from various sources
       const today = new Date();
@@ -311,9 +314,22 @@ export function useRealTimeAnalytics() {
         topConvertingSources,
       });
       setProjectPerformance(projectStats);
+      setLastUpdate(new Date());
+
+      if (showNotification) {
+        toast.success('Analytics data updated in real-time!', {
+          description: `New data detected at ${new Date().toLocaleTimeString()}`,
+          duration: 2000,
+        });
+      }
 
     } catch (error) {
       console.error('Error fetching analytics data:', error);
+      setIsLive(false);
+      toast.error('Analytics update failed', {
+        description: 'Real-time connection lost. Retrying...',
+        duration: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -322,35 +338,51 @@ export function useRealTimeAnalytics() {
   useEffect(() => {
     fetchAnalyticsData();
 
-    // Set up real-time subscriptions
+    // Set up real-time subscriptions with notifications
     const pageAnalyticsChannel = supabase
       .channel('page_analytics_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'page_analytics' }, () => {
-        fetchAnalyticsData();
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'page_analytics' }, (payload) => {
+        console.log('📊 New page analytics data:', payload);
+        setIsLive(true);
+        fetchAnalyticsData(true);
       })
       .subscribe();
 
     const conversionChannel = supabase
       .channel('conversion_tracking_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversion_tracking' }, () => {
-        fetchAnalyticsData();
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversion_tracking' }, (payload) => {
+        console.log('🎯 New conversion data:', payload);
+        setIsLive(true);
+        fetchAnalyticsData(true);
       })
       .subscribe();
 
     const leadsChannel = supabase
       .channel('leads_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
-        fetchAnalyticsData();
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, (payload) => {
+        console.log('🚀 New lead data:', payload);
+        setIsLive(true);
+        fetchAnalyticsData(true);
       })
       .subscribe();
 
-    // Refresh data every 30 seconds
-    const interval = setInterval(fetchAnalyticsData, 30000);
+    const quotesChannel = supabase
+      .channel('quotes_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quotes' }, (payload) => {
+        console.log('💰 New quote data:', payload);
+        setIsLive(true);
+        fetchAnalyticsData(true);
+      })
+      .subscribe();
+
+    // Refresh data every 30 seconds (without notification)
+    const interval = setInterval(() => fetchAnalyticsData(false), 30000);
 
     return () => {
       supabase.removeChannel(pageAnalyticsChannel);
       supabase.removeChannel(conversionChannel);
       supabase.removeChannel(leadsChannel);
+      supabase.removeChannel(quotesChannel);
       clearInterval(interval);
     };
   }, []);
@@ -363,5 +395,7 @@ export function useRealTimeAnalytics() {
     userBehavior,
     projectPerformance,
     loading,
+    lastUpdate,
+    isLive,
   };
 }
