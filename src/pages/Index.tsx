@@ -211,6 +211,79 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Projects Section */}
+      <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Enhanced Featured Projects Carousel */}
+          <div className="mb-32">
+            <FeaturedProjectsCarousel 
+              projects={featuredProjects.map(convertToCarouselProject)} 
+              loading={loading}
+            />
+          </div>
+
+          {/* Enhanced Templates Showcase */}
+          <EnhancedTemplatesShowcase />
+
+          {/* Platforms for Sale */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🛒 Platforms for Sale</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Complete solutions ready for immediate deployment and ownership transfer</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {loading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                platformsForSale.map((project, index) => (
+                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Internal Tools */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🧠 Internal Tools</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Proprietary systems powering our operations and workflows</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {loading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                internalTools.map((project, index) => (
+                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Investment Ops */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">💼 Investment Ops</h2>
+              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Strategic investment opportunities and financial partnerships</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {loading ? (
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                investmentOps.map((project, index) => (
+                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* AI Agents & The Future Section */}
       <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-emerald-green/5 overflow-hidden">
         {/* Background Pattern */}
@@ -344,79 +417,6 @@ const Index = () => {
             </Link>
           </div>
 
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Enhanced Featured Projects Carousel */}
-          <div className="mb-32">
-            <FeaturedProjectsCarousel 
-              projects={featuredProjects.map(convertToCarouselProject)} 
-              loading={loading}
-            />
-          </div>
-
-          {/* Enhanced Templates Showcase */}
-          <EnhancedTemplatesShowcase />
-
-          {/* Platforms for Sale */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🛒 Platforms for Sale</h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Complete solutions ready for immediate deployment and ownership transfer</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {loading ? (
-                [...Array(4)].map((_, i) => (
-                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                ))
-              ) : (
-                platformsForSale.map((project, index) => (
-                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Internal Tools */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">🧠 Internal Tools</h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Proprietary systems powering our operations and workflows</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {loading ? (
-                [...Array(4)].map((_, i) => (
-                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                ))
-              ) : (
-                internalTools.map((project, index) => (
-                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Investment Ops */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">💼 Investment Ops</h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">Strategic investment opportunities and financial partnerships</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {loading ? (
-                [...Array(4)].map((_, i) => (
-                  <div key={i} className="h-56 bg-slate-white/50 rounded-xl animate-pulse"></div>
-                ))
-              ) : (
-                investmentOps.map((project, index) => (
-                  <ShopCard key={project.id || index} {...convertToShopCard(project)} />
-                ))
-              )}
-            </div>
-          </div>
         </div>
       </section>
 
