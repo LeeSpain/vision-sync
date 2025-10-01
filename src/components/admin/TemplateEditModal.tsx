@@ -11,6 +11,7 @@ import { X, Plus, Wand2, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { templateCategories } from '@/utils/appTemplates';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 interface Industry {
   id: string;
@@ -380,38 +381,37 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="image_url">Main Image URL</Label>
-            <Input
-              id="image_url"
-              value={formData.image_url}
-              onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
+          <ImageUpload
+            currentUrl={formData.image_url}
+            onImageChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+            label="Main Template Image"
+            description="Upload a JPEG, PNG, or WebP image (max 5MB)"
+          />
 
           <div className="space-y-2">
             <Label>Gallery Images</Label>
-            <div className="flex gap-2">
-              <Input
-                value={newImage}
-                onChange={(e) => setNewImage(e.target.value)}
-                placeholder="Add gallery image URL"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addGalleryImage())}
-              />
-              <Button type="button" onClick={addGalleryImage}>
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+            <ImageUpload
+              onImageChange={(url) => {
+                setGalleryImages([...galleryImages, url]);
+                toast.success('Gallery image added');
+              }}
+              label="Add Gallery Image"
+              description="Upload additional images for the template gallery"
+            />
             <div className="flex flex-wrap gap-2 mt-2">
               {galleryImages.map((image, index) => (
-                <Badge key={index} variant="outline" className="gap-1">
-                  Image {index + 1}
-                  <X 
-                    className="h-3 w-3 cursor-pointer" 
+                <div key={index} className="relative group">
+                  <img src={image} alt={`Gallery ${index + 1}`} className="h-20 w-20 object-cover rounded border" />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => removeGalleryImage(image)}
-                  />
-                </Badge>
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
               ))}
             </div>
           </div>
