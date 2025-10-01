@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
 
 const AiAgents = () => {
+  const navigate = useNavigate();
   const { formatPrice } = useCurrency();
   const [roiInputs, setRoiInputs] = useState({
     employees: 5,
@@ -143,7 +145,7 @@ const AiAgents = () => {
             <Button 
               size="lg" 
               className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-4 text-lg"
-              onClick={() => window.location.href = '/contact'}
+              onClick={() => navigate('/contact')}
             >
               <MessageSquare className="mr-2 h-5 w-5" />
               Contact Us
@@ -238,7 +240,7 @@ const AiAgents = () => {
                 </div>
                 <Button 
                   className="w-full mt-4 bg-emerald-green hover:bg-emerald-green/90"
-                  onClick={() => window.location.href = '/contact'}
+                  onClick={() => navigate('/contact')}
                 >
                   <ArrowRight className="mr-2 h-4 w-4" />
                   Discuss Your Needs
@@ -351,7 +353,7 @@ const AiAgents = () => {
                     </ul>
                     <Button 
                       className="mt-4 w-full bg-midnight-navy hover:bg-midnight-navy/90"
-                      onClick={() => window.location.href = '/contact'}
+                      onClick={() => navigate('/contact')}
                     >
                       <MessageSquare className="mr-2 h-4 w-4" />
                       Learn More
@@ -405,7 +407,7 @@ const AiAgents = () => {
             <Button 
               size="lg" 
               className="bg-emerald-green hover:bg-emerald-green/90 px-8 py-4 text-lg"
-              onClick={() => window.location.href = '/contact'}
+              onClick={() => navigate('/contact')}
             >
               <MessageSquare className="mr-2 h-5 w-5" />
               Start a Conversation
@@ -414,7 +416,7 @@ const AiAgents = () => {
               size="lg" 
               variant="outline" 
               className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg"
-              onClick={() => window.location.href = '/templates'}
+              onClick={() => navigate('/templates')}
             >
               <ArrowRight className="mr-2 h-5 w-5" />
               Explore Solutions

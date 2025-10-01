@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,6 +15,7 @@ interface TemplateCardProps {
 }
 
 const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCardProps) => {
+  const navigate = useNavigate();
   const { formatPrice } = useCurrency();
   const [isSubscription, setIsSubscription] = useState(false);
   const IconComponent = template.icon;
@@ -127,7 +129,7 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
         <Button 
           variant="outline" 
           size="sm" 
-          onClick={() => window.location.href = '/contact'}
+          onClick={() => navigate('/contact')}
           className="flex-1 font-medium border-royal-purple/30 text-royal-purple hover:bg-royal-purple hover:text-white"
         >
           <Sparkles className="h-4 w-4 mr-2" />
