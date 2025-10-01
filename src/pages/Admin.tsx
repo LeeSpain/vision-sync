@@ -38,16 +38,11 @@ const Admin = () => {
   const activeSection = location.hash.replace('#', '') || 'overview';
 
   useEffect(() => {
-    // Only redirect if we're done loading AND we have a definitive answer
     if (!authLoading) {
       if (!user) {
-        console.log('No user found, redirecting to /auth');
         navigate('/auth');
       } else if (adminStatus === 'user') {
-        console.log('User is not admin, redirecting to /');
         navigate('/');
-      } else if (adminStatus === 'admin') {
-        console.log('Admin access confirmed');
       }
     }
   }, [user, adminStatus, authLoading, navigate]);
@@ -122,21 +117,12 @@ const Admin = () => {
     setRefreshKey(prev => prev + 1);
   };
 
-  // Show loading state while checking authentication
-  if (authLoading || adminStatus === 'unknown') {
+  if (authLoading || !user || adminStatus !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <div className="text-white text-lg">Verifying admin access...</div>
-        </div>
+        <div className="text-white">Loading...</div>
       </div>
     );
-  }
-
-  // Only show content if user is authenticated and is admin
-  if (!user || adminStatus !== 'admin') {
-    return null; // Will be redirected by useEffect above
   }
 
   const renderContent = () => {

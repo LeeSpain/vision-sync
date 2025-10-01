@@ -12,81 +12,44 @@ export const useAuth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    let mounted = true;
-
-    // Set up auth state listener FIRST
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!mounted) return;
-
-        console.log('Auth state change:', event, session?.user?.email);
-        
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
 
-        // Check admin status when user logs in or session is restored
+        // Check admin status
         if (session?.user) {
-          try {
-            await checkAdminStatus(session.user.id);
-          } catch (error) {
-            console.error('Error checking admin status:', error);
-          }
+          // Defer Supabase calls and only end loading after admin check completes
+          setTimeout(() => {
+            checkAdminStatus(session.user!.id).finally(() => {
+              setLoading(false);
+            });
+          }, 0);
         } else {
           setIsAdmin(false);
           setAdminStatus('unknown');
+          setLoading(false);
         }
-        
-        setLoading(false);
       }
     );
 
-    // THEN check for existing session
-    const initializeAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        checkAdminStatus(session.user.id).finally(() => {
           setLoading(false);
-          return;
-        }
-
-        if (!mounted) return;
-
-        console.log('Initial session check:', session?.user?.email);
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          await checkAdminStatus(session.user.id);
-        } else {
-          setAdminStatus('unknown');
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        });
+      } else {
+        setAdminStatus('unknown');
+        setLoading(false);
       }
-    };
+    });
 
-    initializeAuth();
-
-    // Set up periodic session refresh (every 5 minutes)
-    const refreshInterval = setInterval(async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        console.log('Session refreshed');
-      }
-    }, 5 * 60 * 1000); // 5 minutes
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-      clearInterval(refreshInterval);
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const checkAdminStatus = async (userId: string) => {
