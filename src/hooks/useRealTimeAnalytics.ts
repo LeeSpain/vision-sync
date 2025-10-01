@@ -45,10 +45,19 @@ interface UserBehavior {
 }
 
 interface ProjectPerformance {
+  id: string;
   name: string;
+  category: string;
   views: number;
   inquiries: number;
+  conversions: number;
+  interactions: number;
   conversionRate: number;
+  engagementRate: number;
+  avgTimeOnPage: number;
+  bounceRate: number;
+  revenue: number;
+  status: string;
 }
 
 export function useRealTimeAnalytics() {
@@ -228,21 +237,58 @@ export function useRealTimeAnalytics() {
         pipeline: activeQuotes?.filter(q => q.created_at.startsWith(date)).reduce((sum, q) => sum + (Number(q.total) || 0), 0) || 0,
       }));
 
-      // Calculate project performance
+      // Calculate project performance with comprehensive metrics
       const projectStats = projectsData?.map(project => {
-        const projectPageViews = pageAnalyticsData?.filter(p => p.page_path.includes(project.route || '')).length || 0;
+        const projectRoute = project.route || '';
+        const projectPageViews = pageAnalyticsData?.filter(p => 
+          p.page_path.includes(projectRoute) || p.page_path.includes(project.id)
+        ).length || 0;
+        
         const projectLeads = todayLeads?.filter(l => {
           const formData = l.form_data as any;
-          return formData?.projectId === project.id;
+          return formData?.projectId === project.id || l.message?.includes(project.title);
         }).length || 0;
+
+        const projectConversions = conversionData?.filter(c =>
+          c.page_path?.includes(projectRoute) || c.project_id === project.id
+        ).length || 0;
+
+        const projectInteractions = pageAnalyticsData?.filter(p =>
+          p.page_path.includes(projectRoute)
+        ).reduce((sum, p) => sum + (p.interactions_count || 0), 0) || 0;
+
+        const avgTimeOnPage = pageAnalyticsData?.filter(p => p.page_path.includes(projectRoute))
+          .reduce((sum, p, _, arr) => {
+            const duration = p.duration_seconds || 0;
+            return arr.length > 0 ? sum + duration / arr.length : 0;
+          }, 0) || 0;
+
+        const bounceRate = (() => {
+          const projectViews = pageAnalyticsData?.filter(p => p.page_path.includes(projectRoute)) || [];
+          const bounces = projectViews.filter(p => (p.duration_seconds || 0) < 10).length;
+          return projectViews.length > 0 ? Math.round((bounces / projectViews.length) * 100) : 0;
+        })();
+
+        const revenue = quotesData?.filter(q => 
+          q.project_name?.includes(project.title) && q.status === 'accepted'
+        ).reduce((sum, q) => sum + (Number(q.total) || 0), 0) || 0;
         
         return {
+          id: project.id,
           name: project.title,
+          category: project.category || 'Uncategorized',
           views: projectPageViews,
           inquiries: projectLeads,
+          conversions: projectConversions,
+          interactions: projectInteractions,
           conversionRate: projectPageViews > 0 ? Math.round((projectLeads / projectPageViews) * 100) : 0,
+          engagementRate: projectPageViews > 0 ? Math.round((projectInteractions / projectPageViews) * 100) : 0,
+          avgTimeOnPage: Math.round(avgTimeOnPage),
+          bounceRate,
+          revenue,
+          status: project.status || 'active',
         };
-      }).sort((a, b) => b.views - a.views).slice(0, 10) || [];
+      }).sort((a, b) => b.views - a.views) || [];
 
       // Calculate lead source conversions
       const leadSources = todayLeads?.reduce((acc, lead) => {
@@ -375,6 +421,15 @@ export function useRealTimeAnalytics() {
       })
       .subscribe();
 
+    const projectsChannel = supabase
+      .channel('projects_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, (payload) => {
+        console.log('🚀 Project updated:', payload);
+        setIsLive(true);
+        fetchAnalyticsData(true);
+      })
+      .subscribe();
+
     // Refresh data every 30 seconds (without notification)
     const interval = setInterval(() => fetchAnalyticsData(false), 30000);
 
@@ -383,6 +438,7 @@ export function useRealTimeAnalytics() {
       supabase.removeChannel(conversionChannel);
       supabase.removeChannel(leadsChannel);
       supabase.removeChannel(quotesChannel);
+      supabase.removeChannel(projectsChannel);
       clearInterval(interval);
     };
   }, []);
