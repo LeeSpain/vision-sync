@@ -10,6 +10,7 @@ import Footer from '@/components/Layout/Footer';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import WebsitePreview from '@/components/WebsitePreview';
 import ProjectInquiryForm from '@/components/ProjectInquiryForm';
+import { analytics } from '@/utils/analytics';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
@@ -42,6 +43,8 @@ export default function DynamicProjectDetail() {
 
       if (foundProject) {
         setProject(foundProject);
+        // Track project view with analytics
+        analytics.trackProjectView(foundProject.id, foundProject.title);
       } else {
         setError('Project not found');
       }
@@ -144,14 +147,20 @@ export default function DynamicProjectDetail() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  onClick={() => window.open(project.demo_url, '_blank')}
+                  onClick={() => {
+                    analytics.trackInteraction('button_click', 'visit_live_site_button', project.id);
+                    window.open(project.demo_url, '_blank');
+                  }}
                   className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-3 text-lg font-semibold"
                 >
                   <ExternalLink className="h-5 w-5 mr-2" />
                   Visit Live Site
                 </Button>
                 <Button 
-                  onClick={() => setShowInquiryForm(true)}
+                  onClick={() => {
+                    analytics.trackInteraction('button_click', 'contact_button', project.id);
+                    setShowInquiryForm(true);
+                  }}
                   variant="outline"
                   className="px-8 py-3 text-lg font-semibold"
                 >
@@ -175,7 +184,10 @@ export default function DynamicProjectDetail() {
                 Get in touch to learn more about investment opportunities or purchase options.
               </p>
               <Button 
-                onClick={() => setShowInquiryForm(true)}
+                onClick={() => {
+                  analytics.trackInteraction('button_click', 'contact_button', project.id);
+                  setShowInquiryForm(true);
+                }}
                 className="bg-royal-purple hover:bg-royal-purple/90 text-white px-8 py-3 text-lg font-semibold"
               >
                 Contact Us
@@ -269,6 +281,7 @@ export default function DynamicProjectDetail() {
       </section>
 
       <ProjectInquiryForm
+        projectId={project.id}
         projectName={project.title}
         projectDescription={getIntroText(project.description || '')}
         isOpen={showInquiryForm}

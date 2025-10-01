@@ -17,6 +17,7 @@ import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package, CheckCircle } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { analytics } from '@/utils/analytics';
 
 const Index = () => {
   const { formatPrice } = useCurrency();
@@ -133,9 +134,12 @@ const Index = () => {
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Track form submission
+    analytics.trackInteraction('form_submit', 'contact_form');
+    
     try {
       // Save lead to database
-      await supabaseLeadManager.saveLead({
+      const result = await supabaseLeadManager.saveLead({
         source: 'contact',
         name: contactForm.name,
         email: contactForm.email,
@@ -144,6 +148,9 @@ const Index = () => {
           message: contactForm.message
         }
       });
+      
+      // Track conversion
+      analytics.trackConversion('interest', undefined, result.id);
       
       // Reset form
       setContactForm({ name: '', email: '', phone: '', message: '' });
@@ -185,14 +192,14 @@ const Index = () => {
               Discover intelligent AI solutions designed to transform your business and streamline operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link to="/ai-agents">
+              <Link to="/ai-agents" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_ai_agents')}>
                 <Button variant="hero" size="lg" className="animate-float">
                   <Sparkles className="h-5 w-5" />
                   Meet Your AI Agents
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/contact">
+              <Link to="/contact" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_contact')}>
                 <Button variant="view" size="lg">
                   <Target className="h-5 w-5" />
                   Contact Us Today

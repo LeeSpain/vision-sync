@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
+import { analytics } from "@/utils/analytics";
 import Index from "./pages/Index";
 import Templates from "./pages/Templates";
 import TemplateFinder from "./pages/TemplateFinder";

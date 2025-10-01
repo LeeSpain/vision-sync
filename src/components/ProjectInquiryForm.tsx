@@ -7,15 +7,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useProjectInquiry } from '@/hooks/useProjectInquiry';
 import { Loader2, Send } from 'lucide-react';
+import { analytics } from '@/utils/analytics';
 
 interface ProjectInquiryFormProps {
+  projectId?: string;
   projectName: string;
   projectDescription?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const ProjectInquiryForm = ({ projectName, projectDescription, isOpen, onClose }: ProjectInquiryFormProps) => {
+const ProjectInquiryForm = ({ projectId, projectName, projectDescription, isOpen, onClose }: ProjectInquiryFormProps) => {
   const { submitInquiry, isSubmitting } = useProjectInquiry();
   
   const [formData, setFormData] = useState({
@@ -29,6 +31,9 @@ const ProjectInquiryForm = ({ projectName, projectDescription, isOpen, onClose }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Track form interaction start
+    analytics.trackInteraction('form_submit', 'project_inquiry_form', projectId);
 
     const result = await submitInquiry({
       projectName: projectName,
@@ -45,6 +50,9 @@ Message: ${formData.message}`
     });
 
     if (result.success) {
+      // Track successful conversion with lead ID from result
+      analytics.trackConversion('interest', projectId, result.lead?.id);
+      
       setFormData({
         name: '',
         email: '',

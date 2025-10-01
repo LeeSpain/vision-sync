@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRealTimeAnalytics } from '@/hooks/useRealTimeAnalytics';
 import { Activity, TrendingUp, Users, DollarSign, MousePointer, Clock, Target, Zap } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import AnalyticsSeedButton from './AnalyticsSeedButton';
 
 export function RealTimeAnalytics() {
   const {
@@ -36,6 +37,15 @@ export function RealTimeAnalytics() {
 
   return (
     <div className="space-y-6">
+      {/* Header with Actions */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Real-Time Analytics</h2>
+          <p className="text-muted-foreground">Live business intelligence and performance metrics</p>
+        </div>
+        <AnalyticsSeedButton />
+      </div>
+
       {/* Live Metrics Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
