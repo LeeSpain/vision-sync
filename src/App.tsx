@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Templates from "./pages/Templates";
@@ -11,7 +12,7 @@ import TemplateRecommendations from "./pages/TemplateRecommendations";
 import TemplatePreview from "./pages/TemplatePreview";
 import DynamicProjectPage from "./components/DynamicProjectPage";
 import Admin from "./pages/Admin";
-import Auth from "./pages/Auth";
+import AuthPage from "./pages/AuthPage";
 import AiAgents from "./pages/AiAgents";
 import AiAgentQuestionnaire from "./pages/AiAgentQuestionnaire";
 import Contact from "./pages/Contact";
@@ -26,8 +27,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
+        <AuthProvider>
+          <ScrollToTop />
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/templates" element={<Templates />} />
           <Route path="/template-finder" element={<TemplateFinder />} />
@@ -37,7 +39,7 @@ const App = () => (
           {/* CRITICAL: Static admin and system pages MUST come before dynamic routes */}
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/*" element={<Admin />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/auth" element={<AuthPage />} />
           <Route path="/ai-agents" element={<AiAgents />} />
           <Route path="/ai-agent-questionnaire" element={<AiAgentQuestionnaire />} />
           <Route path="/contact" element={<Contact />} />
@@ -61,6 +63,7 @@ const App = () => (
           {/* 404 fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

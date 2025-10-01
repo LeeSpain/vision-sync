@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
 import { AdminErrorBoundary } from '@/components/AdminErrorBoundary';
 import { AdminLayout } from '@/components/AdminLayout';
@@ -25,15 +27,25 @@ import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Ma
 import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
+  const { user, isAdmin, loading: authLoading, signOut } = useAuthContext();
+  const navigate = useNavigate();
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Bypass login for testing
-  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [realTimeMetrics, setRealTimeMetrics] = useState<any>(null);
   
   // Get section from URL hash, default to 'overview'
   const activeSection = location.hash.replace('#', '') || 'overview';
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user) {
+        navigate('/auth');
+      } else if (!isAdmin) {
+        navigate('/');
+      }
+    }
+  }, [user, isAdmin, authLoading, navigate]);
 
   // Scroll to top when admin section changes
   useEffect(() => {
@@ -96,14 +108,6 @@ const Admin = () => {
   }, []);
 
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (loginForm.email === 'admin@vision-sync.com' && loginForm.password === 'admin123') {
-      setIsAuthenticated(true);
-    } else {
-      alert('Invalid credentials. Use: admin@vision-sync.com / admin123');
-    }
-  };
 
   const handleStatsLoad = (stats: any) => {
     setDashboardStats(stats);
@@ -113,56 +117,10 @@ const Admin = () => {
     setRefreshKey(prev => prev + 1);
   };
 
-  if (!isAuthenticated) {
+  if (authLoading || !user || !isAdmin) {
     return (
-      <div className="min-h-screen">
-        <div className="min-h-screen flex items-center justify-center bg-gradient-hero py-20">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-royal-purple/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="h-8 w-8 text-royal-purple" />
-              </div>
-              <CardTitle className="font-heading">Admin Access</CardTitle>
-              <CardDescription>
-                Enter your credentials to access the admin panel
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-midnight-navy mb-2">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    value={loginForm.email}
-                    onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                    placeholder="admin@vision-sync.com"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-midnight-navy mb-2">
-                    Password
-                  </label>
-                  <Input
-                    type="password"
-                    value={loginForm.password}
-                    onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                    placeholder="Enter password"
-                    required
-                  />
-                </div>
-                <Button type="submit" variant="premium" className="w-full">
-                  Access Admin Panel
-                </Button>
-                <p className="text-xs text-cool-gray text-center">
-                  Demo: admin@vision-sync.com / admin123
-                </p>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
+        <div className="text-white">Loading...</div>
       </div>
     );
   }
@@ -506,6 +464,16 @@ const Admin = () => {
     <AdminErrorBoundary>
       <AdminLayout>
         <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-midnight-navy mb-2">Admin Dashboard</h1>
+              <p className="text-cool-gray">Manage your projects, templates, and leads</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-cool-gray">{user.email}</span>
+              <Button variant="outline" onClick={signOut}>Sign Out</Button>
+            </div>
+          </div>
           {renderContent()}
         </div>
       </AdminLayout>
