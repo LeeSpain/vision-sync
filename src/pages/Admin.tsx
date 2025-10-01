@@ -12,6 +12,7 @@ import { LeadsManager } from '@/components/admin/LeadsManager';
 import { EnhancedLeadsManager } from '@/components/admin/EnhancedLeadsManager';
 import { ProductCatalogManager } from '@/components/admin/ProductCatalogManager';
 import { CurrencyAwareTemplateManager } from '@/components/admin/CurrencyAwareTemplateManager';
+import { IndustryManager } from '@/components/admin/IndustryManager';
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { RecentActivity } from '@/components/admin/RecentActivity';
 import { QuickActions } from '@/components/admin/QuickActions';
@@ -23,7 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail, RefreshCw, MessageCircle } from 'lucide-react';
+import { Lock, Settings, Users, BarChart3, FileText, Plus, Edit, Trash2, Eye, Mail, RefreshCw, MessageCircle, Building2, Layout, Bot } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
@@ -385,6 +386,9 @@ const Admin = () => {
 
       case 'templates':
         return <CurrencyAwareTemplateManager />;
+
+      case 'industries':
+        return <IndustryManager />;
 
       case 'leads':
         return <LeadsManager />;

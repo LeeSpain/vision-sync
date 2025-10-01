@@ -12,6 +12,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { templateCategories } from '@/utils/appTemplates';
 
+interface Industry {
+  id: string;
+  name: string;
+  description: string | null;
+  is_active: boolean;
+}
+
 interface AppTemplate {
   id: string;
   title: string;
@@ -35,6 +42,7 @@ interface TemplateEditModalProps {
 }
 
 export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: TemplateEditModalProps) {
+  const [industries, setIndustries] = useState<Industry[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -57,6 +65,26 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
   const [newImage, setNewImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [aiGenerating, setAiGenerating] = useState(false);
+
+  // Load industries
+  useEffect(() => {
+    loadIndustries();
+  }, []);
+
+  const loadIndustries = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('industries')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      
+      if (error) throw error;
+      setIndustries(data || []);
+    } catch (error) {
+      console.error('Error loading industries:', error);
+    }
+  };
 
   useEffect(() => {
     if (template) {
@@ -273,12 +301,21 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
 
           <div className="space-y-2">
             <Label htmlFor="industry">Industry</Label>
-            <Input
-              id="industry"
+            <Select
               value={formData.industry}
-              onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
-              placeholder="e.g., Food & Beverage, Healthcare, Retail"
-            />
+              onValueChange={(value) => setFormData(prev => ({ ...prev, industry: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select an industry" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border z-[100]">
+                {industries.map((industry) => (
+                  <SelectItem key={industry.id} value={industry.name}>
+                    {industry.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex items-center gap-2">

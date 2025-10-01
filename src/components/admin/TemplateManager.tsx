@@ -31,6 +31,13 @@ interface AppTemplate {
   updated_at: string;
 }
 
+interface Industry {
+  id: string;
+  name: string;
+  description: string | null;
+  is_active: boolean;
+}
+
 export function TemplateManager() {
   const { formatPrice } = useCurrency();
   const [templates, setTemplates] = useState<AppTemplate[]>([]);
@@ -41,9 +48,8 @@ export function TemplateManager() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
+  const [industries, setIndustries] = useState<Industry[]>([]);
   
-  const industryFilters = ['all', 'Hairdressing & Beauty', 'Restaurant & Food Service', 'Fitness & Wellness', 
-                          'Home Services', 'Retail & E-commerce', 'Healthcare', 'Real Estate'];
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -54,7 +60,31 @@ export function TemplateManager() {
   useEffect(() => {
     loadTemplates();
     loadStats();
+    loadIndustries();
   }, []);
+
+  const loadIndustries = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('industries')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      
+      if (error) throw error;
+      setIndustries(data || []);
+    } catch (error) {
+      console.error('Error loading industries:', error);
+    }
+  };
+
+  const industryFilters = [
+    { value: 'all', label: 'All Industries' },
+    ...industries.map(industry => ({
+      value: industry.name,
+      label: industry.name
+    }))
+  ];
 
   const loadTemplates = async () => {
     try {
@@ -211,9 +241,9 @@ export function TemplateManager() {
               <SelectValue placeholder="Filter by industry" />
             </SelectTrigger>
             <SelectContent>
-              {industryFilters.map((industry) => (
-                <SelectItem key={industry} value={industry}>
-                  {industry === 'all' ? 'All Industries' : industry}
+              {industryFilters.map((filter) => (
+                <SelectItem key={filter.value} value={filter.value}>
+                  {filter.label}
                 </SelectItem>
               ))}
             </SelectContent>
