@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { TemplateCardAdapter } from '@/components/TemplateCardAdapter';
 import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
@@ -9,7 +11,7 @@ import TemplateCustomizationFlow from '@/components/TemplateCustomizationFlow';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { useTemplates, Template } from '@/hooks/useTemplates';
-import { Package, Star, Rocket, Sparkles, ArrowLeft, CheckCircle, TrendingUp, Users } from 'lucide-react';
+import { Package, Star, Rocket, Sparkles, ArrowLeft, CheckCircle, TrendingUp, Users, Zap, Shield, Clock, Code, Palette, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { analytics } from '@/utils/analytics';
 
@@ -80,7 +82,7 @@ const Templates = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-hero">
       <SEOHead
         title="App Templates | Ready-to-Deploy Solutions - Vision-Sync Forge"
         description={`Browse ${templates.length}+ professional app templates ready for instant customization. Industry-specific solutions for healthcare, e-commerce, real estate, and more. Deploy in 72 hours.`}
@@ -99,16 +101,17 @@ const Templates = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent_50%)] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.08),transparent_50%)] pointer-events-none"></div>
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Background Animation */}
+        <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-green/10 rounded-full blur-xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-royal-purple/10 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-coral-orange/10 rounded-full blur-xl animate-float" style={{animationDelay: '1s'}}></div>
         
         <div className="max-w-7xl mx-auto relative">
           {/* Back Link */}
-          <div className="mb-8">
+          <div className="mb-8 animate-fade-in">
             <Link to="/">
-              <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm">
+              <Button variant="outline" size="sm" className="bg-slate-white/80 backdrop-blur-sm hover:bg-slate-white border-soft-lilac/30">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
               </Button>
@@ -116,56 +119,128 @@ const Templates = () => {
           </div>
 
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-6 py-3 rounded-full text-white font-medium mb-8 animate-fade-in shadow-elegant border border-white/20">
-              <Package className="h-5 w-5 text-coral-orange" />
-              Ready-to-Deploy Apps
+            <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
+              <Sparkles className="h-4 w-4 animate-pulse" />
+              Ready-to-Deploy Solutions
             </div>
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 leading-tight">
-              Off the Shelf
-              <span className="block bg-gradient-to-r from-coral-orange via-emerald-green to-electric-blue bg-clip-text text-transparent mt-2">
-                App Templates
-              </span>
+            <h1 className="text-5xl md:text-7xl font-heading font-bold text-midnight-navy mb-6 leading-tight animate-slide-up">
+              Professional App Templates
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
-              Professional app templates ready for instant customization. Choose from {templates.length} industry-specific solutions 
-              and see your personalized app with live preview before deployment.
+            <p className="text-xl md:text-2xl text-cool-gray max-w-4xl mx-auto mb-12 leading-relaxed animate-fade-in" style={{animationDelay: '0.2s'}}>
+              Choose from <span className="text-royal-purple font-semibold">{templates.length} industry-specific solutions</span>, customize with your branding, 
+              and launch in <span className="text-emerald-green font-semibold">72 hours</span> or less.
             </p>
             
-            {/* Key Benefits */}
-            <div className="flex flex-wrap items-center justify-center gap-8 text-white mb-16">
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
-                <Star className="h-5 w-5 text-coral-orange" />
-                <span className="font-semibold">Professional Design</span>
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap items-center justify-center gap-6 text-midnight-navy mb-16 animate-fade-in" style={{animationDelay: '0.3s'}}>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-emerald-green" />
+                <span className="font-medium">Live Preview</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
-                <Rocket className="h-5 w-5 text-emerald-green" />
-                <span className="font-semibold">Quick Deployment</span>
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-royal-purple" />
+                <span className="font-medium">Secure & Tested</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
-                <Sparkles className="h-5 w-5 text-royal-purple" />
-                <span className="font-semibold">Live Preview</span>
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-coral-orange" />
+                <span className="font-medium">Quick Deploy</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
-                <CheckCircle className="h-5 w-5 text-electric-blue" />
-                <span className="font-semibold">Your Branding</span>
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-electric-blue" />
+                <span className="font-medium">Premium Quality</span>
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                <div className="text-4xl font-bold text-white mb-2">{templates.length}</div>
-                <div className="text-white/80 font-medium">App Templates</div>
-              </div>
-              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                <div className="text-4xl font-bold text-white mb-2">{getAllCategories().length}</div>
-                <div className="text-white/80 font-medium">Industry Categories</div>
-              </div>
-              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                <div className="text-4xl font-bold text-white mb-2">72h</div>
-                <div className="text-white/80 font-medium">Avg. Delivery Time</div>
-              </div>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+              <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 animate-slide-up" style={{animationDelay: '0.4s'}}>
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-emerald-green/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Package className="h-6 w-6 text-emerald-green" />
+                  </div>
+                  <div className="text-4xl font-bold text-midnight-navy mb-1">{templates.length}</div>
+                  <div className="text-cool-gray font-medium">Templates Available</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 animate-slide-up" style={{animationDelay: '0.5s'}}>
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-royal-purple/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Globe className="h-6 w-6 text-royal-purple" />
+                  </div>
+                  <div className="text-4xl font-bold text-midnight-navy mb-1">{getAllCategories().length}</div>
+                  <div className="text-cool-gray font-medium">Industry Categories</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 animate-slide-up" style={{animationDelay: '0.6s'}}>
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-coral-orange/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Clock className="h-6 w-6 text-coral-orange" />
+                  </div>
+                  <div className="text-4xl font-bold text-midnight-navy mb-1">72h</div>
+                  <div className="text-cool-gray font-medium">Average Delivery</div>
+                </CardContent>
+              </Card>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
+              How It Works
+            </h2>
+            <p className="text-xl text-cool-gray max-w-2xl mx-auto">
+              From selection to deployment in four simple steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold shadow-glow">
+                  1
+                </div>
+                <Palette className="h-8 w-8 text-royal-purple mx-auto mb-3" />
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2">Choose Template</h3>
+                <p className="text-cool-gray text-sm">Browse and select the perfect template for your needs</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold shadow-glow">
+                  2
+                </div>
+                <Sparkles className="h-8 w-8 text-emerald-green mx-auto mb-3" />
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2">Customize</h3>
+                <p className="text-cool-gray text-sm">Add your branding, content, and unique features</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold shadow-glow">
+                  3
+                </div>
+                <Code className="h-8 w-8 text-coral-orange mx-auto mb-3" />
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2">Review</h3>
+                <p className="text-cool-gray text-sm">Preview your customized app before launch</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold shadow-glow">
+                  4
+                </div>
+                <Rocket className="h-8 w-8 text-electric-blue mx-auto mb-3" />
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2">Launch</h3>
+                <p className="text-cool-gray text-sm">Deploy your app and start growing your business</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -173,6 +248,15 @@ const Templates = () => {
       {/* Templates Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
+              Browse Our Templates
+            </h2>
+            <p className="text-xl text-cool-gray max-w-2xl mx-auto">
+              Filter by industry to find the perfect solution for your business
+            </p>
+          </div>
+
           {/* Category Filter */}
           <div className="mb-12">
             <TemplateCategoryFilterAdapter
@@ -189,7 +273,7 @@ const Templates = () => {
               <div
                 key={template.id}
                 className="animate-slide-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <TemplateCardAdapter
                   template={template}
@@ -200,24 +284,125 @@ const Templates = () => {
             ))}
           </div>
 
-          {/* Call to Action */}
-          <div className="mt-20 text-center">
-            <div className="bg-gradient-card p-8 rounded-3xl border border-soft-lilac/30 max-w-4xl mx-auto">
-              <h3 className="text-3xl font-heading font-bold text-midnight-navy mb-4">
-                Need Something Unique?
+          {/* Empty State */}
+          {getFilteredTemplates().length === 0 && (
+            <div className="text-center py-16">
+              <Package className="h-16 w-16 text-cool-gray mx-auto mb-4 opacity-50" />
+              <h3 className="text-2xl font-heading font-semibold text-midnight-navy mb-2">
+                No templates found
               </h3>
-              <p className="text-xl text-cool-gray mb-6">
-                Can't find the perfect fit? We'll create a custom template specifically for your business needs.
+              <p className="text-cool-gray mb-6">
+                Try selecting a different category or browse all templates
+              </p>
+              <Button onClick={() => setSelectedCategory('all')} variant="outline">
+                View All Templates
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Why Choose Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple/5 via-emerald-green/5 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
+              Why Choose Our Templates
+            </h2>
+            <p className="text-xl text-cool-gray max-w-2xl mx-auto">
+              Built with best practices and enterprise-grade quality
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-royal-purple/10 rounded-full flex items-center justify-center mb-4">
+                  <Star className="h-6 w-6 text-royal-purple" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Professional Design</h3>
+                <p className="text-cool-gray">Modern, responsive designs that work flawlessly on all devices</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-emerald-green/10 rounded-full flex items-center justify-center mb-4">
+                  <Shield className="h-6 w-6 text-emerald-green" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Secure & Reliable</h3>
+                <p className="text-cool-gray">Built with security best practices and thoroughly tested</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-coral-orange/10 rounded-full flex items-center justify-center mb-4">
+                  <Zap className="h-6 w-6 text-coral-orange" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Lightning Fast</h3>
+                <p className="text-cool-gray">Optimized for performance with lightning-fast load times</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mb-4">
+                  <Code className="h-6 w-6 text-electric-blue" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Clean Code</h3>
+                <p className="text-cool-gray">Well-documented, maintainable code following industry standards</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-royal-purple/10 rounded-full flex items-center justify-center mb-4">
+                  <Palette className="h-6 w-6 text-royal-purple" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Fully Customizable</h3>
+                <p className="text-cool-gray">Easy to customize with your brand colors, content, and features</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-emerald-green/10 rounded-full flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-emerald-green" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Expert Support</h3>
+                <p className="text-cool-gray">Dedicated support team to help you succeed</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative overflow-hidden bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-3xl p-12 shadow-glow">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent_50%)] pointer-events-none"></div>
+            <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
+            <div className="absolute bottom-10 left-10 w-40 h-40 bg-white/10 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
+            
+            <div className="relative text-center">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">
+                Need Something Unique?
+              </h2>
+              <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
+                Can't find the perfect template? We'll create a custom solution specifically for your business needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/contact">
-                  <Button variant="premium" size="lg">
+                  <Button variant="secondary" size="lg" className="bg-white text-midnight-navy hover:bg-white/90 shadow-elegant">
                     <Users className="h-5 w-5 mr-2" />
                     Request Custom Template
                   </Button>
                 </Link>
                 <Link to="/custom-builds">
-                  <Button variant="outline" size="lg">
+                  <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm">
                     <TrendingUp className="h-5 w-5 mr-2" />
                     Explore Custom Builds
                   </Button>
