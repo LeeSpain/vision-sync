@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { supabaseLeadManager, Lead, ProjectLead } from '@/utils/supabaseLeadManager';
+import { toast } from '@/hooks/use-toast';
 import { 
   Search, 
   Download, 
@@ -52,32 +53,23 @@ export function LeadsManager() {
 
   const loadLeads = async () => {
     try {
-      const [generalLeads, projectLeads, leadStats] = await Promise.all([
+      const [allLeads, leadStats] = await Promise.all([
         supabaseLeadManager.getAllLeads(),
-        supabaseLeadManager.getAllProjectLeads(),
         supabaseLeadManager.getLeadStats()
       ]);
 
-      // Combine and format leads
-      const combinedLeads = [
-        ...generalLeads.map(lead => ({
+      // Format all leads with proper type detection
+      const formattedLeads = allLeads.map(lead => {
+        const isProjectLead = lead.form_data?.type === 'project_inquiry';
+        return {
           ...lead,
-          type: 'General Lead',
-          project: '',
+          type: isProjectLead ? 'Project Lead' : 'General Lead',
+          project: isProjectLead ? (lead.form_data?.project_id || '') : '',
           source: lead.source as Lead['source']
-        })),
-        ...projectLeads.map(lead => ({
-          ...lead,
-          type: 'Project Lead',
-          project: (lead as any).projects?.name || lead.project_id,
-          source: 'project-inquiry' as Lead['source'],
-          company: lead.company,
-          phone: lead.phone,
-          form_data: lead.form_data
-        }))
-      ].sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
+        };
+      }).sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
 
-      setLeads(combinedLeads);
+      setLeads(formattedLeads);
       setStats(leadStats);
     } catch (error) {
       console.error('Error loading leads:', error);
@@ -107,40 +99,58 @@ export function LeadsManager() {
   };
 
   const updateLeadStatus = async (leadId: string, status: Lead['status']) => {
-    const lead = leads.find(l => l.id === leadId);
-    if (!lead) return;
-
-    if (lead.type === 'Project Lead') {
-      await supabaseLeadManager.updateProjectLead(leadId, { status });
-    } else {
+    try {
       await supabaseLeadManager.updateLead(leadId, { status });
+      loadLeads();
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update lead status",
+        variant: "destructive",
+      });
     }
-    loadLeads();
   };
 
   const updateLeadPriority = async (leadId: string, priority: Lead['priority']) => {
-    const lead = leads.find(l => l.id === leadId);
-    if (!lead) return;
-
-    if (lead.type === 'Project Lead') {
-      await supabaseLeadManager.updateProjectLead(leadId, { priority });
-    } else {
+    try {
       await supabaseLeadManager.updateLead(leadId, { priority });
+      loadLeads();
+    } catch (error) {
+      console.error('Error updating priority:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update lead priority",
+        variant: "destructive",
+      });
     }
-    loadLeads();
   };
 
   const deleteLead = async (leadId: string) => {
     if (confirm('Are you sure you want to delete this lead?')) {
-      const lead = leads.find(l => l.id === leadId);
-      if (!lead) return;
-
-      if (lead.type === 'Project Lead') {
-        await supabaseLeadManager.deleteProjectLead(leadId);
-      } else {
-        await supabaseLeadManager.deleteLead(leadId);
+      try {
+        const success = await supabaseLeadManager.deleteLead(leadId);
+        if (success) {
+          toast({
+            title: "Success",
+            description: "Lead deleted successfully",
+          });
+          loadLeads();
+        } else {
+          toast({
+            title: "Error",
+            description: "Failed to delete lead. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error('Error deleting lead:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete lead. Please try again.",
+          variant: "destructive",
+        });
       }
-      loadLeads();
     }
   };
 
