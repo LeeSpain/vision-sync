@@ -48,10 +48,7 @@ const Header = () => {
               <CurrencySelector variant="compact" />
               {user ? (
                 <div className="flex items-center space-x-3">
-                  <span className="text-sm text-midnight-navy/80 flex items-center">
-                    <User className="h-4 w-4 mr-1" />
-                    {user.email}
-                  </span>
+                  <User className="h-4 w-4 text-midnight-navy/80" />
                   <Button variant="ghost" size="sm" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-1" />
                     Sign Out
@@ -98,10 +95,6 @@ const Header = () => {
               </div>
               {user ? (
                 <div className="flex flex-col space-y-2">
-                  <span className="text-sm text-midnight-navy/80 flex items-center">
-                    <User className="h-4 w-4 mr-1" />
-                    {user.email}
-                  </span>
                   <Button variant="ghost" size="sm" onClick={signOut} className="w-full">
                     <LogOut className="h-4 w-4 mr-1" />
                     Sign Out

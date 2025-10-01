@@ -13,13 +13,14 @@ const AuthPage = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, signIn, signUp } = useAuthContext();
+  const { user, isAdmin, signIn, signUp } = useAuthContext();
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      // Redirect admins to admin page, regular users to homepage
+      navigate(isAdmin ? '/admin' : '/');
     }
-  }, [user, navigate]);
+  }, [user, isAdmin, navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
