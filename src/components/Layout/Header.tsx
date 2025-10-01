@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LogOut, User, Share2 } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CurrencySelector } from '@/components/ui/currency-selector';
-import { toast } from 'sonner';
+import ShareButton from '@/components/ShareButton';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,15 +15,6 @@ const Header = () => {
     { name: 'Contact Us', href: '/contact' },
     { name: 'Meet Your AI Agent', href: '/ai-agents' },
   ];
-
-  const handleShare = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      toast.success('Link copied to clipboard!');
-    }).catch(() => {
-      toast.error('Failed to copy link');
-    });
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-slate-white/95 backdrop-blur-sm border-b border-soft-lilac/20">
@@ -55,10 +46,7 @@ const Header = () => {
               </Link>
             ))}
             <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="sm" onClick={handleShare}>
-                <Share2 className="h-4 w-4 mr-1" />
-                Share
-              </Button>
+              <ShareButton />
               <CurrencySelector variant="compact" />
               {user ? (
                 <div className="flex items-center space-x-3">
@@ -104,10 +92,7 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              <Button variant="ghost" size="sm" onClick={handleShare} className="w-full">
-                <Share2 className="h-4 w-4 mr-1" />
-                Share Site
-              </Button>
+              <ShareButton fullWidth />
               <div className="mb-4">
                 <CurrencySelector />
               </div>
