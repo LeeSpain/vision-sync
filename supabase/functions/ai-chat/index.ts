@@ -75,7 +75,7 @@ serve(async (req) => {
     };
 
     // Get configuration from settings with safe parsing
-    const openaiApiKey = safeParseValue(settingsMap.openai_api_key, null) || Deno.env.get('OPENAI_API_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     const maxResponseLength = parseInt(settingsMap.max_response_length || '250');
     const responseTone = safeParseValue(settingsMap.response_tone, 'friendly_professional');
     const responseFormat = safeParseValue(settingsMap.response_format, 'conversational');
@@ -83,8 +83,8 @@ serve(async (req) => {
     const contactCollectionTiming = safeParseValue(settingsMap.contact_collection_timing, 'after_3_messages');
     const escalationTriggers = safeParseValue(settingsMap.escalation_triggers, []);
 
-    if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!lovableApiKey) {
+      throw new Error('Lovable AI API key not configured');
     }
 
     // Extract contact information from conversation history
@@ -344,27 +344,51 @@ MAKE IT FEEL ESSENTIAL, NOT OPTIONAL. Frame contact collection as the natural ne
 
 RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
 
-    // Call OpenAI API
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Call Lovable AI Gateway
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           ...fullHistory.slice(-10), // Keep last 10 messages for context
           { role: 'user', content: message }
         ],
         max_tokens: maxResponseLength,
-        temperature: 0.8,
       }),
     });
 
     if (!response.ok) {
+      // Handle rate limiting
+      if (response.status === 429) {
+        console.error('Rate limit exceeded');
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit exceeded',
+          response: 'I\'m receiving a lot of requests right now. Please try again in a moment.'
+        }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      // Handle payment required
+      if (response.status === 402) {
+        console.error('Payment required - credits exhausted');
+        return new Response(JSON.stringify({ 
+          error: 'Service temporarily unavailable',
+          response: 'I\'m temporarily unavailable. Please contact us directly for assistance.'
+        }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
       const error = await response.json();
+      console.error('AI Gateway error:', error);
       throw new Error(error.error?.message || 'Failed to get AI response');
     }
 
