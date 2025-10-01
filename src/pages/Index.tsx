@@ -192,10 +192,10 @@ const Index = () => {
               Discover intelligent AI solutions designed to transform your business and streamline operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link to="/ai-agents" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_ai_agents')}>
+              <Link to="/templates" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_templates')}>
                 <Button variant="hero" size="lg" className="animate-float">
                   <Sparkles className="h-5 w-5" />
-                  Meet Your AI Agents
+                  Browse Templates
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
