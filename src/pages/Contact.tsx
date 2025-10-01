@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,10 @@ import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 
 const Contact = () => {
+  // Force scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { general: budgetOptions } = useBudgetOptions();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
