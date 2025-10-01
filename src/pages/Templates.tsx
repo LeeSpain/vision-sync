@@ -108,15 +108,6 @@ const Templates = () => {
         <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-coral-orange/10 rounded-full blur-xl animate-float" style={{animationDelay: '1s'}}></div>
         
         <div className="max-w-7xl mx-auto relative">
-          {/* Back Link */}
-          <div className="mb-8 animate-fade-in">
-            <Link to="/">
-              <Button variant="outline" size="sm" className="bg-slate-white/80 backdrop-blur-sm hover:bg-slate-white border-soft-lilac/30">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
 
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
