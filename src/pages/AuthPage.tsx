@@ -11,29 +11,29 @@ const AuthPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, isAdmin, signIn, signUp } = useAuthContext();
+  const { user, isAdmin, loading: authLoading, signIn, signUp } = useAuthContext();
 
   useEffect(() => {
-    if (user) {
+    if (!authLoading && user) {
       // Redirect admins to admin page, regular users to homepage
       navigate(isAdmin ? '/admin' : '/');
     }
-  }, [user, isAdmin, navigate]);
+  }, [authLoading, user, isAdmin, navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
     await signUp(email, password, fullName);
-    setLoading(false);
+    setFormLoading(false);
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
     await signIn(email, password);
-    setLoading(false);
+    setFormLoading(false);
   };
 
   return (
@@ -74,8 +74,8 @@ const AuthPage = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Signing In..." : "Sign In"}
+                <Button type="submit" className="w-full" disabled={formLoading}>
+                  {formLoading ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
             </TabsContent>
@@ -113,8 +113,8 @@ const AuthPage = () => {
                     minLength={6}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Creating Account..." : "Create Account"}
+                <Button type="submit" className="w-full" disabled={formLoading}>
+                  {formLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               </form>
             </TabsContent>
