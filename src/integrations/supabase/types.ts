@@ -257,44 +257,124 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_interactions: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          interaction_date: string | null
+          interaction_type: string
+          lead_id: string | null
+          metadata: Json | null
+          subject: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          interaction_date?: string | null
+          interaction_type: string
+          lead_id?: string | null
+          metadata?: Json | null
+          subject?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          interaction_date?: string | null
+          interaction_type?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_interactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
+          assigned_to: string | null
+          budget_range: string | null
           company: string | null
           created_at: string | null
           email: string
           form_data: Json | null
           id: string
+          industry: string | null
+          last_contact_date: string | null
+          lead_score: number | null
           message: string | null
           name: string
+          next_follow_up: string | null
           phone: string | null
+          pipeline_stage: string | null
+          preferred_start_date: string | null
+          project_type: string | null
+          qualification_status: string | null
           source: string | null
           status: string | null
+          technical_requirements: string | null
+          timeline: string | null
           updated_at: string | null
         }
         Insert: {
+          assigned_to?: string | null
+          budget_range?: string | null
           company?: string | null
           created_at?: string | null
           email: string
           form_data?: Json | null
           id?: string
+          industry?: string | null
+          last_contact_date?: string | null
+          lead_score?: number | null
           message?: string | null
           name: string
+          next_follow_up?: string | null
           phone?: string | null
+          pipeline_stage?: string | null
+          preferred_start_date?: string | null
+          project_type?: string | null
+          qualification_status?: string | null
           source?: string | null
           status?: string | null
+          technical_requirements?: string | null
+          timeline?: string | null
           updated_at?: string | null
         }
         Update: {
+          assigned_to?: string | null
+          budget_range?: string | null
           company?: string | null
           created_at?: string | null
           email?: string
           form_data?: Json | null
           id?: string
+          industry?: string | null
+          last_contact_date?: string | null
+          lead_score?: number | null
           message?: string | null
           name?: string
+          next_follow_up?: string | null
           phone?: string | null
+          pipeline_stage?: string | null
+          preferred_start_date?: string | null
+          project_type?: string | null
+          qualification_status?: string | null
           source?: string | null
           status?: string | null
+          technical_requirements?: string | null
+          timeline?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -392,6 +472,77 @@ export type Database = {
         }
         Relationships: []
       }
+      quotes: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          discount_amount: number | null
+          id: string
+          lead_id: string | null
+          line_items: Json | null
+          notes: string | null
+          project_description: string | null
+          project_name: string
+          quote_number: string
+          sent_at: string | null
+          status: string | null
+          subtotal: number | null
+          tax: number | null
+          terms_and_conditions: string | null
+          total: number | null
+          updated_at: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          discount_amount?: number | null
+          id?: string
+          lead_id?: string | null
+          line_items?: Json | null
+          notes?: string | null
+          project_description?: string | null
+          project_name: string
+          quote_number: string
+          sent_at?: string | null
+          status?: string | null
+          subtotal?: number | null
+          tax?: number | null
+          terms_and_conditions?: string | null
+          total?: number | null
+          updated_at?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          discount_amount?: number | null
+          id?: string
+          lead_id?: string | null
+          line_items?: Json | null
+          notes?: string | null
+          project_description?: string | null
+          project_name?: string
+          quote_number?: string
+          sent_at?: string | null
+          status?: string | null
+          subtotal?: number | null
+          tax?: number | null
+          terms_and_conditions?: string | null
+          total?: number | null
+          updated_at?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       template_questionnaire_responses: {
         Row: {
           budget_range: string | null
@@ -436,7 +587,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_lead_score: {
+        Args: {
+          p_budget_range: string
+          p_company: string
+          p_inquiry_type: string
+          p_timeline: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
