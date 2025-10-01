@@ -137,18 +137,13 @@ const AiAgents = () => {
             <span className="text-emerald-green font-semibold">The AI revolution isn't coming - it's here.</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-4 text-lg">
-              <Calculator className="mr-2 h-5 w-5" />
-              Calculate My Savings
-            </Button>
             <Button 
               size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg"
-              onClick={() => window.location.href = '/admin#ai-agent'}
+              className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-4 text-lg"
+              onClick={() => window.location.href = '/contact'}
             >
-              <Play className="mr-2 h-5 w-5" />
-              Admin Panel
+              <MessageSquare className="mr-2 h-5 w-5" />
+              Contact Us
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
