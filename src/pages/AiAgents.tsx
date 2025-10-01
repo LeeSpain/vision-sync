@@ -18,17 +18,20 @@ const AiAgents = () => {
   });
 
   const calculateROI = () => {
-    const annualEmployeeCost = roiInputs.employees * roiInputs.avgSalary;
-    const aiAgentCost = roiInputs.employees * 6000; // €500/month per agent
-    const annualSavings = annualEmployeeCost - aiAgentCost;
-    const monthlySavings = annualSavings / 12;
-    const paybackDays = Math.round((aiAgentCost / annualSavings) * 365);
+    // Calculate efficiency gains, not replacement
+    const hoursPerEmployee = roiInputs.hoursPerWeek * 52;
+    const hoursSavedPerEmployee = hoursPerEmployee * 0.15; // 15% efficiency gain
+    const totalHoursSaved = hoursSavedPerEmployee * roiInputs.employees;
+    const hourlyRate = roiInputs.avgSalary / hoursPerEmployee;
+    const annualTimeSavings = totalHoursSaved * hourlyRate;
+    const aiAgentCost = 6000; // €500/month for AI assistance
+    const netBenefit = annualTimeSavings - aiAgentCost;
     
     return {
-      annualSavings: formatPrice(annualSavings),
-      monthlySavings: formatPrice(monthlySavings),
-      paybackDays,
-      roiPercentage: Math.round((annualSavings / aiAgentCost) * 100)
+      hoursSaved: Math.round(totalHoursSaved),
+      timeSavings: formatPrice(annualTimeSavings),
+      netBenefit: formatPrice(Math.max(0, netBenefit)),
+      efficiencyGain: "15-25%"
     };
   };
 
@@ -36,25 +39,25 @@ const AiAgents = () => {
 
   const successStories = [
     {
-      company: "TechCorp Healthcare",
+      company: "Local Healthcare Clinic",
       industry: "Healthcare",
-      savings: `${formatPrice(180000)}/year`,
-      improvement: "85% faster response times",
-      quote: "Our AI agent handles 3,000+ patient inquiries daily, freeing our staff for critical care."
+      improvement: "18% faster response times",
+      staffImpact: "Staff now focus on patient care",
+      quote: "Our AI assistant helps triage inquiries and schedule appointments, giving our team more time with patients."
     },
     {
-      company: "Urban Realty Group",
+      company: "Regional Realty Group",
       industry: "Real Estate", 
-      savings: `${formatPrice(120000)}/year`,
-      improvement: "300% increase in lead conversion",
-      quote: "AI agents qualify leads 24/7, resulting in 40% more closed deals per month."
+      improvement: "23% increase in qualified leads",
+      staffImpact: "Agents close more deals",
+      quote: "AI helps qualify leads 24/7. Our agents spend time with serious buyers instead of cold calls."
     },
     {
-      company: "Global Services Inc",
+      company: "Small Business Services",
       industry: "Business Services",
-      savings: `${formatPrice(250000)}/year`, 
-      improvement: "90% reduction in processing time",
-      quote: "Automated our entire customer onboarding process. What took 5 days now takes 2 hours."
+      improvement: "30% faster onboarding", 
+      staffImpact: "Team handles complex cases",
+      quote: "AI guides customers through routine setup. Our team focuses on strategic consulting."
     }
   ];
 
@@ -81,36 +84,36 @@ const AiAgents = () => {
 
   const agents = [
     {
-      name: "Customer Service Revolution",
-      description: "Replace entire call centers with AI that never sleeps",
+      name: "Customer Service Assistant",
+      description: "AI that supports your team with 24/7 customer inquiries",
       icon: <MessageSquare className="h-8 w-8" />,
-      savings: `Save ${formatPrice(120000)}+ annually per agent`,
-      features: ["24/7/365 Availability", "0-second Response Time", "50+ Languages", "100% Consistency"],
-      roi: "ROI: 400% in first year"
+      benefit: "Handle routine inquiries automatically",
+      features: ["24/7 Initial Response", "Multi-Language Support", "Smart Routing to Staff", "Knowledge Base Integration"],
+      impact: "15-25% efficiency gain"
     },
     {
-      name: "Sales Automation Engine", 
-      description: "AI that qualifies, nurtures, and closes deals automatically",
+      name: "Sales Support Assistant", 
+      description: "AI that helps qualify leads and schedule appointments",
       icon: <Target className="h-8 w-8" />,
-      savings: "Increase revenue by 300%+",
-      features: ["Lead Qualification", "Automated Follow-ups", "Deal Closing", "CRM Integration"],
-      roi: "Payback in 30 days"
+      benefit: "More time for your team to close deals",
+      features: ["Lead Qualification", "Automated Scheduling", "Follow-up Reminders", "CRM Integration"],
+      impact: "20-30% more qualified leads"
     },
     {
-      name: "Operations Optimizer",
-      description: "Eliminate repetitive tasks and streamline workflows", 
+      name: "Operations Assistant",
+      description: "AI that streamlines workflows and reduces repetitive tasks", 
       icon: <Zap className="h-8 w-8" />,
-      savings: "Reduce costs by 70%",
-      features: ["Process Automation", "Error Elimination", "Real-time Analytics", "Predictive Maintenance"],
-      roi: "Break-even in 60 days"
+      benefit: "Free your team for strategic work",
+      features: ["Process Automation", "Data Entry", "Status Updates", "Report Generation"],
+      impact: "10-20% time savings"
     },
     {
-      name: "Business Intelligence AI",
-      description: "Turn data into actionable insights automatically",
+      name: "Business Intelligence Helper",
+      description: "AI that analyzes data and generates insights for your team",
       icon: <BarChart3 className="h-8 w-8" />,
-      savings: "Increase efficiency by 85%",
-      features: ["Data Analysis", "Report Generation", "Trend Prediction", "Decision Support"],
-      roi: "5x return in 6 months"
+      benefit: "Make data-driven decisions faster",
+      features: ["Trend Analysis", "Custom Dashboards", "Automated Reports", "Predictive Insights"],
+      impact: "Better decision making"
     }
   ];
 
@@ -118,23 +121,23 @@ const AiAgents = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Future-Focused Hero Section */}
+      {/* Hero Section - Partnership Focus */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy via-royal-purple to-emerald-green text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-midnight-navy/90 to-royal-purple/90"></div>
         <div className="relative max-w-7xl mx-auto text-center">
           <Badge className="mb-6 bg-emerald-green/20 text-emerald-green border-emerald-green/30">
             <Star className="h-4 w-4 mr-2" />
-            Join 500+ businesses already saving {formatPrice(2000000)}+ monthly
+            Empowering Businesses to Achieve Excellence
           </Badge>
           <h1 className="text-5xl md:text-7xl font-heading font-bold mb-6">
-            The Future of Business is{' '}
+            AI-Powered Business{' '}
             <span className="bg-gradient-to-r from-emerald-green to-coral-orange bg-clip-text text-transparent">
-              Here
+              Enhancement
             </span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto opacity-90">
-            Meet Your AI Workforce: Save 70% on operational costs while working 24/7/365. 
-            <span className="text-emerald-green font-semibold">The AI revolution isn't coming - it's here.</span>
+            Partner with AI to enhance your team's capabilities, improve customer service, and grow your business.
+            <span className="text-emerald-green font-semibold"> Perfect for small businesses and enterprises alike.</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
@@ -148,38 +151,38 @@ const AiAgents = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-emerald-green">{formatPrice(250000)}+</div>
-              <div className="text-sm opacity-80">Average Annual Savings</div>
+              <div className="text-3xl font-bold text-emerald-green">15-25%</div>
+              <div className="text-sm opacity-80">Typical Efficiency Gains</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-coral-orange">24/7</div>
-              <div className="text-sm opacity-80">Never Stops Working</div>
+              <div className="text-sm opacity-80">AI Support Availability</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-soft-lilac">30 Days</div>
-              <div className="text-sm opacity-80">Average Payback Period</div>
+              <div className="text-3xl font-bold text-soft-lilac">3-6 Months</div>
+              <div className="text-sm opacity-80">Typical ROI Timeline</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ROI Calculator Section */}
+      {/* ROI Calculator Section - Focus on Efficiency */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
-              See Your <span className="text-emerald-green">Money-Saving</span> Potential
+              Calculate Your <span className="text-emerald-green">Efficiency Gains</span>
             </h2>
-            <p className="text-xl text-cool-gray">Calculate exactly how much you'll save with AI agents</p>
+            <p className="text-xl text-cool-gray">See how AI assistance can improve your team's productivity</p>
           </div>
           
           <Card className="p-8 shadow-elegant">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-xl font-semibold text-midnight-navy mb-6">Your Current Situation</h3>
+                <h3 className="text-xl font-semibold text-midnight-navy mb-6">Your Team Information</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-cool-gray mb-2">Number of Employees</label>
+                    <label className="block text-sm font-medium text-cool-gray mb-2">Number of Team Members</label>
                     <Input 
                       type="number" 
                       value={roiInputs.employees}
@@ -209,28 +212,36 @@ const AiAgents = () => {
               </div>
               
               <div className="bg-gradient-to-br from-emerald-green/10 to-royal-purple/10 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold text-midnight-navy mb-6">Your AI Agent Savings</h3>
+                <h3 className="text-xl font-semibold text-midnight-navy mb-6">Estimated Productivity Gains</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Annual Savings:</span>
-                    <span className="text-2xl font-bold text-emerald-green">{roi.annualSavings}</span>
+                    <span className="text-cool-gray">Hours Saved/Year:</span>
+                    <span className="text-2xl font-bold text-emerald-green">{roi.hoursSaved}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Monthly Savings:</span>
-                    <span className="text-xl font-semibold text-emerald-green">{roi.monthlySavings}</span>
+                    <span className="text-cool-gray">Time Value:</span>
+                    <span className="text-xl font-semibold text-emerald-green">{roi.timeSavings}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">ROI Percentage:</span>
-                    <span className="text-xl font-semibold text-emerald-green">{roi.roiPercentage}%</span>
+                    <span className="text-cool-gray">Net Benefit:</span>
+                    <span className="text-xl font-semibold text-emerald-green">{roi.netBenefit}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Payback Period:</span>
-                    <span className="text-lg font-semibold text-coral-orange">{roi.paybackDays} days</span>
+                    <span className="text-cool-gray">Efficiency Gain:</span>
+                    <span className="text-lg font-semibold text-coral-orange">{roi.efficiencyGain}</span>
                   </div>
                 </div>
-                <Button className="w-full mt-6 bg-emerald-green hover:bg-emerald-green/90">
+                <div className="mt-6 p-4 bg-white rounded-lg border border-emerald-green/20">
+                  <p className="text-sm text-cool-gray">
+                    These estimates assume AI handles routine tasks, freeing your team to focus on high-value work.
+                  </p>
+                </div>
+                <Button 
+                  className="w-full mt-4 bg-emerald-green hover:bg-emerald-green/90"
+                  onClick={() => window.location.href = '/contact'}
+                >
                   <ArrowRight className="mr-2 h-4 w-4" />
-                  Start Saving Today
+                  Discuss Your Needs
                 </Button>
               </div>
             </div>
@@ -238,14 +249,14 @@ const AiAgents = () => {
         </div>
       </section>
 
-      {/* Success Stories Section */}
+      {/* Success Stories Section - Realistic Results */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
-              Real Businesses, <span className="text-emerald-green">Real Transformations</span>
+              Real Businesses, <span className="text-emerald-green">Real Results</span>
             </h2>
-            <p className="text-xl text-cool-gray">See how AI agents have revolutionized operations across industries</p>
+            <p className="text-xl text-cool-gray">See how AI assistance has helped businesses improve operations</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -253,13 +264,16 @@ const AiAgents = () => {
               <Card key={index} className="p-6 hover:shadow-elegant transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <Badge variant="secondary">{story.industry}</Badge>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-emerald-green">{story.savings}</div>
-                    <div className="text-sm text-cool-gray">Annual Savings</div>
-                  </div>
+                  <CheckCircle className="h-6 w-6 text-emerald-green" />
                 </div>
                 <h3 className="font-semibold text-midnight-navy mb-2">{story.company}</h3>
-                <p className="text-coral-orange font-semibold mb-3">{story.improvement}</p>
+                <div className="space-y-2 mb-4">
+                  <p className="text-emerald-green font-semibold">{story.improvement}</p>
+                  <p className="text-sm text-cool-gray flex items-center">
+                    <Users className="h-4 w-4 mr-2" />
+                    {story.staffImpact}
+                  </p>
+                </div>
                 <blockquote className="text-cool-gray italic border-l-4 border-emerald-green pl-4">
                   "{story.quote}"
                 </blockquote>
@@ -296,14 +310,14 @@ const AiAgents = () => {
         </div>
       </section>
 
-      {/* AI Agents Showcase */}
+      {/* AI Agents Showcase - Partnership Focus */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
-              Meet Your <span className="text-emerald-green">AI Workforce</span>
+              Meet Your <span className="text-emerald-green">AI Assistants</span>
             </h2>
-            <p className="text-xl text-cool-gray">Enterprise-grade AI agents that never sleep, never call in sick, and never make mistakes</p>
+            <p className="text-xl text-cool-gray">Smart AI solutions that enhance your team's capabilities and grow with your business</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -319,11 +333,14 @@ const AiAgents = () => {
                         {agent.name}
                       </h3>
                       <Badge className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
-                        {agent.roi}
+                        {agent.impact}
                       </Badge>
                     </div>
                     <p className="text-cool-gray mb-3">{agent.description}</p>
-                    <div className="text-emerald-green font-semibold mb-4">{agent.savings}</div>
+                    <div className="text-emerald-green font-semibold mb-4 flex items-center">
+                      <Zap className="h-4 w-4 mr-2" />
+                      {agent.benefit}
+                    </div>
                     <ul className="space-y-2">
                       {agent.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-center text-sm text-cool-gray">
@@ -332,9 +349,12 @@ const AiAgents = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button className="mt-4 w-full bg-midnight-navy hover:bg-midnight-navy/90">
-                      <ArrowRight className="mr-2 h-4 w-4" />
-                      Deploy This Agent
+                    <Button 
+                      className="mt-4 w-full bg-midnight-navy hover:bg-midnight-navy/90"
+                      onClick={() => window.location.href = '/contact'}
+                    >
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      Learn More
                     </Button>
                   </div>
                 </div>
@@ -344,37 +364,74 @@ const AiAgents = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section - Partnership Messaging */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy to-royal-purple text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-            Don't Get Left Behind in the <span className="text-emerald-green">AI Revolution</span>
+            Ready to <span className="text-emerald-green">Enhance</span> Your Business?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            While your competitors are still hiring and training, you could be saving hundreds of thousands with AI that works instantly.
+            Whether you're a small business looking to compete or an enterprise seeking efficiency, our AI solutions grow with you. Let's build your success together.
           </p>
+          <div className="mb-12 p-6 bg-white/10 rounded-lg border border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+              <div>
+                <h3 className="font-semibold mb-3 flex items-center">
+                  <Users className="h-5 w-5 mr-2 text-emerald-green" />
+                  Small Business Benefits
+                </h3>
+                <ul className="space-y-2 text-sm opacity-90">
+                  <li>• Affordable AI solutions</li>
+                  <li>• Level the playing field</li>
+                  <li>• 24/7 customer support</li>
+                  <li>• Scale as you grow</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-3 flex items-center">
+                  <TrendingUp className="h-5 w-5 mr-2 text-emerald-green" />
+                  Enterprise Benefits
+                </h3>
+                <ul className="space-y-2 text-sm opacity-90">
+                  <li>• Handle peak demand</li>
+                  <li>• Consistent quality at scale</li>
+                  <li>• Data-driven insights</li>
+                  <li>• Integration with existing systems</li>
+                </ul>
+              </div>
+            </div>
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button size="lg" className="bg-emerald-green hover:bg-emerald-green/90 px-8 py-4 text-lg">
-              <Calculator className="mr-2 h-5 w-5" />
-              Start Free 30-Day Trial
+            <Button 
+              size="lg" 
+              className="bg-emerald-green hover:bg-emerald-green/90 px-8 py-4 text-lg"
+              onClick={() => window.location.href = '/contact'}
+            >
+              <MessageSquare className="mr-2 h-5 w-5" />
+              Start a Conversation
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg">
-              <Clock className="mr-2 h-5 w-5" />
-              Schedule Strategy Call
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg"
+              onClick={() => window.location.href = '/templates'}
+            >
+              <ArrowRight className="mr-2 h-5 w-5" />
+              Explore Solutions
             </Button>
           </div>
-          <div className="flex items-center justify-center space-x-6 text-sm opacity-80">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm opacity-80">
             <div className="flex items-center">
               <Shield className="h-4 w-4 mr-2" />
-              30-Day Money Back Guarantee
-            </div>
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              Setup in 24 Hours
+              Secure & Reliable
             </div>
             <div className="flex items-center">
               <Users className="h-4 w-4 mr-2" />
-              24/7 Support
+              Dedicated Support
+            </div>
+            <div className="flex items-center">
+              <Rocket className="h-4 w-4 mr-2" />
+              Growing With You
             </div>
           </div>
         </div>
