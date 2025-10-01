@@ -1,5 +1,7 @@
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateServiceSchema } from '@/utils/structuredData';
 import { Bot, Brain, MessageSquare, Zap, Users, Target, Calculator, TrendingUp, Clock, DollarSign, Shield, Globe, BarChart3, Rocket, CheckCircle, ArrowRight, Play, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -121,6 +123,26 @@ const AiAgents = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="AI Agents & Business Automation | Vision-Sync Forge"
+        description="Enhance your business with AI-powered agents for customer service, sales support, and operations. Achieve 15-25% efficiency gains with 24/7 AI assistance. ROI calculator included."
+        keywords="AI agents, business automation, AI customer service, AI sales assistant, business efficiency, AI operations, automated workflows"
+        canonical="https://vision-sync-forge.lovable.app/ai-agents"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "AI Agents - Vision-Sync Forge",
+            description: "AI-powered business enhancement solutions for customer service, sales, and operations",
+            url: "https://vision-sync-forge.lovable.app/ai-agents"
+          }),
+          generateServiceSchema({
+            name: "AI Agent Implementation",
+            description: "Custom AI agents that enhance team capabilities and improve business efficiency by 15-25%",
+            serviceType: "Artificial Intelligence Solutions"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Section - Partnership Focus */}

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { TemplateCardAdapter } from '@/components/TemplateCardAdapter';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { AppTemplate } from '@/utils/appTemplates';
 import TemplateCategoryFilterAdapter from '@/components/TemplateCategoryFilterAdapter';
 import TemplateCustomizationFlow from '@/components/TemplateCustomizationFlow';
@@ -72,6 +74,21 @@ const Templates = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="App Templates | Ready-to-Deploy Solutions - Vision-Sync Forge"
+        description={`Browse ${templates.length}+ professional app templates ready for instant customization. Industry-specific solutions for healthcare, e-commerce, real estate, and more. Deploy in 72 hours.`}
+        keywords="app templates, ready-made applications, SaaS templates, web app templates, mobile app templates, industry solutions"
+        canonical="https://vision-sync-forge.lovable.app/templates"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "App Templates - Vision-Sync Forge",
+            description: `Professional app templates ready for instant deployment across ${getAllCategories().length} industry categories`,
+            url: "https://vision-sync-forge.lovable.app/templates"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}

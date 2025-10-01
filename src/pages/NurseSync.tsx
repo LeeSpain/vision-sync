@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateProductSchema, generateWebPageSchema, generateOrganizationSchema } from '@/utils/structuredData';
 import { ArrowRight, Clock, Heart, TrendingUp, Eye, ExternalLink, Users, Shield, Zap } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
@@ -10,6 +12,26 @@ const NurseSync = () => {
   const { formatPrice } = useCurrency();
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Nurse-Sync | Advanced Nursing Workflow Management System"
+        description="Advanced nursing workflow management and patient care coordination system designed by nurses, for nurses. Streamline healthcare operations and improve patient outcomes."
+        keywords="nursing software, healthcare workflow, patient care coordination, nursing management system, healthcare technology"
+        canonical="https://vision-sync-forge.lovable.app/nurse-sync"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Nurse-Sync - Healthcare Management",
+            description: "Advanced nursing workflow management and patient care coordination system",
+            url: "https://vision-sync-forge.lovable.app/nurse-sync"
+          }),
+          generateProductSchema({
+            name: "Nurse-Sync",
+            description: "Advanced nursing workflow management and patient care coordination system designed by nurses",
+            availability: "InStock"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Banner */}

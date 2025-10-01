@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { Button } from '@/components/ui/button';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateServiceSchema } from '@/utils/structuredData';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -120,6 +122,26 @@ const CustomBuilds = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Custom Software Development | Enterprise Solutions - Vision-Sync Forge"
+        description="Transform your vision into reality with custom-built web applications, mobile apps, and enterprise systems. Expert development team specializing in React, Node.js, AI/ML, and cloud solutions."
+        keywords="custom software development, web application development, mobile app development, enterprise software, custom CRM, custom ERP, bespoke software solutions"
+        canonical="https://vision-sync-forge.lovable.app/custom-builds"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Custom Build Projects - Vision-Sync Forge",
+            description: "Custom software development services for web, mobile, and enterprise applications",
+            url: "https://vision-sync-forge.lovable.app/custom-builds"
+          }),
+          generateServiceSchema({
+            name: "Custom Software Development",
+            description: "End-to-end custom software development from concept to deployment, including web apps, mobile apps, and enterprise systems",
+            serviceType: "Software Development"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}

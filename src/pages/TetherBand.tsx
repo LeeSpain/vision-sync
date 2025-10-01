@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateProductSchema, generateWebPageSchema, generateOrganizationSchema } from '@/utils/structuredData';
 import { ArrowRight, Wifi, Link, DollarSign, Eye, ExternalLink, Shield, Zap, Radio } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
@@ -10,6 +12,26 @@ const TetherBand = () => {
   const { formatPrice } = useCurrency();
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Tether-Band | Secure Device Connectivity & Network Bridging Solution"
+        description="Innovative connectivity solution for secure device-to-device communication and network bridging. Enterprise-grade technology for seamless device integration and data transfer."
+        keywords="device connectivity, network bridging, secure communication, IoT connectivity, device-to-device communication"
+        canonical="https://vision-sync-forge.lovable.app/tether-band"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Tether-Band - Device Connectivity",
+            description: "Innovative connectivity solution for secure device-to-device communication and network bridging",
+            url: "https://vision-sync-forge.lovable.app/tether-band"
+          }),
+          generateProductSchema({
+            name: "Tether-Band",
+            description: "Secure device-to-device communication and network bridging solution",
+            availability: "PreOrder"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Banner */}

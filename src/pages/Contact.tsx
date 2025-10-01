@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateFAQSchema } from '@/utils/structuredData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,6 +17,21 @@ const Contact = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const contactFAQs = [
+    {
+      question: "How quickly can you start my project?",
+      answer: "We typically start new projects within 1-2 weeks of approval. For urgent projects, we can accommodate faster timelines."
+    },
+    {
+      question: "What types of projects do you work on?",
+      answer: "We develop custom web applications, mobile apps, AI solutions, e-commerce platforms, and enterprise systems across all industries."
+    },
+    {
+      question: "Do you offer ongoing support after launch?",
+      answer: "Yes, we provide comprehensive support and maintenance packages to ensure your application continues to perform optimally."
+    }
+  ];
   const { general: budgetOptions } = useBudgetOptions();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -306,6 +323,22 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Contact Us | Vision-Sync Forge - Get Your Custom Software Quote"
+        description="Contact Vision-Sync Forge for custom software development, AI solutions, and web applications. Get a free consultation and project quote from our expert development team."
+        keywords="contact software development, custom software quote, web development consultation, AI development inquiry"
+        canonical="https://vision-sync-forge.lovable.app/contact"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Contact Vision-Sync Forge",
+            description: "Get in touch with our development team for custom software solutions",
+            url: "https://vision-sync-forge.lovable.app/contact"
+          }),
+          generateFAQSchema(contactFAQs)
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}

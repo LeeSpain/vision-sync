@@ -11,6 +11,8 @@ import EnhancedTemplatesShowcase from '@/components/EnhancedTemplatesShowcase';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import AiChatWidget from '@/components/chat/AiChatWidget';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package, CheckCircle } from 'lucide-react';
@@ -152,6 +154,21 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Vision-Sync Forge | AI-Powered Web Development & Custom Software Solutions"
+        description="Transform your ideas into reality with Vision-Sync Forge. Professional AI-powered web applications, custom software development, and ready-to-deploy templates for startups and enterprises."
+        keywords="web development, AI software, custom applications, SaaS development, web templates, software solutions, AI agents, business automation"
+        canonical="https://vision-sync-forge.lovable.app/"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Vision-Sync Forge - Home",
+            description: "Professional AI-powered web development and custom software solutions",
+            url: "https://vision-sync-forge.lovable.app/"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}
