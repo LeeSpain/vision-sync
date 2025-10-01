@@ -309,7 +309,7 @@ export function LeadsManager() {
               </thead>
               <tbody>
                 {filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="border-b border-soft-lilac/20 hover:bg-soft-lilac/10">
+                  <tr key={`${lead.type || 'lead'}-${lead.id}`} className="border-b border-soft-lilac/20 hover:bg-soft-lilac/10">
                     <td className="p-3">
                       <div>
                         <div className="font-medium text-midnight-navy">{lead.name}</div>
@@ -386,101 +386,238 @@ export function LeadsManager() {
                               </DialogDescription>
                             </DialogHeader>
                             {selectedLead && (
-                              <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div>
-                                    <label className="text-sm font-medium">Name</label>
-                                    <p className="text-sm text-cool-gray">{selectedLead.name}</p>
-                                  </div>
-                                  <div>
-                                    <label className="text-sm font-medium">Email</label>
-                                    <p className="text-sm text-cool-gray">{selectedLead.email}</p>
-                                  </div>
-                                  {selectedLead.company && (
+                              <div className="space-y-6">
+                                {/* Basic Information */}
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-3 text-midnight-navy">Basic Information</h3>
+                                  <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                      <label className="text-sm font-medium">Company</label>
-                                      <p className="text-sm text-cool-gray">{selectedLead.company}</p>
+                                      <label className="text-sm font-medium text-midnight-navy">Name</label>
+                                      <p className="text-sm text-cool-gray">{selectedLead.name}</p>
                                     </div>
-                                  )}
-                                  <div>
-                                    <label className="text-sm font-medium">Source</label>
-                                    <p className="text-sm text-cool-gray">{selectedLead.source}</p>
+                                    <div>
+                                      <label className="text-sm font-medium text-midnight-navy">Email</label>
+                                      <p className="text-sm text-cool-gray">{selectedLead.email}</p>
+                                    </div>
+                                    {selectedLead.phone && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Phone</label>
+                                        <p className="text-sm text-cool-gray">{selectedLead.phone}</p>
+                                      </div>
+                                    )}
+                                    {selectedLead.company && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Company</label>
+                                        <p className="text-sm text-cool-gray">{selectedLead.company}</p>
+                                      </div>
+                                    )}
+                                    <div>
+                                      <label className="text-sm font-medium text-midnight-navy">Source</label>
+                                      <Badge variant="outline">{selectedLead.source}</Badge>
+                                    </div>
+                                    {selectedLead.type && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Lead Type</label>
+                                        <Badge variant="outline">{selectedLead.type}</Badge>
+                                      </div>
+                                    )}
+                                    {selectedLead.project && (
+                                      <div className="col-span-2">
+                                        <label className="text-sm font-medium text-midnight-navy">Project</label>
+                                        <p className="text-sm text-royal-purple font-medium">{selectedLead.project}</p>
+                                      </div>
+                                    )}
                                   </div>
-                                   {selectedLead.type && (
-                                     <div>
-                                       <label className="text-sm font-medium">Lead Type</label>
-                                       <p className="text-sm text-cool-gray">{selectedLead.type}</p>
-                                     </div>
-                                   )}
-                                   {selectedLead.project && (
-                                     <div>
-                                       <label className="text-sm font-medium">Project</label>
-                                       <p className="text-sm text-cool-gray">{selectedLead.project}</p>
-                                     </div>
-                                   )}
-                                   {selectedLead.form_data?.projectType && (
-                                     <div>
-                                       <label className="text-sm font-medium">Project Type</label>
-                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.projectType}</p>
-                                     </div>
-                                   )}
-                                   {selectedLead.form_data?.budget && (
-                                     <div>
-                                       <label className="text-sm font-medium">Budget</label>
-                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.budget}</p>
-                                     </div>
-                                   )}
-                                   {selectedLead.form_data?.investmentRange && (
-                                     <div>
-                                       <label className="text-sm font-medium">Investment Range</label>
-                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.investmentRange}</p>
-                                     </div>
-                                   )}
-                                   {selectedLead.form_data?.timeline && (
-                                     <div>
-                                       <label className="text-sm font-medium">Timeline</label>
-                                       <p className="text-sm text-cool-gray">{selectedLead.form_data.timeline}</p>
-                                     </div>
-                                   )}
                                 </div>
-                                
-                                 {selectedLead.form_data?.features && selectedLead.form_data.features.length > 0 && (
-                                   <div>
-                                     <label className="text-sm font-medium">Required Features</label>
-                                     <div className="flex flex-wrap gap-2 mt-1">
-                                       {selectedLead.form_data.features.map((feature: string, index: number) => (
-                                         <Badge key={index} variant="outline">{feature}</Badge>
-                                       ))}
-                                     </div>
-                                   </div>
-                                 )}
-                                
-                                 {(selectedLead.form_data?.message || (selectedLead as any).message) && (
-                                   <div>
-                                     <label className="text-sm font-medium">Message</label>
-                                     <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">
-                                       {selectedLead.form_data?.message || (selectedLead as any).message}
-                                     </p>
-                                   </div>
-                                 )}
-                                 
-                                 {selectedLead.form_data?.description && (
-                                   <div>
-                                     <label className="text-sm font-medium">Project Description</label>
-                                     <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">
-                                       {selectedLead.form_data.description}
-                                     </p>
-                                   </div>
-                                 )}
 
-                                 {selectedLead.form_data && Object.keys(selectedLead.form_data).length > 0 && (
-                                   <div>
-                                     <label className="text-sm font-medium">Additional Form Data</label>
-                                     <pre className="text-xs text-cool-gray bg-soft-lilac/10 p-3 rounded-md overflow-auto max-h-32">
-                                       {JSON.stringify(selectedLead.form_data, null, 2)}
-                                     </pre>
-                                   </div>
-                                 )}
+                                {/* Status & Progress */}
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-3 text-midnight-navy">Status & Progress</h3>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="text-sm font-medium text-midnight-navy">Status</label>
+                                      <Badge className={getStatusColor(selectedLead.status)}>{selectedLead.status}</Badge>
+                                    </div>
+                                    <div>
+                                      <label className="text-sm font-medium text-midnight-navy">Priority</label>
+                                      <span className={getPriorityColor(selectedLead.priority) + " font-medium"}>{selectedLead.priority}</span>
+                                    </div>
+                                    {(selectedLead as any).pipeline_stage && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Pipeline Stage</label>
+                                        <Badge variant="outline">{(selectedLead as any).pipeline_stage}</Badge>
+                                      </div>
+                                    )}
+                                    {(selectedLead as any).qualification_status && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Qualification Status</label>
+                                        <Badge variant="outline">{(selectedLead as any).qualification_status}</Badge>
+                                      </div>
+                                    )}
+                                    {(selectedLead as any).lead_score !== undefined && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Lead Score</label>
+                                        <p className="text-sm font-semibold text-electric-blue">{(selectedLead as any).lead_score}/100</p>
+                                      </div>
+                                    )}
+                                    {(selectedLead as any).assigned_to && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Assigned To</label>
+                                        <p className="text-sm text-cool-gray">{(selectedLead as any).assigned_to}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Project Details */}
+                                {((selectedLead as any).budget_range || (selectedLead as any).timeline || (selectedLead as any).project_type || (selectedLead as any).industry || (selectedLead as any).technical_requirements) && (
+                                  <div>
+                                    <h3 className="text-lg font-semibold mb-3 text-midnight-navy">Project Details</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {(selectedLead as any).budget_range && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Budget Range</label>
+                                          <Badge variant="secondary">{(selectedLead as any).budget_range}</Badge>
+                                        </div>
+                                      )}
+                                      {(selectedLead as any).timeline && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Timeline</label>
+                                          <Badge variant="secondary">{(selectedLead as any).timeline}</Badge>
+                                        </div>
+                                      )}
+                                      {(selectedLead as any).project_type && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Project Type</label>
+                                          <p className="text-sm text-cool-gray">{(selectedLead as any).project_type}</p>
+                                        </div>
+                                      )}
+                                      {(selectedLead as any).industry && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Industry</label>
+                                          <p className="text-sm text-cool-gray">{(selectedLead as any).industry}</p>
+                                        </div>
+                                      )}
+                                      {(selectedLead as any).technical_requirements && (
+                                        <div className="col-span-2">
+                                          <label className="text-sm font-medium text-midnight-navy">Technical Requirements</label>
+                                          <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md">{(selectedLead as any).technical_requirements}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Important Dates */}
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-3 text-midnight-navy">Important Dates</h3>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="text-sm font-medium text-midnight-navy">Created At</label>
+                                      <p className="text-sm text-cool-gray">{formatDate(selectedLead.created_at)}</p>
+                                    </div>
+                                    {(selectedLead as any).updated_at && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Last Updated</label>
+                                        <p className="text-sm text-cool-gray">{formatDate((selectedLead as any).updated_at)}</p>
+                                      </div>
+                                    )}
+                                    {(selectedLead as any).last_contact_date && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Last Contact</label>
+                                        <p className="text-sm text-cool-gray">{formatDate((selectedLead as any).last_contact_date)}</p>
+                                      </div>
+                                    )}
+                                    {(selectedLead as any).next_follow_up && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Next Follow-up</label>
+                                        <p className="text-sm font-semibold text-coral-orange">{formatDate((selectedLead as any).next_follow_up)}</p>
+                                      </div>
+                                    )}
+                                    {(selectedLead as any).preferred_start_date && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Preferred Start Date</label>
+                                        <p className="text-sm text-cool-gray">{formatDate((selectedLead as any).preferred_start_date)}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Form Data */}
+                                {selectedLead.form_data && Object.keys(selectedLead.form_data).length > 0 && (
+                                  <div>
+                                    <h3 className="text-lg font-semibold mb-3 text-midnight-navy">Form Submission Data</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedLead.form_data?.projectType && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Project Type</label>
+                                          <p className="text-sm text-cool-gray">{selectedLead.form_data.projectType}</p>
+                                        </div>
+                                      )}
+                                      {selectedLead.form_data?.budget && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Budget</label>
+                                          <Badge variant="secondary">{selectedLead.form_data.budget}</Badge>
+                                        </div>
+                                      )}
+                                      {selectedLead.form_data?.investmentRange && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Investment Range</label>
+                                          <Badge variant="secondary">{selectedLead.form_data.investmentRange}</Badge>
+                                        </div>
+                                      )}
+                                      {selectedLead.form_data?.timeline && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Timeline</label>
+                                          <Badge variant="secondary">{selectedLead.form_data.timeline}</Badge>
+                                        </div>
+                                      )}
+                                      {selectedLead.form_data?.inquiryType && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Inquiry Type</label>
+                                          <Badge variant="outline">{selectedLead.form_data.inquiryType}</Badge>
+                                        </div>
+                                      )}
+                                    </div>
+                                    
+                                    {selectedLead.form_data?.features && selectedLead.form_data.features.length > 0 && (
+                                      <div>
+                                        <label className="text-sm font-medium text-midnight-navy">Required Features</label>
+                                        <div className="flex flex-wrap gap-2 mt-1">
+                                          {selectedLead.form_data.features.map((feature: string, index: number) => (
+                                            <Badge key={index} variant="outline">{feature}</Badge>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                                 
+                                {/* Messages & Descriptions */}
+                                {((selectedLead.form_data?.message || (selectedLead as any).message) || selectedLead.form_data?.description) && (
+                                  <div>
+                                    <h3 className="text-lg font-semibold mb-3 text-midnight-navy">Messages & Notes</h3>
+                                    <div className="space-y-3">
+                                      {(selectedLead.form_data?.message || (selectedLead as any).message) && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Message</label>
+                                          <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md mt-1">
+                                            {selectedLead.form_data?.message || (selectedLead as any).message}
+                                          </p>
+                                        </div>
+                                      )}
+                                      
+                                      {selectedLead.form_data?.description && (
+                                        <div>
+                                          <label className="text-sm font-medium text-midnight-navy">Project Description</label>
+                                          <p className="text-sm text-cool-gray bg-soft-lilac/10 p-3 rounded-md mt-1">
+                                            {selectedLead.form_data.description}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </DialogContent>
