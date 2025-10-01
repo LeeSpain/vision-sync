@@ -45,9 +45,9 @@ export default function ClearAnalyticsButton() {
         description: 'Only new real-time data will be tracked from now on.'
       });
       
-      // Refresh the page to update the dashboard
+      // Force a hard refresh to reload analytics data
       setTimeout(() => {
-        window.location.reload();
+        window.location.href = window.location.href;
       }, 1500);
       
     } catch (error) {

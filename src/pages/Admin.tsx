@@ -122,13 +122,27 @@ const Admin = () => {
     setRefreshKey(prev => prev + 1);
   };
 
-  // Show loading state while checking authentication
+  // Show loading state while checking authentication (with timeout)
   if (authLoading || adminStatus === 'unknown') {
+    // Add timeout to prevent infinite loading
+    setTimeout(() => {
+      if (adminStatus === 'unknown' && !authLoading) {
+        console.error('Admin verification timeout - redirecting to auth');
+        navigate('/auth');
+      }
+    }, 5000); // 5 second timeout
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <div className="text-white text-lg">Verifying admin access...</div>
+          <button 
+            onClick={() => navigate('/auth')}
+            className="mt-4 text-white/80 hover:text-white text-sm underline"
+          >
+            Taking too long? Click here to login again
+          </button>
         </div>
       </div>
     );
