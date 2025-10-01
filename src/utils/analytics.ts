@@ -86,8 +86,47 @@ class AnalyticsTracker {
     
     localStorage.setItem('page_views', JSON.stringify(pageViews));
 
-    // You could also send to a real analytics service here
+    // Store in database for real-time analytics
+    try {
+      await supabase.from('page_analytics').insert({
+        session_id: this.sessionId,
+        page_path: page,
+        page_title: document.title,
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+        device_type: this.getDeviceType(),
+        browser: this.getBrowserName(),
+      });
+    } catch (error) {
+      console.error('Error storing page view:', error);
+    }
+
     console.log('Page view tracked:', event);
+  }
+
+  // Helper to detect device type
+  private getDeviceType(): string {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+      return 'tablet';
+    }
+    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+      return 'mobile';
+    }
+    return 'desktop';
+  }
+
+  // Helper to detect browser
+  private getBrowserName(): string {
+    const ua = navigator.userAgent;
+    if (ua.indexOf('Firefox') > -1) return 'Firefox';
+    if (ua.indexOf('SamsungBrowser') > -1) return 'Samsung';
+    if (ua.indexOf('Opera') > -1 || ua.indexOf('OPR') > -1) return 'Opera';
+    if (ua.indexOf('Trident') > -1) return 'IE';
+    if (ua.indexOf('Edge') > -1) return 'Edge';
+    if (ua.indexOf('Chrome') > -1) return 'Chrome';
+    if (ua.indexOf('Safari') > -1) return 'Safari';
+    return 'Unknown';
   }
 
   async trackInteraction(type: InteractionEvent['type'], element: string, projectId?: string) {
@@ -110,7 +149,34 @@ class AnalyticsTracker {
     
     localStorage.setItem('interactions', JSON.stringify(interactions));
 
+    // Store in database
+    try {
+      await supabase.from('conversion_tracking').insert({
+        session_id: this.sessionId,
+        event_type: 'interaction',
+        event_name: type,
+        funnel_stage: this.getFunnelStageFromInteraction(type),
+        page_path: window.location.pathname,
+        project_id: projectId || null,
+        metadata: { element },
+      });
+    } catch (error) {
+      console.error('Error storing interaction:', error);
+    }
+
     console.log('Interaction tracked:', event);
+  }
+
+  // Map interaction type to funnel stage
+  private getFunnelStageFromInteraction(type: string): string {
+    const stageMap: Record<string, string> = {
+      'button_click': 'interest',
+      'project_view': 'interest',
+      'form_submit': 'consideration',
+      'download': 'consideration',
+      'contact': 'purchase_intent',
+    };
+    return stageMap[type] || 'awareness';
   }
 
   async trackConversion(stage: ConversionEvent['funnel_stage'], projectId?: string, leadId?: string) {
@@ -129,6 +195,21 @@ class AnalyticsTracker {
     localStorage.setItem('conversions', JSON.stringify(conversions));
 
     console.log('Conversion tracked:', event);
+
+    // Store in database
+    try {
+      await supabase.from('conversion_tracking').insert({
+        session_id: this.sessionId,
+        event_type: 'conversion',
+        event_name: stage,
+        funnel_stage: stage,
+        page_path: window.location.pathname,
+        project_id: projectId || null,
+        lead_id: leadId || null,
+      });
+    } catch (error) {
+      console.error('Error storing conversion:', error);
+    }
 
     // If this is a lead conversion, also track in the database
     if (stage === 'intent' && leadId) {

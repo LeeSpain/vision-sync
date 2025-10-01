@@ -257,6 +257,54 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_tracking: {
+        Row: {
+          conversion_value: number | null
+          created_at: string
+          event_name: string
+          event_type: string
+          funnel_stage: string
+          id: string
+          lead_id: string | null
+          metadata: Json | null
+          page_path: string | null
+          project_id: string | null
+          quote_id: string | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          conversion_value?: number | null
+          created_at?: string
+          event_name: string
+          event_type: string
+          funnel_stage: string
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          page_path?: string | null
+          project_id?: string | null
+          quote_id?: string | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          conversion_value?: number | null
+          created_at?: string
+          event_name?: string
+          event_type?: string
+          funnel_stage?: string
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          page_path?: string | null
+          project_id?: string | null
+          quote_id?: string | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       customer_interactions: {
         Row: {
           content: string | null
@@ -376,6 +424,96 @@ export type Database = {
           technical_requirements?: string | null
           timeline?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      page_analytics: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          duration_seconds: number | null
+          exited_at: string | null
+          id: string
+          interactions_count: number | null
+          page_path: string
+          page_title: string | null
+          referrer: string | null
+          scroll_depth: number | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          exited_at?: string | null
+          id?: string
+          interactions_count?: number | null
+          page_path: string
+          page_title?: string | null
+          referrer?: string | null
+          scroll_depth?: number | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          exited_at?: string | null
+          id?: string
+          interactions_count?: number | null
+          page_path?: string
+          page_title?: string | null
+          referrer?: string | null
+          scroll_depth?: number | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      performance_metrics: {
+        Row: {
+          aggregation_period: string | null
+          dimensions: Json | null
+          id: string
+          metric_name: string
+          metric_type: string
+          metric_unit: string | null
+          metric_value: number
+          timestamp: string
+        }
+        Insert: {
+          aggregation_period?: string | null
+          dimensions?: Json | null
+          id?: string
+          metric_name: string
+          metric_type: string
+          metric_unit?: string | null
+          metric_value: number
+          timestamp?: string
+        }
+        Update: {
+          aggregation_period?: string | null
+          dimensions?: Json | null
+          id?: string
+          metric_name?: string
+          metric_type?: string
+          metric_unit?: string | null
+          metric_value?: number
+          timestamp?: string
         }
         Relationships: []
       }
