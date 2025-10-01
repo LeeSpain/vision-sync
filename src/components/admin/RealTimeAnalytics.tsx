@@ -6,6 +6,7 @@ import { useRealTimeAnalytics } from '@/hooks/useRealTimeAnalytics';
 import { Activity, TrendingUp, Users, DollarSign, MousePointer, Clock, Target, Zap } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import AnalyticsSeedButton from './AnalyticsSeedButton';
+import ClearAnalyticsButton from './ClearAnalyticsButton';
 
 export function RealTimeAnalytics() {
   const {
@@ -39,7 +40,7 @@ export function RealTimeAnalytics() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Live Status */}
+      {/* Header with Live Status and Actions */}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -60,7 +61,10 @@ export function RealTimeAnalytics() {
             )}
           </p>
         </div>
-        <AnalyticsSeedButton />
+        <div className="flex gap-2">
+          <ClearAnalyticsButton />
+          <AnalyticsSeedButton />
+        </div>
       </div>
 
       {/* Live Metrics Overview with Real-time Indicators */}
