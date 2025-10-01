@@ -44,6 +44,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const recognition = useRef<any>(null);
 
   useEffect(() => {
@@ -67,7 +68,11 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   }, [welcomeSettings, messages.length]);
 
   useEffect(() => {
-    scrollToBottom();
+    // Only scroll after a short delay to prevent interference with page scroll
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+    return () => clearTimeout(timer);
   }, [messages]);
 
   const loadAgentData = async () => {
@@ -193,14 +198,17 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll within the chat container only, prevent page scrolling
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
   };
 
   const sendMessage = async (content: string = inputMessage) => {
     if (!content.trim()) return;
-
-    // Emit event to prevent page scrolling during chat
-    window.dispatchEvent(new CustomEvent('ai-chat-message-sent'));
 
     const userMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
@@ -342,7 +350,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           </CardHeader>
           
           <CardContent className="flex-1 p-0 flex flex-col min-h-0">
-            <ScrollArea className="flex-1 px-4 pb-4">
+            <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 pb-4">
               <div className="space-y-4 pt-8">
                 {messages.map((message, index) => (
                   <div
@@ -554,7 +562,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         
         {/* Messages Area - Properly constrained for scrolling */}
         <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full">
+          <ScrollArea ref={scrollAreaRef} className="h-full">
             <div className="px-4 py-3 space-y-4">
               {messages.map((message, index) => (
                 <div

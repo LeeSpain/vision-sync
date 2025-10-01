@@ -13,11 +13,6 @@ import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 
 const Contact = () => {
-  // Force scroll to top on mount
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const contactFAQs = [
     {
       question: "How quickly can you start my project?",
