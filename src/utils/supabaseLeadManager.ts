@@ -9,7 +9,7 @@ export interface Lead {
   email: string;
   company?: string | null;
   phone?: string | null;
-  source: 'contact' | 'custom-build' | 'investor' | 'ai-agent';
+  source: 'contact' | 'custom-build' | 'investor' | 'ai-agent' | 'website' | 'referral' | 'social' | 'advertising' | 'direct';
   status?: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed' | 'archived';
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   form_data?: any;
@@ -17,6 +17,18 @@ export interface Lead {
   last_contact?: string | null;
   next_follow_up?: string | null;
   archived_at?: string | null;
+  message?: string | null;
+  budget_range?: string | null;
+  timeline?: string | null;
+  technical_requirements?: string | null;
+  lead_score?: number;
+  pipeline_stage?: string | null;
+  qualification_status?: string | null;
+  assigned_to?: string | null;
+  last_contact_date?: string | null;
+  project_type?: string | null;
+  industry?: string | null;
+  preferred_start_date?: string | null;
 }
 
 export interface ProjectLead {
