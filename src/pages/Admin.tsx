@@ -7,6 +7,8 @@ import { ContentManager } from '@/components/admin/ContentManager';
 import { MessagesManager } from '@/components/admin/MessagesManager';
 import { ConversationsManager } from '@/components/admin/ConversationsManager';
 import { LeadsManager } from '@/components/admin/LeadsManager';
+import { EnhancedLeadsManager } from '@/components/admin/EnhancedLeadsManager';
+import { ProductCatalogManager } from '@/components/admin/ProductCatalogManager';
 import { CurrencyAwareTemplateManager } from '@/components/admin/CurrencyAwareTemplateManager';
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { RecentActivity } from '@/components/admin/RecentActivity';
@@ -428,6 +430,12 @@ const Admin = () => {
 
       case 'leads':
         return <LeadsManager />;
+
+      case 'sales-pipeline':
+        return <EnhancedLeadsManager />;
+
+      case 'catalog':
+        return <ProductCatalogManager />;
 
       case 'content':
         return <ContentManager />;

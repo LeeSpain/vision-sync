@@ -14,7 +14,8 @@ import {
   TrendingUp,
   DollarSign,
   Brain,
-  MessageCircle
+  MessageCircle,
+  Package
 } from "lucide-react"
 
 import {
@@ -42,6 +43,8 @@ const mainItems = [
   { title: "Projects", url: "#projects", icon: FolderOpen },
   { title: "Templates", url: "#templates", icon: FileText },
   { title: "Leads", url: "#leads", icon: Users },
+  { title: "Sales Pipeline", url: "#sales-pipeline", icon: TrendingUp },
+  { title: "Product Catalog", url: "#catalog", icon: Package },
   { title: "AI Agent", url: "#ai-agent", icon: Brain },
   { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
