@@ -26,7 +26,7 @@ const TemplateInquiryForm = ({ template, isOpen, onClose }: TemplateInquiryFormP
     email: '',
     company: '',
     phone: '',
-    inquiryType: 'purchase' as 'purchase' | 'demo' | 'partnership',
+    inquiryType: 'purchase' as 'investment' | 'purchase' | 'demo' | 'partnership',
     paymentMethod: 'one-time' as PaymentMethod,
     ownershipPreference: 'full-ownership' as 'full-ownership' | 'managed-service' | 'hybrid',
     serviceLevel: 'standard' as 'basic' | 'standard' | 'premium',
@@ -197,7 +197,7 @@ Payment Method Details:
                 <Label htmlFor="inquiryType">Inquiry Type *</Label>
                 <Select 
                   value={formData.inquiryType} 
-                  onValueChange={(value: 'purchase' | 'demo' | 'partnership') => 
+                  onValueChange={(value: 'investment' | 'purchase' | 'demo' | 'partnership') => 
                     setFormData(prev => ({ ...prev, inquiryType: value }))
                   }
                 >
@@ -205,7 +205,8 @@ Payment Method Details:
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="purchase">Purchase Template</SelectItem>
+                    <SelectItem value="purchase">Purchase Enquiry</SelectItem>
+                    <SelectItem value="investment">Interested in Investment</SelectItem>
                     <SelectItem value="demo">Request Demo</SelectItem>
                     <SelectItem value="partnership">Partnership Inquiry</SelectItem>
                   </SelectContent>

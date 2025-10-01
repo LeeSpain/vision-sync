@@ -13,6 +13,7 @@ import Footer from "@/components/Layout/Footer";
 import { appTemplates, type AppTemplate } from "@/utils/appTemplates";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { supabase } from "@/integrations/supabase/client";
+import TemplateInquiryForm from "@/components/TemplateInquiryForm";
 
 const TemplatePreview = () => {
   const { id } = useParams();
@@ -21,6 +22,7 @@ const TemplatePreview = () => {
   const [template, setTemplate] = useState<AppTemplate | null>(null);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  const [showInquiryForm, setShowInquiryForm] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -56,10 +58,7 @@ const TemplatePreview = () => {
   };
 
   const handleRequestQuote = () => {
-    if (template) {
-      sessionStorage.setItem('selectedTemplate', JSON.stringify(template));
-      navigate('/contact');
-    }
+    setShowInquiryForm(true);
   };
 
   const handleTryDemo = () => {
@@ -146,7 +145,7 @@ const TemplatePreview = () => {
                   Try Live Demo
                 </Button>
                 <Button variant="outline" onClick={handleRequestQuote}>
-                  Request Quote
+                  Contact Us About This Template
                 </Button>
               </div>
             </div>
@@ -433,6 +432,12 @@ const TemplatePreview = () => {
           </Card>
         </div>
       </main>
+
+      <TemplateInquiryForm 
+        template={template}
+        isOpen={showInquiryForm}
+        onClose={() => setShowInquiryForm(false)}
+      />
 
       <Footer />
     </div>

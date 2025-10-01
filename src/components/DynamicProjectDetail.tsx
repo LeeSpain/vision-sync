@@ -9,6 +9,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import WebsitePreview from '@/components/WebsitePreview';
+import ProjectInquiryForm from '@/components/ProjectInquiryForm';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
@@ -16,6 +17,7 @@ export default function DynamicProjectDetail() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showInquiryForm, setShowInquiryForm] = useState(false);
 
   useEffect(() => {
     loadProject();
@@ -140,12 +142,43 @@ export default function DynamicProjectDetail() {
               <p className="text-cool-gray mb-6 text-lg">
                 Ready to explore? Visit the live site and see it in action.
               </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => window.open(project.demo_url, '_blank')}
+                  className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-3 text-lg font-semibold"
+                >
+                  <ExternalLink className="h-5 w-5 mr-2" />
+                  Visit Live Site
+                </Button>
+                <Button 
+                  onClick={() => setShowInquiryForm(true)}
+                  variant="outline"
+                  className="px-8 py-3 text-lg font-semibold"
+                >
+                  Contact Us About This Project
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CTA Section for projects without demo */}
+      {!project.demo_url && (
+        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-gradient-to-r from-royal-purple/10 to-electric-blue/10 rounded-xl p-8 border border-royal-purple/20">
+              <h3 className="text-2xl font-bold text-midnight-navy mb-4 font-heading">
+                Interested in This Project?
+              </h3>
+              <p className="text-cool-gray mb-6 text-lg">
+                Get in touch to learn more about investment opportunities or purchase options.
+              </p>
               <Button 
-                onClick={() => window.open(project.demo_url, '_blank')}
-                className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-3 text-lg font-semibold"
+                onClick={() => setShowInquiryForm(true)}
+                className="bg-royal-purple hover:bg-royal-purple/90 text-white px-8 py-3 text-lg font-semibold"
               >
-                <ExternalLink className="h-5 w-5 mr-2" />
-                Visit Live Site
+                Contact Us
               </Button>
             </div>
           </div>
@@ -234,6 +267,13 @@ export default function DynamicProjectDetail() {
           </div>
         </div>
       </section>
+
+      <ProjectInquiryForm
+        projectName={project.title}
+        projectDescription={getIntroText(project.description || '')}
+        isOpen={showInquiryForm}
+        onClose={() => setShowInquiryForm(false)}
+      />
     </ProjectPageTemplate>
   );
 }
