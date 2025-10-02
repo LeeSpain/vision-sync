@@ -26,7 +26,6 @@ interface AppTemplate {
   title: string;
   category: string;
   description: string;
-  detailed_description: string;
   key_features: any;
   industry: string;
   pricing: any;
@@ -49,7 +48,6 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
     title: '',
     category: '',
     description: '',
-    detailed_description: '',
     industry: '',
     image_url: '',
     is_popular: false,
@@ -94,7 +92,6 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
         title: template.title || '',
         category: template.category || '',
         description: template.description || '',
-        detailed_description: template.detailed_description || '',
         industry: template.industry || '',
         image_url: template.image_url || '',
         is_popular: template.is_popular || false,
@@ -164,11 +161,9 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
           title: formData.title,
           category: formData.category,
           description: formData.description,
-          detailed_description: formData.detailed_description,
           industry: formData.industry,
           image_url: formData.image_url,
-          key_features: keyFeatures,
-          gallery_images: galleryImages,
+          features: keyFeatures,
           is_popular: formData.is_popular,
           is_active: formData.is_active,
           pricing: {
@@ -272,8 +267,7 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
       if (data.description) {
         setFormData(prev => ({
           ...prev,
-          description: data.description,
-          detailed_description: data.detailed_description || data.description
+          description: data.description
         }));
       }
 
@@ -372,19 +366,8 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Brief description of the template"
-              rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="detailed_description">Detailed Description</Label>
-            <Textarea
-              id="detailed_description"
-              value={formData.detailed_description}
-              onChange={(e) => setFormData(prev => ({ ...prev, detailed_description: e.target.value }))}
-              placeholder="Detailed description with benefits and features"
-              rows={4}
+              placeholder="Description of the template with benefits and features"
+              rows={5}
             />
           </div>
 
