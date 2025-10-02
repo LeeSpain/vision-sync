@@ -151,8 +151,41 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
         submittedAt: new Date().toISOString()
       };
 
-      // Send to edge function for processing and email
-      const { error } = await supabase.functions.invoke('send-customization-email', {
+      // Save to database (leads table)
+      const { data: leadData, error: leadError } = await supabase
+        .from('leads')
+        .insert({
+          name: questionnaireData.contactInfo.name,
+          email: questionnaireData.contactInfo.email,
+          phone: questionnaireData.contactInfo.phone,
+          source: 'template_customization',
+          industry: questionnaireData.industry,
+          budget_range: questionnaireData.budgetRange,
+          timeline: questionnaireData.timeline,
+          project_type: template.title,
+          message: `Template customization request for ${template.title}`,
+          form_data: {
+            templateId: template.id,
+            templateTitle: template.title,
+            businessType: questionnaireData.businessType,
+            requirements: questionnaireData.requirements,
+            businessSize: questionnaireData.businessSize,
+            techComfort: questionnaireData.techComfort,
+            submittedAt: customizationRequest.submittedAt
+          }
+        })
+        .select()
+        .single();
+
+      if (leadError) {
+        console.error('Error saving lead:', leadError);
+        throw leadError;
+      }
+
+      console.log('Lead saved successfully:', leadData);
+
+      // Send to edge function for email notification
+      const { error: emailError } = await supabase.functions.invoke('send-customization-email', {
         body: {
           clientInfo: questionnaireData.contactInfo,
           templateTitle: template.title,
@@ -160,9 +193,9 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
         }
       });
 
-      if (error) {
-        console.error('Error sending customization email:', error);
-        // Still show success message even if email fails
+      if (emailError) {
+        console.error('Error sending customization email:', emailError);
+        // Continue anyway - lead is saved in database
       }
 
       // Show success step
@@ -175,7 +208,7 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
       }, 5000);
       
     } catch (error) {
-      console.error('Error generating customization:', error);
+      console.error('Error submitting customization:', error);
       toast.error('Something went wrong. Please try again or contact us directly.');
     } finally {
       setIsSubmitting(false);
