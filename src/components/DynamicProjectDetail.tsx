@@ -13,16 +13,25 @@ import WebsitePreview from '@/components/WebsitePreview';
 import ProjectInquiryForm from '@/components/ProjectInquiryForm';
 import { analytics } from '@/utils/analytics';
 import { PricingDisplay } from '@/components/ui/pricing-display';
+import { InvestmentPricingDisplay } from '@/components/ui/investment-pricing-display';
+import { PricingToggle } from '@/components/ui/pricing-toggle';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
+import InvestmentSection from '@/components/project-template/InvestmentSection';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
   const location = useLocation();
+  const { formatPrice } = useCurrency();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showInquiryForm, setShowInquiryForm] = useState(false);
   const [showLiveSiteModal, setShowLiveSiteModal] = useState(false);
+  const [isSubscription, setIsSubscription] = useState(true);
+  
+  const isInvestmentProject = project?.content_section?.includes('investment');
+  const isForSaleProject = project?.content_section?.includes('for_sale');
 
   useEffect(() => {
     loadProject();
@@ -216,6 +225,89 @@ export default function DynamicProjectDetail() {
                 Contact Us
               </Button>
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Investment Section for Investment Projects */}
+      {isInvestmentProject && (
+        <InvestmentSection
+          title="Investment Opportunity"
+          description="Join us in revolutionizing the industry with strategic investment."
+          metrics={{
+            seeking: formatPrice(project.investment_amount || 0),
+            valuation: project.pricing?.valuation,
+            stage: project.status || 'Seed',
+            timeline: project.investment_deadline 
+              ? new Date(project.investment_deadline).toLocaleDateString() 
+              : undefined,
+            roi: project.expected_roi?.toString(),
+            market: project.pricing?.market_size,
+            investmentReceived: project.funding_progress || 0,
+            investmentAmount: project.investment_amount || 0,
+          }}
+          onRequestDetails={() => setShowInquiryForm(true)}
+        />
+      )}
+
+      {/* Investment Pricing Section for Investment Projects */}
+      {isInvestmentProject && (
+        <section className="py-16 lg:py-24 bg-gradient-to-br from-soft-lilac/20 to-slate-white">
+          <div className="container max-w-5xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-midnight-navy mb-4 font-heading">
+                Investment Details
+              </h2>
+              <p className="text-cool-gray text-lg">
+                Review investment tiers and funding progress
+              </p>
+            </div>
+
+            <InvestmentPricingDisplay
+              investmentAmount={project.investment_amount}
+              fundingProgress={project.funding_progress}
+              investmentReceived={project.funding_progress || 0}
+              expectedRoi={project.expected_roi}
+              investmentDeadline={project.investment_deadline}
+              investorCount={project.investor_count}
+              onInvestClick={() => setShowInquiryForm(true)}
+              showInvestmentTiers={true}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Pricing Section for For Sale / Purchase Projects */}
+      {!isInvestmentProject && !isPlatformForSale && (project.price || project.subscription_price) && (
+        <section className="py-16 lg:py-24 bg-gradient-to-br from-soft-lilac/20 to-slate-white">
+          <div className="container max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-midnight-navy mb-4 font-heading">
+                {isForSaleProject ? 'Purchase Options' : 'Pricing & Investment'}
+              </h2>
+              <p className="text-cool-gray text-lg">
+                Choose the option that works best for you
+              </p>
+            </div>
+
+            {(project.billing_type === 'deposit-subscription' || 
+              project.subscription_price) && (
+              <div className="mb-8 flex justify-center">
+                <PricingToggle
+                  isSubscription={isSubscription}
+                  onToggle={setIsSubscription}
+                />
+              </div>
+            )}
+
+            <PricingDisplay
+              salePrice={project.deposit_amount || project.price || 0}
+              customizationPrice={project.price}
+              maintenanceFee={project.maintenance_fee}
+              isSubscription={isSubscription}
+              onToggle={setIsSubscription}
+              showToggle={false}
+            />
           </div>
         </section>
       )}

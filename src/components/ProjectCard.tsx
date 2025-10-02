@@ -12,6 +12,9 @@ interface ProjectCardProps {
   route?: string;
   image?: string;
   billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription';
+  investmentAmount?: number;
+  fundingProgress?: number;
+  investorCount?: number;
   actions: {
     view?: boolean;
     invest?: boolean;
@@ -21,7 +24,19 @@ interface ProjectCardProps {
   };
 }
 
-const ProjectCard = ({ title, description, status, category, route, image, billing_type, actions }: ProjectCardProps) => {
+const ProjectCard = ({ 
+  title, 
+  description, 
+  status, 
+  category, 
+  route, 
+  image, 
+  billing_type, 
+  investmentAmount,
+  fundingProgress,
+  investorCount,
+  actions 
+}: ProjectCardProps) => {
   const navigate = useNavigate();
 
   const handleViewClick = () => {
@@ -130,17 +145,74 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
       {/* Enhanced Footer with Investment-style CTA */}
       <CardFooter className="relative z-10 pt-0 pb-6">
         <div className="w-full space-y-3">
-          {/* Investment Amount Display for Featured */}
-          {category === 'Featured' && (
+          {/* Investment Details Display */}
+          {billing_type === 'investment' && investmentAmount && (
+            <div className="space-y-2">
+              <div className="bg-gradient-to-r from-emerald-green/10 to-electric-blue/10 rounded-lg p-4 border border-emerald-green/20">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-cool-gray uppercase tracking-wide">Target Investment</span>
+                    <span className="text-lg font-bold text-royal-purple">
+                      ${investmentAmount.toLocaleString()}
+                    </span>
+                  </div>
+                  {fundingProgress !== undefined && fundingProgress > 0 && (
+                    <>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-cool-gray">Funding Progress</span>
+                        <span className="font-bold text-emerald-green">{fundingProgress}%</span>
+                      </div>
+                      <div className="h-2 bg-soft-lilac/30 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-emerald-green to-electric-blue"
+                          style={{ width: `${Math.min(fundingProgress, 100)}%` }}
+                        />
+                      </div>
+                    </>
+                  )}
+                  {investorCount !== undefined && investorCount > 0 && (
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-cool-gray">Active Investors</span>
+                      <span className="font-semibold text-electric-blue">{investorCount}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Investment Tier Badges */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="bg-emerald-green/10 text-emerald-green border-emerald-green/20 text-xs">
+                  Multiple Tiers Available
+                </Badge>
+              </div>
+            </div>
+          )}
+
+          {/* Standard Featured Display */}
+          {category === 'Featured' && billing_type !== 'investment' && (
             <div className="bg-gradient-to-r from-soft-lilac/20 to-soft-lilac/10 rounded-lg p-3 border border-soft-lilac/30">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-cool-gray uppercase tracking-wide">Starting Investment</span>
-                <span className="text-lg font-bold text-royal-purple">From $25K</span>
+                <span className="text-xs font-medium text-cool-gray uppercase tracking-wide">Starting From</span>
+                <span className="text-lg font-bold text-royal-purple">$25K+</span>
               </div>
             </div>
           )}
           
-          {actions.subscribe && (
+          {/* Investment CTA */}
+          {billing_type === 'investment' && (
+            <Button 
+              variant="hero" 
+              size="lg" 
+              onClick={handleViewClick}
+              className="w-full bg-gradient-to-r from-emerald-green to-electric-blue hover:from-emerald-green/90 hover:to-electric-blue/90 group-hover:shadow-glow transition-all duration-300 font-semibold"
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              View Investment Details
+              <ExternalLink className="h-4 w-4 ml-2" />
+            </Button>
+          )}
+
+          {actions.subscribe && billing_type !== 'investment' && (
             <Button 
               variant="premium" 
               size="lg" 
@@ -153,7 +225,7 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
             </Button>
           )}
           
-          {actions.view && !actions.subscribe && (
+          {actions.view && !actions.subscribe && billing_type !== 'investment' && (
             <Button 
               variant="hero" 
               size="lg" 
@@ -164,20 +236,6 @@ const ProjectCard = ({ title, description, status, category, route, image, billi
               View Details
               <ExternalLink className="h-4 w-4 ml-2" />
             </Button>
-          )}
-          
-          {/* Investment Actions for Featured */}
-          {category === 'Featured' && (
-            <div className="flex gap-2 mt-2">
-              <Button variant="outline" size="sm" className="flex-1 text-xs font-medium">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Invest
-              </Button>
-              <Button variant="outline" size="sm" className="flex-1 text-xs font-medium">
-                <Eye className="h-3 w-3 mr-1" />
-                Details
-              </Button>
-            </div>
           )}
         </div>
       </CardFooter>
