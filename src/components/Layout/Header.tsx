@@ -12,6 +12,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   const navigation = [
+    { name: 'Templates', href: '/templates' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Meet Your AI Agent', href: '/ai-agents' },
   ];
