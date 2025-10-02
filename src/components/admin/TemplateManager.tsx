@@ -11,6 +11,7 @@ import { TemplateEditModal } from './TemplateEditModal';
 import { TemplateAnalytics } from './TemplateAnalytics';
 import { TemplatePreviewModal } from './TemplatePreviewModal';
 import { TemplateSeeder } from './TemplateSeeder';
+import { BulkImageGenerator } from './BulkImageGenerator';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { CurrencySelector } from '@/components/ui/currency-selector';
 
@@ -323,6 +324,9 @@ export function TemplateManager() {
           </Button>
         </div>
       </div>
+
+      {/* Bulk Image Generator */}
+      <BulkImageGenerator onComplete={handleCreateSuccess} />
 
       {/* Template Seeder */}
       <TemplateSeeder onSuccess={handleCreateSuccess} />

@@ -1,1 +1,19 @@
 project_id = "pcjyzarltghxxgbmpxlx"
+
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.ai-template-assistant]
+verify_jwt = false
+
+[functions.generate-project-images]
+verify_jwt = false
+
+[functions.generate-template-image]
+verify_jwt = false
+
+[functions.send-customization-email]
+verify_jwt = false
+
+[functions.send-lead-notification]
+verify_jwt = false
