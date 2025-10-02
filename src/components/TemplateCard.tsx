@@ -14,11 +14,10 @@ interface TemplateCardProps {
   onLearnMore: (template: AppTemplate) => void;
 }
 
-const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCardProps) => {
+  const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCardProps) => {
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
   const [isSubscription, setIsSubscription] = useState(false);
-  const IconComponent = template.icon;
 
   return (
     <Card className="group hover:shadow-hover transition-all duration-300 hover:scale-[1.02] bg-white/80 backdrop-blur-sm border border-slate-200/60 relative overflow-hidden shadow-lg">
@@ -31,13 +30,21 @@ const TemplateCard = ({ template, onRequestTemplate, onLearnMore }: TemplateCard
         </div>
       )}
       
-      <div className="aspect-[4/3] bg-gradient-to-br from-midnight-navy via-royal-purple/80 to-electric-blue rounded-t-xl flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/30 to-transparent" />
-        <div className="text-5xl text-white/90 relative z-10 group-hover:scale-110 transition-transform duration-300">
-          <IconComponent />
-        </div>
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12" />
+      <div className="aspect-[4/3] bg-gradient-to-br from-slate-100 via-slate-50 to-white rounded-t-xl relative overflow-hidden">
+        {template.image_url ? (
+          <img 
+            src={template.image_url} 
+            alt={template.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-midnight-navy via-royal-purple/80 to-electric-blue">
+            <div className="text-5xl text-white/90 relative z-10">
+              <Sparkles className="h-16 w-16" />
+            </div>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
       
       <CardHeader className="pb-6 pt-6">

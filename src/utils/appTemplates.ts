@@ -20,6 +20,7 @@ export interface AppTemplate {
   icon: LucideIcon;
   keyFeatures: string[];
   personalizationOptions: string[];
+  image_url?: string;
   // New pricing structure
   sale_price?: number;
   customization_price?: number;

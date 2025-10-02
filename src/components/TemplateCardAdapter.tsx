@@ -38,6 +38,7 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
     title: template.title,
     overview: template.description,
     category: template.category as any,
+    image_url: template.image_url,
     pricing: {
       base: template.pricing.base_price,
       customization: 999,
