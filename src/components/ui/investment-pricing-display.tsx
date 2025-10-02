@@ -14,6 +14,7 @@ interface InvestmentPricingDisplayProps {
   investorCount?: number;
   onInvestClick: () => void;
   showInvestmentTiers?: boolean;
+  investmentPercentage?: number;
 }
 
 export const InvestmentPricingDisplay = ({
@@ -25,6 +26,7 @@ export const InvestmentPricingDisplay = ({
   investorCount = 0,
   onInvestClick,
   showInvestmentTiers = true,
+  investmentPercentage,
 }: InvestmentPricingDisplayProps) => {
   const { formatPrice } = useCurrency();
   const { investment: investmentTiers } = useBudgetOptions();
@@ -43,7 +45,14 @@ export const InvestmentPricingDisplay = ({
             <TrendingUp className="h-6 w-6 text-emerald-green" />
             Investment Opportunity
           </CardTitle>
-          <CardDescription>Join us in revolutionizing the industry</CardDescription>
+          <CardDescription className="space-y-2">
+            <span className="block">Join us in revolutionizing the industry</span>
+            {investmentPercentage && (
+              <span className="inline-flex items-center gap-2 bg-electric-blue/10 px-4 py-2 rounded-full border border-electric-blue/30 text-sm font-semibold text-electric-blue">
+                {investmentPercentage}% of the project available for investment
+              </span>
+            )}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Key Metrics Grid */}
