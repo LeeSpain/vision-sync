@@ -57,8 +57,39 @@ export function EnhancedTemplateCreationModal({ isOpen, onClose, onSuccess }: En
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Enhanced validation
     if (!formData.title.trim() || !formData.category || !formData.industry) {
-      toast.error('Please fill in all required fields');
+      toast.error('Please fill in all required fields (Title, Category, Industry)');
+      return;
+    }
+
+    // Check for duplicate title
+    const { data: existingTemplates } = await supabase
+      .from('app_templates')
+      .select('id, title')
+      .eq('title', formData.title.trim());
+    
+    if (existingTemplates && existingTemplates.length > 0) {
+      toast.error('A template with this title already exists. Please choose a different title.');
+      return;
+    }
+
+    // Validate features
+    if (foundationFeatures.length < 3 && coreIndustryFeatures.length < 3) {
+      toast.error('Please add at least 3 features (foundation or core industry features)');
+      return;
+    }
+
+    // Validate pricing
+    if (!formData.sale_price || parseFloat(formData.sale_price) <= 0) {
+      toast.error('Please enter a valid sale price');
+      return;
+    }
+
+    // Validate image
+    if (!formData.image_url || formData.image_url.includes('placeholder')) {
+      toast.error('Please upload or generate a template image');
       return;
     }
 

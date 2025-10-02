@@ -119,8 +119,40 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Enhanced validation
     if (!formData.title.trim() || !formData.category) {
-      toast.error('Please fill in all required fields');
+      toast.error('Please fill in all required fields (Title, Category)');
+      return;
+    }
+
+    // Check for duplicate title (excluding current template)
+    const { data: existingTemplates } = await supabase
+      .from('app_templates')
+      .select('id, title')
+      .eq('title', formData.title.trim())
+      .neq('id', template.id);
+    
+    if (existingTemplates && existingTemplates.length > 0) {
+      toast.error('Another template with this title already exists. Please choose a different title.');
+      return;
+    }
+
+    // Validate features
+    if (keyFeatures.length < 3) {
+      toast.error('Please add at least 3 key features');
+      return;
+    }
+
+    // Validate pricing
+    if (!formData.pricing.base || parseInt(formData.pricing.base) <= 0) {
+      toast.error('Please enter a valid base price');
+      return;
+    }
+
+    // Validate image
+    if (!formData.image_url || formData.image_url.includes('placeholder')) {
+      toast.error('Please upload or generate a template image');
       return;
     }
 

@@ -125,10 +125,10 @@ export function BulkImageGenerator({ onComplete }: BulkImageGeneratorProps) {
           <div>
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <ImagePlus className="h-5 w-5 text-blue-500" />
-              Bulk Image Generator
+              Template Image Regenerator
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Generate AI images for all templates at once
+              Regenerate AI images for existing templates with missing or placeholder images
             </p>
           </div>
           
@@ -140,12 +140,12 @@ export function BulkImageGenerator({ onComplete }: BulkImageGeneratorProps) {
             {generating ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Generating...
+                Regenerating...
               </>
             ) : (
               <>
                 <ImagePlus className="h-4 w-4 mr-2" />
-                Generate All Images
+                Regenerate Missing Images
               </>
             )}
           </Button>
