@@ -11,6 +11,8 @@ import { ArrowLeft, ExternalLink } from 'lucide-react';
 import WebsitePreview from '@/components/WebsitePreview';
 import ProjectInquiryForm from '@/components/ProjectInquiryForm';
 import { analytics } from '@/utils/analytics';
+import { PricingDisplay } from '@/components/ui/pricing-display';
+import { CurrencyProvider } from '@/contexts/CurrencyContext';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
@@ -116,25 +118,43 @@ export default function DynamicProjectDetail() {
   };
 
   const introText = getIntroText(project.description || '');
-
+  
+  // Check if this is a "Platforms for Sale" product
+  const isPlatformForSale = project.content_section?.includes('platforms-for-sale');
 
   return (
-    <ProjectPageTemplate>
-      {/* Clean Hero Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 tracking-tight">
-              {project.title}
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {introText}
-            </p>
+    <CurrencyProvider>
+      <ProjectPageTemplate>
+        {/* Clean Hero Section */}
+        <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="animate-fade-in">
+              <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 tracking-tight">
+                {project.title}
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+                {introText}
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Visit Live Site Section */}
+        {/* Pricing Section - Only for Platforms for Sale */}
+        {isPlatformForSale && (project.price || project.subscription_price) && (
+          <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-white">
+            <div className="max-w-4xl mx-auto">
+              <PricingDisplay
+                salePrice={project.price || 0}
+                customizationPrice={project.deposit_amount || 0}
+                isSubscription={project.billing_type === 'subscription'}
+                onToggle={() => {}}
+                showToggle={false}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* Visit Live Site Section */}
       {project.demo_url && (
         <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
           <div className="max-w-4xl mx-auto text-center">
@@ -280,13 +300,14 @@ export default function DynamicProjectDetail() {
         </div>
       </section>
 
-      <ProjectInquiryForm
-        projectId={project.id}
-        projectName={project.title}
-        projectDescription={getIntroText(project.description || '')}
-        isOpen={showInquiryForm}
-        onClose={() => setShowInquiryForm(false)}
-      />
-    </ProjectPageTemplate>
+        <ProjectInquiryForm
+          projectId={project.id}
+          projectName={project.title}
+          projectDescription={getIntroText(project.description || '')}
+          isOpen={showInquiryForm}
+          onClose={() => setShowInquiryForm(false)}
+        />
+      </ProjectPageTemplate>
+    </CurrencyProvider>
   );
 }
