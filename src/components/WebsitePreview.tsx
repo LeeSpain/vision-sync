@@ -122,12 +122,7 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({ url, title, className =
     <Card className={`${className} ${isFullscreen ? 'fixed inset-4 z-50 bg-background' : 'relative'}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle className="text-lg">Live Preview</CardTitle>
-            <Badge variant="outline" className="text-xs">
-              {cleanUrl}
-            </Badge>
-          </div>
+          <CardTitle className="text-lg">Live Preview</CardTitle>
           
           <div className="flex items-center gap-2">
             {/* Viewport Controls */}
