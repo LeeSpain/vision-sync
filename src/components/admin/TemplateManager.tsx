@@ -168,14 +168,21 @@ export function TemplateManager() {
     }
 
     try {
+      // Optimistically update UI immediately
+      setTemplates(prev => prev.filter(t => t.id !== template.id));
+      
       const { error } = await supabase
         .from('app_templates')
         .delete()
         .eq('id', template.id);
 
-      if (error) throw error;
+      if (error) {
+        // Revert on error by reloading
+        await loadTemplates();
+        throw error;
+      }
       
-      await loadTemplates();
+      // Reload stats to keep counts accurate
       await loadStats();
       toast.success('Template deleted successfully');
     } catch (error) {
