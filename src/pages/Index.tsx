@@ -208,29 +208,52 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Feature Icons */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            <div className="text-center animate-slide-up">
-              <div className="w-16 h-16 bg-emerald-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Building2 className="h-8 w-8 text-emerald-green" />
-              </div>
-              <h3 className="font-heading font-semibold text-midnight-navy mb-2">Built to Scale</h3>
-              <p className="text-cool-gray">Enterprise-ready platforms designed for growth</p>
-            </div>
-            <div className="text-center animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <div className="w-16 h-16 bg-royal-purple/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-8 w-8 text-royal-purple" />
-              </div>
-              <h3 className="font-heading font-semibold text-midnight-navy mb-2">Innovation First</h3>
-              <p className="text-cool-gray">Cutting-edge technology solutions</p>
-            </div>
-            <div className="text-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <div className="w-16 h-16 bg-coral-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="h-8 w-8 text-coral-orange" />
-              </div>
-              <h3 className="font-heading font-semibold text-midnight-navy mb-2">Market Ready</h3>
-              <p className="text-cool-gray">Validated concepts with proven potential</p>
-            </div>
+          {/* Templates Banner */}
+          <div className="mt-16">
+            <Link to="/templates" onClick={() => analytics.trackInteraction('button_click', 'hero_templates_banner')}>
+              <Card className="bg-gradient-to-br from-royal-purple/10 via-emerald-green/5 to-electric-blue/10 border-royal-purple/20 hover:border-royal-purple/40 transition-all duration-300 hover:shadow-hover group cursor-pointer overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-primary opacity-5 rounded-full blur-3xl group-hover:opacity-10 transition-opacity" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-green/10 rounded-full blur-2xl" />
+                
+                <CardContent className="p-8 md:p-12 relative z-10">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex-1 text-center md:text-left">
+                      <div className="inline-flex items-center gap-2 bg-gradient-primary px-4 py-2 rounded-full text-white font-medium mb-4 shadow-glow">
+                        <Package className="h-4 w-4" />
+                        Ready-to-Deploy Templates
+                      </div>
+                      <h2 className="text-3xl md:text-4xl font-heading font-bold text-midnight-navy mb-3 group-hover:text-royal-purple transition-colors">
+                        Start with a Professional Template
+                      </h2>
+                      <p className="text-lg text-cool-gray mb-6 max-w-2xl">
+                        Choose from our collection of industry-specific templates. Fully customizable, professionally designed, and ready to deploy in 72 hours.
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                        <div className="flex items-center gap-2 text-midnight-navy">
+                          <CheckCircle className="h-5 w-5 text-emerald-green" />
+                          <span className="font-medium">Multiple Industries</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-midnight-navy">
+                          <Star className="h-5 w-5 text-coral-orange" />
+                          <span className="font-medium">Premium Quality</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-midnight-navy">
+                          <Rocket className="h-5 w-5 text-electric-blue" />
+                          <span className="font-medium">Quick Launch</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <Button variant="premium" size="lg" className="shadow-glow group-hover:scale-105 transition-transform">
+                        <Sparkles className="h-5 w-5" />
+                        Browse Templates
+                        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
