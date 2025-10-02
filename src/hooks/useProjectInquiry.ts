@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 
 interface ProjectInquiryData {
+  projectId?: string;
   projectName: string;
   inquiryType: 'investment' | 'purchase' | 'demo' | 'partnership';
   name: string;
@@ -19,7 +20,7 @@ export const useProjectInquiry = () => {
     try {
       // Save lead with project-specific data
       const lead = await supabaseLeadManager.saveProjectLead({
-        project_id: data.projectName, // Using project name as ID for now
+        project_id: data.projectId || data.projectName, // Use actual project ID
         name: data.name,
         email: data.email,
         company: data.company,

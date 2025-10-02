@@ -394,6 +394,7 @@ export type Database = {
           phone: string | null
           pipeline_stage: string | null
           preferred_start_date: string | null
+          project_id: string | null
           project_type: string | null
           qualification_status: string | null
           source: string | null
@@ -419,6 +420,7 @@ export type Database = {
           phone?: string | null
           pipeline_stage?: string | null
           preferred_start_date?: string | null
+          project_id?: string | null
           project_type?: string | null
           qualification_status?: string | null
           source?: string | null
@@ -444,6 +446,7 @@ export type Database = {
           phone?: string | null
           pipeline_stage?: string | null
           preferred_start_date?: string | null
+          project_id?: string | null
           project_type?: string | null
           qualification_status?: string | null
           source?: string | null
@@ -452,7 +455,15 @@ export type Database = {
           timeline?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "leads_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       page_analytics: {
         Row: {

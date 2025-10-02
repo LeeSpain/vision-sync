@@ -36,6 +36,7 @@ const ProjectInquiryForm = ({ projectId, projectName, projectDescription, isOpen
     analytics.trackInteraction('form_submit', 'project_inquiry_form', projectId);
 
     const result = await submitInquiry({
+      projectId: projectId,
       projectName: projectName,
       inquiryType: formData.inquiryType,
       name: formData.name,

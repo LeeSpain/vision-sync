@@ -101,12 +101,12 @@ export const supabaseLeadManager = {
     }
   },
 
-  // Save project-specific lead (using leads table with project data in form_data)
+  // Save project-specific lead (using leads table with dedicated project_id column)
   async saveProjectLead(leadData: Omit<ProjectLead, 'id' | 'created_at' | 'updated_at'>): Promise<ProjectLead | null> {
     try {
       // Priority is inferred dynamically; not stored in DB
 
-      // Store project lead data in the regular leads table with special source
+      // Store project lead data in the regular leads table with special source and project_id
       const { data, error } = await supabase
         .from('leads')
         .insert([{
@@ -114,11 +114,11 @@ export const supabaseLeadManager = {
           email: leadData.email,
           company: leadData.company,
           phone: leadData.phone,
+          project_id: leadData.project_id, // Use dedicated project_id column
           source: 'contact', // Use existing enum value
           status: 'new',
           form_data: {
             type: 'project_inquiry',
-            project_id: leadData.project_id,
             inquiry_type: leadData.inquiry_type,
             message: leadData.message,
             investment_amount: leadData.investment_amount,
@@ -138,13 +138,13 @@ export const supabaseLeadManager = {
         return null;
       }
 
-      // Convert back to ProjectLead format
+      // Convert back to ProjectLead format, now using dedicated project_id column
       const formData = data.form_data as any;
       const projectLead: ProjectLead = {
         id: data.id,
         created_at: data.created_at,
         updated_at: data.updated_at,
-        project_id: formData?.project_id || '',
+        project_id: (data as any).project_id || formData?.project_id || '',
         name: data.name,
         email: data.email,
         company: data.company,
@@ -200,13 +200,13 @@ export const supabaseLeadManager = {
     }
   },
 
-  // Get all project leads (from leads table where form_data.type = 'project_inquiry')
+  // Get all project leads (from leads table with project_id column)
   async getAllProjectLeads(): Promise<ProjectLead[]> {
     try {
       const { data, error } = await supabase
         .from('leads')
         .select('*')
-        .eq('source', 'contact') // Filter for project inquiries stored as contact
+        .not('project_id', 'is', null) // Filter for leads with project_id
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -214,19 +214,15 @@ export const supabaseLeadManager = {
         return [];
       }
 
-      // Convert and filter for project inquiries
+      // Convert to ProjectLead format
       const projectLeads = (data || [])
-        .filter(lead => {
-          const formData = lead.form_data as any;
-          return formData?.type === 'project_inquiry';
-        })
         .map(lead => {
           const formData = lead.form_data as any;
           return {
             id: lead.id,
             created_at: lead.created_at,
             updated_at: lead.updated_at,
-            project_id: formData?.project_id || '',
+            project_id: (lead as any).project_id || formData?.project_id || '',
             name: lead.name,
             email: lead.email,
             company: lead.company,
@@ -295,7 +291,7 @@ export const supabaseLeadManager = {
         id: data.id,
         created_at: data.created_at,
         updated_at: data.updated_at,
-        project_id: formData?.project_id || '',
+        project_id: (data as any).project_id || formData?.project_id || '',
         name: data.name,
         email: data.email,
         company: data.company,
