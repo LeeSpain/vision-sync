@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Eye, BarChart3, Wand2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, BarChart3, Wand2, Sparkles, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -48,6 +48,7 @@ export function TemplateManager() {
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(null);
+  const [syncing, setSyncing] = useState(false);
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
   const [industries, setIndustries] = useState<Industry[]>([]);
   
@@ -208,6 +209,56 @@ export function TemplateManager() {
     setSelectedTemplate(null);
   };
 
+  const syncToAIAgents = async () => {
+    setSyncing(true);
+    try {
+      const { data: projects } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('is_public', true);
+
+      const catalogData = {
+        projects: (projects || []).map(p => ({
+          id: p.id,
+          name: p.title,
+          description: p.description,
+          category: p.category,
+          price: p.price,
+          status: p.status
+        })),
+        templates: templates.filter(t => t.is_active).map(t => ({
+          id: t.id,
+          name: t.title,
+          description: t.description,
+          category: t.category,
+          industry: t.industry
+        }))
+      };
+
+      const { error } = await supabase
+        .from('ai_training_data')
+        .upsert({
+          training_type: 'product_catalog',
+          content: JSON.stringify(catalogData),
+          metadata: {
+            last_sync: new Date().toISOString(),
+            project_count: catalogData.projects.length,
+            template_count: catalogData.templates.length
+          },
+          is_active: true
+        });
+
+      if (error) throw error;
+
+      toast.success('Templates synced to AI agents!');
+    } catch (error) {
+      console.error('Error syncing to AI agents:', error);
+      toast.error('Failed to sync to AI agents');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -249,6 +300,19 @@ export function TemplateManager() {
               ))}
             </SelectContent>
           </Select>
+          <Button onClick={syncToAIAgents} disabled={syncing} variant="outline">
+            {syncing ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                Syncing...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Sync to AI
+              </>
+            )}
+          </Button>
           <Button onClick={() => setIsAnalyticsOpen(true)} variant="outline">
             <BarChart3 className="h-4 w-4 mr-2" />
             Analytics

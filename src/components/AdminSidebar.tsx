@@ -46,7 +46,6 @@ const mainItems = [
   { title: "Industries", url: "#industries", icon: Building2 },
   { title: "Leads", url: "#leads", icon: Users },
   { title: "Sales Pipeline", url: "#sales-pipeline", icon: TrendingUp },
-  { title: "Product Catalog", url: "#catalog", icon: Package },
   { title: "AI Agent", url: "#ai-agent", icon: Brain },
   { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
