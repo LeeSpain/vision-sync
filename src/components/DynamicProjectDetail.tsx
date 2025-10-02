@@ -178,7 +178,7 @@ export default function DynamicProjectDetail() {
                 investmentDeadline={project.investment_deadline}
                 investorCount={project.investor_count}
                 onInvestClick={() => setShowInquiryForm(true)}
-                showInvestmentTiers={true}
+                showInvestmentTiers={false}
               />
             </div>
           </section>
