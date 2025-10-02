@@ -99,10 +99,13 @@ const Index = () => {
       category: (project.category as any) || 'For Sale',
       route: slug,
       image: project.image_url || undefined,
-      billing_type: undefined,
-      subscription_price: undefined,
-      price: undefined,
-      deposit_amount: undefined,
+      billing_type: project.billing_type as any,
+      subscription_price: project.subscription_price || undefined,
+      price: project.price || undefined,
+      deposit_amount: project.deposit_amount || undefined,
+      investmentAmount: project.investment_amount || undefined,
+      fundingProgress: project.funding_progress || undefined,
+      investorCount: project.investor_count || undefined,
     };
   };
 

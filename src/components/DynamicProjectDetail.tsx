@@ -30,8 +30,8 @@ export default function DynamicProjectDetail() {
   const [showLiveSiteModal, setShowLiveSiteModal] = useState(false);
   const [isSubscription, setIsSubscription] = useState(true);
   
-  const isInvestmentProject = project?.content_section?.includes('investment');
-  const isForSaleProject = project?.content_section?.includes('for_sale');
+  const isInvestmentProject = project?.content_section?.includes('investment-opportunities');
+  const isForSaleProject = project?.content_section?.includes('platforms-for-sale');
 
   useEffect(() => {
     loadProject();
@@ -266,7 +266,7 @@ export default function DynamicProjectDetail() {
             <InvestmentPricingDisplay
               investmentAmount={project.investment_amount}
               fundingProgress={project.funding_progress}
-              investmentReceived={project.funding_progress || 0}
+              investmentReceived={(project.investment_amount || 0) * ((project.funding_progress || 0) / 100)}
               expectedRoi={project.expected_roi}
               investmentDeadline={project.investment_deadline}
               investorCount={project.investor_count}

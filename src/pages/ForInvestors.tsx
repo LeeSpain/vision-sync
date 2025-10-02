@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,9 +10,14 @@ import Footer from '@/components/Layout/Footer';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { TrendingUp, DollarSign, Users, BarChart3, ArrowRight, Shield, Target } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { projectManager, type Project } from '@/utils/projectManager';
+import { useNavigate } from 'react-router-dom';
 
 const ForInvestors = () => {
   const { formatPrice } = useCurrency();
+  const navigate = useNavigate();
+  const [investmentOpportunities, setInvestmentOpportunities] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const [investorForm, setInvestorForm] = useState({
     name: '',
     email: '',
@@ -21,6 +26,22 @@ const ForInvestors = () => {
     interests: '',
     message: '',
   });
+
+  useEffect(() => {
+    loadInvestmentOpportunities();
+  }, []);
+
+  const loadInvestmentOpportunities = async () => {
+    try {
+      setLoading(true);
+      const projects = await projectManager.getProjectsByContentSection('investment-opportunities');
+      setInvestmentOpportunities(projects);
+    } catch (error) {
+      console.error('Error loading investment opportunities:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,35 +74,6 @@ const ForInvestors = () => {
     }
   };
 
-  const investmentOpportunities = [
-    {
-      title: 'Global Health-Sync',
-      description: 'Revolutionary healthcare synchronization platform',
-      stage: 'MVP',
-      seeking: `${formatPrice(500000)} - ${formatPrice(2000000)}`,
-      timeline: '18 months',
-      potential: 'High',
-      market: 'Healthcare Tech'
-    },
-    {
-      title: 'Nurse-Sync',
-      description: 'Advanced nursing workflow management system',
-      stage: 'Live',
-      seeking: `${formatPrice(1000000)} - ${formatPrice(5000000)}`,
-      timeline: '12 months',
-      potential: 'Very High',
-      market: 'Healthcare Operations'
-    },
-    {
-      title: 'AI Spain Homes',
-      description: 'AI-powered real estate investment platform',
-      stage: 'Concept',
-      seeking: `${formatPrice(250000)} - ${formatPrice(1000000)}`,
-      timeline: '24 months',
-      potential: 'High',
-      market: 'PropTech'
-    }
-  ];
 
   return (
     <div className="min-h-screen">
@@ -180,42 +172,64 @@ const ForInvestors = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-            {investmentOpportunities.map((opportunity, index) => (
-              <Card key={index} className="bg-slate-white shadow-card border-soft-lilac/30 hover:shadow-hover transition-all duration-300">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge className="bg-electric-blue text-white">{opportunity.stage}</Badge>
-                    <Badge variant="outline">{opportunity.market}</Badge>
-                  </div>
-                  <CardTitle className="font-heading">{opportunity.title}</CardTitle>
-                  <CardDescription>{opportunity.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <div className="font-medium text-midnight-navy">Seeking</div>
-                      <div className="text-cool-gray">{opportunity.seeking}</div>
-                    </div>
-                    <div>
-                      <div className="font-medium text-midnight-navy">Timeline</div>
-                      <div className="text-cool-gray">{opportunity.timeline}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm">
-                      <div className="font-medium text-midnight-navy">Potential</div>
-                      <div className={`text-sm ${opportunity.potential === 'Very High' ? 'text-emerald-green' : 'text-electric-blue'}`}>
-                        {opportunity.potential}
+            {loading ? (
+              [...Array(3)].map((_, i) => (
+                <Card key={i} className="bg-slate-white shadow-card border-soft-lilac/30">
+                  <CardHeader className="space-y-3">
+                    <div className="h-6 bg-slate-white/50 rounded animate-pulse"></div>
+                    <div className="h-4 bg-slate-white/50 rounded animate-pulse"></div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="h-20 bg-slate-white/50 rounded animate-pulse"></div>
+                    <div className="h-10 bg-slate-white/50 rounded animate-pulse"></div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              investmentOpportunities.map((project) => {
+                const slug = project.route || `/${(project.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+                return (
+                  <Card key={project.id} className="bg-slate-white shadow-card border-soft-lilac/30 hover:shadow-hover transition-all duration-300">
+                    <CardHeader>
+                      <div className="flex items-start justify-between mb-2">
+                        <Badge className="bg-electric-blue text-white">{project.status || 'Active'}</Badge>
+                        <Badge variant="outline">{project.category || 'Investment'}</Badge>
                       </div>
-                    </div>
-                    <Button variant="invest" size="sm">
-                      <TrendingUp className="h-4 w-4" />
-                      Learn More
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      <CardTitle className="font-heading">{project.title}</CardTitle>
+                      <CardDescription>{project.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div className="font-medium text-midnight-navy">Target Investment</div>
+                          <div className="text-cool-gray">{formatPrice(project.investment_amount || 0)}</div>
+                        </div>
+                        <div>
+                          <div className="font-medium text-midnight-navy">Progress</div>
+                          <div className="text-electric-blue font-medium">{project.funding_progress || 0}%</div>
+                        </div>
+                      </div>
+                      {project.expected_roi && (
+                        <div className="text-sm">
+                          <div className="font-medium text-midnight-navy">Expected ROI</div>
+                          <div className="text-emerald-green font-medium">{project.expected_roi}%</div>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm">
+                          <div className="font-medium text-midnight-navy">Investors</div>
+                          <div className="text-electric-blue">{project.investor_count || 0}</div>
+                        </div>
+                        <Button variant="invest" size="sm" onClick={() => navigate(slug)}>
+                          <TrendingUp className="h-4 w-4" />
+                          Learn More
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
           </div>
         </div>
       </section>
