@@ -44,7 +44,8 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
     priority_order: 0,
     route: '',
     subscription_period: '',
-    investment_deadline: ''
+    investment_deadline: '',
+    maintenance_fee: undefined
   });
   
   const [newTech, setNewTech] = useState('');
@@ -96,6 +97,7 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
         subscription_period: project.subscription_period || '',
         price: project.price || undefined,
         deposit_amount: project.deposit_amount || undefined,
+        maintenance_fee: (project as any).maintenance_fee || undefined,
         priority_order: project.priority_order || 0,
         status: project.status || 'active',
         route: project.route || '',
@@ -321,26 +323,42 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
         </div>
 
       {formData.billing_type === 'one-time' && (
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="price">Price ($)</Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              value={formData.price || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || undefined }))}
-              placeholder="0.00"
-            />
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="price">Total Price ($)</Label>
+              <p className="text-xs text-muted-foreground">Full platform ownership price</p>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                value={formData.price || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || undefined }))}
+                placeholder="0.00"
+              />
+            </div>
+            <div>
+              <Label htmlFor="deposit_amount">Deposit Amount ($)</Label>
+              <p className="text-xs text-muted-foreground">Upfront payment required</p>
+              <Input
+                id="deposit_amount"
+                type="number"
+                step="0.01"
+                value={formData.deposit_amount || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, deposit_amount: parseFloat(e.target.value) || undefined }))}
+                placeholder="0.00"
+              />
+            </div>
           </div>
           <div>
-            <Label htmlFor="deposit_amount">Deposit Amount ($)</Label>
+            <Label htmlFor="maintenance_fee">Services & Maintenance ($/month)</Label>
+            <p className="text-xs text-muted-foreground">Optional monthly maintenance fee</p>
             <Input
-              id="deposit_amount"
+              id="maintenance_fee"
               type="number"
               step="0.01"
-              value={formData.deposit_amount || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, deposit_amount: parseFloat(e.target.value) || undefined }))}
+              value={formData.maintenance_fee || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, maintenance_fee: parseFloat(e.target.value) || undefined }))}
               placeholder="0.00"
             />
           </div>

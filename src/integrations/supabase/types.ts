@@ -590,6 +590,7 @@ export type Database = {
           investor_count: number | null
           is_featured: boolean | null
           is_public: boolean | null
+          maintenance_fee: number | null
           price: number | null
           pricing: Json | null
           priority_order: number | null
@@ -620,6 +621,7 @@ export type Database = {
           investor_count?: number | null
           is_featured?: boolean | null
           is_public?: boolean | null
+          maintenance_fee?: number | null
           price?: number | null
           pricing?: Json | null
           priority_order?: number | null
@@ -650,6 +652,7 @@ export type Database = {
           investor_count?: number | null
           is_featured?: boolean | null
           is_public?: boolean | null
+          maintenance_fee?: number | null
           price?: number | null
           pricing?: Json | null
           priority_order?: number | null

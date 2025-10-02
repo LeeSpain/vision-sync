@@ -146,6 +146,7 @@ export default function DynamicProjectDetail() {
               <PricingDisplay
                 salePrice={project.price || 0}
                 customizationPrice={project.deposit_amount || 0}
+                maintenanceFee={(project as any).maintenance_fee}
                 isSubscription={project.billing_type === 'subscription'}
                 onToggle={() => {}}
                 showToggle={false}

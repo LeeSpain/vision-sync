@@ -8,6 +8,7 @@ import { Check, Crown, Code, Shield } from 'lucide-react';
 interface PricingDisplayProps {
   salePrice: number;
   customizationPrice?: number;
+  maintenanceFee?: number;
   isSubscription: boolean;
   onToggle: (value: boolean) => void;
   showToggle?: boolean;
@@ -16,7 +17,8 @@ interface PricingDisplayProps {
 
 export const PricingDisplay = ({ 
   salePrice, 
-  customizationPrice = 0, 
+  customizationPrice = 0,
+  maintenanceFee,
   isSubscription, 
   onToggle, 
   showToggle = true,
@@ -26,10 +28,12 @@ export const PricingDisplay = ({
   
   // Calculate subscription pricing: 10% of sale price monthly
   const monthlySubscription = Math.round(salePrice * 0.1);
-  // Services & maintenance: 5% of sale price (included in subscription)
-  const servicesAndMaintenance = Math.round(salePrice * 0.05);
+  // Services & maintenance: use custom fee if provided, otherwise 5% of sale price
+  const servicesAndMaintenance = maintenanceFee || Math.round(salePrice * 0.05);
   
-  const totalOneTime = salePrice + customizationPrice;
+  // For one-time purchase: total is just the sale price, deposit is part of it
+  const totalOneTime = salePrice;
+  const balanceRemaining = customizationPrice > 0 ? salePrice - customizationPrice : 0;
   const totalMonthly = monthlySubscription;
 
   return (
@@ -96,14 +100,20 @@ export const PricingDisplay = ({
               {/* Pricing breakdown */}
               <div className="space-y-3 px-2">
                 <div className="flex justify-between items-center py-2 border-b border-slate-white">
-                  <span className="text-sm text-midnight-navy font-medium">Platform base price</span>
+                  <span className="text-sm text-midnight-navy font-medium">Total platform price</span>
                   <span className="text-sm font-semibold text-midnight-navy">{formatPrice(salePrice)}</span>
                 </div>
                 {customizationPrice > 0 && (
-                  <div className="flex justify-between items-center py-2 border-b border-slate-white">
-                    <span className="text-sm text-midnight-navy font-medium">Customization deposit</span>
-                    <span className="text-sm font-semibold text-midnight-navy">{formatPrice(customizationPrice)}</span>
-                  </div>
+                  <>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-white">
+                      <span className="text-sm text-midnight-navy font-medium">Deposit required</span>
+                      <span className="text-sm font-semibold text-emerald-green">{formatPrice(customizationPrice)}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-white">
+                      <span className="text-sm text-midnight-navy font-medium">Balance remaining</span>
+                      <span className="text-sm font-semibold text-midnight-navy">{formatPrice(balanceRemaining)}</span>
+                    </div>
+                  </>
                 )}
                 <div className="flex justify-between items-center py-2">
                   <div>

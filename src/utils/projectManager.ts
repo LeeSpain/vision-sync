@@ -23,6 +23,7 @@ export interface Project {
   subscription_period: string | null;
   price: number | null;
   deposit_amount: number | null;
+  maintenance_fee: number | null;
   priority_order: number | null;
   status: string | null;
   route: string | null;
@@ -51,6 +52,7 @@ export interface CreateProjectData {
   subscription_period?: string;
   price?: number;
   deposit_amount?: number;
+  maintenance_fee?: number;
   priority_order?: number;
   status?: string;
   route?: string;
