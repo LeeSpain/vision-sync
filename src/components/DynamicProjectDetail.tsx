@@ -3,11 +3,12 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Project, projectManager } from '@/utils/projectManager';
 import { ProjectPageTemplate } from '@/components/project-template';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink, X } from 'lucide-react';
 import WebsitePreview from '@/components/WebsitePreview';
 import ProjectInquiryForm from '@/components/ProjectInquiryForm';
 import { analytics } from '@/utils/analytics';
@@ -21,6 +22,7 @@ export default function DynamicProjectDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showInquiryForm, setShowInquiryForm] = useState(false);
+  const [showLiveSiteModal, setShowLiveSiteModal] = useState(false);
 
   useEffect(() => {
     loadProject();
@@ -170,7 +172,7 @@ export default function DynamicProjectDetail() {
                 <Button 
                   onClick={() => {
                     analytics.trackInteraction('button_click', 'visit_live_site_button', project.id);
-                    window.open(project.demo_url, '_blank');
+                    setShowLiveSiteModal(true);
                   }}
                   className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-3 text-lg font-semibold"
                 >
@@ -308,6 +310,42 @@ export default function DynamicProjectDetail() {
           isOpen={showInquiryForm}
           onClose={() => setShowInquiryForm(false)}
         />
+
+        {/* Full-Screen Live Site Modal */}
+        <Dialog open={showLiveSiteModal} onOpenChange={setShowLiveSiteModal}>
+          <DialogContent className="max-w-full h-screen w-screen p-0 gap-0 bg-background">
+            <div className="flex flex-col h-full">
+              {/* Header Bar */}
+              <div className="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-emerald-green/10 to-electric-blue/10">
+                <div className="flex items-center gap-3">
+                  <div className="h-3 w-3 rounded-full bg-emerald-green animate-pulse" />
+                  <h3 className="text-lg font-semibold text-midnight-navy">
+                    {project.title} - Live Preview
+                  </h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowLiveSiteModal(false)}
+                  className="hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              
+              {/* Full-Screen Iframe */}
+              <div className="flex-1 relative bg-white">
+                <iframe
+                  src={project.demo_url || ''}
+                  className="w-full h-full border-0"
+                  title={`${project.title} Live Site`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
+                />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </ProjectPageTemplate>
     </CurrencyProvider>
   );
