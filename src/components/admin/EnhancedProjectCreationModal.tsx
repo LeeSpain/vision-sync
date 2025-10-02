@@ -372,6 +372,22 @@ const EnhancedProjectCreationModal: React.FC<EnhancedProjectCreationModalProps> 
           
           <div className="grid grid-cols-2 gap-4">
             <div>
+              <Label htmlFor="investment_percentage">% of Project for Investment</Label>
+              <Input
+                id="investment_percentage"
+                type="number"
+                step="0.01"
+                min="0"
+                max="100"
+                value={formData.investment_percentage || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, investment_percentage: parseFloat(e.target.value) || undefined }))}
+                placeholder="e.g., 20 for 20%"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
               <Label htmlFor="funding_progress">Funding Progress (%)</Label>
               <Input
                 id="funding_progress"

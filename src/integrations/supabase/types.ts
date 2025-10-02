@@ -598,6 +598,7 @@ export type Database = {
           image_url: string | null
           investment_amount: number | null
           investment_deadline: string | null
+          investment_percentage: number | null
           investor_count: number | null
           is_featured: boolean | null
           is_public: boolean | null
@@ -629,6 +630,7 @@ export type Database = {
           image_url?: string | null
           investment_amount?: number | null
           investment_deadline?: string | null
+          investment_percentage?: number | null
           investor_count?: number | null
           is_featured?: boolean | null
           is_public?: boolean | null
@@ -660,6 +662,7 @@ export type Database = {
           image_url?: string | null
           investment_amount?: number | null
           investment_deadline?: string | null
+          investment_percentage?: number | null
           investor_count?: number | null
           is_featured?: boolean | null
           is_public?: boolean | null

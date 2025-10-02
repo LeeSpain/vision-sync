@@ -31,6 +31,7 @@ export interface Project {
   investment_deadline: string | null;
   investor_count: number | null;
   social_proof: any | null;
+  investment_percentage: number | null;
 }
 
 export interface CreateProjectData {
@@ -60,6 +61,7 @@ export interface CreateProjectData {
   investment_deadline?: string;
   investor_count?: number;
   social_proof?: any;
+  investment_percentage?: number;
 }
 
 export const projectManager = {

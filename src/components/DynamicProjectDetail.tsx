@@ -170,6 +170,17 @@ export default function DynamicProjectDetail() {
         {isInvestmentProject && (
           <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-white">
             <div className="max-w-4xl mx-auto">
+              {/* Investment Percentage Display */}
+              {project.investment_percentage && (
+                <div className="mb-6 text-center">
+                  <div className="inline-flex items-center gap-2 bg-electric-blue/10 px-6 py-3 rounded-full border border-electric-blue/30">
+                    <span className="text-electric-blue font-semibold text-lg">
+                      {project.investment_percentage}% of the project available for investment
+                    </span>
+                  </div>
+                </div>
+              )}
+              
               <InvestmentPricingDisplay
                 investmentAmount={project.investment_amount}
                 fundingProgress={project.funding_progress}
