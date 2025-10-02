@@ -389,15 +389,17 @@ export function TemplateManager() {
             </div>
             <CardHeader>
               <CardTitle className="text-lg">{template.title}</CardTitle>
-              <CardDescription>
-                <div className="flex gap-2 mb-2">
+              <div className="space-y-2">
+                <div className="flex gap-2">
                   <Badge variant="outline">{template.category}</Badge>
                   {template.industry && (
                     <Badge variant="secondary" className="text-xs">{template.industry}</Badge>
                   )}
                 </div>
-                {template.description}
-              </CardDescription>
+                <CardDescription>
+                  {template.description}
+                </CardDescription>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2 mb-4">

@@ -12,9 +12,16 @@ export interface Template {
   pricing: {
     base: number;
     customization: number;
-    monthly: number;
-    deposit: number;
-    currency: string;
+    subscription: {
+      monthly: number;
+      benefits: string[];
+    };
+    deposit: {
+      amount: number;
+      serviceMonthly: number;
+      description: string;
+    };
+    currency?: string;
   };
   features: string[];
   complexity_level: string;
@@ -54,8 +61,15 @@ export const useTemplates = () => {
           pricing: {
             base: (template.pricing as any)?.base || 2999,
             customization: (template.pricing as any)?.customization || 750,
-            monthly: (template.pricing as any)?.subscription?.monthly || 199,
-            deposit: (template.pricing as any)?.deposit?.amount || 720,
+            subscription: {
+              monthly: (template.pricing as any)?.subscription?.monthly || 199,
+              benefits: (template.pricing as any)?.subscription?.benefits || []
+            },
+            deposit: {
+              amount: (template.pricing as any)?.deposit?.amount || 720,
+              serviceMonthly: (template.pricing as any)?.deposit?.serviceMonthly || 149,
+              description: (template.pricing as any)?.deposit?.description || ''
+            },
             currency: (template.pricing as any)?.currency || 'USD'
           },
           features: Array.isArray(template.features) ? template.features.filter(f => typeof f === 'string') : [],

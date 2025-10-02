@@ -45,13 +45,13 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
       base: template.pricing.base,
       customization: template.pricing.customization,
       subscription: {
-        monthly: template.pricing.monthly,
-        benefits: ['Regular updates', 'Premium support', 'Monthly consultations', 'Priority bug fixes']
+        monthly: template.pricing.subscription.monthly,
+        benefits: template.pricing.subscription.benefits || ['Regular updates', 'Premium support', 'Monthly consultations']
       },
       deposit: {
-        amount: template.pricing.deposit,
-        serviceMonthly: template.pricing.monthly,
-        description: 'Initial payment with monthly service'
+        amount: template.pricing.deposit.amount,
+        serviceMonthly: template.pricing.deposit.serviceMonthly,
+        description: template.pricing.deposit.description || 'Initial payment with monthly service'
       },
       installments: {
         available: true,
@@ -63,8 +63,8 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
       ownership: {
         buyOutright: template.pricing.base,
         serviceContract: {
-          deposit: template.pricing.deposit,
-          monthly: template.pricing.monthly,
+          deposit: template.pricing.deposit.amount,
+          monthly: template.pricing.deposit.serviceMonthly,
           benefits: ['Ongoing support', 'Updates included', 'Feature enhancements']
         }
       }
