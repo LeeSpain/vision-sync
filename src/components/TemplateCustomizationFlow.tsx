@@ -62,7 +62,7 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
   const { formatPrice } = useCurrency();
   
   // Flow state
-  const [currentStep, setCurrentStep] = useState<'questionnaire' | 'customize' | 'preview'>('questionnaire');
+  const [currentStep, setCurrentStep] = useState<'questionnaire' | 'customize' | 'preview' | 'success'>('questionnaire');
   const [questionnaireStep, setQuestionnaireStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -140,21 +140,43 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
   const handleQuestionnaireSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const { data } = await supabase.functions.invoke('ai-template-assistant', {
-        body: { 
-          action: 'generate-customization',
-          data: {
-            template: template,
-            questionnaire: questionnaireData
-          }
+      // Prepare the customization data
+      const customizationRequest = {
+        template: {
+          id: template.id,
+          title: template.title,
+          category: template.category
+        },
+        questionnaire: questionnaireData,
+        submittedAt: new Date().toISOString()
+      };
+
+      // Send to edge function for processing and email
+      const { error } = await supabase.functions.invoke('send-customization-email', {
+        body: {
+          clientInfo: questionnaireData.contactInfo,
+          templateTitle: template.title,
+          customizationData: customizationRequest
         }
       });
 
-      setRecommendations(data);
-      setEstimatedPrice(data.estimatedPrice || template.pricing.base);
-      setCurrentStep('customize');
+      if (error) {
+        console.error('Error sending customization email:', error);
+        // Still show success message even if email fails
+      }
+
+      // Show success step
+      setCurrentStep('success');
+      
+      // Redirect to homepage after 5 seconds
+      setTimeout(() => {
+        navigate('/');
+        onClose();
+      }, 5000);
+      
     } catch (error) {
       console.error('Error generating customization:', error);
+      toast.error('Something went wrong. Please try again or contact us directly.');
     } finally {
       setIsSubmitting(false);
     }
@@ -950,6 +972,71 @@ const TemplateCustomizationFlow = ({ template, isOpen, onClose }: TemplateCustom
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
+            </div>
+          )}
+
+          {currentStep === 'success' && (
+            <div className="space-y-6 text-center py-12">
+              <div className="flex justify-center">
+                <div className="w-20 h-20 bg-emerald-green/10 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-12 w-12 text-emerald-green" />
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <h3 className="text-3xl font-bold text-midnight-navy">
+                  Thank You, {questionnaireData.contactInfo.name}!
+                </h3>
+                <p className="text-xl text-cool-gray max-w-2xl mx-auto">
+                  Your customization request has been received successfully
+                </p>
+              </div>
+
+              <Card className="max-w-md mx-auto bg-gradient-card border-soft-lilac/30">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-royal-purple mt-1 flex-shrink-0" />
+                    <div className="text-left">
+                      <p className="font-semibold text-midnight-navy mb-1">
+                        What happens next?
+                      </p>
+                      <p className="text-sm text-cool-gray">
+                        A complete quote for your <span className="font-medium">{template.title}</span> customization will be sent to{' '}
+                        <span className="font-medium">{questionnaireData.contactInfo.email}</span> within 24 hours.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Users className="h-5 w-5 text-emerald-green mt-1 flex-shrink-0" />
+                    <div className="text-left">
+                      <p className="font-semibold text-midnight-navy mb-1">
+                        Our team will review your requirements
+                      </p>
+                      <p className="text-sm text-cool-gray">
+                        We'll prepare a detailed proposal with pricing, timeline, and next steps tailored to your needs.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-soft-lilac/30">
+                    <p className="text-xs text-cool-gray">
+                      Redirecting you to the homepage in a few seconds...
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Button 
+                onClick={() => {
+                  navigate('/');
+                  onClose();
+                }}
+                variant="premium"
+                size="lg"
+              >
+                Return to Homepage Now
+              </Button>
             </div>
           )}
         </div>
