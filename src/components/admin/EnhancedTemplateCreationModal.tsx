@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { templateCategories } from '@/utils/appTemplates';
 import { IndustryTemplateSelector } from './IndustryTemplateSelector';
 import { PricingDisplay } from '@/components/ui/pricing-display';
+import { AutoImageGenerator } from './AutoImageGenerator';
 
 interface EnhancedTemplateCreationModalProps {
   isOpen: boolean;
@@ -309,15 +310,29 @@ export function EnhancedTemplateCreationModal({ isOpen, onClose, onSuccess }: En
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label htmlFor="image_url">Main Image URL</Label>
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
+            </div>
+
+            {/* AI Image Generator */}
+            <AutoImageGenerator
+              onThumbnailGenerated={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+              onHeroGenerated={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+              projectName={formData.title}
+              projectDescription={formData.description}
+            />
+
+            <div>
+              <Label htmlFor="image_url">Main Image URL</Label>
+              <Input
+                id="image_url"
+                value={formData.image_url}
+                onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                placeholder="https://example.com/image.jpg"
+              />
+              {formData.image_url && (
+                <div className="mt-2">
+                  <img src={formData.image_url} alt="Preview" className="w-full h-40 object-cover rounded-md" />
+                </div>
+              )}
             </div>
 
             <div>

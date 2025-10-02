@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { templateCategories } from '@/utils/appTemplates';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { AutoImageGenerator } from './AutoImageGenerator';
 
 interface Industry {
   id: string;
@@ -380,6 +381,13 @@ export function TemplateEditModal({ isOpen, onClose, template, onSuccess }: Temp
               ))}
             </div>
           </div>
+
+          <AutoImageGenerator
+            onThumbnailGenerated={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+            onHeroGenerated={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+            projectName={formData.title}
+            projectDescription={formData.description}
+          />
 
           <ImageUpload
             currentUrl={formData.image_url}

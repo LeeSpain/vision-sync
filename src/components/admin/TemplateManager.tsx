@@ -10,6 +10,7 @@ import { EnhancedTemplateCreationModal } from './EnhancedTemplateCreationModal';
 import { TemplateEditModal } from './TemplateEditModal';
 import { TemplateAnalytics } from './TemplateAnalytics';
 import { TemplatePreviewModal } from './TemplatePreviewModal';
+import { TemplateSeeder } from './TemplateSeeder';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { CurrencySelector } from '@/components/ui/currency-selector';
 
@@ -258,6 +259,9 @@ export function TemplateManager() {
           </Button>
         </div>
       </div>
+
+      {/* Template Seeder */}
+      <TemplateSeeder onSuccess={handleCreateSuccess} />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
