@@ -179,81 +179,79 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-midnight-navy mb-6">
-              Welcome to{' '}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-hero overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-electric-blue/5 rounded-full blur-2xl animate-float" style={{animationDelay: '1s'}}></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center max-w-4xl mx-auto mb-16 animate-fade-in">
+            <div className="inline-flex items-center gap-2 bg-gradient-primary px-5 py-2 rounded-full text-white font-medium mb-6 shadow-glow animate-scale-in">
+              <Sparkles className="h-4 w-4 animate-pulse" />
+              AI-Powered Solutions & Ready-to-Deploy Templates
+            </div>
+            
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 leading-tight animate-slide-up">
+              Transform Your Business with{' '}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Vision-Sync
+                Vision-Sync Forge
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-cool-gray mb-8 max-w-3xl mx-auto">
-              Discover intelligent AI solutions designed to transform your business and streamline operations.
+            
+            <p className="text-lg md:text-xl text-cool-gray mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in" style={{animationDelay: '0.2s'}}>
+              Choose from our professional app templates, custom AI solutions, or invest in complete platforms. 
+              We deliver intelligent technology that scales with your vision.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in" style={{animationDelay: '0.3s'}}>
               <Link to="/templates" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_templates')}>
-                <Button variant="hero" size="lg" className="animate-float">
-                  <Sparkles className="h-5 w-5" />
-                  Browse Templates
+                <Button variant="hero" size="lg" className="hover-scale shadow-glow">
+                  <Package className="h-5 w-5" />
+                  Explore Templates
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/contact" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_contact')}>
-                <Button variant="view" size="lg">
+                <Button variant="view" size="lg" className="hover-scale">
                   <Target className="h-5 w-5" />
-                  Contact Us Today
+                  Get Custom Solution
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Templates Banner */}
-          <div className="mt-16">
-            <Link to="/templates" onClick={() => analytics.trackInteraction('button_click', 'hero_templates_banner')}>
-              <Card className="bg-gradient-to-br from-royal-purple/10 via-emerald-green/5 to-electric-blue/10 border-royal-purple/20 hover:border-royal-purple/40 transition-all duration-300 hover:shadow-hover group cursor-pointer overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-primary opacity-5 rounded-full blur-3xl group-hover:opacity-10 transition-opacity" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-green/10 rounded-full blur-2xl" />
-                
-                <CardContent className="p-8 md:p-12 relative z-10">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex-1 text-center md:text-left">
-                      <div className="inline-flex items-center gap-2 bg-gradient-primary px-4 py-2 rounded-full text-white font-medium mb-4 shadow-glow">
-                        <Package className="h-4 w-4" />
-                        Ready-to-Deploy Templates
-                      </div>
-                      <h2 className="text-3xl md:text-4xl font-heading font-bold text-midnight-navy mb-3 group-hover:text-royal-purple transition-colors">
-                        Start with a Professional Template
-                      </h2>
-                      <p className="text-lg text-cool-gray mb-6 max-w-2xl">
-                        Choose from our collection of industry-specific templates. Fully customizable, professionally designed, and ready to deploy in 72 hours.
-                      </p>
-                      <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
-                        <div className="flex items-center gap-2 text-midnight-navy">
-                          <CheckCircle className="h-5 w-5 text-emerald-green" />
-                          <span className="font-medium">Multiple Industries</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-midnight-navy">
-                          <Star className="h-5 w-5 text-coral-orange" />
-                          <span className="font-medium">Premium Quality</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-midnight-navy">
-                          <Rocket className="h-5 w-5 text-electric-blue" />
-                          <span className="font-medium">Quick Launch</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <Button variant="premium" size="lg" className="shadow-glow group-hover:scale-105 transition-transform">
-                        <Sparkles className="h-5 w-5" />
-                        Browse Templates
-                        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+          {/* Key Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto animate-fade-in" style={{animationDelay: '0.4s'}}>
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group hover-scale">
+              <CardContent className="p-6 text-center">
+                <div className="w-14 h-14 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform">
+                  <Rocket className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Quick Deploy</h3>
+                <p className="text-cool-gray text-sm">Launch your app in 72 hours with ready-to-use templates</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group hover-scale">
+              <CardContent className="p-6 text-center">
+                <div className="w-14 h-14 bg-emerald-green/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-emerald-green/20 transition-colors">
+                  <Bot className="h-7 w-7 text-emerald-green" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">AI-Powered</h3>
+                <p className="text-cool-gray text-sm">Intelligent automation and AI agents for your business</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group hover-scale">
+              <CardContent className="p-6 text-center">
+                <div className="w-14 h-14 bg-coral-orange/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-coral-orange/20 transition-colors">
+                  <TrendingUp className="h-7 w-7 text-coral-orange" />
+                </div>
+                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Built to Scale</h3>
+                <p className="text-cool-gray text-sm">Enterprise-ready platforms designed for growth</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
