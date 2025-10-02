@@ -131,44 +131,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
         {/* Enhanced Pricing Display */}
         <div className="mb-4 space-y-2">
-          {/* Investment Display */}
-          {billing_type === 'investment' && investmentAmount && (
-            <>
-              <div className="bg-electric-blue/10 p-3 rounded-lg border border-electric-blue/30">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1 text-xs text-electric-blue">
-                    <TrendingUp className="h-3 w-3" />
-                    <span>Target Investment</span>
-                  </div>
-                  <div className="text-sm font-bold text-electric-blue">
-                    {formatPrice(investmentAmount)}
-                  </div>
-                </div>
-                {fundingProgress !== undefined && (
-                  <div className="space-y-1">
-                    <div className="h-1.5 bg-slate-white rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-electric-blue to-emerald-green transition-all duration-500"
-                        style={{ width: `${Math.min(fundingProgress, 100)}%` }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-cool-gray">{fundingProgress}% Funded</span>
-                      {investorCount !== undefined && (
-                        <span className="text-electric-blue font-medium">{investorCount} Investors</span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <Badge className="bg-gradient-primary text-white text-xs w-full justify-center">
-                Multiple Investment Tiers Available
-              </Badge>
-            </>
-          )}
-          
           {/* Primary Pricing */}
-          {price && billing_type !== 'investment' && (
+          {price && (
             <div className="bg-soft-lilac/10 p-2 rounded-lg border border-soft-lilac/30">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 text-xs text-emerald-green">
@@ -209,11 +173,25 @@ const ShopCard: React.FC<ShopCardProps> = ({
               </div>
             </div>
           )}
+
+          {billing_type === 'investment' && investmentAmount && (
+            <div className="bg-soft-lilac/10 p-2 rounded-lg border border-soft-lilac/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-xs text-emerald-green">
+                  <CreditCard className="h-3 w-3" />
+                  <span>From</span>
+                </div>
+                <div className="text-sm font-bold text-midnight-navy">
+                  {formatPrice(investmentAmount)}
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Payment Options Based on Available Data */}
-          {(price || subscription_price || deposit_amount) && billing_type !== 'investment' && (
+          {(price || subscription_price || deposit_amount || investmentAmount) && (
             <div className="flex flex-wrap gap-1 text-xs">
-              {price && (
+              {price && billing_type !== 'investment' && (
                 <span className="bg-emerald-green/10 text-emerald-green px-2 py-0.5 rounded-full">
                   One-time
                 </span>
@@ -228,6 +206,11 @@ const ShopCard: React.FC<ShopCardProps> = ({
                   Deposit+Monthly
                 </span>
               )}
+              {billing_type === 'investment' && (
+                <span className="bg-electric-blue/10 text-electric-blue px-2 py-0.5 rounded-full">
+                  Investment
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -239,7 +222,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
           onClick={handleClick}
           className="w-full group-hover:scale-105 transition-transform"
         >
-          {billing_type === 'investment' ? 'View Investment Details' : 'View All Options'}
+          View All Options
           <ArrowRight className="h-3 w-3 ml-1" />
         </Button>
       </CardContent>
