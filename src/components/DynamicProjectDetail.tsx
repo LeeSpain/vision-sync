@@ -166,6 +166,24 @@ export default function DynamicProjectDetail() {
           </section>
         )}
 
+        {/* Investment Pricing Section - Only for Investment Projects */}
+        {isInvestmentProject && (
+          <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-white">
+            <div className="max-w-4xl mx-auto">
+              <InvestmentPricingDisplay
+                investmentAmount={project.investment_amount}
+                fundingProgress={project.funding_progress}
+                investmentReceived={(project.investment_amount || 0) * ((project.funding_progress || 0) / 100)}
+                expectedRoi={project.expected_roi}
+                investmentDeadline={project.investment_deadline}
+                investorCount={project.investor_count}
+                onInvestClick={() => setShowInquiryForm(true)}
+                showInvestmentTiers={true}
+              />
+            </div>
+          </section>
+        )}
+
         {/* Visit Live Site Section */}
       {project.demo_url && (
         <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
@@ -229,53 +247,6 @@ export default function DynamicProjectDetail() {
         </section>
       )}
 
-      {/* Investment Section for Investment Projects */}
-      {isInvestmentProject && (
-        <InvestmentSection
-          title="Investment Opportunity"
-          description="Join us in revolutionizing the industry with strategic investment."
-          metrics={{
-            seeking: formatPrice(project.investment_amount || 0),
-            valuation: project.pricing?.valuation,
-            stage: project.status || 'Seed',
-            timeline: project.investment_deadline 
-              ? new Date(project.investment_deadline).toLocaleDateString() 
-              : undefined,
-            roi: project.expected_roi?.toString(),
-            market: project.pricing?.market_size,
-            investmentReceived: project.funding_progress || 0,
-            investmentAmount: project.investment_amount || 0,
-          }}
-          onRequestDetails={() => setShowInquiryForm(true)}
-        />
-      )}
-
-      {/* Investment Pricing Section for Investment Projects */}
-      {isInvestmentProject && (
-        <section className="py-16 lg:py-24 bg-gradient-to-br from-soft-lilac/20 to-slate-white">
-          <div className="container max-w-5xl">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-midnight-navy mb-4 font-heading">
-                Investment Details
-              </h2>
-              <p className="text-cool-gray text-lg">
-                Review investment tiers and funding progress
-              </p>
-            </div>
-
-            <InvestmentPricingDisplay
-              investmentAmount={project.investment_amount}
-              fundingProgress={project.funding_progress}
-              investmentReceived={(project.investment_amount || 0) * ((project.funding_progress || 0) / 100)}
-              expectedRoi={project.expected_roi}
-              investmentDeadline={project.investment_deadline}
-              investorCount={project.investor_count}
-              onInvestClick={() => setShowInquiryForm(true)}
-              showInvestmentTiers={true}
-            />
-          </div>
-        </section>
-      )}
 
       {/* Pricing Section for For Sale / Purchase Projects */}
       {!isInvestmentProject && !isPlatformForSale && (project.price || project.subscription_price) && (
