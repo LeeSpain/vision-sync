@@ -9,6 +9,7 @@ interface PricingDisplayProps {
   salePrice: number;
   customizationPrice?: number;
   maintenanceFee?: number;
+  monthlySubscription?: number;
   isSubscription: boolean;
   onToggle: (value: boolean) => void;
   showToggle?: boolean;
@@ -19,6 +20,7 @@ export const PricingDisplay = ({
   salePrice, 
   customizationPrice = 0,
   maintenanceFee,
+  monthlySubscription,
   isSubscription, 
   onToggle, 
   showToggle = true,
@@ -26,15 +28,15 @@ export const PricingDisplay = ({
 }: PricingDisplayProps) => {
   const { formatPrice } = useCurrency();
   
-  // Calculate subscription pricing: 10% of sale price monthly
-  const monthlySubscription = Math.round(salePrice * 0.1);
+  // Use actual monthly subscription from database, fallback to calculation if not provided
+  const actualMonthlySubscription = monthlySubscription || Math.round(salePrice * 0.1);
   // Services & maintenance: use custom fee if provided, otherwise 5% of sale price
   const servicesAndMaintenance = maintenanceFee || Math.round(salePrice * 0.05);
   
   // For one-time purchase: total is just the sale price, deposit is part of it
   const totalOneTime = salePrice;
   const balanceRemaining = customizationPrice > 0 ? salePrice - customizationPrice : 0;
-  const totalMonthly = monthlySubscription;
+  const totalMonthly = actualMonthlySubscription;
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -55,8 +57,8 @@ export const PricingDisplay = ({
               
               <div className="text-xs text-muted-foreground space-y-1">
                 <div className="flex justify-between">
-                  <span>Base subscription (10% of {formatPrice(salePrice)})</span>
-                  <span>{formatPrice(monthlySubscription)}</span>
+                  <span>Monthly subscription</span>
+                  <span>{formatPrice(actualMonthlySubscription)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Services & maintenance (5% included)</span>

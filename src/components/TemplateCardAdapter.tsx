@@ -39,31 +39,33 @@ export const TemplateCardAdapter: React.FC<TemplateCardAdapterProps> = ({
     overview: template.description,
     category: template.category as any,
     image_url: template.image_url,
+    sale_price: template.pricing.base,
+    customization_price: template.pricing.customization,
     pricing: {
-      base: template.pricing.base_price,
-      customization: 999,
+      base: template.pricing.base,
+      customization: template.pricing.customization,
       subscription: {
-        monthly: 299,
-        benefits: ['Regular updates', 'Premium support', 'Monthly consultations']
+        monthly: template.pricing.monthly,
+        benefits: ['Regular updates', 'Premium support', 'Monthly consultations', 'Priority bug fixes']
       },
       deposit: {
-        amount: template.pricing.base_price * 0.3,
-        serviceMonthly: 199,
+        amount: template.pricing.deposit,
+        serviceMonthly: template.pricing.monthly,
         description: 'Initial payment with monthly service'
       },
       installments: {
         available: true,
         plans: [
-          { months: 6, monthlyAmount: template.pricing.base_price / 6, totalAmount: template.pricing.base_price },
-          { months: 12, monthlyAmount: template.pricing.base_price / 12, totalAmount: template.pricing.base_price }
+          { months: 6, monthlyAmount: template.pricing.base / 6, totalAmount: template.pricing.base },
+          { months: 12, monthlyAmount: template.pricing.base / 12, totalAmount: template.pricing.base }
         ]
       },
       ownership: {
-        buyOutright: template.pricing.base_price,
+        buyOutright: template.pricing.base,
         serviceContract: {
-          deposit: template.pricing.base_price * 0.3,
-          monthly: 199,
-          benefits: ['Ongoing support', 'Updates included']
+          deposit: template.pricing.deposit,
+          monthly: template.pricing.monthly,
+          benefits: ['Ongoing support', 'Updates included', 'Feature enhancements']
         }
       }
     },

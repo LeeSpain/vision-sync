@@ -10,7 +10,10 @@ export interface Template {
   image_url: string;
   demo_url: string;
   pricing: {
-    base_price: number;
+    base: number;
+    customization: number;
+    monthly: number;
+    deposit: number;
     currency: string;
   };
   features: string[];
@@ -49,7 +52,10 @@ export const useTemplates = () => {
           image_url: template.image_url || '/placeholder.svg',
           demo_url: template.demo_url || '',
           pricing: {
-            base_price: (template.pricing as any)?.base_price || 2999,
+            base: (template.pricing as any)?.base || 2999,
+            customization: (template.pricing as any)?.customization || 750,
+            monthly: (template.pricing as any)?.subscription?.monthly || 199,
+            deposit: (template.pricing as any)?.deposit?.amount || 720,
             currency: (template.pricing as any)?.currency || 'USD'
           },
           features: Array.isArray(template.features) ? template.features.filter(f => typeof f === 'string') : [],

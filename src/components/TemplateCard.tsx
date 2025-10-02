@@ -116,6 +116,7 @@ interface TemplateCardProps {
           <PricingDisplay
             salePrice={template.sale_price || template.pricing?.base || 0}
             customizationPrice={template.customization_price || template.pricing?.customization || 0}
+            monthlySubscription={template.pricing?.subscription?.monthly}
             isSubscription={isSubscription}
             onToggle={setIsSubscription}
             showToggle={true}
