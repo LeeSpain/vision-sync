@@ -8,6 +8,9 @@ import { Star, CheckCircle, ArrowRight, Sparkles, DollarSign, Clock, RefreshCw }
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { appTemplates, type AppTemplate } from "@/utils/appTemplates";
+import { analytics } from '@/utils/analytics';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 
 interface Recommendation {
   templateId: string;
@@ -31,6 +34,9 @@ const TemplateRecommendations = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Track page view
+    analytics.trackPageView('/template-recommendations');
+    
     // Get data from session storage
     const storedRecommendations = sessionStorage.getItem('templateRecommendations');
     const storedQuestionnaire = sessionStorage.getItem('questionnaireData');
@@ -55,6 +61,7 @@ const TemplateRecommendations = () => {
   const handleViewTemplate = (templateId: string) => {
     const template = getTemplateById(templateId);
     if (template) {
+      analytics.trackInteraction('button_click', 'view_template_details', templateId);
       navigate(`/template-preview/${template.id}`);
     }
   };
@@ -66,6 +73,8 @@ const TemplateRecommendations = () => {
   };
 
   const handleRequestQuote = (recommendation: Recommendation) => {
+    analytics.trackInteraction('button_click', 'request_quote', recommendation.templateId);
+    analytics.trackConversion('interest');
     // Store the selected recommendation and navigate to quote request
     sessionStorage.setItem('selectedRecommendation', JSON.stringify(recommendation));
     navigate('/contact');
@@ -108,6 +117,20 @@ const TemplateRecommendations = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      <SEOHead
+        title="Your Template Recommendations | Vision-Sync Forge"
+        description="View your personalized app template recommendations based on your business requirements, budget, and timeline. Find the perfect match for your project."
+        keywords="template recommendations, personalized templates, business app templates, custom recommendations"
+        canonical="https://vision-sync-forge.lovable.app/template-recommendations"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Template Recommendations",
+            description: "Personalized app template recommendations",
+            url: "https://vision-sync-forge.lovable.app/template-recommendations"
+          })
+        ]}
+      />
       <Header />
       
       <main className="container mx-auto px-4 py-8">

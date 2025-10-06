@@ -14,6 +14,9 @@ import { appTemplates, type AppTemplate } from "@/utils/appTemplates";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { supabase } from "@/integrations/supabase/client";
 import TemplateInquiryForm from "@/components/TemplateInquiryForm";
+import { analytics } from '@/utils/analytics';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateSoftwareApplicationSchema } from '@/utils/structuredData';
 
 const TemplatePreview = () => {
   const { id } = useParams();
@@ -30,6 +33,8 @@ const TemplatePreview = () => {
       setTemplate(foundTemplate || null);
       
       if (foundTemplate) {
+        analytics.trackPageView(`/template-preview/${id}`);
+        analytics.trackInteraction('project_view', foundTemplate.title, id);
         generateEnhancedContent(foundTemplate);
       }
     }
@@ -58,10 +63,13 @@ const TemplatePreview = () => {
   };
 
   const handleRequestQuote = () => {
+    analytics.trackInteraction('button_click', 'template_request_quote', id);
+    analytics.trackConversion('interest');
     setShowInquiryForm(true);
   };
 
   const handleTryDemo = () => {
+    analytics.trackInteraction('button_click', 'try_live_demo', id);
     // In a real app, this would open a live demo
     window.open('#', '_blank');
   };
@@ -94,6 +102,29 @@ const TemplatePreview = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      <SEOHead
+        title={`${template.title} | App Template - Vision-Sync Forge`}
+        description={`${template.overview} - Professional app template with ${template.keyFeatures.join(', ')}. Starting at ${formatPrice(template.pricing.base)}.`}
+        keywords={`${template.title}, ${template.category}, app template, ${template.keyFeatures.join(', ')}`}
+        canonical={`https://vision-sync-forge.lovable.app/template-preview/${id}`}
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: template.title,
+            description: template.overview,
+            url: `https://vision-sync-forge.lovable.app/template-preview/${id}`
+          }),
+          generateSoftwareApplicationSchema({
+            name: template.title,
+            description: template.overview,
+            applicationCategory: template.category,
+            offers: {
+              price: template.pricing.base.toString(),
+              currency: 'USD'
+            }
+          })
+        ]}
+      />
       <Header />
       
       <main className="container mx-auto px-4 py-8">

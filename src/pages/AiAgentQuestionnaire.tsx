@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,19 @@ import { Card } from '@/components/ui/card';
 import { Bot, Building2, MessageSquare, Zap, Users, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
+import { analytics } from '@/utils/analytics';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateServiceSchema } from '@/utils/structuredData';
 
 const AiAgentQuestionnaire = () => {
   const { aiAgent: budgetOptions } = useBudgetOptions();
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Track page view
+  useEffect(() => {
+    analytics.trackPageView('/ai-agent-questionnaire');
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -54,6 +63,8 @@ const AiAgentQuestionnaire = () => {
   };
 
   const handleSubmit = async () => {
+    analytics.trackInteraction('button_click', 'ai_agent_questionnaire_submit');
+    analytics.trackConversion('interest');
     try {
       await supabaseLeadManager.saveLead({
         name: formData.name,
@@ -377,6 +388,25 @@ const AiAgentQuestionnaire = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="AI Agent Questionnaire | Custom AI Solutions - Vision-Sync Forge"
+        description="Get your custom AI agent solution. Complete our detailed questionnaire to help us understand your business needs and create the perfect AI assistant for customer support, sales automation, or process optimization."
+        keywords="AI agent, custom AI solution, AI assistant, business automation, AI chatbot, AI questionnaire"
+        canonical="https://vision-sync-forge.lovable.app/ai-agent-questionnaire"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "AI Agent Questionnaire",
+            description: "Custom AI agent solution questionnaire",
+            url: "https://vision-sync-forge.lovable.app/ai-agent-questionnaire"
+          }),
+          generateServiceSchema({
+            name: "Custom AI Agent Development",
+            description: "Professional AI agent development tailored to your business needs",
+            serviceType: "AI Development"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}

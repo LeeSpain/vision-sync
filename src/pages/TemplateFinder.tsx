@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,9 @@ import { ChevronLeft, ChevronRight, Sparkles, Target, DollarSign, Clock, Users, 
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { analytics } from '@/utils/analytics';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 
 interface QuestionnaireData {
   businessType: string;
@@ -35,11 +38,17 @@ const TemplateFinder = () => {
     timeline: ''
   });
 
+  // Track page view
+  useEffect(() => {
+    analytics.trackPageView('/template-finder');
+  }, []);
+
   const totalSteps = 7;
   const progress = (currentStep / totalSteps) * 100;
 
   const handleNext = () => {
     if (currentStep < totalSteps) {
+      analytics.trackInteraction('button_click', `template_finder_step_${currentStep}_next`);
       setCurrentStep(currentStep + 1);
     } else {
       handleSubmit();
@@ -68,6 +77,8 @@ const TemplateFinder = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
+    analytics.trackInteraction('button_click', 'template_finder_submit');
+    analytics.trackConversion('interest');
     try {
       const { data } = await supabase.functions.invoke('ai-template-assistant', {
         body: { 
@@ -382,6 +393,20 @@ const TemplateFinder = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      <SEOHead
+        title="Template Finder | AI-Powered Recommendations - Vision-Sync Forge"
+        description="Find your perfect app template with our AI-powered questionnaire. Answer a few questions and get personalized template recommendations tailored to your business needs and budget."
+        keywords="template finder, AI recommendations, business template, app template, custom web app, template questionnaire"
+        canonical="https://vision-sync-forge.lovable.app/template-finder"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Template Finder",
+            description: "AI-powered template recommendation questionnaire",
+            url: "https://vision-sync-forge.lovable.app/template-finder"
+          })
+        ]}
+      />
       <Header />
       
       <main className="container mx-auto px-4 py-8">

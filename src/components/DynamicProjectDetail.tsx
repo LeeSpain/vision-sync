@@ -18,6 +18,8 @@ import { PricingToggle } from '@/components/ui/pricing-toggle';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import InvestmentSection from '@/components/project-template/InvestmentSection';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateProductSchema } from '@/utils/structuredData';
 
 export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
@@ -135,6 +137,29 @@ export default function DynamicProjectDetail() {
 
   return (
     <CurrencyProvider>
+      <SEOHead
+        title={`${project.title} | ${isInvestmentProject ? 'Investment Opportunity' : 'For Sale'} - Vision-Sync Forge`}
+        description={introText || project.description?.substring(0, 160) || `Discover ${project.title} - ${project.category} project available for ${isInvestmentProject ? 'investment' : 'purchase'}.`}
+        keywords={`${project.title}, ${project.category}, ${isInvestmentProject ? 'investment opportunity' : 'platform for sale'}, ${project.technologies?.join(', ') || ''}`}
+        canonical={`https://vision-sync-forge.lovable.app${project.route}`}
+        ogImage={project.image_url || undefined}
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: project.title,
+            description: introText || project.description || '',
+            url: `https://vision-sync-forge.lovable.app${project.route}`
+          }),
+          ...(project.price || project.investment_amount ? [generateProductSchema({
+            name: project.title,
+            description: introText || project.description || '',
+            image: project.image_url,
+            price: (project.price || project.investment_amount || 0).toString(),
+            currency: 'USD',
+            availability: project.status === 'active' ? 'InStock' : 'OutOfStock'
+          })] : [])
+        ]}
+      />
       <ProjectPageTemplate>
         {/* Clean Hero Section */}
         <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
