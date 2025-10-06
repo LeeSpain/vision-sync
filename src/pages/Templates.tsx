@@ -54,7 +54,7 @@ const Templates = () => {
   };
 
   const handleCategoryChange = (category: string) => {
-    analytics.trackInteraction('filter_change', 'template_category', category);
+    analytics.trackInteraction('button_click', 'template_category', category);
     setSelectedCategory(category);
   };
 
@@ -149,11 +149,10 @@ const Templates = () => {
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <TemplateCategoryFilterAdapter
-            categories={categories}
             selectedCategory={selectedCategory}
-            totalTemplates={totalTemplates}
-            templateCounts={getTemplateCounts()}
             onCategoryChange={handleCategoryChange}
+            availableCategories={categories}
+            templateCounts={getTemplateCounts()}
           />
         </div>
       </section>
@@ -169,7 +168,7 @@ const Templates = () => {
             ) : error ? (
               <div className="text-center text-red-500">Error loading templates. Please try again later.</div>
             ) : displayedTemplates.length > 0 ? (
-              displayedTemplates.map((template: AppTemplate) => (
+              displayedTemplates.map((template: Template) => (
                 <TemplateCardAdapter
                   key={template.id}
                   template={template}
