@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,9 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateProductSchema } from '@/utils/structuredData';
 import { DollarSign, ShoppingCart, Download, ArrowRight, CheckCircle, Shield, Headphones } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useBudgetOptions } from '@/utils/budgetOptions';
+import { analytics } from '@/utils/analytics';
 
 const ForSale = () => {
   const { formatPrice } = useCurrency();
@@ -24,8 +27,14 @@ const ForSale = () => {
     message: '',
   });
 
+  // Track page view
+  useEffect(() => {
+    analytics.trackPageView('/for-sale');
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    analytics.trackInteraction('form_submit', 'platform_purchase_inquiry');
     console.log('Purchase inquiry submitted:', inquiryForm);
     // Reset form
     setInquiryForm({
@@ -76,6 +85,29 @@ const ForSale = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Software Platforms For Sale | Ready-Made Solutions - Vision-Sync"
+        description="Purchase complete software platforms with full source code. ICE-SOS Lite, Tether-Band and more ready-to-deploy solutions from €75,000. Battle-tested with real users."
+        keywords="buy software platform, turnkey software, ready-made app, software for sale, ICE-SOS Lite, Tether-Band, complete source code"
+        canonical="https://vision-sync-forge.lovable.app/for-sale"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Platforms For Sale - Vision-Sync Forge",
+            description: "Complete, ready-to-deploy platforms with full source code, documentation, and support",
+            url: "https://vision-sync-forge.lovable.app/for-sale"
+          }),
+          ...platformsForSale.map(platform => 
+            generateProductSchema({
+              name: platform.title,
+              description: platform.description,
+              price: platform.price.replace(/[^0-9]/g, ''),
+              currency: "EUR"
+            })
+          )
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}

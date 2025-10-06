@@ -137,8 +137,8 @@ const CustomBuilds = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Custom Software Development | Enterprise Solutions - Vision-Sync Forge"
-        description="Transform your vision into reality with custom-built web applications, mobile apps, and enterprise systems. Expert development team specializing in React, Node.js, AI/ML, and cloud solutions."
+        title="Custom Software Development | Web & Mobile Apps - Vision-Sync"
+        description="Transform your vision into reality with custom web apps, mobile apps, and enterprise systems. Expert React, Node.js, AI/ML development. Rapid prototyping to enterprise scale."
         keywords="custom software development, web application development, mobile app development, enterprise software, custom CRM, custom ERP, bespoke software solutions"
         canonical="https://vision-sync-forge.lovable.app/custom-builds"
         ogImage="https://vision-sync-forge.lovable.app/favicon.png"

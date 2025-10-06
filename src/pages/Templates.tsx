@@ -84,8 +84,8 @@ const Templates = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       <SEOHead
-        title="App Templates | Ready-to-Deploy Solutions - Vision-Sync Forge"
-        description={`Browse ${templates.length}+ professional app templates ready for instant customization. Industry-specific solutions for healthcare, e-commerce, real estate, and more. Deploy in 72 hours.`}
+        title="50+ App Templates | Ready Solutions - Vision-Sync"
+        description={`Browse ${templates.length}+ professional app templates ready for instant customization. Industry-specific solutions for healthcare, e-commerce, real estate. Deploy in 72 hours with full source code.`}
         keywords="app templates, ready-made applications, SaaS templates, web app templates, mobile app templates, industry solutions"
         canonical="https://vision-sync-forge.lovable.app/templates"
         ogImage="https://vision-sync-forge.lovable.app/favicon.png"

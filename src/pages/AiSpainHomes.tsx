@@ -1,15 +1,44 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateSoftwareApplicationSchema } from '@/utils/structuredData';
 import { ArrowRight, Home, Brain, TrendingUp, Eye, ExternalLink, MapPin, Euro, BarChart3 } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { analytics } from '@/utils/analytics';
 
 const AiSpainHomes = () => {
   const { formatPrice } = useCurrency();
+  
+  useEffect(() => {
+    analytics.trackPageView('/ai-spain-homes');
+  }, []);
+  
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="AI Spain Homes | AI-Powered Spanish Property Investment Platform"
+        description="Revolutionary AI-powered platform for Spanish real estate investment. Smart property analysis, ROI predictions, and market insights for international buyers. Costa del Sol, Barcelona, Madrid."
+        keywords="AI real estate Spain, Spanish property investment, PropTech Spain, AI property analysis, Costa del Sol real estate, Barcelona property investment, Madrid real estate"
+        canonical="https://vision-sync-forge.lovable.app/ai-spain-homes"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "AI Spain Homes - AI-Powered Spanish Real Estate Platform",
+            description: "AI-driven platform for smart real estate investment in Spain with market analysis and ROI predictions",
+            url: "https://vision-sync-forge.lovable.app/ai-spain-homes"
+          }),
+          generateSoftwareApplicationSchema({
+            name: "AI Spain Homes",
+            description: "AI-powered real estate platform for Spanish property investment analysis and portfolio management",
+            applicationCategory: "RealEstateApplication"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Banner */}

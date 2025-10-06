@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { 
   ProjectPageTemplate,
   HeroBanner,
@@ -6,8 +7,11 @@ import {
   InvestmentSection,
   StatsShowcase
 } from '@/components/project-template';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema, generateSoftwareApplicationSchema } from '@/utils/structuredData';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { analytics } from '@/utils/analytics';
 import { 
   Globe2, 
   Shield, 
@@ -28,6 +32,11 @@ import {
 
 const GlobalHealthSync = () => {
   const { formatPrice } = useCurrency();
+  
+  useEffect(() => {
+    analytics.trackPageView('/global-health-sync');
+  }, []);
+  
   const handleViewDemo = async () => {
     await supabaseLeadManager.saveProjectLead({
       project_id: 'global-health-sync',
@@ -102,8 +111,29 @@ const GlobalHealthSync = () => {
   };
 
   return (
-    <ProjectPageTemplate>
-      <HeroBanner
+    <>
+      <SEOHead
+        title="Global Health-Sync | Healthcare Collaboration Platform"
+        description="Revolutionary healthcare synchronization platform connecting medical professionals worldwide. Real-time patient data sync, cross-border consultations, HIPAA & GDPR compliant. Join 2,500+ healthcare partners."
+        keywords="healthcare collaboration platform, medical data synchronization, global health tech, telemedicine platform, HIPAA compliant, patient data management, healthcare interoperability"
+        canonical="https://vision-sync-forge.lovable.app/global-health-sync"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Global Health-Sync - Healthcare Collaboration Platform",
+            description: "Secure, real-time healthcare collaboration and patient data management platform connecting 150+ countries",
+            url: "https://vision-sync-forge.lovable.app/global-health-sync"
+          }),
+          generateSoftwareApplicationSchema({
+            name: "Global Health-Sync",
+            description: "Healthcare synchronization platform for secure patient data management and medical collaboration",
+            applicationCategory: "HealthApplication"
+          })
+        ]}
+      />
+      <ProjectPageTemplate>
+        <HeroBanner
         title="Global Health-Sync"
         description="Revolutionary healthcare synchronization platform connecting medical professionals worldwide through secure, real-time collaboration tools and unified patient data management."
         status="MVP"
@@ -139,7 +169,8 @@ const GlobalHealthSync = () => {
         metrics={investmentMetrics}
         onRequestDetails={handleInvestmentInfo}
       />
-    </ProjectPageTemplate>
+      </ProjectPageTemplate>
+    </>
   );
 };
 

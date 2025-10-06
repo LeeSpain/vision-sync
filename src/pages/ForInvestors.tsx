@@ -7,11 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { TrendingUp, DollarSign, Users, BarChart3, ArrowRight, Shield, Target } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { useNavigate } from 'react-router-dom';
+import { analytics } from '@/utils/analytics';
 
 const ForInvestors = () => {
   const { formatPrice } = useCurrency();
@@ -29,6 +32,7 @@ const ForInvestors = () => {
 
   useEffect(() => {
     loadInvestmentOpportunities();
+    analytics.trackPageView('/for-investors');
   }, []);
 
   const loadInvestmentOpportunities = async () => {
@@ -47,8 +51,10 @@ const ForInvestors = () => {
     e.preventDefault();
     
     try {
+      analytics.trackInteraction('form_submit', 'investor_inquiry');
+      
       // Save lead to database
-      await supabaseLeadManager.saveLead({
+      const result = await supabaseLeadManager.saveLead({
         source: 'investor',
         name: investorForm.name,
         email: investorForm.email,
@@ -59,6 +65,10 @@ const ForInvestors = () => {
           message: investorForm.message
         }
       });
+      
+      if (result?.id) {
+        analytics.trackConversion('interest', undefined, result.id);
+      }
       
       // Reset form
       setInvestorForm({
@@ -77,6 +87,21 @@ const ForInvestors = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Tech Investment Opportunities | Early-Stage Startups - Vision-Sync"
+        description="Strategic investment opportunities in proven software platforms. Join Vision-Sync's portfolio of innovative healthcare, PropTech, and SaaS solutions with validated market demand."
+        keywords="tech startup investment, software investment opportunities, early stage funding, PropTech investment, HealthTech investment, SaaS investment"
+        canonical="https://vision-sync-forge.lovable.app/for-investors"
+        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Investment Opportunities - Vision-Sync Forge",
+            description: "Strategic investment opportunities in proven, market-ready digital platforms across healthcare, real estate, and SaaS sectors",
+            url: "https://vision-sync-forge.lovable.app/for-investors"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Section */}

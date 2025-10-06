@@ -319,8 +319,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Contact Us | Vision-Sync Forge - Get Your Custom Software Quote"
-        description="Contact Vision-Sync Forge for custom software development, AI solutions, and web applications. Get a free consultation and project quote from our expert development team."
+        title="Contact Us | Get Your Software Quote - Vision-Sync"
+        description="Get a free consultation and project quote from our expert development team. Custom software, AI solutions, and web applications. Response within 24 hours."
         keywords="contact software development, custom software quote, web development consultation, AI development inquiry"
         canonical="https://vision-sync-forge.lovable.app/contact"
         ogImage="https://vision-sync-forge.lovable.app/favicon.png"

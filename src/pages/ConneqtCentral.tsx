@@ -1,13 +1,37 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import SEOHead from '@/components/SEOHead';
+import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { ArrowRight, Lock, Network, Eye, Settings, Users, Shield } from 'lucide-react';
+import { analytics } from '@/utils/analytics';
 
 const ConneqtCentral = () => {
+  useEffect(() => {
+    analytics.trackPageView('/conneqt-central');
+  }, []);
+  
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Conneqt-Central | Internal Operations Platform - Vision-Sync Forge"
+        description="Vision-Sync's proprietary project management and team collaboration platform. Enterprise-grade internal operations system with restricted access."
+        keywords="internal operations, project management platform, team collaboration"
+        canonical="https://vision-sync-forge.lovable.app/conneqt-central"
+        noindex={true}
+        nofollow={true}
+        structuredData={[
+          generateOrganizationSchema(),
+          generateWebPageSchema({
+            name: "Conneqt-Central - Internal Platform",
+            description: "Proprietary internal operations platform for Vision-Sync Forge",
+            url: "https://vision-sync-forge.lovable.app/conneqt-central"
+          })
+        ]}
+      />
       <Header />
       
       {/* Hero Banner */}
