@@ -20,11 +20,11 @@ const AiSpainHomes = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="AI Spain Homes | AI-Powered Spanish Property Investment Platform"
-        description="Revolutionary AI-powered platform for Spanish real estate investment. Smart property analysis, ROI predictions, and market insights for international buyers. Costa del Sol, Barcelona, Madrid."
-        keywords="AI real estate Spain, Spanish property investment, PropTech Spain, AI property analysis, Costa del Sol real estate, Barcelona property investment, Madrid real estate"
+        title="AI Spain Homes | Smart Spanish Property Investment Platform"
+        description="AI-powered Spanish property investment platform. Smart ROI predictions, market insights, international buyer tools. Transform real estate investing today."
+        keywords="Spanish property, Spain real estate investment, AI property investment, international property buying, Spanish homes, PropTech Spain"
         canonical="https://vision-sync-forge.lovable.app/ai-spain-homes"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/ai-spain-homes.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({

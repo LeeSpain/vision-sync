@@ -125,7 +125,7 @@ const AiAgents = () => {
     <div className="min-h-screen">
       <SEOHead
         title="AI Agents & Chatbots | Intelligent Business Automation - Vision-Sync Forge"
-        description="Deploy AI agents and chatbots for 24/7 customer service automation. Conversational AI, virtual assistants, and intelligent automation solutions. Achieve 15-25% efficiency gains with enterprise-grade AI technology."
+        description="Deploy AI agents for 24/7 customer service automation. Conversational AI, virtual assistants, intelligent automation. Achieve 15-25% efficiency gains today."
         keywords="AI agents, AI chatbots, conversational AI, intelligent automation, business automation, AI customer service, virtual assistants, chatbot development, AI sales assistant, machine learning automation, enterprise AI, automated customer support"
         canonical="https://vision-sync-forge.lovable.app/ai-agents"
         ogImage="https://vision-sync-forge.lovable.app/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"

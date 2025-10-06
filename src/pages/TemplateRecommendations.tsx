@@ -119,9 +119,10 @@ const TemplateRecommendations = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
       <SEOHead
         title="Your Template Recommendations | Vision-Sync Forge"
-        description="View your personalized app template recommendations based on your business requirements, budget, and timeline. Find the perfect match for your project."
+        description="Get personalized template recommendations based on your business needs. Compare features, pricing, deployment times. Request free demo today."
         keywords="template recommendations, personalized templates, business app templates, custom recommendations"
         canonical="https://vision-sync-forge.lovable.app/template-recommendations"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/template-recommendations.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({

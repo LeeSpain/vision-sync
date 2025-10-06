@@ -141,7 +141,7 @@ const CustomBuilds = () => {
         description="Transform your vision into reality with custom web apps, mobile apps, and enterprise systems. Expert React, Node.js, AI/ML development. Rapid prototyping to enterprise scale."
         keywords="custom software development, web application development, mobile app development, enterprise software, custom CRM, custom ERP, bespoke software solutions"
         canonical="https://vision-sync-forge.lovable.app/custom-builds"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/custom-builds.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({

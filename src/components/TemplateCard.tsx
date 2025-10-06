@@ -34,7 +34,7 @@ interface TemplateCardProps {
         {template.image_url ? (
           <img 
             src={template.image_url} 
-            alt={template.title}
+            alt={`${template.title} - ${template.category} app template preview showcasing modern design and key features`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (

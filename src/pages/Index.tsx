@@ -12,7 +12,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 import SEOHead from '@/components/SEOHead';
-import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
+import { generateOrganizationSchema, generateWebPageSchema, generateFAQSchema } from '@/utils/structuredData';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package, CheckCircle } from 'lucide-react';

@@ -398,6 +398,7 @@ const TemplateFinder = () => {
         description="Find your perfect app template with our AI-powered questionnaire. Answer a few questions and get personalized template recommendations tailored to your business needs and budget."
         keywords="template finder, AI recommendations, business template, app template, custom web app, template questionnaire"
         canonical="https://vision-sync-forge.lovable.app/template-finder"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/template-finder.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({

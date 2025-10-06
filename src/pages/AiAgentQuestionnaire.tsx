@@ -390,9 +390,10 @@ const AiAgentQuestionnaire = () => {
     <div className="min-h-screen">
       <SEOHead
         title="AI Agent Questionnaire | Custom AI Solutions - Vision-Sync Forge"
-        description="Get your custom AI agent solution. Complete our detailed questionnaire to help us understand your business needs and create the perfect AI assistant for customer support, sales automation, or process optimization."
+        description="Get matched with the perfect AI agent for your business. Answer 7 questions, receive custom recommendations. Start automating in 48 hours."
         keywords="AI agent, custom AI solution, AI assistant, business automation, AI chatbot, AI questionnaire"
         canonical="https://vision-sync-forge.lovable.app/ai-agent-questionnaire"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/ai-agent-questionnaire.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({

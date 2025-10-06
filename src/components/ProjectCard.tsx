@@ -86,7 +86,7 @@ const ProjectCard = ({
           <>
             <img 
               src={image} 
-              alt={title}
+              alt={`${title} - ${status} ${category} project screenshot displaying application features and user interface`}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';

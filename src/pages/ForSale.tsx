@@ -86,16 +86,16 @@ const ForSale = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Software Platforms For Sale | Ready-Made Solutions - Vision-Sync"
-        description="Purchase complete software platforms with full source code. ICE-SOS Lite, Tether-Band and more ready-to-deploy solutions from €75,000. Battle-tested with real users."
-        keywords="buy software platform, turnkey software, ready-made app, software for sale, ICE-SOS Lite, Tether-Band, complete source code"
+        title="Premium Platforms For Sale | Ready-to-Launch Software - Vision-Sync Forge"
+        description="Acquire fully-developed, production-ready platforms for healthcare, emergency services, and wearable tech. Ready to launch with complete ownership and support."
+        keywords="platforms for sale, software acquisition, ready-made platforms, turnkey software, healthcare platforms, emergency systems, wearable tech platforms"
         canonical="https://vision-sync-forge.lovable.app/for-sale"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/for-sale.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Platforms For Sale - Vision-Sync Forge",
-            description: "Complete, ready-to-deploy platforms with full source code, documentation, and support",
+            description: "Fully-developed software platforms ready for acquisition",
             url: "https://vision-sync-forge.lovable.app/for-sale"
           }),
           ...platformsForSale.map(platform => 

@@ -319,16 +319,16 @@ const Contact = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Contact Us | Get Your Software Quote - Vision-Sync"
-        description="Get a free consultation and project quote from our expert development team. Custom software, AI solutions, and web applications. Response within 24 hours."
-        keywords="contact software development, custom software quote, web development consultation, AI development inquiry"
+        title="Contact Vision-Sync Forge | Get Your Free Consultation"
+        description="Get in touch with Vision-Sync Forge for custom software development, AI solutions, and app templates. Free consultation and personalized recommendations."
+        keywords="contact, consultation, software development inquiry, custom software quote, AI solutions contact"
         canonical="https://vision-sync-forge.lovable.app/contact"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/contact.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Contact Vision-Sync Forge",
-            description: "Get in touch with our development team for custom software solutions",
+            description: "Get in touch for custom software development and AI solutions",
             url: "https://vision-sync-forge.lovable.app/contact"
           }),
           generateFAQSchema(contactFAQs)

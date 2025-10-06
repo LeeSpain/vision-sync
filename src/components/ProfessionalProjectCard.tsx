@@ -65,7 +65,7 @@ export const ProfessionalProjectCard: React.FC<ProfessionalProjectCardProps> = (
           {image ? (
             <img 
               src={image} 
-              alt={title}
+              alt={`${title} - ${category} platform screenshot showing professional web application interface`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (

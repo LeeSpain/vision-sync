@@ -104,9 +104,10 @@ const TemplatePreview = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
       <SEOHead
         title={`${template.title} | App Template - Vision-Sync Forge`}
-        description={`${template.overview} - Professional app template with ${template.keyFeatures.join(', ')}. Starting at ${formatPrice(template.pricing.base)}.`}
+        description={`Preview ${template.title} app template with live demos, feature breakdowns, pricing comparisons. Customize with your branding. Deploy in 72 hours with full support.`}
         keywords={`${template.title}, ${template.category}, app template, ${template.keyFeatures.join(', ')}`}
         canonical={`https://vision-sync-forge.lovable.app/template-preview/${id}`}
+        ogImage="https://vision-sync-forge.lovable.app/og-images/template-preview.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({

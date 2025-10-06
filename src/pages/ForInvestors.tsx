@@ -88,16 +88,16 @@ const ForInvestors = () => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Tech Investment Opportunities | Early-Stage Startups - Vision-Sync"
-        description="Strategic investment opportunities in proven software platforms. Join Vision-Sync's portfolio of innovative healthcare, PropTech, and SaaS solutions with validated market demand."
-        keywords="tech startup investment, software investment opportunities, early stage funding, PropTech investment, HealthTech investment, SaaS investment"
+        title="Tech Investment Opportunities | Vision-Sync Portfolio"
+        description="Strategic tech investment opportunities in proven software platforms. Join Vision-Sync's portfolio of healthcare, PropTech, SaaS solutions. Early-stage access."
+        keywords="tech investment, software investment, startup investment, PropTech investment, healthcare tech, SaaS investment"
         canonical="https://vision-sync-forge.lovable.app/for-investors"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        ogImage="https://vision-sync-forge.lovable.app/og-images/for-investors.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Investment Opportunities - Vision-Sync Forge",
-            description: "Strategic investment opportunities in proven, market-ready digital platforms across healthcare, real estate, and SaaS sectors",
+            description: "Strategic tech investment opportunities in proven software platforms",
             url: "https://vision-sync-forge.lovable.app/for-investors"
           })
         ]}

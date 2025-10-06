@@ -90,7 +90,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
         {image ? (
           <img 
             src={image} 
-            alt={title}
+            alt={`${title} - ${category} software platform preview showing key features and interface design`}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
