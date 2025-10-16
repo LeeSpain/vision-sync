@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { DateRange } from 'react-day-picker';
+import { debounce } from 'lodash';
 
 interface LiveMetrics {
   activeUsers: number;
@@ -65,7 +67,15 @@ interface ProjectPerformance {
   status: string;
 }
 
-export function useRealTimeAnalytics() {
+interface AnalyticsFilters {
+  dateRange?: DateRange;
+  projectId?: string;
+  device?: string;
+  browser?: string;
+  trafficSource?: string;
+}
+
+export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
   const [loading, setLoading] = useState(true);
   const [liveMetrics, setLiveMetrics] = useState<LiveMetrics>({
     activeUsers: 0,
@@ -101,7 +111,7 @@ export function useRealTimeAnalytics() {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [isLive, setIsLive] = useState(true);
 
-  const fetchAnalyticsData = async (showNotification = false) => {
+  const fetchAnalyticsData = useCallback(async (showNotification = false) => {
     try {
       // Fetch live metrics from various sources
       const today = new Date();
@@ -113,18 +123,40 @@ export function useRealTimeAnalytics() {
         .select('*')
         .gte('created_at', today.toISOString());
 
-      // Get page analytics
-      const { data: pageAnalyticsData } = await supabase
-        .from('page_analytics')
-        .select('*')
-        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-        .order('created_at', { ascending: false });
+      // Build queries with filters
+      let pageQuery = supabase.from('page_analytics').select('*');
+      let conversionQuery = supabase.from('conversion_tracking').select('*');
 
-      // Get conversion tracking
-      const { data: conversionData } = await supabase
-        .from('conversion_tracking')
-        .select('*')
-        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+      // Apply date range filter
+      if (filters.dateRange?.from) {
+        pageQuery = pageQuery.gte('created_at', filters.dateRange.from.toISOString());
+        conversionQuery = conversionQuery.gte('created_at', filters.dateRange.from.toISOString());
+      } else {
+        pageQuery = pageQuery.gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+      }
+      
+      if (filters.dateRange?.to) {
+        const toDate = new Date(filters.dateRange.to);
+        toDate.setHours(23, 59, 59, 999);
+        pageQuery = pageQuery.lte('created_at', toDate.toISOString());
+        conversionQuery = conversionQuery.lte('created_at', toDate.toISOString());
+      }
+
+      // Apply device filter
+      if (filters.device && filters.device !== 'all') {
+        pageQuery = pageQuery.eq('device_type', filters.device);
+      }
+
+      // Apply browser filter
+      if (filters.browser && filters.browser !== 'all') {
+        pageQuery = pageQuery.ilike('browser', `%${filters.browser}%`);
+      }
+
+      // Get page analytics
+      const { data: pageAnalyticsData } = await pageQuery.order('created_at', { ascending: false });
+
+      // Get conversion tracking (already filtered above)
+      const { data: conversionData } = await conversionQuery;
 
       // Get quotes for revenue metrics
       const { data: quotesData } = await supabase
@@ -442,6 +474,7 @@ export function useRealTimeAnalytics() {
     } catch (error) {
       console.error('Error fetching analytics data:', error);
       setIsLive(false);
+      setIsLive(false);
       toast.error('Analytics update failed', {
         description: 'Real-time connection lost. Retrying...',
         duration: 3000,
@@ -449,10 +482,16 @@ export function useRealTimeAnalytics() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  // Debounced fetch for performance
+  const debouncedFetch = useMemo(
+    () => debounce(fetchAnalyticsData, 300),
+    [fetchAnalyticsData]
+  );
 
   useEffect(() => {
-    fetchAnalyticsData();
+    debouncedFetch();
 
     // Set up real-time subscriptions with notifications
     const pageAnalyticsChannel = supabase
@@ -510,8 +549,9 @@ export function useRealTimeAnalytics() {
       supabase.removeChannel(quotesChannel);
       supabase.removeChannel(projectsChannel);
       clearInterval(interval);
+      debouncedFetch.cancel();
     };
-  }, []);
+  }, [debouncedFetch]);
 
   return {
     liveMetrics,
