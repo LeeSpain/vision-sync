@@ -26,10 +26,17 @@ interface ConversionEvent {
 class AnalyticsTracker {
   private sessionId: string;
   private userId?: string;
+  private pageStartTime: number = Date.now();
+  private currentPageId?: string;
+  private scrollDepth: number = 0;
+  private interactionCount: number = 0;
   
   constructor() {
     this.sessionId = this.generateSessionId();
     this.initializeTracking();
+    this.setupScrollTracking();
+    this.setupExitTracking();
+    this.trackPerformanceMetrics();
   }
 
   private generateSessionId(): string {
@@ -55,16 +62,160 @@ class AnalyticsTracker {
     };
     
     window.addEventListener('popstate', () => {
+      this.updatePageExit();
       this.trackPageView(window.location.pathname);
     });
     
     window.addEventListener('pushstate', () => {
+      this.updatePageExit();
       this.trackPageView(window.location.pathname);
     });
     
     window.addEventListener('replacestate', () => {
+      this.updatePageExit();
       this.trackPageView(window.location.pathname);
     });
+  }
+
+  private setupScrollTracking() {
+    let maxScrollDepth = 0;
+    
+    const updateScrollDepth = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      const scrollPercentage = Math.round((scrollTop + windowHeight) / documentHeight * 100);
+      
+      if (scrollPercentage > maxScrollDepth) {
+        maxScrollDepth = scrollPercentage;
+        this.scrollDepth = Math.min(maxScrollDepth, 100);
+      }
+    };
+    
+    window.addEventListener('scroll', updateScrollDepth, { passive: true });
+    
+    // Track clicks as interactions
+    document.addEventListener('click', () => {
+      this.interactionCount++;
+    }, { passive: true });
+  }
+
+  private setupExitTracking() {
+    // Update page analytics before leaving
+    window.addEventListener('beforeunload', () => {
+      this.updatePageExit();
+    });
+    
+    // Also track visibility changes (tab switches)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.updatePageExit();
+      }
+    });
+  }
+
+  private async updatePageExit() {
+    if (!this.currentPageId) return;
+    
+    const duration = Math.round((Date.now() - this.pageStartTime) / 1000);
+    
+    try {
+      await supabase
+        .from('page_analytics')
+        .update({
+          duration_seconds: duration,
+          scroll_depth: this.scrollDepth,
+          interactions_count: this.interactionCount,
+          exited_at: new Date().toISOString()
+        })
+        .eq('id', this.currentPageId);
+    } catch (error) {
+      console.error('Error updating page exit:', error);
+    }
+  }
+
+  private async trackPerformanceMetrics() {
+    // Wait for page load to complete
+    if (document.readyState === 'complete') {
+      this.capturePerformanceMetrics();
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(() => this.capturePerformanceMetrics(), 0);
+      });
+    }
+  }
+
+  private async capturePerformanceMetrics() {
+    try {
+      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      
+      if (!navigation) return;
+
+      const metrics = {
+        // Page Load Time
+        pageLoadTime: Math.round(navigation.loadEventEnd - navigation.fetchStart),
+        
+        // Time to First Byte
+        ttfb: Math.round(navigation.responseStart - navigation.requestStart),
+        
+        // DOM Content Loaded
+        domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart),
+        
+        // Time to Interactive (approximation)
+        tti: Math.round(navigation.domInteractive - navigation.fetchStart),
+      };
+
+      // Store performance metrics
+      await supabase.from('performance_metrics').insert([
+        {
+          metric_type: 'page_load',
+          metric_name: 'page_load_time',
+          metric_value: metrics.pageLoadTime,
+          metric_unit: 'ms',
+          aggregation_period: 'realtime',
+          dimensions: {
+            page: window.location.pathname,
+            device_type: this.getDeviceType(),
+            browser: this.getBrowserName()
+          }
+        },
+        {
+          metric_type: 'performance',
+          metric_name: 'time_to_first_byte',
+          metric_value: metrics.ttfb,
+          metric_unit: 'ms',
+          aggregation_period: 'realtime',
+          dimensions: {
+            page: window.location.pathname
+          }
+        },
+        {
+          metric_type: 'performance',
+          metric_name: 'dom_content_loaded',
+          metric_value: metrics.domContentLoaded,
+          metric_unit: 'ms',
+          aggregation_period: 'realtime',
+          dimensions: {
+            page: window.location.pathname
+          }
+        },
+        {
+          metric_type: 'performance',
+          metric_name: 'time_to_interactive',
+          metric_value: metrics.tti,
+          metric_unit: 'ms',
+          aggregation_period: 'realtime',
+          dimensions: {
+            page: window.location.pathname
+          }
+        }
+      ]);
+
+      console.log('Performance metrics tracked:', metrics);
+    } catch (error) {
+      console.error('Error tracking performance metrics:', error);
+    }
   }
 
   async trackPageView(page: string) {
@@ -74,6 +225,11 @@ class AnalyticsTracker {
       user_agent: navigator.userAgent,
       timestamp: new Date()
     };
+
+    // Reset page tracking for new page
+    this.pageStartTime = Date.now();
+    this.scrollDepth = 0;
+    this.interactionCount = 0;
 
     // Store in local storage for real-time analytics
     const pageViews = JSON.parse(localStorage.getItem('page_views') || '[]');
@@ -88,7 +244,7 @@ class AnalyticsTracker {
 
     // Store in database for real-time analytics
     try {
-      await supabase.from('page_analytics').insert({
+      const { data, error } = await supabase.from('page_analytics').insert({
         session_id: this.sessionId,
         page_path: page,
         page_title: document.title,
@@ -96,7 +252,16 @@ class AnalyticsTracker {
         user_agent: navigator.userAgent,
         device_type: this.getDeviceType(),
         browser: this.getBrowserName(),
-      });
+        duration_seconds: 0,
+        scroll_depth: 0,
+        interactions_count: 0
+      }).select('id').single();
+
+      if (error) {
+        console.error('Error storing page view:', error);
+      } else if (data) {
+        this.currentPageId = data.id;
+      }
     } catch (error) {
       console.error('Error storing page view:', error);
     }
