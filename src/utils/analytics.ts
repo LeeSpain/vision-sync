@@ -242,6 +242,12 @@ class AnalyticsTracker {
     
     localStorage.setItem('page_views', JSON.stringify(pageViews));
 
+    // Get location data
+    const locationData = await this.getLocationData();
+
+    // Parse UTM parameters from URL
+    const utmParams = this.parseUTMParameters();
+
     // Store in database for real-time analytics
     try {
       const { data, error } = await supabase.from('page_analytics').insert({
@@ -254,7 +260,9 @@ class AnalyticsTracker {
         browser: this.getBrowserName(),
         duration_seconds: 0,
         scroll_depth: 0,
-        interactions_count: 0
+        interactions_count: 0,
+        country: locationData.country,
+        city: locationData.city
       }).select('id').single();
 
       if (error) {
@@ -292,6 +300,102 @@ class AnalyticsTracker {
     if (ua.indexOf('Chrome') > -1) return 'Chrome';
     if (ua.indexOf('Safari') > -1) return 'Safari';
     return 'Unknown';
+  }
+
+  // Get geolocation data from IP
+  private async getLocationData(): Promise<{ country: string | null; city: string | null }> {
+    try {
+      // Check if we have cached location data (to avoid repeated API calls)
+      const cachedLocation = localStorage.getItem('user_location');
+      if (cachedLocation) {
+        const cached = JSON.parse(cachedLocation);
+        // Cache is valid for 24 hours
+        if (Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) {
+          return { country: cached.country, city: cached.city };
+        }
+      }
+
+      // Use ipapi.co free tier (1000 requests/day, no key required)
+      const response = await fetch('https://ipapi.co/json/');
+      if (!response.ok) {
+        throw new Error('Geolocation API failed');
+      }
+
+      const data = await response.json();
+      const locationData = {
+        country: data.country_name || null,
+        city: data.city || null,
+        timestamp: Date.now()
+      };
+
+      // Cache the result
+      localStorage.setItem('user_location', JSON.stringify(locationData));
+
+      return { country: locationData.country, city: locationData.city };
+    } catch (error) {
+      console.error('Error fetching location data:', error);
+      return { country: null, city: null };
+    }
+  }
+
+  // Parse UTM parameters for campaign tracking
+  private parseUTMParameters(): Record<string, string> {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+      utm_source: urlParams.get('utm_source') || '',
+      utm_medium: urlParams.get('utm_medium') || '',
+      utm_campaign: urlParams.get('utm_campaign') || '',
+      utm_term: urlParams.get('utm_term') || '',
+      utm_content: urlParams.get('utm_content') || ''
+    };
+  }
+
+  // Enhanced traffic source categorization
+  getTrafficSourceCategory(referrer: string): string {
+    if (!referrer) return 'Direct';
+
+    try {
+      const url = new URL(referrer);
+      const hostname = url.hostname.toLowerCase();
+
+      // Social media sources
+      const socialPlatforms = ['facebook.com', 'twitter.com', 'x.com', 'linkedin.com', 'instagram.com', 'youtube.com', 'tiktok.com', 'reddit.com', 'pinterest.com'];
+      if (socialPlatforms.some(platform => hostname.includes(platform))) {
+        return 'Social';
+      }
+
+      // Search engines
+      const searchEngines = ['google.com', 'bing.com', 'yahoo.com', 'duckduckgo.com', 'baidu.com', 'yandex.com'];
+      if (searchEngines.some(engine => hostname.includes(engine))) {
+        return 'Organic Search';
+      }
+
+      // Known ad networks
+      const adNetworks = ['googleads.', 'doubleclick.', 'facebook.com/ads', 'ads.'];
+      if (adNetworks.some(ad => hostname.includes(ad))) {
+        return 'Paid Ads';
+      }
+
+      // Check UTM parameters
+      const utmParams = this.parseUTMParameters();
+      if (utmParams.utm_medium) {
+        const medium = utmParams.utm_medium.toLowerCase();
+        if (medium.includes('cpc') || medium.includes('ppc') || medium.includes('paid')) {
+          return 'Paid Ads';
+        }
+        if (medium.includes('email')) {
+          return 'Email';
+        }
+        if (medium.includes('social')) {
+          return 'Social';
+        }
+      }
+
+      // Default to referral
+      return 'Referral';
+    } catch (error) {
+      return 'Direct';
+    }
   }
 
   async trackInteraction(type: InteractionEvent['type'], element: string, projectId?: string) {

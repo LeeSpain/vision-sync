@@ -44,6 +44,11 @@ interface UserBehavior {
   topConvertingSources: Array<{ name: string; leads: number; conversionRate: number }>;
 }
 
+interface GeographicData {
+  countries: Array<{ name: string; value: number }>;
+  cities: Array<{ name: string; country: string; value: number }>;
+}
+
 interface ProjectPerformance {
   id: string;
   name: string;
@@ -92,6 +97,7 @@ export function useRealTimeAnalytics() {
     topConvertingSources: [],
   });
   const [projectPerformance, setProjectPerformance] = useState<ProjectPerformance[]>([]);
+  const [geographicData, setGeographicData] = useState<GeographicData>({ countries: [], cities: [] });
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [isLive, setIsLive] = useState(true);
 
@@ -321,15 +327,22 @@ export function useRealTimeAnalytics() {
         ? Math.round((pageAnalyticsData.filter(p => (p.duration_seconds || 0) < 10).length / pageAnalyticsData.length) * 100)
         : 0;
 
-      // Calculate conversion rate
+      // Calculate conversion rate and change from last week
       const totalVisitors = pageAnalyticsData?.length || 1;
       const conversions = todayLeads?.length || 0;
       const conversionRate = Math.round((conversions / totalVisitors) * 100);
 
+      // Calculate conversion rate change from last week
+      const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const lastWeekViews = pageAnalyticsData?.filter(p => new Date(p.created_at) < lastWeek).length || 1;
+      const lastWeekConversions = todayLeads?.filter(l => new Date(l.created_at) < lastWeek).length || 0;
+      const lastWeekRate = Math.round((lastWeekConversions / lastWeekViews) * 100);
+      const conversionRateChange = conversionRate - lastWeekRate;
+
       setLiveMetrics({
         activeUsers: activeSessions.size,
         conversionRate,
-        conversionRateChange: Math.round(Math.random() * 10 - 5), // Placeholder - would calculate from historical data
+        conversionRateChange,
         todayRevenue: acceptedQuotes.filter(q => {
           const acceptedDate = new Date(q.accepted_at || '');
           return acceptedDate >= today;
@@ -339,6 +352,59 @@ export function useRealTimeAnalytics() {
         bounceRate,
       });
 
+      // Calculate real deal velocity (days from created to accepted)
+      const closedDeals = quotesData?.filter(q => q.status === 'accepted' && q.accepted_at && q.created_at) || [];
+      const dealVelocity = closedDeals.length > 0
+        ? Math.round(closedDeals.reduce((sum, q) => {
+            const created = new Date(q.created_at).getTime();
+            const accepted = new Date(q.accepted_at!).getTime();
+            const days = (accepted - created) / (1000 * 60 * 60 * 24);
+            return sum + days;
+          }, 0) / closedDeals.length)
+        : 0;
+
+      // Calculate real engagement metrics
+      const totalSessions = new Set(pageAnalyticsData?.map(p => p.session_id) || []).size;
+      const pagesPerSession = totalSessions > 0 
+        ? Math.round((pageAnalyticsData?.length || 0) / totalSessions * 10) / 10
+        : 0;
+      
+      const avgScrollDepth = pageAnalyticsData && pageAnalyticsData.length > 0
+        ? Math.round(pageAnalyticsData.reduce((sum, p) => sum + (p.scroll_depth || 0), 0) / pageAnalyticsData.length)
+        : 0;
+
+      const interactionsPerSession = totalSessions > 0
+        ? Math.round(pageAnalyticsData?.reduce((sum, p) => sum + (p.interactions_count || 0), 0) / totalSessions * 10) / 10
+        : 0;
+
+      // Calculate geographic data
+      const countriesMap = pageAnalyticsData?.reduce((acc, page) => {
+        const country = page.country || 'Unknown';
+        acc[country] = (acc[country] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>) || {};
+
+      const countries = Object.entries(countriesMap)
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10);
+
+      const citiesMap = pageAnalyticsData?.reduce((acc, page) => {
+        if (page.city && page.country) {
+          const key = `${page.city}, ${page.country}`;
+          if (!acc[key]) {
+            acc[key] = { city: page.city, country: page.country, count: 0 };
+          }
+          acc[key].count++;
+        }
+        return acc;
+      }, {} as Record<string, { city: string; country: string; count: number }>) || {};
+
+      const cities = Object.values(citiesMap)
+        .map(({ city, country, count }) => ({ name: city, country, value: count }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10);
+
       setConversionFunnel(funnelWithRates);
       setPageViews(pageViewsData);
       setRevenueMetrics({
@@ -346,7 +412,7 @@ export function useRealTimeAnalytics() {
         activeDeals: activeQuotes.length,
         avgDealSize: Math.round(avgDealSize),
         winRate,
-        dealVelocity: 14, // Placeholder - would calculate from quote data
+        dealVelocity,
         trendData,
       });
       setUserBehavior({
@@ -354,10 +420,14 @@ export function useRealTimeAnalytics() {
         topPages,
         sessionDuration,
         deviceTypes,
-        pagesPerSession: 3.2, // Placeholder
-        avgScrollDepth: 65, // Placeholder
-        interactionsPerSession: 5, // Placeholder
+        pagesPerSession,
+        avgScrollDepth,
+        interactionsPerSession,
         topConvertingSources,
+      });
+      setGeographicData({
+        countries,
+        cities,
       });
       setProjectPerformance(projectStats);
       setLastUpdate(new Date());
@@ -450,6 +520,7 @@ export function useRealTimeAnalytics() {
     revenueMetrics,
     userBehavior,
     projectPerformance,
+    geographicData,
     loading,
     lastUpdate,
     isLive,

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRealTimeAnalytics } from '@/hooks/useRealTimeAnalytics';
-import { Activity, TrendingUp, Users, DollarSign, MousePointer, Clock, Target, Zap } from 'lucide-react';
+import { Activity, TrendingUp, Users, DollarSign, MousePointer, Clock, Target, Zap, Globe } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import AnalyticsSeedButton from './AnalyticsSeedButton';
 import ClearAnalyticsButton from './ClearAnalyticsButton';
@@ -16,6 +16,7 @@ export function RealTimeAnalytics() {
     revenueMetrics,
     userBehavior,
     projectPerformance,
+    geographicData,
     loading,
     lastUpdate,
     isLive
@@ -130,6 +131,7 @@ export function RealTimeAnalytics() {
           <TabsTrigger value="conversions">Conversions</TabsTrigger>
           <TabsTrigger value="projects">Projects</TabsTrigger>
           <TabsTrigger value="revenue">Revenue</TabsTrigger>
+          <TabsTrigger value="geographic">Geographic</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -693,6 +695,131 @@ export function RealTimeAnalytics() {
                   <Line type="monotone" dataKey="pipeline" stroke="hsl(var(--accent))" strokeWidth={2} name="Pipeline" />
                 </LineChart>
               </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Geographic Tab */}
+        <TabsContent value="geographic" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Top Countries
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Visitor distribution by country
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={350}>
+                  <BarChart data={geographicData.countries} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" width={120} />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="hsl(var(--primary))" name="Visitors" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Geographic Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={350}>
+                  <PieChart>
+                    <Pie
+                      data={geographicData.countries}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {geographicData.countries.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Cities</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Most active cities by visitor count
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {geographicData.cities.length > 0 ? (
+                  geographicData.cities.map((city, index) => (
+                    <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-medium">{city.name}</p>
+                          <p className="text-sm text-muted-foreground">{city.country}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold">{city.value}</p>
+                        <p className="text-xs text-muted-foreground">visitors</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Globe className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                    <p>No geographic data available yet</p>
+                    <p className="text-xs mt-1">Data will appear as visitors access your site</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Geographic Insights</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Total Countries</p>
+                  <p className="text-2xl font-bold">{geographicData.countries.length}</p>
+                  <p className="text-xs text-muted-foreground">Active markets</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Total Cities</p>
+                  <p className="text-2xl font-bold">{geographicData.cities.length}</p>
+                  <p className="text-xs text-muted-foreground">Urban centers</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Top Market</p>
+                  <p className="text-2xl font-bold">
+                    {geographicData.countries[0]?.name || 'N/A'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {geographicData.countries[0]?.value || 0} visitors
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
