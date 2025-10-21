@@ -444,6 +444,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
     // Check if AI used a tool call for interactive options
     const toolCalls = aiResponse.choices[0]?.message?.tool_calls;
     let interactiveResponse = null;
+    let aiMessage = aiResponse.choices[0]?.message?.content || '';
     
     if (toolCalls && toolCalls.length > 0) {
       const functionCall = toolCalls[0].function;
@@ -465,9 +466,17 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
           category: functionArgs.category
         }
       };
+      
+      // Use the question from the tool call as the message, not the raw tool code
+      aiMessage = functionArgs.question || 'Please select an option:';
     }
     
-    const aiMessage = aiResponse.choices[0]?.message?.content || 'I apologize, but I\'m having trouble responding right now.';
+    // Fallback message if content is empty or contains tool code
+    if (!aiMessage || aiMessage.includes('tool_code') || aiMessage.includes('print(')) {
+      aiMessage = interactiveResponse 
+        ? 'Please select an option:'
+        : 'I apologize, but I\'m having trouble responding right now.';
+    }
 
     // Update conversation history
     const updatedHistory = [
