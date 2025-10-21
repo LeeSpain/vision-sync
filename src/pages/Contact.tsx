@@ -433,7 +433,7 @@ const Contact = () => {
                 </div>
                 
                 {/* Embedded AI Guardian Chat */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 flex-1 min-h-[500px] overflow-hidden">
+                <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 flex-1 min-h-[500px] max-h-[600px] overflow-hidden flex">
                   <AiChatWidget embedded={true} />
                 </div>
                 

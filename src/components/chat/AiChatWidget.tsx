@@ -341,7 +341,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   // For embedded mode, don't show the minimized state
   if (embedded) {
     return (
-      <div className="w-full h-full flex flex-col">
+      <div className="w-full h-full flex flex-col min-h-0">
         <Card className="flex flex-col h-full shadow-lg border bg-white overflow-hidden">
           <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
             <CardTitle className="flex items-center gap-3">
@@ -361,9 +361,9 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             </div>
           </CardHeader>
           
-          <CardContent className="flex-1 p-0 flex flex-col min-h-0">
-            <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 pb-4">
-              <div className="space-y-4 pt-8">
+          <CardContent className="flex-1 p-0 flex flex-col overflow-hidden min-h-0">
+            <ScrollArea ref={scrollAreaRef} className="flex-1 overflow-y-auto px-4">
+              <div className="space-y-4 py-4">
                 {messages.map((message, index) => (
                   <div
                     key={index}
@@ -430,7 +430,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             
             {/* Quick Actions */}
             {welcomeSettings.quickActions && welcomeSettings.quickActions.length > 0 && messages.length === 1 && (
-              <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+              <div className="flex-shrink-0 p-4 border-t border-gray-100 bg-gray-50/50">
                 <div className="text-xs font-medium text-gray-600 mb-2">Quick Actions:</div>
                 <div className="flex flex-wrap gap-2">
                   {welcomeSettings.quickActions.map((action, index) => (
