@@ -254,7 +254,18 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       // Remove typing indicator
       setMessages(prev => prev.filter(msg => !msg.isTyping));
 
-      if (error) throw error;
+      if (error) {
+        console.error('AI Chat Error:', error);
+        throw error;
+      }
+
+      console.log('AI Chat Response:', {
+        has_response: !!data.response,
+        leadCreated: data.leadCreated,
+        qualified: data.qualified,
+        conversionScore: data.conversionScore,
+        hasContactInfo: !!data.contactInfo
+      });
 
       const aiResponse: ChatMessage = {
         id: `msg_${Date.now()}`,
@@ -276,6 +287,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
       // Show success message if lead was created
       if (data.leadCreated) {
+        console.log('✅ Lead created successfully!');
         toast.success('Thanks! We\'ve saved your contact information and will follow up soon.', {
           duration: 5000,
           position: 'top-right'

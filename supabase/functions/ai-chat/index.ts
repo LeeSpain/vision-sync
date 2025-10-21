@@ -431,15 +431,26 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
           phone: updatedContactInfo.phone,
           source: 'ai-agent',
           status: 'new',
+          qualification_status: isQualified ? 'qualified' : 'unqualified',
+          lead_score: conversionScore,
           priority: hasCompleteContact ? 'high' : 'medium',
           form_data: {
             conversation_summary: `AI chat conversation. Contact provided: ${updatedContactInfo.name || 'name not provided'}, ${updatedContactInfo.email}, ${updatedContactInfo.phone || 'phone not provided'}`,
             session_id: sessionId,
             agent_id: agentId,
-            qualification_score: conversionScore
+            qualification_score: conversionScore,
+            conversation_length: updatedHistory.length
           },
-          notes: `Contact collected via AI chat widget. Conversation score: ${conversionScore}/100`
+          notes: `Contact collected via AI chat widget.\nSession: ${sessionId}\nConversion Score: ${conversionScore}/100\nMessages: ${updatedHistory.length}\n\nRecent conversation:\n${updatedHistory.slice(-4).map(m => `${m.role}: ${m.content.substring(0, 100)}`).join('\n')}`
         };
+
+        console.log('Creating lead with data:', {
+          name: leadData.name,
+          email: leadData.email,
+          has_phone: !!leadData.phone,
+          priority: leadData.priority,
+          score: leadData.lead_score
+        });
 
         const { data: leadResult, error: leadError } = await supabase
           .from('leads')
@@ -449,9 +460,15 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
 
         if (!leadError && leadResult) {
           leadId = leadResult.id;
-          console.log('Lead created successfully:', leadId);
+          console.log('✅ Lead created successfully:', leadId);
         } else {
-          console.error('Error creating lead:', leadError);
+          console.error('❌ Error creating lead:', {
+            error: leadError,
+            code: leadError.code,
+            message: leadError.message,
+            details: leadError.details,
+            hint: leadError.hint
+          });
         }
       } catch (leadErr) {
         console.error('Error in lead creation:', leadErr);
@@ -463,22 +480,44 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
       const conversationData = {
         session_id: sessionId,
         agent_id: agentId,
+        user_message: message,
+        ai_response: aiMessage,
         lead_id: leadId || existingConversation?.lead_id,
         conversation_data: updatedHistory,
-        status: 'active',
+        status: 'active' as const,
         lead_qualified: isQualified,
         conversion_score: conversionScore,
-        visitor_id: `visitor_${sessionId.slice(0, 8)}`
+        visitor_id: `visitor_${sessionId.slice(0, 8)}`,
+        context: {
+          contact_info: updatedContactInfo,
+          message_count: updatedHistory.length,
+          lead_created: !!leadId
+        }
       };
 
-      const { error: convError } = await supabase
+      console.log('Saving conversation:', {
+        session_id: sessionId,
+        has_lead_id: !!conversationData.lead_id,
+        message_count: updatedHistory.length,
+        conversion_score: conversionScore,
+        lead_qualified: isQualified
+      });
+
+      const { data: savedConv, error: convError } = await supabase
         .from('ai_conversations')
-        .upsert(conversationData, { onConflict: 'session_id' });
+        .upsert(conversationData, { onConflict: 'session_id' })
+        .select();
 
       if (convError) {
-        console.error('Error saving conversation:', convError);
+        console.error('Error saving conversation:', {
+          error: convError,
+          code: convError.code,
+          message: convError.message,
+          details: convError.details,
+          hint: convError.hint
+        });
       } else {
-        console.log('Conversation saved successfully');
+        console.log('Conversation saved successfully:', savedConv?.[0]?.id);
       }
     }
 

@@ -132,28 +132,46 @@ export type Database = {
           agent_id: string | null
           ai_response: string | null
           context: Json | null
+          conversation_data: Json | null
+          conversion_score: number | null
           created_at: string | null
           id: string
+          lead_id: string | null
+          lead_qualified: boolean | null
           session_id: string | null
+          status: string | null
           user_message: string
+          visitor_id: string | null
         }
         Insert: {
           agent_id?: string | null
           ai_response?: string | null
           context?: Json | null
+          conversation_data?: Json | null
+          conversion_score?: number | null
           created_at?: string | null
           id?: string
+          lead_id?: string | null
+          lead_qualified?: boolean | null
           session_id?: string | null
+          status?: string | null
           user_message: string
+          visitor_id?: string | null
         }
         Update: {
           agent_id?: string | null
           ai_response?: string | null
           context?: Json | null
+          conversation_data?: Json | null
+          conversion_score?: number | null
           created_at?: string | null
           id?: string
+          lead_id?: string | null
+          lead_qualified?: boolean | null
           session_id?: string | null
+          status?: string | null
           user_message?: string
+          visitor_id?: string | null
         }
         Relationships: [
           {
@@ -161,6 +179,13 @@ export type Database = {
             columns: ["agent_id"]
             isOneToOne: false
             referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_conversations_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
         ]
@@ -391,9 +416,11 @@ export type Database = {
           message: string | null
           name: string
           next_follow_up: string | null
+          notes: string | null
           phone: string | null
           pipeline_stage: string | null
           preferred_start_date: string | null
+          priority: string | null
           project_id: string | null
           project_type: string | null
           qualification_status: string | null
@@ -417,9 +444,11 @@ export type Database = {
           message?: string | null
           name: string
           next_follow_up?: string | null
+          notes?: string | null
           phone?: string | null
           pipeline_stage?: string | null
           preferred_start_date?: string | null
+          priority?: string | null
           project_id?: string | null
           project_type?: string | null
           qualification_status?: string | null
@@ -443,9 +472,11 @@ export type Database = {
           message?: string | null
           name?: string
           next_follow_up?: string | null
+          notes?: string | null
           phone?: string | null
           pipeline_stage?: string | null
           preferred_start_date?: string | null
+          priority?: string | null
           project_id?: string | null
           project_type?: string | null
           qualification_status?: string | null
