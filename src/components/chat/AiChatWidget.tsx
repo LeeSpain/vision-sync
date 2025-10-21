@@ -398,7 +398,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                 {messages.map((message, index) => (
                   <div
                     key={index}
-                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                    className={`flex flex-col ${message.type === 'user' ? 'items-end' : 'items-start'} animate-fade-in`}
                   >
                     <div className={`flex items-start gap-3 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
                       <Avatar className={`h-8 w-8 flex-shrink-0 ${message.type === 'user' ? 'order-last' : ''}`}>
@@ -430,68 +430,72 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                           })}
                         </div>
                       </div>
-                      
-                      {/* Interactive Components */}
-                      {message.interactiveType === 'quick_reply' && message.options && (
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          {message.options.map((option: any) => (
-                            <Button
-                              key={option.id}
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleQuickReply(option, message.id)}
-                              className="hover:bg-primary hover:text-white transition-colors"
-                            >
-                              {option.icon && <span className="mr-1">{option.icon}</span>}
-                              {option.label}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
-                      
-                      {message.interactiveType === 'service_selector' && message.options && (
-                        <div className="grid grid-cols-1 gap-2 mt-3">
-                          {message.options.map((option: any) => (
-                            <Card
-                              key={option.id}
-                              className="cursor-pointer hover:shadow-md hover:border-primary transition-all p-3"
-                              onClick={() => handleQuickReply(option, message.id)}
-                            >
-                              <div className="flex items-start gap-3">
-                                <div className="text-2xl">{option.icon}</div>
-                                <div className="flex-1">
-                                  <div className="font-semibold text-sm mb-1">{option.label}</div>
-                                  <div className="text-xs text-gray-600">{option.description}</div>
-                                </div>
-                              </div>
-                            </Card>
-                          ))}
-                        </div>
-                      )}
-                      
-                      {message.interactiveType === 'multiple_choice' && message.options && (
-                        <div className="space-y-2 mt-3">
-                          {message.options.map((option: any) => (
-                            <Button
-                              key={option.id}
-                              variant="outline"
-                              className="w-full justify-start hover:bg-primary/10 text-left h-auto py-2"
-                              onClick={() => handleQuickReply(option, message.id)}
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                {option.icon && <span>{option.icon}</span>}
-                                <div className="flex-1">
-                                  <span className="font-semibold text-sm block">{option.label}</span>
-                                  {option.description && (
-                                    <span className="text-xs text-gray-500 block mt-0.5">{option.description}</span>
-                                  )}
-                                </div>
-                              </div>
-                            </Button>
-                          ))}
-                        </div>
-                      )}
                     </div>
+                    
+                    {/* Interactive Components - Full width, outside message bubble */}
+                    {message.type === 'ai' && message.interactiveType && message.options && (
+                      <div className="w-full pl-11 pr-4 mt-3">
+                        {message.interactiveType === 'quick_reply' && (
+                          <div className="flex flex-wrap gap-2">
+                            {message.options.map((option: any) => (
+                              <Button
+                                key={option.id}
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleQuickReply(option, message.id)}
+                                className="hover:bg-primary hover:text-white transition-colors"
+                              >
+                                {option.icon && <span className="mr-1">{option.icon}</span>}
+                                {option.label}
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {message.interactiveType === 'service_selector' && (
+                          <div className="grid grid-cols-1 gap-3">
+                            {message.options.map((option: any) => (
+                              <Card
+                                key={option.id}
+                                className="cursor-pointer hover:shadow-md hover:border-primary transition-all p-4 bg-white"
+                                onClick={() => handleQuickReply(option, message.id)}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className="text-2xl flex-shrink-0">{option.icon}</div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-semibold text-base mb-1">{option.label}</div>
+                                    <div className="text-sm text-gray-600">{option.description}</div>
+                                  </div>
+                                </div>
+                              </Card>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {message.interactiveType === 'multiple_choice' && (
+                          <div className="space-y-2">
+                            {message.options.map((option: any) => (
+                              <Button
+                                key={option.id}
+                                variant="outline"
+                                className="w-full justify-start hover:bg-primary/10 text-left h-auto py-3 px-4"
+                                onClick={() => handleQuickReply(option, message.id)}
+                              >
+                                <div className="flex items-center gap-3 w-full">
+                                  {option.icon && <span className="text-lg">{option.icon}</span>}
+                                  <div className="flex-1 min-w-0">
+                                    <span className="font-semibold text-sm block">{option.label}</span>
+                                    {option.description && (
+                                      <span className="text-xs text-gray-500 block mt-1">{option.description}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
                 
