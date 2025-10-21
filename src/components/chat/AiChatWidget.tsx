@@ -16,6 +16,19 @@ interface ChatMessage {
   timestamp: Date;
   isTyping?: boolean;
   role?: 'user' | 'assistant';
+  interactiveType?: 'quick_reply' | 'multiple_choice' | 'service_selector';
+  options?: Array<{
+    id: string;
+    label: string;
+    value: any;
+    icon?: string;
+    description?: string;
+  }>;
+  metadata?: {
+    questionId?: string;
+    category?: string;
+    required?: boolean;
+  };
 }
 
 interface AiChatWidgetProps {
@@ -207,7 +220,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     }
   };
 
-  const sendMessage = async (content: string = inputMessage) => {
+  const sendMessage = async (content: string = inputMessage, metadata?: any) => {
     if (!content.trim()) return;
 
     const userMessage: ChatMessage = {
@@ -247,7 +260,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           message: content,
           sessionId,
           agentId: agentData?.id,
-          conversationHistory
+          conversationHistory,
+          metadata
         }
       });
 
@@ -272,7 +286,12 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         type: 'ai',
         content: data.response || 'I apologize, but I\'m having trouble responding right now. Please try again.',
         timestamp: new Date(),
-        role: 'assistant'
+        role: 'assistant',
+        ...(data.interactiveType && {
+          interactiveType: data.interactiveType,
+          options: data.options,
+          metadata: data.metadata
+        })
       };
 
       setMessages(prev => [...prev, aiResponse]);
@@ -329,6 +348,18 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       setIsListening(true);
       window.dispatchEvent(new CustomEvent('ai-chat-start'));
     }
+  };
+
+  const handleQuickReply = async (option: any, messageId: string) => {
+    // Disable the options once selected
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, options: undefined, interactiveType: undefined }
+        : msg
+    ));
+    
+    // Continue conversation with selected value
+    await sendMessage(option.label, { selectedOption: option });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -388,7 +419,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                           : 'bg-gray-50 text-gray-800 border border-gray-100 shadow-sm'
                       }`}>
                         <div className="text-sm leading-6 whitespace-pre-wrap word-break">
-                          {message.content}
+                          {message.content.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1')}
                         </div>
                         <div className={`text-xs mt-2 opacity-70 ${
                           message.type === 'user' ? 'text-primary-foreground/70' : 'text-gray-500'
@@ -399,6 +430,67 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                           })}
                         </div>
                       </div>
+                      
+                      {/* Interactive Components */}
+                      {message.interactiveType === 'quick_reply' && message.options && (
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          {message.options.map((option: any) => (
+                            <Button
+                              key={option.id}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleQuickReply(option, message.id)}
+                              className="hover:bg-primary hover:text-white transition-colors"
+                            >
+                              {option.icon && <span className="mr-1">{option.icon}</span>}
+                              {option.label}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {message.interactiveType === 'service_selector' && message.options && (
+                        <div className="grid grid-cols-1 gap-2 mt-3">
+                          {message.options.map((option: any) => (
+                            <Card
+                              key={option.id}
+                              className="cursor-pointer hover:shadow-md hover:border-primary transition-all p-3"
+                              onClick={() => handleQuickReply(option, message.id)}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="text-2xl">{option.icon}</div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-sm mb-1">{option.label}</div>
+                                  <div className="text-xs text-gray-600">{option.description}</div>
+                                </div>
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {message.interactiveType === 'multiple_choice' && message.options && (
+                        <div className="space-y-2 mt-3">
+                          {message.options.map((option: any) => (
+                            <Button
+                              key={option.id}
+                              variant="outline"
+                              className="w-full justify-start hover:bg-primary/10 text-left h-auto py-2"
+                              onClick={() => handleQuickReply(option, message.id)}
+                            >
+                              <div className="flex items-center gap-2 w-full">
+                                {option.icon && <span>{option.icon}</span>}
+                                <div className="flex-1">
+                                  <span className="font-semibold text-sm block">{option.label}</span>
+                                  {option.description && (
+                                    <span className="text-xs text-gray-500 block mt-0.5">{option.description}</span>
+                                  )}
+                                </div>
+                              </div>
+                            </Button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -267,10 +267,10 @@ ${hasEscalationTrigger ? `
 🚨 ESCALATION DETECTED: The user is asking to speak with a human. Acknowledge their request politely and let them know someone will contact them soon. Collect their contact information if not already provided.
 ` : ''}
 
-🎯 PRIMARY MISSION: Guide clients to choose between our THREE MAIN SERVICE OPTIONS:
-1. **AI AGENT SOLUTIONS** - Custom AI-powered platforms and intelligent applications
-2. **OFF-THE-SHELF PRODUCTS** - Ready-to-deploy solutions for immediate use  
-3. **BESPOKE BUILDS** - Fully custom development tailored to specific requirements
+PRIMARY MISSION: Guide clients to choose between our THREE MAIN SERVICE OPTIONS:
+1. AI AGENT SOLUTIONS - Custom AI-powered platforms and intelligent applications
+2. OFF-THE-SHELF PRODUCTS - Ready-to-deploy solutions for immediate use  
+3. BESPOKE BUILDS - Fully custom development tailored to specific requirements
 
 COMPREHENSIVE BUSINESS CONTEXT:
 ${buildBusinessContext()}
@@ -292,12 +292,19 @@ CONTACT INFORMATION COLLECTED:
 3. **AGGRESSIVE CONTACT COLLECTION**: Request contact info in the FIRST or SECOND response
 4. **DECISION GUIDANCE**: Help them choose the best service type based on their needs
 
+CRITICAL FORMATTING RULE:
+- DO NOT USE MARKDOWN FORMATTING like bold text, italic text, or underline text
+- Write in clean, readable plain text without special formatting symbols
+- Use natural emphasis through word choice and sentence structure
+- No asterisks, underscores, or other markdown symbols
+
 CONVERSATION RULES:
 1. Response Length: Keep responses under ${Math.floor(maxResponseLength / 4)} words (${maxResponseLength} tokens max)
-2. **IMMEDIATE CONTACT PRIORITY**: ${shouldAskForContact ? '🚨 CRITICAL: Ask for name and email address NOW - frame as essential for personalized service' : 'Continue building relationship and guiding toward solutions'}
-3. **SERVICE OPTION GUIDANCE**: Always relate responses back to which of the 3 main service types fits their needs
-4. Project Recommendations: Match projects to user's industry and service type preference
-5. Always include project links when suggesting solutions
+2. IMMEDIATE CONTACT PRIORITY: ${shouldAskForContact ? 'CRITICAL: Ask for name and email address NOW - frame as essential for personalized service' : 'Continue building relationship and guiding toward solutions'}
+3. SERVICE OPTION GUIDANCE: Always relate responses back to which of the 3 main service types fits their needs
+4. When asking users to make choices, use the present_options tool to show interactive buttons instead of asking in text
+5. Project Recommendations: Match projects to user's industry and service type preference
+6. Always include project links when suggesting solutions
 6. Industry-specific recommendations:
    - Beauty/Salon/Wellness → CustomBuilds Platform + Beauty & Wellness templates (Bespoke/Off-shelf)
    - Healthcare/Medical → Global Health-Sync, Nurse-Sync (AI Agent/Off-shelf)
@@ -344,7 +351,7 @@ MAKE IT FEEL ESSENTIAL, NOT OPTIONAL. Frame contact collection as the natural ne
 
 RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
 
-    // Call Lovable AI Gateway
+    // Call Lovable AI Gateway with tool calling support
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -359,6 +366,46 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
           { role: 'user', content: message }
         ],
         max_tokens: maxResponseLength,
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "present_options",
+              description: "Present interactive multiple choice options to the user for better UX. Use this when asking about service type, budget, timeline, or industry.",
+              parameters: {
+                type: "object",
+                properties: {
+                  question: { 
+                    type: "string",
+                    description: "The question to ask the user"
+                  },
+                  options: {
+                    type: "array",
+                    description: "Array of option objects with id, label, value, and optional icon/description",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string" },
+                        label: { type: "string" },
+                        value: { type: "string" },
+                        icon: { type: "string" },
+                        description: { type: "string" }
+                      },
+                      required: ["id", "label", "value"]
+                    }
+                  },
+                  category: { 
+                    type: "string", 
+                    enum: ["service_type", "industry", "budget", "timeline"],
+                    description: "Category of the question for UI rendering"
+                  }
+                },
+                required: ["question", "options", "category"]
+              }
+            }
+          }
+        ],
+        tool_choice: "auto"
       }),
     });
 
@@ -393,6 +440,33 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
     }
 
     const aiResponse = await response.json();
+    
+    // Check if AI used a tool call for interactive options
+    const toolCalls = aiResponse.choices[0]?.message?.tool_calls;
+    let interactiveResponse = null;
+    
+    if (toolCalls && toolCalls.length > 0) {
+      const functionCall = toolCalls[0].function;
+      const functionArgs = JSON.parse(functionCall.arguments);
+      
+      // Map category to interactiveType for frontend rendering
+      const interactiveTypeMap: Record<string, string> = {
+        service_type: 'service_selector',
+        budget: 'multiple_choice',
+        timeline: 'quick_reply',
+        industry: 'multiple_choice'
+      };
+      
+      interactiveResponse = {
+        interactiveType: interactiveTypeMap[functionArgs.category] || 'quick_reply',
+        options: functionArgs.options,
+        metadata: {
+          questionId: functionArgs.category,
+          category: functionArgs.category
+        }
+      };
+    }
+    
     const aiMessage = aiResponse.choices[0]?.message?.content || 'I apologize, but I\'m having trouble responding right now.';
 
     // Update conversation history
@@ -527,7 +601,12 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
       sessionId,
       conversionScore,
       contactInfo: updatedContactInfo,
-      leadCreated: !!leadId
+      leadCreated: !!leadId,
+      ...(interactiveResponse && {
+        interactiveType: interactiveResponse.interactiveType,
+        options: interactiveResponse.options,
+        metadata: interactiveResponse.metadata
+      })
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
