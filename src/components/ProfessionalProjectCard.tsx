@@ -52,6 +52,8 @@ export const ProfessionalProjectCard: React.FC<ProfessionalProjectCardProps> = (
         return 'bg-royal-purple/10 text-royal-purple border-royal-purple/20';
       case 'featured':
         return 'bg-coral-orange/10 text-coral-orange border-coral-orange/20';
+      case 'under offer':
+        return 'bg-coral-orange/10 text-coral-orange border-coral-orange/20';
       default:
         return 'bg-cool-gray/10 text-cool-gray border-cool-gray/20';
     }

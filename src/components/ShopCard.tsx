@@ -14,7 +14,7 @@ interface ShopCardProps {
   category: 'For Sale' | 'Internal' | 'Investment';
   image?: string;
   route?: string;
-  billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription';
+  billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription' | 'make_offer';
   subscription_price?: number;
   price?: number;
   deposit_amount?: number;
@@ -50,6 +50,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
         return 'bg-royal-purple text-white';
       case 'Development':
         return 'bg-coral-orange text-white';
+      case 'Under Offer':
+        return 'bg-coral-orange/90 text-white';
       default:
         return 'bg-cool-gray text-white';
     }
@@ -209,6 +211,11 @@ const ShopCard: React.FC<ShopCardProps> = ({
               {billing_type === 'investment' && (
                 <span className="bg-electric-blue/10 text-electric-blue px-2 py-0.5 rounded-full">
                   Investment
+                </span>
+              )}
+              {billing_type === 'make_offer' && (
+                <span className="bg-coral-orange/10 text-coral-orange px-2 py-0.5 rounded-full">
+                  Make Offer
                 </span>
               )}
             </div>

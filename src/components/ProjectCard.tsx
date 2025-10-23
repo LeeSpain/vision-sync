@@ -11,7 +11,7 @@ interface ProjectCardProps {
   category: 'Featured' | 'Investment' | 'For Sale' | 'Internal';
   route?: string;
   image?: string;
-  billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription';
+  billing_type?: 'one-time' | 'subscription' | 'investment' | 'deposit-subscription' | 'make_offer';
   investmentAmount?: number;
   fundingProgress?: number;
   investorCount?: number;
@@ -53,6 +53,7 @@ const ProjectCard = ({
       case 'Private': return 'bg-cool-gray text-white';
       case 'For Sale': return 'bg-royal-purple text-white';
       case 'Concept': return 'bg-soft-lilac text-midnight-navy';
+      case 'Under Offer': return 'bg-coral-orange/90 text-white';
       default: return 'bg-muted text-muted-foreground';
     }
   };
@@ -132,6 +133,12 @@ const ProjectCard = ({
               <Badge className="bg-gradient-to-r from-electric-blue to-electric-blue/80 text-white border-0 shadow-sm font-medium px-3 py-1">
                 <RefreshCw className="h-3 w-3 mr-1" />
                 {billing_type === 'deposit-subscription' ? 'Deposit+Sub' : 'SaaS'}
+              </Badge>
+            )}
+            {billing_type === 'make_offer' && (
+              <Badge className="bg-gradient-to-r from-coral-orange to-coral-orange/80 text-white border-0 shadow-sm font-medium px-3 py-1">
+                <DollarSign className="h-3 w-3 mr-1" />
+                Make Offer
               </Badge>
             )}
           </div>
