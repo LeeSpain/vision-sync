@@ -66,11 +66,12 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
     { value: 'free', label: 'Free' },
     { value: 'one-time', label: 'One-time Purchase' },
     { value: 'subscription', label: 'Subscription' },
-    { value: 'investment', label: 'Investment' }
+    { value: 'investment', label: 'Investment' },
+    { value: 'make_offer', label: 'Make Offer' }
   ];
 
   const statusOptions = [
-    'active', 'development', 'sold', 'funded', 'archived', 'paused'
+    'active', 'development', 'sold', 'funded', 'archived', 'paused', 'under_offer'
   ];
 
   const subscriptionPeriods = ['monthly', 'yearly', 'weekly'];
@@ -135,7 +136,7 @@ const EnhancedProjectEditModal: React.FC<EnhancedProjectEditModalProps> = ({
     }
 
     // Validate billing_type if provided
-    if (formData.billing_type && !['free', 'one-time', 'subscription', 'investment'].includes(formData.billing_type)) {
+    if (formData.billing_type && !['free', 'one-time', 'subscription', 'investment', 'make_offer'].includes(formData.billing_type)) {
       alert('Please select a valid billing type');
       return;
     }
