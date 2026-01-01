@@ -20,6 +20,7 @@ import { LeadSourceChart } from '@/components/admin/LeadSourceChart';
 import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import AiAgentManager from '@/components/admin/AiAgentManager';
 import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
+import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -408,6 +409,9 @@ const Admin = () => {
 
       case 'brain-command':
         return <BrainAgentDashboard />;
+
+      case 'agent-testing':
+        return <AgentTestingPanel />;
 
       case 'settings':
         return (
