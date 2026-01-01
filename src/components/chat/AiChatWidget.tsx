@@ -56,7 +56,10 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     delay: 1000
   });
   
-  const paulAvatar = "/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png";
+  // Default avatar fallback - will be replaced by agent's avatar_url if set
+  const defaultAvatar = "/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png";
+  const agentAvatar = agentData?.avatar_url || defaultAvatar;
+  const agentName = agentData?.name || "Paul";
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -380,15 +383,15 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             <CardTitle className="flex items-center gap-3">
               <div className="relative">
                 <Avatar className="h-10 w-10 ring-2 ring-royal-purple/20 ring-offset-1">
-                  <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                  <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
                   <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold">
-                    P
+                    {agentName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-amber-500 animate-pulse" />
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-800">Paul</div>
+                <div className="text-lg font-semibold text-gray-800">{agentName}</div>
                 <div className="text-sm text-gray-600 font-normal">Your Personal Advisor</div>
               </div>
             </CardTitle>
@@ -415,9 +418,9 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                           </AvatarFallback>
                         ) : (
                           <>
-                            <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                            <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
                             <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white text-xs font-medium">
-                              P
+                              {agentName.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </>
                         )}
@@ -513,9 +516,9 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                   <div className="flex justify-start animate-fade-in">
                     <div className="flex items-start gap-3 max-w-[85%]">
                       <Avatar className="h-8 w-8 flex-shrink-0">
-                        <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                        <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
                         <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white text-xs font-medium">
-                          P
+                          {agentName.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="bg-gray-50 rounded-xl px-4 py-3 border border-gray-100 shadow-sm">
@@ -525,7 +528,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                             <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                             <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
-                          <span className="text-sm text-gray-500">Paul is typing...</span>
+                          <span className="text-sm text-gray-500">{agentName} is typing...</span>
                         </div>
                       </div>
                     </div>
@@ -625,15 +628,15 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             <div className="relative z-10 flex items-center justify-center gap-3">
               <div className="relative">
                 <Avatar className="h-8 w-8 ring-2 ring-white/30">
-                  <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                  <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
                   <AvatarFallback className="bg-gradient-to-br from-coral-orange to-coral-orange/80 text-white font-bold">
-                    P
+                    {agentName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 {/* Online indicator */}
                 <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-midnight-navy animate-pulse"></div>
               </div>
-              <span className="text-white font-medium whitespace-nowrap">Talk To Paul</span>
+              <span className="text-white font-medium whitespace-nowrap">Talk To {agentName}</span>
             </div>
           </Button>
           
@@ -655,15 +658,15 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           <CardTitle className="flex items-center gap-3">
             <div className="relative">
               <Avatar className="h-10 w-10 ring-2 ring-royal-purple/20 ring-offset-1">
-                <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
                 <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold text-lg">
-                  P
+                  {agentName.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
-              <div className="font-semibold text-gray-900 text-sm">Paul</div>
+              <div className="font-semibold text-gray-900 text-sm">{agentName}</div>
               <div className="text-xs text-emerald-600 font-medium flex items-center gap-1">
                 <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
                 {showContactBadge ? 'Contact saved' : 'Available now'}
