@@ -17,7 +17,8 @@ import {
   MessageCircle,
   Package,
   Building2,
-  Bug
+  Bug,
+  ArrowRightLeft
 } from "lucide-react"
 
 import {
@@ -50,6 +51,7 @@ const mainItems = [
   { title: "AI Agent", url: "#ai-agent", icon: Brain },
   { title: "Brain Command", url: "#brain-command", icon: Brain, special: true },
   { title: "Agent Testing", url: "#agent-testing", icon: Bug, special: true },
+  { title: "Routing Rules", url: "#routing-rules", icon: ArrowRightLeft, special: true },
   { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
 ]
@@ -180,16 +182,20 @@ export function AdminSidebar() {
                             ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" 
                             : item.title === "Agent Testing"
                               ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white"
-                              : "bg-royal-purple text-white" 
+                              : item.title === "Routing Rules"
+                                ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
+                                : "bg-royal-purple text-white" 
                           : item.title === "Brain Command"
                             ? "text-purple-300 hover:bg-purple-500/20 hover:text-white bg-purple-500/10"
                             : item.title === "Agent Testing"
                               ? "text-amber-300 hover:bg-amber-500/20 hover:text-white bg-amber-500/10"
-                              : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
+                              : item.title === "Routing Rules"
+                                ? "text-cyan-300 hover:bg-cyan-500/20 hover:text-white bg-cyan-500/10"
+                                : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
                       }`}
                       >
                     <div className="flex items-center space-x-3">
-                      <item.icon className={`h-5 w-5 ${item.title === "Brain Command" ? "text-purple-400" : item.title === "Agent Testing" ? "text-amber-400" : ""}`} />
+                      <item.icon className={`h-5 w-5 ${item.title === "Brain Command" ? "text-purple-400" : item.title === "Agent Testing" ? "text-amber-400" : item.title === "Routing Rules" ? "text-cyan-400" : ""}`} />
                       {!collapsed && <span>{item.title}</span>}
                     </div>
                     {!collapsed && item.title === "Projects" && (
@@ -215,6 +221,11 @@ export function AdminSidebar() {
                     {!collapsed && item.title === "Agent Testing" && (
                       <Badge className="bg-amber-500/30 text-amber-200 border-amber-400/30 text-xs">
                         Debug
+                      </Badge>
+                    )}
+                    {!collapsed && item.title === "Routing Rules" && (
+                      <Badge className="bg-cyan-500/30 text-cyan-200 border-cyan-400/30 text-xs">
+                        Config
                       </Badge>
                     )}
                     </button>

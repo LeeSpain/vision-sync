@@ -21,6 +21,7 @@ import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import AiAgentManager from '@/components/admin/AiAgentManager';
 import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
 import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
+import RoutingRulesManager from '@/components/admin/RoutingRulesManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -412,6 +413,9 @@ const Admin = () => {
 
       case 'agent-testing':
         return <AgentTestingPanel />;
+
+      case 'routing-rules':
+        return <RoutingRulesManager />;
 
       case 'settings':
         return (
