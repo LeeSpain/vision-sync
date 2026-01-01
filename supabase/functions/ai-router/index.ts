@@ -288,7 +288,215 @@ async function selectAgent(
   return { agent: defaultAgent };
 }
 
-function buildSystemPrompt(agent: Agent, pageContext: string, isAdmin: boolean): string {
+interface BusinessData {
+  todayMetrics: {
+    conversationsCount: number;
+    leadsCount: number;
+    pendingEscalations: number;
+    averageSentiment: number;
+  };
+  recentLeads: Array<{
+    name: string;
+    email: string;
+    source: string;
+    lead_score: number;
+    created_at: string;
+  }>;
+  recentConversations: Array<{
+    session_id: string;
+    intent: string;
+    sentiment: number;
+    current_agent_id: string;
+    agent_name?: string;
+  }>;
+  pendingEscalations: Array<{
+    id: string;
+    reason: string;
+    priority: string;
+    created_at: string;
+  }>;
+  agentPerformance: Array<{
+    agent_id: string;
+    agent_name: string;
+    agent_type: string;
+    conversationsHandled: number;
+    averageSentiment: number;
+    leadsGenerated: number;
+  }>;
+}
+
+async function loadBrainBusinessData(supabase: any): Promise<BusinessData> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayISO = today.toISOString();
+
+  // Load all data in parallel
+  const [
+    conversationsResult,
+    leadsResult,
+    escalationsResult,
+    sentimentResult,
+    recentLeadsResult,
+    recentConversationsResult,
+    agentsResult
+  ] = await Promise.all([
+    // Count conversations today
+    supabase
+      .from('ai_conversations')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', todayISO),
+    
+    // Count leads today
+    supabase
+      .from('leads')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', todayISO),
+    
+    // Count pending escalations
+    supabase
+      .from('human_escalations')
+      .select('id, reason, priority, created_at')
+      .eq('status', 'pending'),
+    
+    // Get today's sentiment average
+    supabase
+      .from('ai_conversations')
+      .select('sentiment')
+      .gte('created_at', todayISO)
+      .not('sentiment', 'is', null),
+    
+    // Get last 10 leads
+    supabase
+      .from('leads')
+      .select('name, email, source, lead_score, created_at')
+      .order('created_at', { ascending: false })
+      .limit(10),
+    
+    // Get last 20 conversations with agent info
+    supabase
+      .from('ai_conversations')
+      .select('session_id, intent, sentiment, current_agent_id')
+      .order('created_at', { ascending: false })
+      .limit(20),
+    
+    // Get all agents for performance metrics
+    supabase
+      .from('ai_agents')
+      .select('id, name, agent_type')
+      .eq('is_active', true)
+  ]);
+
+  // Calculate average sentiment
+  let averageSentiment = 0;
+  if (sentimentResult.data?.length > 0) {
+    const sum = sentimentResult.data.reduce((acc: number, c: { sentiment: number }) => acc + (c.sentiment || 0), 0);
+    averageSentiment = sum / sentimentResult.data.length;
+  }
+
+  // Get agent performance data
+  const agentPerformance: BusinessData['agentPerformance'] = [];
+  
+  if (agentsResult.data) {
+    for (const agent of agentsResult.data) {
+      // Get conversations handled by this agent today
+      const { count: convCount } = await supabase
+        .from('agent_conversations')
+        .select('id', { count: 'exact', head: true })
+        .eq('agent_id', agent.id)
+        .gte('started_at', todayISO);
+      
+      // Get average sentiment for this agent's conversations
+      const { data: agentConvs } = await supabase
+        .from('ai_conversations')
+        .select('sentiment')
+        .eq('current_agent_id', agent.id)
+        .gte('created_at', todayISO)
+        .not('sentiment', 'is', null);
+      
+      let agentSentiment = 0;
+      if (agentConvs?.length > 0) {
+        const sum = agentConvs.reduce((acc: number, c: { sentiment: number }) => acc + (c.sentiment || 0), 0);
+        agentSentiment = sum / agentConvs.length;
+      }
+      
+      // Get leads generated (for sales agent)
+      const { count: leadsCount } = await supabase
+        .from('leads')
+        .select('id', { count: 'exact', head: true })
+        .eq('source', 'ai_chat')
+        .gte('created_at', todayISO);
+      
+      agentPerformance.push({
+        agent_id: agent.id,
+        agent_name: agent.name,
+        agent_type: agent.agent_type,
+        conversationsHandled: convCount || 0,
+        averageSentiment: agentSentiment,
+        leadsGenerated: agent.agent_type === 'sales' ? (leadsCount || 0) : 0
+      });
+    }
+  }
+
+  // Map agent names to conversations
+  const agentMap = new Map(agentsResult.data?.map((a: any) => [a.id, a.name]) || []);
+  const recentConversations = (recentConversationsResult.data || []).map((c: any) => ({
+    ...c,
+    agent_name: agentMap.get(c.current_agent_id) || 'Unknown'
+  }));
+
+  return {
+    todayMetrics: {
+      conversationsCount: conversationsResult.count || 0,
+      leadsCount: leadsResult.count || 0,
+      pendingEscalations: escalationsResult.data?.length || 0,
+      averageSentiment
+    },
+    recentLeads: recentLeadsResult.data || [],
+    recentConversations,
+    pendingEscalations: escalationsResult.data || [],
+    agentPerformance
+  };
+}
+
+function formatBusinessDataForPrompt(data: BusinessData): string {
+  const sentimentLabel = data.todayMetrics.averageSentiment > 0.2 ? 'positive' : 
+                        data.todayMetrics.averageSentiment < -0.2 ? 'negative' : 'neutral';
+  
+  let dataSection = `\n\n=== CURRENT_BUSINESS_DATA ===
+
+TODAY'S METRICS (${new Date().toLocaleDateString()}):
+- Total Conversations: ${data.todayMetrics.conversationsCount}
+- New Leads Captured: ${data.todayMetrics.leadsCount}
+- Pending Escalations: ${data.todayMetrics.pendingEscalations}
+- Average Sentiment: ${data.todayMetrics.averageSentiment.toFixed(2)} (${sentimentLabel})
+
+RECENT LEADS (Last 10):
+${data.recentLeads.length > 0 ? data.recentLeads.map(l => 
+  `- ${l.name} (${l.email}) | Source: ${l.source} | Score: ${l.lead_score} | ${new Date(l.created_at).toLocaleDateString()}`
+).join('\n') : 'No recent leads'}
+
+PENDING ESCALATIONS:
+${data.pendingEscalations.length > 0 ? data.pendingEscalations.map(e => 
+  `- [${e.priority.toUpperCase()}] ${e.reason} | ${new Date(e.created_at).toLocaleString()}`
+).join('\n') : 'No pending escalations'}
+
+AGENT PERFORMANCE TODAY:
+${data.agentPerformance.map(a => {
+  const sentimentPct = ((a.averageSentiment + 1) / 2 * 100).toFixed(0);
+  return `- ${a.agent_name} (${a.agent_type}): ${a.conversationsHandled} conversations | ${sentimentPct}% positive sentiment${a.agent_type === 'sales' ? ` | ${a.leadsGenerated} leads generated` : ''}`;
+}).join('\n')}
+
+RECENT CONVERSATION INTENTS:
+${data.recentConversations.slice(0, 10).map(c => 
+  `- ${c.intent || 'general'} (handled by ${c.agent_name}) | Sentiment: ${c.sentiment?.toFixed(2) || 'N/A'}`
+).join('\n')}
+
+=== END BUSINESS DATA ===`;
+
+  return dataSection;
+}
+
+function buildSystemPrompt(agent: Agent, pageContext: string, isAdmin: boolean, businessData?: BusinessData): string {
   let systemPrompt = agent.personality || `You are ${agent.name}, a helpful AI assistant.`;
   
   systemPrompt += `\n\nIMPORTANT GUIDELINES:
@@ -313,12 +521,19 @@ function buildSystemPrompt(agent: Agent, pageContext: string, isAdmin: boolean):
 - Never get frustrated`;
   }
   
-  if (agent.agent_type === 'brain' && isAdmin) {
-    systemPrompt += `\n\nBRAIN/ADMIN GUIDELINES:
-- You have access to all business data and metrics
-- Provide strategic insights and analytics
-- Be proactive about identifying opportunities
-- Report on lead quality and conversion patterns`;
+  if (agent.agent_type === 'brain') {
+    systemPrompt += `\n\nBRAIN/EXECUTIVE ASSISTANT GUIDELINES:
+- You are Nexus, the Brain agent with full access to business data
+- When asked about metrics, leads, performance, or data - use the CURRENT_BUSINESS_DATA section below
+- Format numbers clearly (e.g., "12 conversations" not "twelve")
+- Provide specific data when available, don't make up numbers
+- Highlight important insights like pending escalations or sentiment trends
+- Be proactive about suggesting actions based on the data
+- For summary questions, give a comprehensive but concise overview`;
+    
+    if (businessData) {
+      systemPrompt += formatBusinessDataForPrompt(businessData);
+    }
   }
   
   if (pageContext) {
@@ -400,8 +615,20 @@ serve(async (req) => {
       previousAgentName = prevAgent?.name;
     }
 
+    // Load business data for Brain agent
+    let businessData: BusinessData | undefined;
+    if (agent.agent_type === 'brain') {
+      console.log('Loading business data for Brain agent...');
+      businessData = await loadBrainBusinessData(supabase);
+      console.log('Business data loaded:', {
+        conversations: businessData.todayMetrics.conversationsCount,
+        leads: businessData.todayMetrics.leadsCount,
+        escalations: businessData.todayMetrics.pendingEscalations
+      });
+    }
+
     // Build conversation for AI
-    const systemPrompt = buildSystemPrompt(agent, pageContext, isAdmin);
+    const systemPrompt = buildSystemPrompt(agent, pageContext, isAdmin, businessData);
     const messages: Message[] = [
       { role: 'system', content: systemPrompt },
       ...conversationHistory.slice(-10), // Last 10 messages for context
