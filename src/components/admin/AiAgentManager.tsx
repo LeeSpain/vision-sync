@@ -8,11 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Brain, MessageSquare, Settings, Database, Mic, User, Plus, Trash2, Upload, X, Loader2, ImageIcon } from "lucide-react";
+import { Brain, MessageSquare, Settings, Database, Mic, User, Plus, Trash2, Upload, X, Loader2, ImageIcon, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ConversationsAnalytics from './ConversationsAnalytics';
 import AgentCreationModal from './AgentCreationModal';
 import { QuickActionsEditor } from './QuickActionsEditor';
+import { seedMultiAgentSystem } from '@/utils/seedAgents';
 
 interface AiAgent {
   id: string;
@@ -192,11 +193,26 @@ const AiAgentManager: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedAgent, setSelectedAgent] = useState<AiAgent | null>(null);
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const [newTrainingItem, setNewTrainingItem] = useState({
     training_type: '',
     content: '',
     metadata: {}
   });
+
+  const handleSeedMultiAgentSystem = async () => {
+    try {
+      setIsSeeding(true);
+      const result = await seedMultiAgentSystem();
+      toast.success(`Multi-agent system initialized! Created ${Object.keys(result.agents).length} agents and ${result.routingRulesCount} routing rules.`);
+      loadAgents();
+    } catch (error) {
+      console.error('Error seeding multi-agent system:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to initialize multi-agent system');
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   useEffect(() => {
     loadAgents();
@@ -361,10 +377,20 @@ const AiAgentManager: React.FC = () => {
           <h2 className="text-2xl font-bold">AI Agent Manager</h2>
           <p className="text-muted-foreground">Configure and manage your AI agents</p>
         </div>
-        <Button onClick={() => setIsCreationModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Agent
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleSeedMultiAgentSystem}
+            disabled={isSeeding}
+          >
+            {isSeeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Zap className="h-4 w-4 mr-2" />}
+            Initialize Multi-Agent System
+          </Button>
+          <Button onClick={() => setIsCreationModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Agent
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
