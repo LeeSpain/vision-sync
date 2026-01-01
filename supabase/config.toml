@@ -3,6 +3,9 @@ project_id = "pcjyzarltghxxgbmpxlx"
 [functions.ai-chat]
 verify_jwt = false
 
+[functions.ai-router]
+verify_jwt = false
+
 [functions.ai-template-assistant]
 verify_jwt = false
 
