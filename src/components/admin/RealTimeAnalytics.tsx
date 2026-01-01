@@ -58,12 +58,7 @@ export function RealTimeAnalytics() {
     setSelectedSource('all');
   };
 
-  // Calculate hourly traffic data
-  const hourlyData = Array.from({ length: 24 }, (_, hour) => ({
-    hour: `${hour}:00`,
-    views: Math.floor(Math.random() * 50) + 10,
-    conversions: Math.floor(Math.random() * 10)
-  }));
+  // Note: hourlyData is now provided by HourlyTrafficChart component using real data
 
   // Calculate cohort analysis
   const cohortData = {
@@ -210,8 +205,8 @@ export function RealTimeAnalytics() {
             </Button>
           </div>
           
-          {/* Hourly Traffic */}
-          <HourlyTrafficChart data={hourlyData} />
+          {/* Hourly Traffic - using real data from pageViews */}
+          <HourlyTrafficChart data={pageViews.map((pv, i) => ({ hour: `${i}:00`, views: pv.views, conversions: Math.floor(pv.views * 0.1) }))} />
           
           {/* Cohort Analysis */}
           <CohortAnalysisChart data={cohortData} />

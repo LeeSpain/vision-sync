@@ -54,16 +54,15 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
   pricing = "Contact for pricing",
   roi = "25-40%",
   fundingProgress = 65,
-  investorsViewing = Math.floor(Math.random() * 50) + 20,
-  timeLeft = "5 days",
-  isHot = true,
-  limitedSpots = Math.floor(Math.random() * 5) + 3,
+  investorsViewing = 0,
+  timeLeft = "",
+  isHot = false,
+  limitedSpots = 0,
   socialProof,
   actions = { view: true, invest: true }
 }) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
-  const [currentViewers, setCurrentViewers] = useState(investorsViewing);
   const [animatedROI, setAnimatedROI] = useState(0);
 
   // Animate ROI counter on mount
@@ -83,15 +82,6 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
 
     return () => clearInterval(timer);
   }, [roi]);
-
-  // Simulate live viewer updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentViewers(prev => prev + (Math.random() > 0.5 ? 1 : -1));
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleViewClick = () => {
     if (route) {
@@ -129,13 +119,15 @@ export const FeaturedProjectCard: React.FC<FeaturedProjectCardProps> = ({
         </div>
       )}
 
-      {/* Viewer Count */}
-      <div className="absolute top-3 right-3 z-10">
-        <div className="bg-midnight-navy/80 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1 backdrop-blur-sm">
-          <Eye className="h-3 w-3" />
-          {currentViewers} viewing
+      {/* Viewer Count - only show if investorsViewing is provided */}
+      {investorsViewing > 0 && (
+        <div className="absolute top-3 right-3 z-10">
+          <div className="bg-midnight-navy/80 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1 backdrop-blur-sm">
+            <Eye className="h-3 w-3" />
+            {investorsViewing} viewing
+          </div>
         </div>
-      </div>
+      )}
 
       <CardContent className="p-0 relative">
         {/* Image Section */}

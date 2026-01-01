@@ -578,8 +578,12 @@ class AnalyticsTracker {
   }
 
   private calculateAverageSessionTime(pageViews: any[]): number {
-    // Simplified calculation - in a real implementation you'd track session start/end times
-    return Math.random() * 10 + 2; // Random between 2-12 minutes for demo
+    // Calculate actual average from duration_seconds in page analytics
+    if (!pageViews.length) return 0;
+    
+    const totalDuration = pageViews.reduce((sum, pv) => sum + (pv.duration_seconds || 0), 0);
+    const avgSeconds = totalDuration / pageViews.length;
+    return avgSeconds / 60; // Convert to minutes
   }
 
   // Convenience methods for common tracking events

@@ -15,7 +15,7 @@ import { CurrencyAwareTemplateManager } from '@/components/admin/CurrencyAwareTe
 import { IndustryManager } from '@/components/admin/IndustryManager';
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { RecentActivity } from '@/components/admin/RecentActivity';
-import { QuickActions } from '@/components/admin/QuickActions';
+import { ActionQueue } from '@/components/admin/ActionQueue';
 import { LeadSourceChart } from '@/components/admin/LeadSourceChart';
 import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import AiAgentManager from '@/components/admin/AiAgentManager';
@@ -64,30 +64,35 @@ const Admin = () => {
   useEffect(() => {
     const fetchRealTimeMetrics = async () => {
       try {
-        const [conversationsResult, leadsResult, templatesResult, projectsResult, agentsResult] = await Promise.all([
-          supabase.from('ai_conversations').select('id, created_at', { count: 'exact' }),
-          supabase.from('leads').select('id, created_at', { count: 'exact' }),
-          supabase.from('app_templates').select('id').eq('is_active', true),
-          supabase.from('projects').select('id', { count: 'exact' }),
-          supabase.from('ai_agents').select('id').eq('is_active', true)
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Use server-side counts and date filtering
+        const [
+          conversationsCount, 
+          conversationsToday,
+          leadsCount,
+          leadsToday,
+          templatesResult, 
+          projectsCount, 
+          agentsResult
+        ] = await Promise.all([
+          supabase.from('ai_conversations').select('id', { count: 'exact', head: true }),
+          supabase.from('ai_conversations').select('id', { count: 'exact', head: true }).gte('created_at', today),
+          supabase.from('leads').select('id', { count: 'exact', head: true }),
+          supabase.from('leads').select('id', { count: 'exact', head: true }).gte('created_at', today),
+          supabase.from('app_templates').select('id', { count: 'exact', head: true }).eq('is_active', true),
+          supabase.from('projects').select('id', { count: 'exact', head: true }),
+          supabase.from('ai_agents').select('id', { count: 'exact', head: true }).eq('is_active', true)
         ]);
 
-        const today = new Date().toISOString().split('T')[0];
-        const conversationsToday = conversationsResult.data?.filter(conv => 
-          conv.created_at && conv.created_at.startsWith(today)
-        ).length || 0;
-        const leadsToday = leadsResult.data?.filter(lead => 
-          lead.created_at && lead.created_at.startsWith(today)
-        ).length || 0;
-
         setRealTimeMetrics({
-          totalConversations: conversationsResult.count || 0,
-          conversationsToday,
-          totalLeads: leadsResult.count || 0,
-          leadsToday,
-          activeTemplates: templatesResult.data?.length || 0,
-          totalProjects: projectsResult.count || 0,
-          activeAgents: agentsResult.data?.length || 0
+          totalConversations: conversationsCount.count || 0,
+          conversationsToday: conversationsToday.count || 0,
+          totalLeads: leadsCount.count || 0,
+          leadsToday: leadsToday.count || 0,
+          activeTemplates: templatesResult.count || 0,
+          totalProjects: projectsCount.count || 0,
+          activeAgents: agentsResult.count || 0
         });
       } catch (err) {
         console.error('Error fetching metrics:', err);
@@ -200,15 +205,15 @@ const Admin = () => {
               </Card>
             </div>
 
-            {/* Main Dashboard Grid */}
+            {/* Main Dashboard Grid - Cockpit Style */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Action Queue - Takes 1 column */}
+              <ActionQueue />
+              
               {/* Recent Activity - Takes 2 columns */}
               <div className="lg:col-span-2">
                 <RecentActivity key={refreshKey} />
               </div>
-              
-              {/* Quick Actions - Takes 1 column */}
-              <QuickActions stats={dashboardStats} onRefresh={handleRefresh} />
             </div>
 
             {/* Advanced Analytics Grid */}
@@ -259,16 +264,6 @@ const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center p-3 bg-gradient-subtle rounded-lg">
-                        <div className="text-xl font-bold text-royal-purple">94%</div>
-                        <div className="text-xs text-cool-gray">Satisfaction</div>
-                      </div>
-                      <div className="text-center p-3 bg-gradient-subtle rounded-lg">
-                        <div className="text-xl font-bold text-emerald-green">1.8s</div>
-                        <div className="text-xs text-cool-gray">Avg Response</div>
-                      </div>
-                    </div>
                      <div className="space-y-2">
                        <div className="flex justify-between text-sm">
                          <span className="text-cool-gray">Active Agents:</span>
@@ -280,7 +275,11 @@ const Admin = () => {
                        </div>
                        <div className="flex justify-between text-sm">
                          <span className="text-cool-gray">Lead Generation:</span>
-                         <span className="text-emerald-green font-medium">{realTimeMetrics?.totalLeads ? `${Math.round((realTimeMetrics.totalLeads / (realTimeMetrics.totalConversations || 1)) * 100)}%` : '0%'}</span>
+                         <span className="text-emerald-green font-medium">{realTimeMetrics?.totalLeads && realTimeMetrics?.totalConversations ? `${Math.round((realTimeMetrics.totalLeads / realTimeMetrics.totalConversations) * 100)}%` : '0%'}</span>
+                       </div>
+                       <div className="flex justify-between text-sm">
+                         <span className="text-cool-gray">Today's Conversations:</span>
+                         <span className="text-royal-purple font-medium">+{realTimeMetrics?.conversationsToday || 0}</span>
                        </div>
                      </div>
                   </div>
@@ -477,16 +476,6 @@ const Admin = () => {
     <AdminErrorBoundary>
       <AdminLayout>
         <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-midnight-navy mb-2">Admin Dashboard</h1>
-              <p className="text-cool-gray">Manage your projects, templates, and leads</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-cool-gray">{user.email}</span>
-              <Button variant="outline" onClick={signOut}>Sign Out</Button>
-            </div>
-          </div>
           {renderContent()}
         </div>
       </AdminLayout>

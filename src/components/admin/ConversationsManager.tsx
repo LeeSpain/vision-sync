@@ -35,6 +35,8 @@ interface Conversation {
   created_at: string;
   session_id: string | null;
   user_message: string;
+  lead_qualified?: boolean;
+  conversion_score?: number;
 }
 
 interface ConversationStats {
@@ -383,14 +385,14 @@ export function ConversationsManager() {
                     </TableCell>
                     <TableCell>
                       <Badge 
-                        className={`text-white ${getQualificationColor(Math.random() > 0.7, Math.floor(Math.random() * 10) + 1)}`}
+                        className={`text-white ${getQualificationColor(conversation.lead_qualified || false, conversation.conversion_score || 0)}`}
                       >
-                        {Math.random() > 0.7 ? 'Qualified' : 'Not Qualified'}
+                        {conversation.lead_qualified ? 'Qualified' : 'Not Qualified'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-center">
-                      <span className={`font-medium text-green-600`}>
-                        {(Math.floor(Math.random() * 5) + 6)}/10
+                      <span className={`font-medium ${(conversation.conversion_score || 0) >= 6 ? 'text-green-600' : 'text-cool-gray'}`}>
+                        {conversation.conversion_score || 0}/10
                       </span>
                     </TableCell>
                     <TableCell>
