@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LogOut, User } from 'lucide-react';
+import { Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CurrencySelector } from '@/components/ui/currency-selector';
 import ShareButton from '@/components/ShareButton';
@@ -52,8 +52,13 @@ const Header = () => {
               <ShareButton />
               <CurrencySelector variant="compact" />
               {user ? (
-                <div className="flex items-center space-x-3">
-                  <User className="h-4 w-4 text-midnight-navy/80" />
+                <div className="flex items-center space-x-2">
+                  <Link to="/admin">
+                    <Button variant="outline" size="sm">
+                      <LayoutDashboard className="h-4 w-4 mr-1" />
+                      Dashboard
+                    </Button>
+                  </Link>
                   <Button variant="ghost" size="sm" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-1" />
                     Sign Out
@@ -101,6 +106,12 @@ const Header = () => {
               </div>
               {user ? (
                 <div className="flex flex-col space-y-2">
+                  <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <LayoutDashboard className="h-4 w-4 mr-1" />
+                      Dashboard
+                    </Button>
+                  </Link>
                   <Button variant="ghost" size="sm" onClick={signOut} className="w-full">
                     <LogOut className="h-4 w-4 mr-1" />
                     Sign Out
