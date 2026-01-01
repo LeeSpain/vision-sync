@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Sparkles } from "lucide-react";
+import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Sparkles, HeadphonesIcon, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useLocation } from "react-router-dom";
 
 interface ChatMessage {
   id: string;
@@ -29,6 +30,15 @@ interface ChatMessage {
     category?: string;
     required?: boolean;
   };
+  agentName?: string;
+  agentType?: string;
+}
+
+interface CurrentAgent {
+  id: string;
+  name: string;
+  type: string;
+  avatar_url?: string;
 }
 
 interface AiChatWidgetProps {
@@ -37,29 +47,41 @@ interface AiChatWidgetProps {
   embedded?: boolean;
 }
 
+// Agent type color mappings
+const AGENT_COLORS = {
+  support: { bg: 'bg-blue-500', text: 'text-blue-600', badge: 'bg-blue-100 text-blue-700 border-blue-200', gradient: 'from-blue-500 to-blue-600' },
+  sales: { bg: 'bg-green-500', text: 'text-green-600', badge: 'bg-green-100 text-green-700 border-green-200', gradient: 'from-green-500 to-green-600' },
+  brain: { bg: 'bg-purple-500', text: 'text-purple-600', badge: 'bg-purple-100 text-purple-700 border-purple-200', gradient: 'from-purple-500 to-purple-600' },
+  general: { bg: 'bg-royal-purple', text: 'text-royal-purple', badge: 'bg-royal-purple/10 text-royal-purple border-royal-purple/20', gradient: 'from-royal-purple to-electric-blue' },
+};
+
 const AiChatWidget: React.FC<AiChatWidgetProps> = ({ 
   isMinimized = true, 
   onToggleMinimize,
   embedded = false
 }) => {
+  const location = useLocation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
-  const [agentData, setAgentData] = useState<any>(null);
+  const [currentAgent, setCurrentAgent] = useState<CurrentAgent>({ id: '', name: '', type: 'general' });
   const [contactInfo, setContactInfo] = useState<any>({});
   const [showContactBadge, setShowContactBadge] = useState(false);
+  const [isEscalated, setIsEscalated] = useState(false);
+  const [handoffMessage, setHandoffMessage] = useState<string | null>(null);
   const [welcomeSettings, setWelcomeSettings] = useState({
-    message: "Hi there! I'm Paul, your personal advisor at Vision-Sync. I'm here to help you find the perfect digital solution for your needs. What can I help you with today?",
+    message: "Hi there! I'm here to help you find the perfect digital solution for your needs. What can I help you with today?",
     quickActions: ["I need a custom app built", "Tell me about your AI solutions", "I'm interested in investing", "Let's discuss my project"],
     delay: 1000
   });
   
-  // Default avatar fallback - will be replaced by agent's avatar_url if set
+  // Default avatar fallback
   const defaultAvatar = "/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png";
-  const agentAvatar = agentData?.avatar_url || defaultAvatar;
-  const agentName = agentData?.name || "Paul";
+  const agentAvatar = currentAgent.avatar_url || defaultAvatar;
+  const agentName = currentAgent.name || "Assistant";
+  const agentColors = AGENT_COLORS[currentAgent.type as keyof typeof AGENT_COLORS] || AGENT_COLORS.general;
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -95,14 +117,21 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
   const loadAgentData = async () => {
     try {
+      // Load the default/first active agent for initial display
       const { data } = await supabase
         .from('ai_agents')
         .select('*')
         .eq('is_active', true)
-        .single();
+        .eq('agent_type', 'sales')
+        .maybeSingle();
       
       if (data) {
-        setAgentData(data);
+        setCurrentAgent({
+          id: data.id,
+          name: data.name,
+          type: data.agent_type || 'general',
+          avatar_url: data.avatar_url
+        });
       }
     } catch (error) {
       console.error('Error loading agent data:', error);
@@ -255,18 +284,21 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       // Prepare conversation history for API
       const conversationHistory = [...messages, userMessage].map(msg => ({
         role: msg.type === 'user' ? 'user' : 'assistant',
-        content: msg.content,
-        timestamp: msg.timestamp.toISOString()
+        content: msg.content
       }));
 
-      // Call AI chat endpoint
-      const { data, error } = await supabase.functions.invoke('ai-chat', {
+      // Detect page context from current URL
+      const pageContext = location.pathname.replace('/', '') || 'home';
+
+      // Call AI router endpoint
+      const { data, error } = await supabase.functions.invoke('ai-router', {
         body: {
           message: content,
           sessionId,
-          agentId: agentData?.id,
           conversationHistory,
-          metadata
+          isAdmin: false,
+          pageContext,
+          currentAgentId: currentAgent.id || null
         }
       });
 
@@ -274,17 +306,41 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
       setMessages(prev => prev.filter(msg => !msg.isTyping));
 
       if (error) {
-        console.error('AI Chat Error:', error);
+        console.error('AI Router Error:', error);
         throw error;
       }
 
-      console.log('AI Chat Response:', {
-        has_response: !!data.response,
-        leadCreated: data.leadCreated,
-        qualified: data.qualified,
-        conversionScore: data.conversionScore,
-        hasContactInfo: !!data.contactInfo
+      console.log('AI Router Response:', {
+        agent: data.agent,
+        handoff: data.handoff,
+        intent: data.analysis?.intent,
+        sentiment: data.analysis?.sentiment,
+        hasLead: !!data.lead
       });
+
+      // Update current agent if changed
+      if (data.agent) {
+        setCurrentAgent({
+          id: data.agent.id,
+          name: data.agent.name,
+          type: data.agent.type
+        });
+      }
+
+      // Handle handoff notification
+      if (data.handoff?.occurred) {
+        setHandoffMessage(`Connecting you with ${data.handoff.to}...`);
+        setTimeout(() => setHandoffMessage(null), 3000);
+      }
+
+      // Handle escalation
+      if (data.analysis?.escalationRequested) {
+        setIsEscalated(true);
+        toast.info("Thanks! Someone from our team will reach out to you shortly.", {
+          duration: 5000,
+          position: 'top-right'
+        });
+      }
 
       const aiResponse: ChatMessage = {
         id: `msg_${Date.now()}`,
@@ -292,34 +348,28 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         content: data.response || 'I apologize, but I\'m having trouble responding right now. Please try again.',
         timestamp: new Date(),
         role: 'assistant',
-        ...(data.interactiveType && {
-          interactiveType: data.interactiveType,
-          options: data.options,
-          metadata: data.metadata
-        })
+        agentName: data.agent?.name,
+        agentType: data.agent?.type
       };
 
       setMessages(prev => [...prev, aiResponse]);
 
       // Handle contact information and lead creation feedback
-      if (data.contactInfo) {
-        setContactInfo(data.contactInfo);
-        if (data.contactInfo.email || data.contactInfo.phone || data.contactInfo.name) {
-          setShowContactBadge(true);
-        }
+      if (data.analysis?.hasContactInfo) {
+        setContactInfo(data.analysis.contactInfo);
+        setShowContactBadge(true);
       }
 
       // Show success message if lead was created
-      if (data.leadCreated) {
-        console.log('✅ Lead created successfully!');
+      if (data.lead) {
+        console.log('✅ Lead created:', data.lead);
         toast.success('Thanks! We\'ve saved your contact information and will follow up soon.', {
           duration: 5000,
           position: 'top-right'
         });
       }
 
-      // Note: Conversation saving is now handled by the edge function
-      console.log('Message sent successfully, conversation saved on server');
+      console.log('Message routed successfully via multi-agent system');
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -374,6 +424,25 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     }
   };
 
+  // Helper to get agent type icon
+  const getAgentTypeIcon = (type: string) => {
+    switch (type) {
+      case 'support': return <HeadphonesIcon className="h-3 w-3" />;
+      case 'sales': return <TrendingUp className="h-3 w-3" />;
+      default: return <Sparkles className="h-3 w-3" />;
+    }
+  };
+
+  // Helper to get agent role label
+  const getAgentRoleLabel = (type: string) => {
+    switch (type) {
+      case 'support': return 'Support Specialist';
+      case 'sales': return 'Sales Advisor';
+      case 'brain': return 'AI Orchestrator';
+      default: return 'Your Advisor';
+    }
+  };
+
   // For embedded mode, don't show the minimized state
   if (embedded) {
     return (
@@ -382,17 +451,22 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
             <CardTitle className="flex items-center gap-3">
               <div className="relative">
-                <Avatar className="h-10 w-10 ring-2 ring-royal-purple/20 ring-offset-1">
+                <Avatar className={`h-10 w-10 ring-2 ring-offset-1 ${currentAgent.type === 'support' ? 'ring-blue-300' : currentAgent.type === 'sales' ? 'ring-green-300' : 'ring-royal-purple/20'}`}>
                   <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                  <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold">
+                  <AvatarFallback className={`bg-gradient-to-br ${agentColors.gradient} text-white font-bold`}>
                     {agentName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-amber-500 animate-pulse" />
+                {getAgentTypeIcon(currentAgent.type)}
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-800">{agentName}</div>
-                <div className="text-sm text-gray-600 font-normal">Your Personal Advisor</div>
+                <div className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                  {agentName}
+                  <Badge className={`text-xs ${agentColors.badge}`}>
+                    {currentAgent.type === 'support' ? 'Support' : currentAgent.type === 'sales' ? 'Sales' : 'AI'}
+                  </Badge>
+                </div>
+                <div className="text-sm text-gray-600 font-normal">{getAgentRoleLabel(currentAgent.type)}</div>
               </div>
             </CardTitle>
             <div className="flex items-center gap-2">
@@ -566,7 +640,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               <div className="flex items-center gap-2">
                 <Input
                   type="text"
-                  placeholder="Ask Paul anything..."
+                  placeholder={`Ask ${agentName} anything...`}
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -602,8 +676,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               
               {/* Status Badges */}
               <div className="flex justify-center gap-4 mt-3">
-                <Badge variant="outline" className="text-xs bg-royal-purple/5 text-royal-purple border-royal-purple/20">
-                  💬 Personal Service
+                <Badge variant="outline" className={`text-xs ${agentColors.badge}`}>
+                  💬 {currentAgent.type === 'support' ? 'Support Chat' : currentAgent.type === 'sales' ? 'Sales Advisor' : 'Personal Service'}
                 </Badge>
                 <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
                   🔒 Secure & Private
@@ -657,19 +731,27 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
           <CardTitle className="flex items-center gap-3">
             <div className="relative">
-              <Avatar className="h-10 w-10 ring-2 ring-royal-purple/20 ring-offset-1">
+              <Avatar className={`h-10 w-10 ring-2 ring-offset-1 ${currentAgent.type === 'support' ? 'ring-blue-300' : currentAgent.type === 'sales' ? 'ring-green-300' : 'ring-royal-purple/20'}`}>
                 <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold text-lg">
+                <AvatarFallback className={`bg-gradient-to-br ${agentColors.gradient} text-white font-bold text-lg`}>
                   {agentName.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
+              <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white animate-pulse ${currentAgent.type === 'support' ? 'bg-blue-500' : currentAgent.type === 'sales' ? 'bg-green-500' : 'bg-emerald-500'}`}></div>
             </div>
             <div>
-              <div className="font-semibold text-gray-900 text-sm">{agentName}</div>
-              <div className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-                <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                {showContactBadge ? 'Contact saved' : 'Available now'}
+              <div className="font-semibold text-gray-900 text-sm flex items-center gap-2">
+                {agentName}
+                {currentAgent.type && currentAgent.type !== 'general' && (
+                  <Badge className={`text-xs px-1.5 py-0 ${agentColors.badge}`}>
+                    {getAgentTypeIcon(currentAgent.type)}
+                    <span className="ml-1">{currentAgent.type === 'support' ? 'Support' : 'Sales'}</span>
+                  </Badge>
+                )}
+              </div>
+              <div className={`text-xs font-medium flex items-center gap-1 ${agentColors.text}`}>
+                <div className={`h-1.5 w-1.5 rounded-full animate-pulse ${currentAgent.type === 'support' ? 'bg-blue-500' : currentAgent.type === 'sales' ? 'bg-green-500' : 'bg-emerald-500'}`}></div>
+                {isEscalated ? 'Human follow-up scheduled' : showContactBadge ? 'Contact saved' : 'Available now'}
               </div>
             </div>
           </CardTitle>
@@ -684,6 +766,14 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             </Button>
           </div>
         </CardHeader>
+        
+        {/* Handoff notification */}
+        {handoffMessage && (
+          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-700 flex items-center gap-2 animate-fade-in">
+            <Sparkles className="h-4 w-4" />
+            {handoffMessage}
+          </div>
+        )}
         
         {/* Messages Area - Properly constrained for scrolling */}
         <div className="flex-1 overflow-hidden">
@@ -740,7 +830,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask me anything..."
+                  placeholder={`Ask ${agentName} anything...`}
                   disabled={isLoading}
                   className="border-gray-200 focus:border-primary focus:ring-primary/20 rounded-xl resize-none bg-gray-50 focus:bg-white transition-all"
                 />
@@ -778,8 +868,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                     ✓ Contact Saved
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-xs border-royal-purple/20 text-royal-purple/70 bg-royal-purple/5">
-                  🔒 Personal & Secure Chat with Paul
+                <Badge variant="outline" className={`text-xs ${agentColors.badge}`}>
+                  🔒 Secure Chat with {agentName}
                 </Badge>
               </div>
             </div>
