@@ -87,22 +87,54 @@ const INTENT_OPTIONS = [
 ];
 
 const DEFAULT_RULES = [
-  { trigger_type: 'intent', trigger_value: 'pricing_inquiry', target_type: 'sales', priority: 9 },
+  // Intent-based rules - Sales (Morgan)
+  { trigger_type: 'intent', trigger_value: 'pricing_inquiry', target_type: 'sales', priority: 10 },
   { trigger_type: 'intent', trigger_value: 'purchase_intent', target_type: 'sales', priority: 10 },
-  { trigger_type: 'intent', trigger_value: 'demo_request', target_type: 'sales', priority: 8 },
-  { trigger_type: 'intent', trigger_value: 'investment', target_type: 'sales', priority: 9 },
-  { trigger_type: 'intent', trigger_value: 'technical_support', target_type: 'support', priority: 9 },
+  { trigger_type: 'intent', trigger_value: 'demo_request', target_type: 'sales', priority: 10 },
+  { trigger_type: 'intent', trigger_value: 'investment', target_type: 'sales', priority: 10 },
+  { trigger_type: 'intent', trigger_value: 'partnership', target_type: 'sales', priority: 9 },
+  { trigger_type: 'intent', trigger_value: 'comparison', target_type: 'sales', priority: 8 },
+  
+  // Intent-based rules - Support (Alex)
+  { trigger_type: 'intent', trigger_value: 'technical_support', target_type: 'support', priority: 10 },
   { trigger_type: 'intent', trigger_value: 'complaint', target_type: 'support', priority: 10 },
-  { trigger_type: 'intent', trigger_value: 'feature_request', target_type: 'support', priority: 7 },
+  { trigger_type: 'intent', trigger_value: 'feature_request', target_type: 'support', priority: 8 },
+  { trigger_type: 'intent', trigger_value: 'general_inquiry', target_type: 'support', priority: 5 },
+  
+  // Keyword-based rules - Sales (Morgan)
   { trigger_type: 'keyword', trigger_value: 'price,pricing,cost,quote,budget', target_type: 'sales', priority: 8 },
   { trigger_type: 'keyword', trigger_value: 'buy,purchase,order,subscribe', target_type: 'sales', priority: 9 },
+  { trigger_type: 'keyword', trigger_value: 'subscription,plan,upgrade,tier', target_type: 'sales', priority: 8 },
+  { trigger_type: 'keyword', trigger_value: 'enterprise,custom,tailored,bespoke', target_type: 'sales', priority: 7 },
+  { trigger_type: 'keyword', trigger_value: 'invest,investor,roi,return', target_type: 'sales', priority: 8 },
+  
+  // Keyword-based rules - Support (Alex)
   { trigger_type: 'keyword', trigger_value: 'help,support,issue,problem,bug,error', target_type: 'support', priority: 8 },
-  { trigger_type: 'keyword', trigger_value: 'broken,crashed,not working,failed', target_type: 'support', priority: 9 },
+  { trigger_type: 'keyword', trigger_value: 'broken,crashed,not working,failed,down', target_type: 'support', priority: 9 },
+  { trigger_type: 'keyword', trigger_value: 'integrate,integration,api,connect,webhook', target_type: 'support', priority: 7 },
+  { trigger_type: 'keyword', trigger_value: 'tutorial,how to,guide,documentation', target_type: 'support', priority: 6 },
+  
+  // Sentiment-based rules
   { trigger_type: 'sentiment', trigger_value: '-0.5', target_type: 'support', priority: 10 },
+  { trigger_type: 'sentiment', trigger_value: '-0.7', target_type: 'brain', priority: 10 },
+  
+  // Explicit request rules - Sales
   { trigger_type: 'explicit', trigger_value: 'speak to sales', target_type: 'sales', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'talk to sales', target_type: 'sales', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'sales team', target_type: 'sales', priority: 10 },
+  
+  // Explicit request rules - Support
+  { trigger_type: 'explicit', trigger_value: 'speak to support', target_type: 'support', priority: 10 },
   { trigger_type: 'explicit', trigger_value: 'talk to support', target_type: 'support', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'technical help', target_type: 'support', priority: 10 },
+  
+  // Explicit escalation rules - Brain (Nexus)
+  { trigger_type: 'explicit', trigger_value: 'human', target_type: 'brain', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'real person', target_type: 'brain', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'manager', target_type: 'brain', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'supervisor', target_type: 'brain', priority: 10 },
+  { trigger_type: 'explicit', trigger_value: 'escalate', target_type: 'brain', priority: 10 },
 ];
-
 const AGENT_COLORS: Record<string, string> = {
   support: '#3b82f6',
   sales: '#10b981',
@@ -391,6 +423,48 @@ const RoutingRulesManager: React.FC = () => {
     } catch (error) {
       console.error('Error loading defaults:', error);
       toast.error('Failed to load default rules');
+    }
+  };
+
+  const addMissingRules = async () => {
+    try {
+      // Get agent IDs by type
+      const agentMap: Record<string, string> = {};
+      agents.forEach(agent => {
+        agentMap[agent.agent_type] = agent.id;
+      });
+
+      // Find which rules are missing
+      const existingRuleKeys = new Set(
+        rules.map(r => `${r.trigger_type}:${r.trigger_value}`)
+      );
+
+      const missingRules = DEFAULT_RULES.filter(rule => 
+        !existingRuleKeys.has(`${rule.trigger_type}:${rule.trigger_value}`)
+      );
+
+      if (missingRules.length === 0) {
+        toast.info('All rules are already configured!');
+        return;
+      }
+
+      // Insert missing rules
+      const rulesToInsert = missingRules.map(rule => ({
+        trigger_type: rule.trigger_type,
+        trigger_value: rule.trigger_value,
+        target_agent_id: agentMap[rule.target_type] || null,
+        priority: rule.priority,
+        is_active: true,
+      })).filter(r => r.target_agent_id);
+
+      const { error } = await supabase.from('agent_routing_rules').insert(rulesToInsert);
+      if (error) throw error;
+
+      toast.success(`Added ${rulesToInsert.length} missing routing rules`);
+      loadData();
+    } catch (error) {
+      console.error('Error adding missing rules:', error);
+      toast.error('Failed to add missing rules');
     }
   };
 
@@ -806,6 +880,11 @@ const RoutingRulesManager: React.FC = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+
+          <Button variant="outline" className="gap-2" onClick={addMissingRules}>
+            <Plus className="h-4 w-4" />
+            Add Missing Rules
+          </Button>
 
           <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
             setIsAddDialogOpen(open);
