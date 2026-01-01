@@ -1027,6 +1027,51 @@ export type Database = {
           },
         ]
       }
+      routing_rule_analytics: {
+        Row: {
+          confidence_score: number | null
+          id: string
+          message_preview: string | null
+          result_agent_id: string | null
+          rule_id: string | null
+          session_id: string | null
+          triggered_at: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          id?: string
+          message_preview?: string | null
+          result_agent_id?: string | null
+          rule_id?: string | null
+          session_id?: string | null
+          triggered_at?: string
+        }
+        Update: {
+          confidence_score?: number | null
+          id?: string
+          message_preview?: string | null
+          result_agent_id?: string | null
+          rule_id?: string | null
+          session_id?: string | null
+          triggered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "routing_rule_analytics_result_agent_id_fkey"
+            columns: ["result_agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "routing_rule_analytics_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "agent_routing_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       template_questionnaire_responses: {
         Row: {
           budget_range: string | null

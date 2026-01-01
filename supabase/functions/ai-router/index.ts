@@ -175,8 +175,10 @@ async function selectAgent(
   isAdmin: boolean,
   forceBrain: boolean,
   pageContext: string,
-  conversationLength: number
-): Promise<{ agent: Agent; handoffReason?: string }> {
+  conversationLength: number,
+  sessionId?: string,
+  messagePreview?: string
+): Promise<{ agent: Agent; handoffReason?: string; matchedRuleId?: string }> {
   
   // Fetch all active agents
   const { data: agents, error: agentsError } = await supabase
@@ -211,6 +213,21 @@ async function selectAgent(
     .eq('is_active', true)
     .order('priority', { ascending: false });
   
+  // Helper function to track rule trigger
+  const trackRuleTrigger = async (ruleId: string, agentId: string) => {
+    try {
+      await supabase.from('routing_rule_analytics').insert({
+        rule_id: ruleId,
+        session_id: sessionId,
+        message_preview: messagePreview?.substring(0, 100),
+        confidence_score: analysis.confidence,
+        result_agent_id: agentId
+      });
+    } catch (e) {
+      console.error('Failed to track rule trigger:', e);
+    }
+  };
+  
   // Check intent-based routing rules
   if (rules?.length) {
     for (const rule of rules as RoutingRule[]) {
@@ -223,7 +240,8 @@ async function selectAgent(
           }
           // Only switch if clear signal (confidence > 0.7 or conversation < 3 messages)
           if (analysis.confidence > 0.7 || conversationLength < 3) {
-            return { agent: targetAgent, handoffReason: `Intent: ${analysis.intent}` };
+            await trackRuleTrigger(rule.id, targetAgent.id);
+            return { agent: targetAgent, handoffReason: `Intent: ${analysis.intent}`, matchedRuleId: rule.id };
           }
         }
       }
@@ -239,7 +257,8 @@ async function selectAgent(
           const targetAgent = agents.find((a: Agent) => a.id === rule.target_agent_id);
           if (targetAgent && (!currentAgentId || currentAgentId !== targetAgent.id)) {
             if (conversationLength < 3) {
-              return { agent: targetAgent, handoffReason: `Keyword match` };
+              await trackRuleTrigger(rule.id, targetAgent.id);
+              return { agent: targetAgent, handoffReason: `Keyword match`, matchedRuleId: rule.id };
             }
           }
         }
@@ -598,7 +617,9 @@ serve(async (req) => {
       isAdmin,
       forceBrain,
       pageContext,
-      conversationHistory.length
+      conversationHistory.length,
+      sessionId,
+      message
     );
     console.log('Selected agent:', agent.name, 'Reason:', handoffReason);
 
