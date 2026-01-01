@@ -47,6 +47,7 @@ const mainItems = [
   { title: "Leads", url: "#leads", icon: Users },
   { title: "Sales Pipeline", url: "#sales-pipeline", icon: TrendingUp },
   { title: "AI Agent", url: "#ai-agent", icon: Brain },
+  { title: "Brain Command", url: "#brain-command", icon: Brain, special: true },
   { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
 ]
@@ -173,12 +174,16 @@ export function AdminSidebar() {
                       onClick={() => handleNavigation(item.url)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                         isActive(item.url) 
-                          ? "bg-royal-purple text-white" 
-                          : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
+                          ? item.title === "Brain Command" 
+                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" 
+                            : "bg-royal-purple text-white" 
+                          : item.title === "Brain Command"
+                            ? "text-purple-300 hover:bg-purple-500/20 hover:text-white bg-purple-500/10"
+                            : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
                       }`}
                       >
                     <div className="flex items-center space-x-3">
-                      <item.icon className="h-5 w-5" />
+                      <item.icon className={`h-5 w-5 ${item.title === "Brain Command" ? "text-purple-400" : ""}`} />
                       {!collapsed && <span>{item.title}</span>}
                     </div>
                     {!collapsed && item.title === "Projects" && (
@@ -194,6 +199,11 @@ export function AdminSidebar() {
                     {!collapsed && item.title === "AI Conversations" && (
                       <Badge variant="secondary" className="bg-electric-blue/20 text-electric-blue border-0">
                         {conversationStats.totalConversations}
+                      </Badge>
+                    )}
+                    {!collapsed && item.title === "Brain Command" && (
+                      <Badge className="bg-purple-500/30 text-purple-200 border-purple-400/30 text-xs">
+                        Nexus
                       </Badge>
                     )}
                     </button>
