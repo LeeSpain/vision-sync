@@ -5,9 +5,12 @@ import { Menu, X, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CurrencySelector } from '@/components/ui/currency-selector';
 import ShareButton from '@/components/ShareButton';
+import ChatBar from '@/components/chat/ChatBar';
+import AiChatWidget from '@/components/chat/AiChatWidget';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
 
@@ -115,6 +118,15 @@ const Header = () => {
           </div>
         )}
       </nav>
+      
+      {/* Chat Bar - positioned below header */}
+      <ChatBar onOpenChat={() => setIsChatOpen(true)} />
+      
+      {/* Chat Widget */}
+      <AiChatWidget 
+        isMinimized={!isChatOpen} 
+        onToggleMinimize={() => setIsChatOpen(!isChatOpen)} 
+      />
     </header>
   );
 };

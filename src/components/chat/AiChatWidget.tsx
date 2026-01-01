@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Shield, Sparkles } from "lucide-react";
+import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -51,10 +51,12 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   const [contactInfo, setContactInfo] = useState<any>({});
   const [showContactBadge, setShowContactBadge] = useState(false);
   const [welcomeSettings, setWelcomeSettings] = useState({
-    message: "Hello! I'm here to help you discover amazing digital solutions. What kind of project are you looking for today?",
-    quickActions: ["Tell me about AI solutions", "I need a custom app", "Show me investment opportunities", "I want to discuss pricing"],
+    message: "Hi there! I'm Paul, your personal advisor at Vision-Sync. I'm here to help you find the perfect digital solution for your needs. What can I help you with today?",
+    quickActions: ["I need a custom app built", "Tell me about your AI solutions", "I'm interested in investing", "Let's discuss my project"],
     delay: 1000
   });
+  
+  const paulAvatar = "/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png";
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -374,15 +376,20 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     return (
       <div className="w-full h-full flex flex-col min-h-0">
         <Card className="flex flex-col h-full shadow-lg border bg-white overflow-hidden">
-          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
+          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
             <CardTitle className="flex items-center gap-3">
               <div className="relative">
-                <Shield className="h-6 w-6 text-primary" />
-                <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-yellow-500 animate-pulse" />
+                <Avatar className="h-10 w-10 ring-2 ring-royal-purple/20 ring-offset-1">
+                  <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                  <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold">
+                    P
+                  </AvatarFallback>
+                </Avatar>
+                <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-amber-500 animate-pulse" />
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-800">AI Guardian</div>
-                <div className="text-sm text-gray-600 font-normal">Your AI Assistant</div>
+                <div className="text-lg font-semibold text-gray-800">Paul</div>
+                <div className="text-sm text-gray-600 font-normal">Your Personal Advisor</div>
               </div>
             </CardTitle>
             <div className="flex items-center gap-2">
@@ -407,9 +414,12 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                             U
                           </AvatarFallback>
                         ) : (
-                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/40 text-primary text-xs font-medium">
-                            <Shield className="h-4 w-4" />
-                          </AvatarFallback>
+                          <>
+                            <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                            <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white text-xs font-medium">
+                              P
+                            </AvatarFallback>
+                          </>
                         )}
                       </Avatar>
                       
@@ -503,18 +513,19 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                   <div className="flex justify-start animate-fade-in">
                     <div className="flex items-start gap-3 max-w-[85%]">
                       <Avatar className="h-8 w-8 flex-shrink-0">
-                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/40 text-primary text-xs font-medium">
-                          <Shield className="h-4 w-4" />
+                        <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                        <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white text-xs font-medium">
+                          P
                         </AvatarFallback>
                       </Avatar>
                       <div className="bg-gray-50 rounded-xl px-4 py-3 border border-gray-100 shadow-sm">
                         <div className="flex items-center space-x-2">
                           <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
-                          <span className="text-sm text-gray-500">AI Guardian is thinking...</span>
+                          <span className="text-sm text-gray-500">Paul is typing...</span>
                         </div>
                       </div>
                     </div>
@@ -552,7 +563,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               <div className="flex items-center gap-2">
                 <Input
                   type="text"
-                  placeholder="Ask AI Guardian anything..."
+                  placeholder="Ask Paul anything..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -588,11 +599,11 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               
               {/* Status Badges */}
               <div className="flex justify-center gap-4 mt-3">
-                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                  🛡️ AI Security
+                <Badge variant="outline" className="text-xs bg-royal-purple/5 text-royal-purple border-royal-purple/20">
+                  💬 Personal Service
                 </Badge>
                 <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-                  📞 Contact Info Protected
+                  🔒 Secure & Private
                 </Badge>
               </div>
             </div>
@@ -605,28 +616,32 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   if (isMinimized) {
     return (
       <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
-        <div className="relative">
+        <div className="relative group">
           <Button
             onClick={onToggleMinimize}
             size="lg"
-            className="rounded-full h-16 w-auto px-6 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border-2 border-white/20 hover-scale group relative overflow-hidden"
+            className="rounded-full h-16 w-auto px-6 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-midnight-navy to-royal-purple hover:from-midnight-navy/90 hover:to-royal-purple/90 border-2 border-white/20 hover-scale relative overflow-hidden"
           >
             <div className="relative z-10 flex items-center justify-center gap-3">
-              <div className="flex items-center justify-center relative">
-                <Shield className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
-                <Sparkles className="h-3 w-3 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+              <div className="relative">
+                <Avatar className="h-8 w-8 ring-2 ring-white/30">
+                  <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                  <AvatarFallback className="bg-gradient-to-br from-coral-orange to-coral-orange/80 text-white font-bold">
+                    P
+                  </AvatarFallback>
+                </Avatar>
               </div>
-              <span className="text-white font-medium whitespace-nowrap">Talk To Us Now</span>
+              <span className="text-white font-medium whitespace-nowrap">Talk To Paul</span>
             </div>
           </Button>
           
-          {/* Welcoming pulse indicator */}
-          <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+          {/* Online indicator */}
+          <div className="absolute -top-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
           
-          {/* AI Guardian Label */}
-          <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="bg-gray-900 text-white px-2 py-1 rounded text-xs font-medium whitespace-nowrap">
-              AI Guardian
+          {/* Tooltip */}
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shadow-lg">
+              I'm here to help! 💬
             </div>
           </div>
         </div>
@@ -637,22 +652,22 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   return (
     <div className="fixed bottom-4 right-4 z-50 w-80 sm:w-96 max-h-[min(85vh,600px)] h-[min(85vh,600px)] flex flex-col animate-scale-in">
       <Card className="flex flex-col h-full shadow-2xl border-0 bg-white backdrop-blur-sm overflow-hidden">
-        <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
+        <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
           <CardTitle className="flex items-center gap-3">
             <div className="relative">
-              <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-1">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-white font-bold text-lg">
-                  🤖
+              <Avatar className="h-10 w-10 ring-2 ring-royal-purple/20 ring-offset-1">
+                <AvatarImage src={paulAvatar} alt="Paul" className="object-cover" />
+                <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold text-lg">
+                  P
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+              <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
-              <div className="font-semibold text-gray-900 text-sm">{agentData?.name || 'AI Assistant'}</div>
-              <div className="text-xs text-green-600 font-medium flex items-center gap-1">
-                <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                {showContactBadge ? 'Contact saved' : 'Ready to help'}
+              <div className="font-semibold text-gray-900 text-sm">Paul</div>
+              <div className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                {showContactBadge ? 'Contact saved' : 'Available now'}
               </div>
             </div>
           </CardTitle>
@@ -723,7 +738,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask me anything about our services..."
+                  placeholder="Ask me anything..."
                   disabled={isLoading}
                   className="border-gray-200 focus:border-primary focus:ring-primary/20 rounded-xl resize-none bg-gray-50 focus:bg-white transition-all"
                 />
@@ -761,8 +776,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                     ✓ Contact Saved
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-xs border-primary/20 text-primary/70 bg-primary/5">
-                  🔒 Secure & Private • Powered by AI
+                <Badge variant="outline" className="text-xs border-royal-purple/20 text-royal-purple/70 bg-royal-purple/5">
+                  🔒 Personal & Secure Chat with Paul
                 </Badge>
               </div>
             </div>
