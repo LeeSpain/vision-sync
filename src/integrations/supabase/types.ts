@@ -87,6 +87,7 @@ export type Database = {
       }
       ai_agents: {
         Row: {
+          avatar_url: string | null
           category: string | null
           created_at: string | null
           department: string | null
@@ -100,6 +101,7 @@ export type Database = {
           voice_id: string | null
         }
         Insert: {
+          avatar_url?: string | null
           category?: string | null
           created_at?: string | null
           department?: string | null
@@ -113,6 +115,7 @@ export type Database = {
           voice_id?: string | null
         }
         Update: {
+          avatar_url?: string | null
           category?: string | null
           created_at?: string | null
           department?: string | null
