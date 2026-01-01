@@ -14,6 +14,112 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_conversations: {
+        Row: {
+          agent_id: string | null
+          conversation_id: string | null
+          ended_at: string | null
+          handoff_from: string | null
+          handoff_reason: string | null
+          id: string
+          messages_handled: number | null
+          outcome: string | null
+          started_at: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          conversation_id?: string | null
+          ended_at?: string | null
+          handoff_from?: string | null
+          handoff_reason?: string | null
+          id?: string
+          messages_handled?: number | null
+          outcome?: string | null
+          started_at?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          conversation_id?: string | null
+          ended_at?: string | null
+          handoff_from?: string | null
+          handoff_reason?: string | null
+          id?: string
+          messages_handled?: number | null
+          outcome?: string | null
+          started_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_conversations_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_conversations_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_conversations_handoff_from_fkey"
+            columns: ["handoff_from"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_routing_rules: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          priority: number | null
+          source_agent_id: string | null
+          target_agent_id: string | null
+          trigger_type: string
+          trigger_value: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          source_agent_id?: string | null
+          target_agent_id?: string | null
+          trigger_type: string
+          trigger_value: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          source_agent_id?: string | null
+          target_agent_id?: string | null
+          trigger_type?: string
+          trigger_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_routing_rules_source_agent_id_fkey"
+            columns: ["source_agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_routing_rules_target_agent_id_fkey"
+            columns: ["target_agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_agent_settings: {
         Row: {
           agent_id: string | null
@@ -87,6 +193,8 @@ export type Database = {
       }
       ai_agents: {
         Row: {
+          access_level: string | null
+          agent_type: string
           avatar_url: string | null
           category: string | null
           created_at: string | null
@@ -94,13 +202,21 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean | null
+          is_master: boolean | null
+          knowledge_scope: string[] | null
+          max_tokens: number | null
           name: string
+          parent_agent_id: string | null
           personality: string | null
           role: string | null
+          specializations: string[] | null
+          temperature: number | null
           updated_at: string | null
           voice_id: string | null
         }
         Insert: {
+          access_level?: string | null
+          agent_type?: string
           avatar_url?: string | null
           category?: string | null
           created_at?: string | null
@@ -108,13 +224,21 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean | null
+          is_master?: boolean | null
+          knowledge_scope?: string[] | null
+          max_tokens?: number | null
           name: string
+          parent_agent_id?: string | null
           personality?: string | null
           role?: string | null
+          specializations?: string[] | null
+          temperature?: number | null
           updated_at?: string | null
           voice_id?: string | null
         }
         Update: {
+          access_level?: string | null
+          agent_type?: string
           avatar_url?: string | null
           category?: string | null
           created_at?: string | null
@@ -122,57 +246,92 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean | null
+          is_master?: boolean | null
+          knowledge_scope?: string[] | null
+          max_tokens?: number | null
           name?: string
+          parent_agent_id?: string | null
           personality?: string | null
           role?: string | null
+          specializations?: string[] | null
+          temperature?: number | null
           updated_at?: string | null
           voice_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ai_agents_parent_agent_id_fkey"
+            columns: ["parent_agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ai_conversations: {
         Row: {
+          agent_history: Json | null
           agent_id: string | null
           ai_response: string | null
           context: Json | null
           conversation_data: Json | null
           conversion_score: number | null
           created_at: string | null
+          current_agent_id: string | null
           id: string
+          intent: string | null
+          is_escalated: boolean | null
           lead_id: string | null
           lead_qualified: boolean | null
+          resolution_status: string | null
+          sentiment: number | null
           session_id: string | null
           status: string | null
+          topics: string[] | null
           user_message: string
           visitor_id: string | null
         }
         Insert: {
+          agent_history?: Json | null
           agent_id?: string | null
           ai_response?: string | null
           context?: Json | null
           conversation_data?: Json | null
           conversion_score?: number | null
           created_at?: string | null
+          current_agent_id?: string | null
           id?: string
+          intent?: string | null
+          is_escalated?: boolean | null
           lead_id?: string | null
           lead_qualified?: boolean | null
+          resolution_status?: string | null
+          sentiment?: number | null
           session_id?: string | null
           status?: string | null
+          topics?: string[] | null
           user_message: string
           visitor_id?: string | null
         }
         Update: {
+          agent_history?: Json | null
           agent_id?: string | null
           ai_response?: string | null
           context?: Json | null
           conversation_data?: Json | null
           conversion_score?: number | null
           created_at?: string | null
+          current_agent_id?: string | null
           id?: string
+          intent?: string | null
+          is_escalated?: boolean | null
           lead_id?: string | null
           lead_qualified?: boolean | null
+          resolution_status?: string | null
+          sentiment?: number | null
           session_id?: string | null
           status?: string | null
+          topics?: string[] | null
           user_message?: string
           visitor_id?: string | null
         }
@@ -180,6 +339,13 @@ export type Database = {
           {
             foreignKeyName: "ai_conversations_agent_id_fkey"
             columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_conversations_current_agent_id_fkey"
+            columns: ["current_agent_id"]
             isOneToOne: false
             referencedRelation: "ai_agents"
             referencedColumns: ["id"]
@@ -285,6 +451,30 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_reports: {
+        Row: {
+          generated_at: string | null
+          id: string
+          priority: string | null
+          report_data: Json
+          report_type: string
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          priority?: string | null
+          report_data: Json
+          report_type: string
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          priority?: string | null
+          report_data?: Json
+          report_type?: string
+        }
+        Relationships: []
+      }
       conversion_tracking: {
         Row: {
           conversion_value: number | null
@@ -373,6 +563,57 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      human_escalations: {
+        Row: {
+          assigned_to: string | null
+          conversation_id: string | null
+          created_at: string | null
+          escalated_by_agent: string | null
+          id: string
+          priority: string | null
+          reason: string
+          resolved_at: string | null
+          status: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          conversation_id?: string | null
+          created_at?: string | null
+          escalated_by_agent?: string | null
+          id?: string
+          priority?: string | null
+          reason: string
+          resolved_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          conversation_id?: string | null
+          created_at?: string | null
+          escalated_by_agent?: string | null
+          id?: string
+          priority?: string | null
+          reason?: string
+          resolved_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "human_escalations_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "human_escalations_escalated_by_agent_fkey"
+            columns: ["escalated_by_agent"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
             referencedColumns: ["id"]
           },
         ]
