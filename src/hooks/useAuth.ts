@@ -122,9 +122,19 @@ export const useAuth = () => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    // Clear local state first to ensure UI updates immediately
+    setUser(null);
+    setSession(null);
     setIsAdmin(false);
     setAdminStatus('unknown');
+    
+    // Then attempt server signout (may fail if session already expired)
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      // Session was already invalid, state is already cleared
+      console.log('Session already expired');
+    }
   };
 
   return {
