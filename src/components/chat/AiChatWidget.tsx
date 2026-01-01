@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Sparkles, HeadphonesIcon, TrendingUp } from "lucide-react";
+import { MessageSquare, Send, Mic, MicOff, X, Minimize2, Maximize2, Sparkles, HeadphonesIcon, TrendingUp, Brain, User } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLocation } from "react-router-dom";
@@ -47,13 +47,63 @@ interface AiChatWidgetProps {
   embedded?: boolean;
 }
 
-// Agent type color mappings
-const AGENT_COLORS = {
-  support: { bg: 'bg-blue-500', text: 'text-blue-600', badge: 'bg-blue-100 text-blue-700 border-blue-200', gradient: 'from-blue-500 to-blue-600' },
-  sales: { bg: 'bg-green-500', text: 'text-green-600', badge: 'bg-green-100 text-green-700 border-green-200', gradient: 'from-green-500 to-green-600' },
-  brain: { bg: 'bg-purple-500', text: 'text-purple-600', badge: 'bg-purple-100 text-purple-700 border-purple-200', gradient: 'from-purple-500 to-purple-600' },
-  general: { bg: 'bg-royal-purple', text: 'text-royal-purple', badge: 'bg-royal-purple/10 text-royal-purple border-royal-purple/20', gradient: 'from-royal-purple to-electric-blue' },
+// Agent configuration with avatars, colors, and icons
+const AGENT_CONFIG = {
+  support: {
+    name: 'Alex',
+    icon: HeadphonesIcon,
+    bg: 'bg-blue-500',
+    text: 'text-blue-600',
+    badge: 'bg-blue-100 text-blue-700 border-blue-200',
+    gradient: 'from-blue-500 to-blue-600',
+    ring: 'ring-blue-300',
+    dot: 'bg-blue-500',
+    messageBg: 'bg-blue-50/50 border-blue-100',
+    headerBg: 'from-blue-500/5 to-blue-600/10',
+    label: 'Support'
+  },
+  sales: {
+    name: 'Morgan',
+    icon: TrendingUp,
+    bg: 'bg-emerald-500',
+    text: 'text-emerald-600',
+    badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    gradient: 'from-emerald-500 to-teal-600',
+    ring: 'ring-emerald-300',
+    dot: 'bg-emerald-500',
+    messageBg: 'bg-emerald-50/50 border-emerald-100',
+    headerBg: 'from-emerald-500/5 to-teal-600/10',
+    label: 'Sales'
+  },
+  brain: {
+    name: 'Nexus',
+    icon: Brain,
+    bg: 'bg-purple-500',
+    text: 'text-purple-600',
+    badge: 'bg-purple-100 text-purple-700 border-purple-200',
+    gradient: 'from-purple-500 to-indigo-600',
+    ring: 'ring-purple-300',
+    dot: 'bg-purple-500',
+    messageBg: 'bg-purple-50/50 border-purple-100',
+    headerBg: 'from-purple-500/5 to-indigo-600/10',
+    label: 'AI Brain'
+  },
+  general: {
+    name: 'Assistant',
+    icon: Sparkles,
+    bg: 'bg-royal-purple',
+    text: 'text-royal-purple',
+    badge: 'bg-royal-purple/10 text-royal-purple border-royal-purple/20',
+    gradient: 'from-royal-purple to-electric-blue',
+    ring: 'ring-royal-purple/30',
+    dot: 'bg-emerald-500',
+    messageBg: 'bg-gray-50 border-gray-100',
+    headerBg: 'from-midnight-navy/5 to-royal-purple/10',
+    label: 'AI'
+  },
 };
+
+type AgentType = keyof typeof AGENT_CONFIG;
 
 const AiChatWidget: React.FC<AiChatWidgetProps> = ({ 
   isMinimized = true, 
@@ -71,17 +121,19 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   const [showContactBadge, setShowContactBadge] = useState(false);
   const [isEscalated, setIsEscalated] = useState(false);
   const [handoffMessage, setHandoffMessage] = useState<string | null>(null);
+  const [isHandingOff, setIsHandingOff] = useState(false);
+  const [previousAgent, setPreviousAgent] = useState<CurrentAgent | null>(null);
   const [welcomeSettings, setWelcomeSettings] = useState({
     message: "Hi there! I'm here to help you find the perfect digital solution for your needs. What can I help you with today?",
     quickActions: ["I need a custom app built", "Tell me about your AI solutions", "I'm interested in investing", "Let's discuss my project"],
     delay: 1000
   });
   
-  // Default avatar fallback
-  const defaultAvatar = "/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png";
-  const agentAvatar = currentAgent.avatar_url || defaultAvatar;
-  const agentName = currentAgent.name || "Assistant";
-  const agentColors = AGENT_COLORS[currentAgent.type as keyof typeof AGENT_COLORS] || AGENT_COLORS.general;
+  // Get agent configuration
+  const agentType = (currentAgent.type as AgentType) || 'general';
+  const agentConfig = AGENT_CONFIG[agentType] || AGENT_CONFIG.general;
+  const agentName = currentAgent.name || agentConfig.name;
+  const AgentIcon = agentConfig.icon;
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -320,17 +372,36 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
       // Update current agent if changed
       if (data.agent) {
-        setCurrentAgent({
-          id: data.agent.id,
-          name: data.agent.name,
-          type: data.agent.type
-        });
-      }
-
-      // Handle handoff notification
-      if (data.handoff?.occurred) {
-        setHandoffMessage(`Connecting you with ${data.handoff.to}...`);
-        setTimeout(() => setHandoffMessage(null), 3000);
+        const newAgentType = data.agent.type as AgentType;
+        const newAgentConfig = AGENT_CONFIG[newAgentType] || AGENT_CONFIG.general;
+        
+        // Handle handoff animation if agent changed
+        if (data.handoff?.occurred && currentAgent.id !== data.agent.id) {
+          setPreviousAgent(currentAgent);
+          setIsHandingOff(true);
+          setHandoffMessage(`Connecting you with ${data.agent.name} (${newAgentConfig.label})...`);
+          
+          // Animate transition
+          setTimeout(() => {
+            setCurrentAgent({
+              id: data.agent.id,
+              name: data.agent.name,
+              type: data.agent.type
+            });
+            setIsHandingOff(false);
+          }, 800);
+          
+          setTimeout(() => {
+            setHandoffMessage(null);
+            setPreviousAgent(null);
+          }, 3000);
+        } else {
+          setCurrentAgent({
+            id: data.agent.id,
+            name: data.agent.name,
+            type: data.agent.type
+          });
+        }
       }
 
       // Handle escalation
@@ -424,13 +495,11 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     }
   };
 
-  // Helper to get agent type icon
-  const getAgentTypeIcon = (type: string) => {
-    switch (type) {
-      case 'support': return <HeadphonesIcon className="h-3 w-3" />;
-      case 'sales': return <TrendingUp className="h-3 w-3" />;
-      default: return <Sparkles className="h-3 w-3" />;
-    }
+  // Helper to get agent type icon component
+  const getAgentIcon = (type: string, className: string = "h-3 w-3") => {
+    const config = AGENT_CONFIG[type as AgentType] || AGENT_CONFIG.general;
+    const Icon = config.icon;
+    return <Icon className={className} />;
   };
 
   // Helper to get agent role label
@@ -443,30 +512,65 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
     }
   };
 
+  // Helper to get message agent config
+  const getMessageAgentConfig = (message: ChatMessage) => {
+    const msgType = (message.agentType as AgentType) || agentType;
+    return AGENT_CONFIG[msgType] || AGENT_CONFIG.general;
+  };
+
+  // Render handoff bubble
+  const renderHandoffBubble = () => {
+    if (!handoffMessage) return null;
+    const targetConfig = AGENT_CONFIG[agentType] || AGENT_CONFIG.general;
+    const TargetIcon = targetConfig.icon;
+    
+    return (
+      <div className="flex justify-center my-4 animate-fade-in">
+        <div className={`flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r ${targetConfig.headerBg} border ${targetConfig.badge.split(' ')[2]} shadow-sm`}>
+          <div className="relative">
+            {isHandingOff && previousAgent && (
+              <div className="absolute inset-0 animate-ping">
+                <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${AGENT_CONFIG[(previousAgent.type as AgentType) || 'general'].gradient} opacity-50`} />
+              </div>
+            )}
+            <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${targetConfig.gradient} flex items-center justify-center text-white transition-transform duration-500 ${isHandingOff ? 'scale-110' : 'scale-100'}`}>
+              <TargetIcon className="h-4 w-4" />
+            </div>
+          </div>
+          <span className={`text-sm font-medium ${targetConfig.text}`}>
+            {handoffMessage}
+          </span>
+          <div className="flex space-x-1">
+            <div className={`w-1.5 h-1.5 ${targetConfig.dot} rounded-full animate-bounce`} style={{ animationDelay: '0s' }} />
+            <div className={`w-1.5 h-1.5 ${targetConfig.dot} rounded-full animate-bounce`} style={{ animationDelay: '0.1s' }} />
+            <div className={`w-1.5 h-1.5 ${targetConfig.dot} rounded-full animate-bounce`} style={{ animationDelay: '0.2s' }} />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // For embedded mode, don't show the minimized state
   if (embedded) {
     return (
       <div className="w-full h-full flex flex-col min-h-0">
         <Card className="flex flex-col h-full shadow-lg border bg-white overflow-hidden">
-          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
+          <CardHeader className={`flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r ${agentConfig.headerBg} border-b border-gray-100`}>
             <CardTitle className="flex items-center gap-3">
-              <div className="relative">
-                <Avatar className={`h-10 w-10 ring-2 ring-offset-1 ${currentAgent.type === 'support' ? 'ring-blue-300' : currentAgent.type === 'sales' ? 'ring-green-300' : 'ring-royal-purple/20'}`}>
-                  <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                  <AvatarFallback className={`bg-gradient-to-br ${agentColors.gradient} text-white font-bold`}>
-                    {agentName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {getAgentTypeIcon(currentAgent.type)}
+              <div className={`relative transition-all duration-500 ${isHandingOff ? 'scale-95 opacity-70' : 'scale-100 opacity-100'}`}>
+                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${agentConfig.gradient} flex items-center justify-center text-white ring-2 ring-offset-1 ${agentConfig.ring}`}>
+                  <AgentIcon className="h-5 w-5" />
+                </div>
+                <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 ${agentConfig.dot} rounded-full border-2 border-white animate-pulse`}></div>
               </div>
               <div>
                 <div className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                   {agentName}
-                  <Badge className={`text-xs ${agentColors.badge}`}>
-                    {currentAgent.type === 'support' ? 'Support' : currentAgent.type === 'sales' ? 'Sales' : 'AI'}
+                  <Badge className={`text-xs ${agentConfig.badge}`}>
+                    {agentConfig.label}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600 font-normal">{getAgentRoleLabel(currentAgent.type)}</div>
+                <div className="text-sm text-gray-600 font-normal">{getAgentRoleLabel(agentType)}</div>
               </div>
             </CardTitle>
             <div className="flex items-center gap-2">
@@ -479,128 +583,134 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           <CardContent className="flex-1 p-0 flex flex-col overflow-hidden min-h-0">
             <ScrollArea ref={scrollAreaRef} className="flex-1 overflow-y-auto px-4">
               <div className="space-y-4 py-4">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex flex-col ${message.type === 'user' ? 'items-end' : 'items-start'} animate-fade-in`}
-                  >
-                    <div className={`flex items-start gap-3 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
-                      <Avatar className={`h-8 w-8 flex-shrink-0 ${message.type === 'user' ? 'order-last' : ''}`}>
+                {/* Handoff notification bubble */}
+                {renderHandoffBubble()}
+                
+                {messages.map((message, index) => {
+                  const msgConfig = message.type === 'ai' ? getMessageAgentConfig(message) : null;
+                  const MsgIcon = msgConfig?.icon || AgentIcon;
+                  
+                  return (
+                    <div
+                      key={index}
+                      className={`flex flex-col ${message.type === 'user' ? 'items-end' : 'items-start'} animate-fade-in`}
+                    >
+                      <div className={`flex items-start gap-3 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
+                        {/* Avatar */}
                         {message.type === 'user' ? (
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
-                            U
-                          </AvatarFallback>
+                          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+                            <User className="h-4 w-4" />
+                          </div>
                         ) : (
-                          <>
-                            <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                            <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white text-xs font-medium">
-                              {agentName.charAt(0).toUpperCase()}
-                            </AvatarFallback>
-                          </>
+                          <div className="relative flex-shrink-0">
+                            <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${msgConfig?.gradient || agentConfig.gradient} flex items-center justify-center text-white`}>
+                              <MsgIcon className="h-4 w-4" />
+                            </div>
+                          </div>
                         )}
-                      </Avatar>
-                      
-                      <div className={`rounded-xl px-4 py-3 max-w-full break-words leading-relaxed ${
-                        message.type === 'user' 
-                          ? 'bg-primary text-primary-foreground shadow-md' 
-                          : 'bg-gray-50 text-gray-800 border border-gray-100 shadow-sm'
-                      }`}>
-                        <div className="text-sm leading-6 whitespace-pre-wrap word-break">
-                          {message.content.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1')}
-                        </div>
-                        <div className={`text-xs mt-2 opacity-70 ${
-                          message.type === 'user' ? 'text-primary-foreground/70' : 'text-gray-500'
+                        
+                        {/* Message bubble */}
+                        <div className={`rounded-xl px-4 py-3 max-w-full break-words leading-relaxed ${
+                          message.type === 'user' 
+                            ? 'bg-primary text-primary-foreground shadow-md' 
+                            : `${msgConfig?.messageBg || 'bg-gray-50 border-gray-100'} text-gray-800 border shadow-sm`
                         }`}>
-                          {message.timestamp.toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })}
+                          <div className="text-sm leading-6 whitespace-pre-wrap">
+                            {message.content.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1')}
+                          </div>
+                          <div className={`text-xs mt-2 opacity-70 flex items-center gap-2 ${
+                            message.type === 'user' ? 'text-primary-foreground/70' : 'text-gray-500'
+                          }`}>
+                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {message.type === 'ai' && message.agentName && (
+                              <span className={`text-xs ${msgConfig?.text || 'text-gray-400'}`}>
+                                • {message.agentName}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
+                      
+                      {/* Interactive Components */}
+                      {message.type === 'ai' && message.interactiveType && message.options && (
+                        <div className="w-full pl-11 pr-4 mt-3">
+                          {message.interactiveType === 'quick_reply' && (
+                            <div className="flex flex-wrap gap-2">
+                              {message.options.map((option: any) => (
+                                <Button
+                                  key={option.id}
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleQuickReply(option, message.id)}
+                                  className="hover:bg-primary hover:text-white transition-colors"
+                                >
+                                  {option.icon && <span className="mr-1">{option.icon}</span>}
+                                  {option.label}
+                                </Button>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {message.interactiveType === 'service_selector' && (
+                            <div className="grid grid-cols-1 gap-3">
+                              {message.options.map((option: any) => (
+                                <Card
+                                  key={option.id}
+                                  className="cursor-pointer hover:shadow-md hover:border-primary transition-all p-4 bg-white"
+                                  onClick={() => handleQuickReply(option, message.id)}
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <div className="text-2xl flex-shrink-0">{option.icon}</div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-semibold text-base mb-1">{option.label}</div>
+                                      <div className="text-sm text-gray-600">{option.description}</div>
+                                    </div>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {message.interactiveType === 'multiple_choice' && (
+                            <div className="space-y-2">
+                              {message.options.map((option: any) => (
+                                <Button
+                                  key={option.id}
+                                  variant="outline"
+                                  className="w-full justify-start hover:bg-primary/10 text-left h-auto py-3 px-4"
+                                  onClick={() => handleQuickReply(option, message.id)}
+                                >
+                                  <div className="flex items-center gap-3 w-full">
+                                    {option.icon && <span className="text-lg">{option.icon}</span>}
+                                    <div className="flex-1 min-w-0">
+                                      <span className="font-semibold text-sm block">{option.label}</span>
+                                      {option.description && (
+                                        <span className="text-xs text-gray-500 block mt-1">{option.description}</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </Button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    
-                    {/* Interactive Components - Full width, outside message bubble */}
-                    {message.type === 'ai' && message.interactiveType && message.options && (
-                      <div className="w-full pl-11 pr-4 mt-3">
-                        {message.interactiveType === 'quick_reply' && (
-                          <div className="flex flex-wrap gap-2">
-                            {message.options.map((option: any) => (
-                              <Button
-                                key={option.id}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleQuickReply(option, message.id)}
-                                className="hover:bg-primary hover:text-white transition-colors"
-                              >
-                                {option.icon && <span className="mr-1">{option.icon}</span>}
-                                {option.label}
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {message.interactiveType === 'service_selector' && (
-                          <div className="grid grid-cols-1 gap-3">
-                            {message.options.map((option: any) => (
-                              <Card
-                                key={option.id}
-                                className="cursor-pointer hover:shadow-md hover:border-primary transition-all p-4 bg-white"
-                                onClick={() => handleQuickReply(option, message.id)}
-                              >
-                                <div className="flex items-start gap-3">
-                                  <div className="text-2xl flex-shrink-0">{option.icon}</div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-base mb-1">{option.label}</div>
-                                    <div className="text-sm text-gray-600">{option.description}</div>
-                                  </div>
-                                </div>
-                              </Card>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {message.interactiveType === 'multiple_choice' && (
-                          <div className="space-y-2">
-                            {message.options.map((option: any) => (
-                              <Button
-                                key={option.id}
-                                variant="outline"
-                                className="w-full justify-start hover:bg-primary/10 text-left h-auto py-3 px-4"
-                                onClick={() => handleQuickReply(option, message.id)}
-                              >
-                                <div className="flex items-center gap-3 w-full">
-                                  {option.icon && <span className="text-lg">{option.icon}</span>}
-                                  <div className="flex-1 min-w-0">
-                                    <span className="font-semibold text-sm block">{option.label}</span>
-                                    {option.description && (
-                                      <span className="text-xs text-gray-500 block mt-1">{option.description}</span>
-                                    )}
-                                  </div>
-                                </div>
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
                 
                 {isLoading && (
                   <div className="flex justify-start animate-fade-in">
                     <div className="flex items-start gap-3 max-w-[85%]">
-                      <Avatar className="h-8 w-8 flex-shrink-0">
-                        <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                        <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white text-xs font-medium">
-                          {agentName.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="bg-gray-50 rounded-xl px-4 py-3 border border-gray-100 shadow-sm">
+                      <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${agentConfig.gradient} flex items-center justify-center text-white flex-shrink-0`}>
+                        <AgentIcon className="h-4 w-4" />
+                      </div>
+                      <div className={`${agentConfig.messageBg} rounded-xl px-4 py-3 border shadow-sm`}>
                         <div className="flex items-center space-x-2">
                           <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-royal-purple/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className={`w-2 h-2 ${agentConfig.dot} rounded-full animate-bounce`}></div>
+                            <div className={`w-2 h-2 ${agentConfig.dot} rounded-full animate-bounce`} style={{ animationDelay: '0.1s' }}></div>
+                            <div className={`w-2 h-2 ${agentConfig.dot} rounded-full animate-bounce`} style={{ animationDelay: '0.2s' }}></div>
                           </div>
                           <span className="text-sm text-gray-500">{agentName} is typing...</span>
                         </div>
@@ -676,8 +786,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
               
               {/* Status Badges */}
               <div className="flex justify-center gap-4 mt-3">
-                <Badge variant="outline" className={`text-xs ${agentColors.badge}`}>
-                  💬 {currentAgent.type === 'support' ? 'Support Chat' : currentAgent.type === 'sales' ? 'Sales Advisor' : 'Personal Service'}
+                <Badge variant="outline" className={`text-xs ${agentConfig.badge}`}>
+                  💬 {agentConfig.label} Chat
                 </Badge>
                 <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
                   🔒 Secure & Private
@@ -691,26 +801,26 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   }
 
   if (isMinimized) {
+    const hasConversation = messages.length > 1;
+    const buttonText = hasConversation ? `Chat with ${agentName}` : 'Chat with us';
+    
     return (
       <div className="fixed top-20 right-4 z-40 animate-fade-in">
         <div className="relative group">
           <Button
             onClick={onToggleMinimize}
             size="lg"
-            className="rounded-full h-14 w-auto px-5 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-midnight-navy to-royal-purple hover:from-midnight-navy/90 hover:to-royal-purple/90 border-2 border-white/20 hover-scale relative overflow-hidden"
+            className={`rounded-full h-14 w-auto px-5 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br ${agentConfig.gradient} hover:opacity-90 border-2 border-white/20 hover-scale relative overflow-hidden`}
           >
             <div className="relative z-10 flex items-center justify-center gap-3">
               <div className="relative">
-                <Avatar className="h-8 w-8 ring-2 ring-white/30">
-                  <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                  <AvatarFallback className="bg-gradient-to-br from-coral-orange to-coral-orange/80 text-white font-bold">
-                    {agentName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <div className={`h-8 w-8 rounded-full bg-white/20 flex items-center justify-center`}>
+                  <AgentIcon className="h-4 w-4 text-white" />
+                </div>
                 {/* Online indicator */}
-                <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-midnight-navy animate-pulse"></div>
+                <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 ${agentConfig.dot} rounded-full border-2 border-white animate-pulse`}></div>
               </div>
-              <span className="text-white font-medium whitespace-nowrap">Talk To {agentName}</span>
+              <span className="text-white font-medium whitespace-nowrap">{buttonText}</span>
             </div>
           </Button>
           
@@ -728,29 +838,26 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   return (
     <div className="fixed top-20 right-4 z-40 w-80 sm:w-96 max-h-[min(70vh,550px)] h-[min(70vh,550px)] flex flex-col animate-scale-in">
       <Card className="flex flex-col h-full shadow-2xl border-0 bg-white backdrop-blur-sm overflow-hidden">
-        <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
+        <CardHeader className={`flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r ${agentConfig.headerBg} border-b border-gray-100`}>
           <CardTitle className="flex items-center gap-3">
-            <div className="relative">
-              <Avatar className={`h-10 w-10 ring-2 ring-offset-1 ${currentAgent.type === 'support' ? 'ring-blue-300' : currentAgent.type === 'sales' ? 'ring-green-300' : 'ring-royal-purple/20'}`}>
-                <AvatarImage src={agentAvatar} alt={agentName} className="object-cover" />
-                <AvatarFallback className={`bg-gradient-to-br ${agentColors.gradient} text-white font-bold text-lg`}>
-                  {agentName.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white animate-pulse ${currentAgent.type === 'support' ? 'bg-blue-500' : currentAgent.type === 'sales' ? 'bg-green-500' : 'bg-emerald-500'}`}></div>
+            <div className={`relative transition-all duration-500 ${isHandingOff ? 'scale-95 opacity-70' : 'scale-100 opacity-100'}`}>
+              <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${agentConfig.gradient} flex items-center justify-center text-white ring-2 ring-offset-1 ${agentConfig.ring}`}>
+                <AgentIcon className="h-5 w-5" />
+              </div>
+              <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 ${agentConfig.dot} rounded-full border-2 border-white animate-pulse`}></div>
             </div>
             <div>
               <div className="font-semibold text-gray-900 text-sm flex items-center gap-2">
                 {agentName}
                 {currentAgent.type && currentAgent.type !== 'general' && (
-                  <Badge className={`text-xs px-1.5 py-0 ${agentColors.badge}`}>
-                    {getAgentTypeIcon(currentAgent.type)}
-                    <span className="ml-1">{currentAgent.type === 'support' ? 'Support' : 'Sales'}</span>
+                  <Badge className={`text-xs px-1.5 py-0 flex items-center gap-1 ${agentConfig.badge}`}>
+                    {getAgentIcon(agentType, "h-3 w-3")}
+                    <span>{agentConfig.label}</span>
                   </Badge>
                 )}
               </div>
-              <div className={`text-xs font-medium flex items-center gap-1 ${agentColors.text}`}>
-                <div className={`h-1.5 w-1.5 rounded-full animate-pulse ${currentAgent.type === 'support' ? 'bg-blue-500' : currentAgent.type === 'sales' ? 'bg-green-500' : 'bg-emerald-500'}`}></div>
+              <div className={`text-xs font-medium flex items-center gap-1 ${agentConfig.text}`}>
+                <div className={`h-1.5 w-1.5 rounded-full animate-pulse ${agentConfig.dot}`}></div>
                 {isEscalated ? 'Human follow-up scheduled' : showContactBadge ? 'Contact saved' : 'Available now'}
               </div>
             </div>
@@ -868,7 +975,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                     ✓ Contact Saved
                   </Badge>
                 )}
-                <Badge variant="outline" className={`text-xs ${agentColors.badge}`}>
+                <Badge variant="outline" className={`text-xs ${agentConfig.badge}`}>
                   🔒 Secure Chat with {agentName}
                 </Badge>
               </div>
