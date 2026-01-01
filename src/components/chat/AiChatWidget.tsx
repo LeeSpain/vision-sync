@@ -615,12 +615,12 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+      <div className="fixed top-20 right-4 z-40 animate-fade-in">
         <div className="relative group">
           <Button
             onClick={onToggleMinimize}
             size="lg"
-            className="rounded-full h-16 w-auto px-6 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-midnight-navy to-royal-purple hover:from-midnight-navy/90 hover:to-royal-purple/90 border-2 border-white/20 hover-scale relative overflow-hidden"
+            className="rounded-full h-14 w-auto px-5 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-midnight-navy to-royal-purple hover:from-midnight-navy/90 hover:to-royal-purple/90 border-2 border-white/20 hover-scale relative overflow-hidden"
           >
             <div className="relative z-10 flex items-center justify-center gap-3">
               <div className="relative">
@@ -630,16 +630,15 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                     P
                   </AvatarFallback>
                 </Avatar>
+                {/* Online indicator */}
+                <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 rounded-full border-2 border-midnight-navy animate-pulse"></div>
               </div>
               <span className="text-white font-medium whitespace-nowrap">Talk To Paul</span>
             </div>
           </Button>
           
-          {/* Online indicator */}
-          <div className="absolute -top-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
-          
           {/* Tooltip */}
-          <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shadow-lg">
               I'm here to help! 💬
             </div>
@@ -650,7 +649,7 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-80 sm:w-96 max-h-[min(85vh,600px)] h-[min(85vh,600px)] flex flex-col animate-scale-in">
+    <div className="fixed top-20 right-4 z-40 w-80 sm:w-96 max-h-[min(70vh,550px)] h-[min(70vh,550px)] flex flex-col animate-scale-in">
       <Card className="flex flex-col h-full shadow-2xl border-0 bg-white backdrop-blur-sm overflow-hidden">
         <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r from-midnight-navy/5 to-royal-purple/10 border-b border-royal-purple/10">
           <CardTitle className="flex items-center gap-3">
