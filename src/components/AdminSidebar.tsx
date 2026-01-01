@@ -8,17 +8,16 @@ import {
   Settings, 
   Plus,
   BarChart3,
-  Eye,
-  LogOut,
   Mail,
   TrendingUp,
-  DollarSign,
   Brain,
   MessageCircle,
-  Package,
   Building2,
   Bug,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Bot,
+  ChevronDown,
+  Sparkles
 } from "lucide-react"
 
 import {
@@ -30,10 +29,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { projectManager } from "@/utils/projectManager"
 import { supabaseLeadManager } from "@/utils/supabaseLeadManager"
@@ -48,12 +45,15 @@ const mainItems = [
   { title: "Industries", url: "#industries", icon: Building2 },
   { title: "Leads", url: "#leads", icon: Users },
   { title: "Sales Pipeline", url: "#sales-pipeline", icon: TrendingUp },
-  { title: "AI Agent", url: "#ai-agent", icon: Brain },
-  { title: "Brain Command", url: "#brain-command", icon: Brain, special: true },
-  { title: "Agent Testing", url: "#agent-testing", icon: Bug, special: true },
-  { title: "Routing Rules", url: "#routing-rules", icon: ArrowRightLeft, special: true },
   { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
+]
+
+const aiAgentItems = [
+  { title: "Agent Manager", url: "#ai-agent", icon: Brain, badge: null, theme: null },
+  { title: "Brain Command", url: "#brain-command", icon: Sparkles, badge: "Nexus", theme: "purple" },
+  { title: "Agent Testing", url: "#agent-testing", icon: Bug, badge: "Debug", theme: "amber" },
+  { title: "Routing Rules", url: "#routing-rules", icon: ArrowRightLeft, badge: "Config", theme: "cyan" },
 ]
 
 const quickActions = [
@@ -67,6 +67,8 @@ export function AdminSidebar() {
   const navigate = useNavigate()
   const hash = location.hash || "#overview"
   
+  const [aiSectionExpanded, setAiSectionExpanded] = useState(true)
+  
   const [projectStats, setProjectStats] = useState({
     totalProjects: 0,
     activeProjects: 0
@@ -79,6 +81,14 @@ export function AdminSidebar() {
   const [conversationStats, setConversationStats] = useState({
     totalConversations: 0
   });
+
+  // Auto-expand when AI route is active
+  useEffect(() => {
+    const aiRoutes = ['#ai-agent', '#brain-command', '#agent-testing', '#routing-rules'];
+    if (aiRoutes.includes(hash)) {
+      setAiSectionExpanded(true);
+    }
+  }, [hash]);
 
   useEffect(() => {
     loadProjectStats();
@@ -103,7 +113,6 @@ export function AdminSidebar() {
   const loadLeadStats = async () => {
     try {
       const allLeads = await supabaseLeadManager.getAllLeads();
-      // Count only non-archived leads
       const activeLeads = allLeads.filter(lead => lead.status !== 'archived').length;
       
       setLeadStats({
@@ -130,7 +139,6 @@ export function AdminSidebar() {
     }
   };
 
-  // Simple active state detection based on hash
   const isActive = (path: string) => hash === path
   
   const handleNavigation = (section: string) => {
@@ -178,64 +186,98 @@ export function AdminSidebar() {
                       onClick={() => handleNavigation(item.url)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                         isActive(item.url) 
-                          ? item.title === "Brain Command" 
-                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" 
-                            : item.title === "Agent Testing"
-                              ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white"
-                              : item.title === "Routing Rules"
-                                ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                                : "bg-royal-purple text-white" 
-                          : item.title === "Brain Command"
-                            ? "text-purple-300 hover:bg-purple-500/20 hover:text-white bg-purple-500/10"
-                            : item.title === "Agent Testing"
-                              ? "text-amber-300 hover:bg-amber-500/20 hover:text-white bg-amber-500/10"
-                              : item.title === "Routing Rules"
-                                ? "text-cyan-300 hover:bg-cyan-500/20 hover:text-white bg-cyan-500/10"
-                                : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
+                          ? "bg-royal-purple text-white" 
+                          : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
                       }`}
-                      >
-                    <div className="flex items-center space-x-3">
-                      <item.icon className={`h-5 w-5 ${item.title === "Brain Command" ? "text-purple-400" : item.title === "Agent Testing" ? "text-amber-400" : item.title === "Routing Rules" ? "text-cyan-400" : ""}`} />
-                      {!collapsed && <span>{item.title}</span>}
-                    </div>
-                    {!collapsed && item.title === "Projects" && (
-                      <Badge variant="secondary" className="bg-royal-purple/20 text-royal-purple border-0">
-                        {projectStats.totalProjects}
-                      </Badge>
-                    )}
-                    {!collapsed && item.title === "Leads" && (
-                      <Badge variant="secondary" className="bg-emerald-green/20 text-emerald-green border-0">
-                        {leadStats.totalLeads}
-                      </Badge>
-                    )}
-                    {!collapsed && item.title === "AI Conversations" && (
-                      <Badge variant="secondary" className="bg-electric-blue/20 text-electric-blue border-0">
-                        {conversationStats.totalConversations}
-                      </Badge>
-                    )}
-                    {!collapsed && item.title === "Brain Command" && (
-                      <Badge className="bg-purple-500/30 text-purple-200 border-purple-400/30 text-xs">
-                        Nexus
-                      </Badge>
-                    )}
-                    {!collapsed && item.title === "Agent Testing" && (
-                      <Badge className="bg-amber-500/30 text-amber-200 border-amber-400/30 text-xs">
-                        Debug
-                      </Badge>
-                    )}
-                    {!collapsed && item.title === "Routing Rules" && (
-                      <Badge className="bg-cyan-500/30 text-cyan-200 border-cyan-400/30 text-xs">
-                        Config
-                      </Badge>
-                    )}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <item.icon className="h-5 w-5" />
+                        {!collapsed && <span>{item.title}</span>}
+                      </div>
+                      {!collapsed && item.title === "Projects" && (
+                        <Badge variant="secondary" className="bg-royal-purple/20 text-royal-purple border-0">
+                          {projectStats.totalProjects}
+                        </Badge>
+                      )}
+                      {!collapsed && item.title === "Leads" && (
+                        <Badge variant="secondary" className="bg-emerald-green/20 text-emerald-green border-0">
+                          {leadStats.totalLeads}
+                        </Badge>
+                      )}
+                      {!collapsed && item.title === "AI Conversations" && (
+                        <Badge variant="secondary" className="bg-electric-blue/20 text-electric-blue border-0">
+                          {conversationStats.totalConversations}
+                        </Badge>
+                      )}
                     </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
+              {/* AI Agents Collapsible Section */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <button 
+                    onClick={() => setAiSectionExpanded(!aiSectionExpanded)}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-indigo-500/10 text-purple-300 hover:from-purple-500/20 hover:to-indigo-500/20 transition-colors"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Bot className="h-5 w-5 text-purple-400" />
+                      {!collapsed && <span className="font-medium">AI Agents</span>}
+                    </div>
+                    {!collapsed && (
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${aiSectionExpanded ? 'rotate-180' : ''}`} />
+                    )}
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* AI Sub-items - only show when expanded and not collapsed sidebar */}
+              {aiSectionExpanded && !collapsed && (
+                <div className="ml-4 space-y-1 mt-1 border-l border-purple-500/20 pl-2">
+                  {aiAgentItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <button 
+                          onClick={() => handleNavigation(item.url)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                            isActive(item.url) 
+                              ? item.theme === 'purple' 
+                                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
+                                : item.theme === 'amber'
+                                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
+                                  : item.theme === 'cyan'
+                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                                    : 'bg-royal-purple text-white'
+                              : 'text-slate-white/70 hover:bg-slate-white/10 hover:text-white'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <item.icon className={`h-4 w-4 ${
+                              item.theme === 'purple' ? 'text-purple-400' :
+                              item.theme === 'amber' ? 'text-amber-400' :
+                              item.theme === 'cyan' ? 'text-cyan-400' : 'text-slate-white/70'
+                            }`} />
+                            <span>{item.title}</span>
+                          </div>
+                          {item.badge && (
+                            <Badge className={`text-xs ${
+                              item.theme === 'purple' ? 'bg-purple-500/30 text-purple-200 border-purple-400/30' :
+                              item.theme === 'amber' ? 'bg-amber-500/30 text-amber-200 border-amber-400/30' :
+                              item.theme === 'cyan' ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400/30' : ''
+                            }`}>
+                              {item.badge}
+                            </Badge>
+                          )}
+                        </button>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </div>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
 
         {/* Quick Actions */}
         <SidebarGroup>
