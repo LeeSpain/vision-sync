@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Brain, MessageSquare, Settings, Database, Mic, User, Plus, Trash2 } from "lucide-react";
+import { Brain, MessageSquare, Settings, Database, Mic, User, Plus, Trash2, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ConversationsAnalytics from './ConversationsAnalytics';
 import AgentCreationModal from './AgentCreationModal';
@@ -23,6 +24,7 @@ interface AiAgent {
   category: string;
   role: string;
   department: string;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -45,6 +47,143 @@ interface TrainingData {
   is_active: boolean;
   created_at: string;
 }
+
+// Avatar Upload Section Component
+const AvatarUploadSection: React.FC<{ 
+  agent: AiAgent; 
+  onAvatarChange: (url: string) => void 
+}> = ({ agent, onAvatarChange }) => {
+  const [uploading, setUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+
+  const uploadAvatar = async (file: File) => {
+    try {
+      setUploading(true);
+      
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please upload an image file');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB');
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `agent-avatar-${agent.id}-${Date.now()}.${fileExt}`;
+      const filePath = `agent-avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('project-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('project-images')
+        .getPublicUrl(filePath);
+
+      onAvatarChange(data.publicUrl);
+      toast.success('Avatar uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast.error('Failed to upload avatar');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      uploadAvatar(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      uploadAvatar(e.target.files[0]);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <Label>Agent Avatar</Label>
+      <div className="flex items-start gap-4">
+        <Avatar className="h-24 w-24 ring-2 ring-border">
+          <AvatarImage src={agent.avatar_url || ''} alt={agent.name} className="object-cover" />
+          <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold text-2xl">
+            {agent.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        
+        <div className="flex-1 space-y-2">
+          <div
+            className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
+              dragActive ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+            onClick={() => document.getElementById(`avatar-upload-${agent.id}`)?.click()}
+          >
+            {uploading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <span className="text-sm">Uploading...</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <Upload className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm">Drop image or click to upload</span>
+              </div>
+            )}
+          </div>
+          
+          {agent.avatar_url && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onAvatarChange('')}
+              className="w-full"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Remove Avatar
+            </Button>
+          )}
+          
+          <p className="text-xs text-muted-foreground">
+            Recommended: Square image, at least 200x200px
+          </p>
+        </div>
+      </div>
+      
+      <input
+        id={`avatar-upload-${agent.id}`}
+        type="file"
+        accept="image/*"
+        onChange={handleFileInput}
+        className="hidden"
+        disabled={uploading}
+      />
+    </div>
+  );
+};
 
 const AiAgentManager: React.FC = () => {
   const [agents, setAgents] = useState<AiAgent[]>([]);
@@ -249,10 +388,18 @@ const AiAgentManager: React.FC = () => {
                   }`}
                   onClick={() => setSelectedAgent(agent)}
                 >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-medium">{agent.name}</h4>
-                      <p className="text-sm text-muted-foreground">{agent.category}</p>
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={agent.avatar_url || ''} alt={agent.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-royal-purple to-electric-blue text-white font-bold">
+                          {agent.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-medium">{agent.name}</h4>
+                        <p className="text-sm text-muted-foreground">{agent.category}</p>
+                      </div>
                     </div>
                     <Badge variant={agent.is_active ? "default" : "secondary"}>
                       {agent.is_active ? "Active" : "Inactive"}
@@ -342,8 +489,16 @@ const AiAgentManager: React.FC = () => {
                       Agent Settings
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-6">
+                    {/* Avatar Upload Section */}
+                    <AvatarUploadSection 
+                      agent={selectedAgent} 
+                      onAvatarChange={(url) => updateAgent(selectedAgent.id, { avatar_url: url } as any)} 
+                    />
+                    
+                    {/* Other Settings */}
                     <div className="space-y-3">
+                      <h4 className="font-medium text-sm text-muted-foreground">Custom Settings</h4>
                       {getAgentSettings(selectedAgent.id).map((setting) => (
                         <div key={setting.id} className="p-3 border rounded-lg">
                           <div className="flex justify-between items-start">
@@ -359,7 +514,7 @@ const AiAgentManager: React.FC = () => {
                       ))}
                       {getAgentSettings(selectedAgent.id).length === 0 && (
                         <p className="text-muted-foreground text-center py-4">
-                          No settings configured for this agent
+                          No custom settings configured for this agent
                         </p>
                       )}
                     </div>
