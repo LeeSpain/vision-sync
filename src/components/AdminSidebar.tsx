@@ -56,9 +56,7 @@ const aiAgentItems = [
   { title: "Routing Rules", url: "#routing-rules", icon: ArrowRightLeft, badge: "Config", theme: "cyan" },
 ]
 
-const quickActions = [
-  { title: "Add Project", url: "#add-project", icon: Plus },
-]
+// Quick actions removed - "Add Project" now navigates to projects section
 
 export function AdminSidebar() {
   const { state } = useSidebar()
@@ -112,11 +110,16 @@ export function AdminSidebar() {
 
   const loadLeadStats = async () => {
     try {
-      const allLeads = await supabaseLeadManager.getAllLeads();
-      const activeLeads = allLeads.filter(lead => lead.status !== 'archived').length;
+      // Use server-side count instead of downloading all leads
+      const { count, error } = await supabase
+        .from('leads')
+        .select('id', { count: 'exact', head: true })
+        .neq('status', 'archived');
+      
+      if (error) throw error;
       
       setLeadStats({
-        totalLeads: activeLeads
+        totalLeads: count || 0
       });
     } catch (error) {
       console.error('Error loading lead stats:', error);
@@ -125,14 +128,15 @@ export function AdminSidebar() {
 
   const loadConversationStats = async () => {
     try {
-      const { data, error } = await supabase
+      // Use server-side count instead of downloading all records
+      const { count, error } = await supabase
         .from('ai_conversations')
-        .select('id');
+        .select('id', { count: 'exact', head: true });
       
       if (error) throw error;
       
       setConversationStats({
-        totalConversations: data?.length || 0
+        totalConversations: count || 0
       });
     } catch (error) {
       console.error('Error loading conversation stats:', error);
@@ -279,29 +283,6 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Quick Actions */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-slate-white/60">
-            {!collapsed && "Quick Actions"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {quickActions.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <button 
-                      onClick={() => handleNavigation(item.url)}
-                      className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-white/80 hover:bg-slate-white/10 hover:text-white transition-colors"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </button>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
 
         {/* Settings at bottom */}
         <div className="mt-auto p-4 border-t border-slate-white/10">

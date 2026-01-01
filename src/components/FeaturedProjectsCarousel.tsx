@@ -96,17 +96,19 @@ export const FeaturedProjectsCarousel: React.FC<FeaturedProjectsCarouselProps> =
                        category.toLowerCase().includes('investment') ? 'investment' : 'default';
     
     const prices = ranges[categoryKey];
-    return `Starting at ${prices[Math.floor(Math.random() * prices.length)]}`;
+    // Use deterministic selection based on category name
+    const index = category.length % prices.length;
+    return `Starting at ${prices[index]}`;
   };
 
-  const generateROI = () => {
-    const ranges = ['15-25%', '20-35%', '25-40%', '30-50%', '35-60%'];
-    return ranges[Math.floor(Math.random() * ranges.length)];
+  const generateROI = (projectTitle: string) => {
+    // Return empty if we don't have investment data
+    return '';
   };
 
   const generateTimeLeft = () => {
-    const options = ['2 days', '3 days', '5 days', '1 week', '2 weeks'];
-    return options[Math.floor(Math.random() * options.length)];
+    // Return empty - this should come from actual deadline data
+    return '';
   };
 
   if (loading) {
