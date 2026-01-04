@@ -19,6 +19,7 @@ import { LeadSourceChart } from '@/components/admin/LeadSourceChart';
 import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import { WelcomeSection } from '@/components/admin/WelcomeSection';
 import { TodaySummary } from '@/components/admin/TodaySummary';
+import { SettingsManager } from '@/components/admin/SettingsManager';
 import AiAgentManager from '@/components/admin/AiAgentManager';
 import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
 import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
@@ -31,7 +32,7 @@ import { FileText, Plus, Eye, Mail, RefreshCw, MessageCircle } from 'lucide-reac
 import { supabase } from '@/integrations/supabase/client';
 
 const Admin = () => {
-  const { user, adminStatus, loading: authLoading, signOut } = useAuthContext();
+  const { user, adminStatus, loading: authLoading, signOut, profile, refreshProfile } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [dashboardStats, setDashboardStats] = useState<any>(null);
@@ -140,7 +141,11 @@ const Admin = () => {
         return (
           <div className="space-y-6">
             {/* Welcome Section with Quick Actions */}
-            <WelcomeSection userEmail={user?.email} onRefresh={handleRefresh} />
+            <WelcomeSection 
+              userEmail={user?.email} 
+              userProfile={{ firstName: profile?.first_name, lastName: profile?.last_name }}
+              onRefresh={handleRefresh} 
+            />
 
             {/* Today's Summary */}
             <TodaySummary 
@@ -451,53 +456,11 @@ const Admin = () => {
 
       case 'settings':
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-heading">Site Settings</CardTitle>
-                <CardDescription>Configure global site settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-midnight-navy mb-2">
-                    Site Title
-                  </label>
-                  <Input defaultValue="Vision-Sync" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-midnight-navy mb-2">
-                    Site Tagline
-                  </label>
-                  <Input defaultValue="Build. Showcase. Sell. Invest. Sync your vision with the future." />
-                </div>
-                <Button variant="premium">
-                  Save Settings
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-heading">User Management</CardTitle>
-                <CardDescription>Manage admin users and permissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 border border-soft-lilac/30 rounded-lg">
-                    <div>
-                      <div className="font-medium">Lee (Admin)</div>
-                      <div className="text-sm text-cool-gray">admin@vision-sync.com</div>
-                    </div>
-                    <Badge>Super Admin</Badge>
-                  </div>
-                  <Button variant="outline" className="w-full">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add User
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <SettingsManager 
+            userId={user?.id || ''} 
+            userEmail={user?.email}
+            onProfileUpdate={refreshProfile}
+          />
         );
 
       default:
