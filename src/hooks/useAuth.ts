@@ -1,7 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+
+export interface UserProfile {
+  id: string;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: string | null;
+}
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -9,7 +19,24 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminStatus, setAdminStatus] = useState<'unknown' | 'admin' | 'user'>('unknown');
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const { toast } = useToast();
+
+  const fetchProfile = useCallback(async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (!error && data) {
+        setProfile(data as UserProfile);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  }, []);
 
   useEffect(() => {
     // Set up auth state listener
@@ -22,13 +49,17 @@ export const useAuth = () => {
         if (session?.user) {
           // Defer Supabase calls and only end loading after admin check completes
           setTimeout(() => {
-            checkAdminStatus(session.user!.id).finally(() => {
+            Promise.all([
+              checkAdminStatus(session.user!.id),
+              fetchProfile(session.user!.id)
+            ]).finally(() => {
               setLoading(false);
             });
           }, 0);
         } else {
           setIsAdmin(false);
           setAdminStatus('unknown');
+          setProfile(null);
           setLoading(false);
         }
       }
@@ -40,7 +71,10 @@ export const useAuth = () => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        checkAdminStatus(session.user.id).finally(() => {
+        Promise.all([
+          checkAdminStatus(session.user.id),
+          fetchProfile(session.user.id)
+        ]).finally(() => {
           setLoading(false);
         });
       } else {
@@ -50,7 +84,7 @@ export const useAuth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [fetchProfile]);
 
   const checkAdminStatus = async (userId: string) => {
     try {
@@ -73,6 +107,12 @@ export const useAuth = () => {
       setAdminStatus('user');
     }
   };
+
+  const refreshProfile = useCallback(async () => {
+    if (user?.id) {
+      await fetchProfile(user.id);
+    }
+  }, [user?.id, fetchProfile]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -143,6 +183,8 @@ export const useAuth = () => {
     loading,
     isAdmin,
     adminStatus,
+    profile,
+    refreshProfile,
     signIn,
     signUp,
     signOut

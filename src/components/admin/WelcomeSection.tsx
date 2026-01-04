@@ -1,12 +1,18 @@
 import { ExternalLink, RefreshCw, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+interface UserProfile {
+  firstName?: string | null;
+  lastName?: string | null;
+}
+
 interface WelcomeSectionProps {
   userEmail?: string;
+  userProfile?: UserProfile;
   onRefresh?: () => void;
 }
 
-export function WelcomeSection({ userEmail, onRefresh }: WelcomeSectionProps) {
+export function WelcomeSection({ userEmail, userProfile, onRefresh }: WelcomeSectionProps) {
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return 'Good morning';
@@ -16,6 +22,11 @@ export function WelcomeSection({ userEmail, onRefresh }: WelcomeSectionProps) {
   };
 
   const getUserName = () => {
+    // Priority: first_name > email prefix
+    if (userProfile?.firstName) {
+      return userProfile.firstName;
+    }
+    
     if (!userEmail) return 'Admin';
     const name = userEmail.split('@')[0];
     // Capitalize first letter
