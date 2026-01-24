@@ -18,6 +18,7 @@ import { projectManager, type Project } from '@/utils/projectManager';
 import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, Rocket, Star, Package, CheckCircle } from 'lucide-react';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { analytics } from '@/utils/analytics';
+import heroImage from '@/assets/hero-ai-visualization.jpg';
 
 const Index = () => {
   const { formatPrice } = useCurrency();
@@ -182,79 +183,117 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-hero overflow-hidden">
+      <section className="relative py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-hero overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-electric-blue/5 rounded-full blur-2xl animate-float" style={{animationDelay: '1s'}}></div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-gradient-primary px-5 py-2 rounded-full text-white font-medium mb-6 shadow-glow animate-scale-in">
-              <Sparkles className="h-4 w-4 animate-pulse" />
-              AI-Powered Solutions & Ready-to-Deploy Templates
-            </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 leading-tight animate-slide-up">
-              Transform Your Business with{' '}
-              <span className="bg-gradient-primary bg-clip-text text-transparent whitespace-nowrap">
-                Vision-Sync
-              </span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-cool-gray mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in" style={{animationDelay: '0.2s'}}>
-              Choose from our professional app templates, custom AI solutions, or invest in complete platforms. 
-              We deliver intelligent technology that scales with your vision.
-            </p>
+          {/* Two Column Hero Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-12">
+            {/* Left: Content */}
+            <div className="text-center lg:text-left animate-fade-in">
+              <div className="inline-flex items-center gap-2 bg-gradient-primary px-4 py-1.5 rounded-full text-white text-sm font-medium mb-5 shadow-glow animate-scale-in">
+                <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                AI-Powered Solutions
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-midnight-navy mb-5 leading-tight animate-slide-up">
+                Transform Your Business with{' '}
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
+                  Vision-Sync
+                </span>
+              </h1>
+              
+              <p className="text-base md:text-lg text-cool-gray mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-fade-in" style={{animationDelay: '0.2s'}}>
+                Professional app templates, custom AI solutions, and complete platforms. 
+                Launch in 72 hours with intelligent technology that scales.
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in" style={{animationDelay: '0.3s'}}>
-              <Link to="/templates" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_templates')}>
-                <Button variant="hero" size="lg" className="hover-scale shadow-glow">
-                  <Package className="h-5 w-5" />
-                  Explore Templates
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/contact" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_contact')}>
-                <Button variant="view" size="lg" className="hover-scale">
-                  <Target className="h-5 w-5" />
-                  Get Custom Solution
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center animate-fade-in" style={{animationDelay: '0.3s'}}>
+                <Link to="/templates" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_templates')}>
+                  <Button variant="hero" size="lg" className="hover-scale shadow-glow">
+                    <Package className="h-5 w-5" />
+                    Explore Templates
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/contact" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_contact')}>
+                  <Button variant="view" size="lg" className="hover-scale">
+                    <Target className="h-5 w-5" />
+                    Get Custom Solution
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Hero Image */}
+            <div className="relative animate-fade-in hidden lg:block" style={{animationDelay: '0.3s'}}>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-soft-lilac/20">
+                <img 
+                  src={heroImage} 
+                  alt="AI-powered digital transformation visualization"
+                  className="w-full h-auto object-cover"
+                />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-royal-purple/10 via-transparent to-emerald-green/10"></div>
+              </div>
+              {/* Floating Stats Badge */}
+              <div className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-3 animate-float border border-soft-lilac/20">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-green/10 rounded-lg flex items-center justify-center">
+                    <Rocket className="h-4 w-4 text-emerald-green" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-cool-gray">Deploy in</p>
+                    <p className="text-sm font-bold text-midnight-navy">72 Hours</p>
+                  </div>
+                </div>
+              </div>
+              {/* Floating AI Badge */}
+              <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-lg p-3 animate-float border border-soft-lilac/20" style={{animationDelay: '1s'}}>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-royal-purple/10 rounded-lg flex items-center justify-center">
+                    <Bot className="h-4 w-4 text-royal-purple" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-cool-gray">Powered by</p>
+                    <p className="text-sm font-bold text-midnight-navy">AI Agents</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Key Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto animate-fade-in" style={{animationDelay: '0.4s'}}>
-            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group hover-scale">
-              <CardContent className="p-6 text-center">
-                <div className="w-14 h-14 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform">
-                  <Rocket className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Quick Deploy</h3>
-                <p className="text-cool-gray text-sm">Launch your app in 72 hours with ready-to-use templates</p>
-              </CardContent>
-            </Card>
+          {/* Compact Key Features Strip */}
+          <div className="flex flex-wrap justify-center gap-3 animate-fade-in" style={{animationDelay: '0.4s'}}>
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-soft-lilac/30 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-all group">
+              <div className="w-7 h-7 bg-gradient-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Rocket className="h-3.5 w-3.5 text-white" />
+              </div>
+              <span className="text-sm font-medium text-midnight-navy">72hr Deploy</span>
+            </div>
 
-            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group hover-scale">
-              <CardContent className="p-6 text-center">
-                <div className="w-14 h-14 bg-emerald-green/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-emerald-green/20 transition-colors">
-                  <Bot className="h-7 w-7 text-emerald-green" />
-                </div>
-                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">AI-Powered</h3>
-                <p className="text-cool-gray text-sm">Intelligent automation and AI agents for your business</p>
-              </CardContent>
-            </Card>
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-soft-lilac/30 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-all group">
+              <div className="w-7 h-7 bg-emerald-green/15 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Bot className="h-3.5 w-3.5 text-emerald-green" />
+              </div>
+              <span className="text-sm font-medium text-midnight-navy">AI-Powered</span>
+            </div>
 
-            <Card className="bg-gradient-card border-soft-lilac/30 shadow-card hover:shadow-hover transition-all duration-300 group hover-scale">
-              <CardContent className="p-6 text-center">
-                <div className="w-14 h-14 bg-coral-orange/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-coral-orange/20 transition-colors">
-                  <TrendingUp className="h-7 w-7 text-coral-orange" />
-                </div>
-                <h3 className="font-heading font-semibold text-midnight-navy mb-2 text-lg">Built to Scale</h3>
-                <p className="text-cool-gray text-sm">Enterprise-ready platforms designed for growth</p>
-              </CardContent>
-            </Card>
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-soft-lilac/30 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-all group">
+              <div className="w-7 h-7 bg-coral-orange/15 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <TrendingUp className="h-3.5 w-3.5 text-coral-orange" />
+              </div>
+              <span className="text-sm font-medium text-midnight-navy">Enterprise Scale</span>
+            </div>
+
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-soft-lilac/30 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-all group">
+              <div className="w-7 h-7 bg-electric-blue/15 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Package className="h-3.5 w-3.5 text-electric-blue" />
+              </div>
+              <span className="text-sm font-medium text-midnight-navy">50+ Templates</span>
+            </div>
           </div>
         </div>
       </section>
