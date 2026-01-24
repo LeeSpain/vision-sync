@@ -386,7 +386,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
             setCurrentAgent({
               id: data.agent.id,
               name: data.agent.name,
-              type: data.agent.type
+              type: data.agent.type,
+              avatar_url: data.agent.avatar_url
             });
             setIsHandingOff(false);
           }, 800);
@@ -399,7 +400,8 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           setCurrentAgent({
             id: data.agent.id,
             name: data.agent.name,
-            type: data.agent.type
+            type: data.agent.type,
+            avatar_url: data.agent.avatar_url
           });
         }
       }
@@ -814,9 +816,18 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
           >
             <div className="relative z-10 flex items-center justify-center gap-3">
               <div className="relative">
-                <div className={`h-8 w-8 rounded-full bg-white/20 flex items-center justify-center`}>
-                  <AgentIcon className="h-4 w-4 text-white" />
-                </div>
+                {currentAgent.avatar_url ? (
+                  <Avatar className="h-8 w-8 ring-2 ring-white/30">
+                    <AvatarImage src={currentAgent.avatar_url} alt={agentName} className="object-cover" />
+                    <AvatarFallback className="bg-white/20">
+                      <AgentIcon className="h-4 w-4 text-white" />
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <div className={`h-8 w-8 rounded-full bg-white/20 flex items-center justify-center`}>
+                    <AgentIcon className="h-4 w-4 text-white" />
+                  </div>
+                )}
                 {/* Online indicator */}
                 <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 ${agentConfig.dot} rounded-full border-2 border-white animate-pulse`}></div>
               </div>
@@ -841,9 +852,18 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
         <CardHeader className={`flex-shrink-0 flex flex-row items-center justify-between space-y-0 p-4 bg-gradient-to-r ${agentConfig.headerBg} border-b border-gray-100`}>
           <CardTitle className="flex items-center gap-3">
             <div className={`relative transition-all duration-500 ${isHandingOff ? 'scale-95 opacity-70' : 'scale-100 opacity-100'}`}>
-              <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${agentConfig.gradient} flex items-center justify-center text-white ring-2 ring-offset-1 ${agentConfig.ring}`}>
-                <AgentIcon className="h-5 w-5" />
-              </div>
+              {currentAgent.avatar_url ? (
+                <Avatar className={`h-10 w-10 ring-2 ring-offset-1 ${agentConfig.ring}`}>
+                  <AvatarImage src={currentAgent.avatar_url} alt={agentName} className="object-cover" />
+                  <AvatarFallback className={`bg-gradient-to-br ${agentConfig.gradient} text-white`}>
+                    <AgentIcon className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${agentConfig.gradient} flex items-center justify-center text-white ring-2 ring-offset-1 ${agentConfig.ring}`}>
+                  <AgentIcon className="h-5 w-5" />
+                </div>
+              )}
               <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 ${agentConfig.dot} rounded-full border-2 border-white animate-pulse`}></div>
             </div>
             <div>
@@ -892,6 +912,22 @@ const AiChatWidget: React.FC<AiChatWidgetProps> = ({
                   className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
+                  {message.type === 'ai' && (
+                    <div className="flex-shrink-0 mr-2 mt-1">
+                      {currentAgent.avatar_url ? (
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage src={currentAgent.avatar_url} alt={agentName} className="object-cover" />
+                          <AvatarFallback className={`bg-gradient-to-br ${agentConfig.gradient} text-white text-xs`}>
+                            <AgentIcon className="h-3 w-3" />
+                          </AvatarFallback>
+                        </Avatar>
+                      ) : (
+                        <div className={`h-6 w-6 rounded-full bg-gradient-to-br ${agentConfig.gradient} flex items-center justify-center text-white`}>
+                          <AgentIcon className="h-3 w-3" />
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div
                     className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm transition-all duration-200 ${
                       message.type === 'user'
