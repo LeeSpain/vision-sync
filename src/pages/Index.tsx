@@ -19,10 +19,12 @@ import { ArrowRight, Sparkles, Target, Zap, Building2, Bot, Brain, TrendingUp, R
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { analytics } from '@/utils/analytics';
 import heroImage from '@/assets/hero-ai-visualization.jpg';
+import CustomQuoteModal from '@/components/CustomQuoteModal';
 
 const Index = () => {
   const { formatPrice } = useCurrency();
   const [isChatMinimized, setIsChatMinimized] = useState(true);
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
   // Clean build - template components moved to /templates page
   const [contactForm, setContactForm] = useState({
     name: '',
@@ -218,12 +220,18 @@ const Index = () => {
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link to="/contact" onClick={() => analytics.trackInteraction('button_click', 'hero_cta_contact')}>
-                  <Button variant="view" size="lg" className="hover-scale">
-                    <Target className="h-5 w-5" />
-                    Get Custom Solution
-                  </Button>
-                </Link>
+                <Button 
+                  variant="view" 
+                  size="lg" 
+                  className="hover-scale"
+                  onClick={() => {
+                    analytics.trackInteraction('button_click', 'hero_cta_quote');
+                    setShowQuoteModal(true);
+                  }}
+                >
+                  <Target className="h-5 w-5" />
+                  Get Custom Solution
+                </Button>
               </div>
             </div>
 
@@ -601,6 +609,12 @@ const Index = () => {
       <AiChatWidget 
         isMinimized={isChatMinimized}
         onToggleMinimize={() => setIsChatMinimized(!isChatMinimized)}
+      />
+
+      {/* Custom Quote Modal */}
+      <CustomQuoteModal 
+        open={showQuoteModal} 
+        onOpenChange={setShowQuoteModal} 
       />
     </div>
   );

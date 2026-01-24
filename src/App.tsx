@@ -17,6 +17,7 @@ import AuthPage from "./pages/AuthPage";
 import AiAgents from "./pages/AiAgents";
 import AiAgentQuestionnaire from "./pages/AiAgentQuestionnaire";
 import Contact from "./pages/Contact";
+import CustomBuilds from "./pages/CustomBuilds";
 
 import NotFound from "./pages/NotFound";
 
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/ai-agents" element={<AiAgents />} />
           <Route path="/ai-agent-questionnaire" element={<AiAgentQuestionnaire />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/custom-builds" element={<CustomBuilds />} />
           
           {/* Specific known project routes */}
           <Route path="/global-health-sync" element={<DynamicProjectPage />} />
@@ -56,7 +58,6 @@ const App = () => (
           <Route path="/tether-band" element={<DynamicProjectPage />} />
           <Route path="/for-investors" element={<DynamicProjectPage />} />
           <Route path="/for-sale" element={<DynamicProjectPage />} />
-          <Route path="/custom-builds" element={<DynamicProjectPage />} />
           
           {/* Catch-all dynamic route for any other project URLs - MUST be last */}
           <Route path="/:projectRoute" element={<DynamicProjectPage />} />
