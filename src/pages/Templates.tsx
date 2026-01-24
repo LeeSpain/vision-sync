@@ -14,7 +14,7 @@ import { useTemplates, Template } from '@/hooks/useTemplates';
 import { Package, Star, Rocket, Sparkles, ArrowRight, CheckCircle, TrendingUp, Users, Zap, Shield, Clock, Code, Palette, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { analytics } from '@/utils/analytics';
-import heroImage from '@/assets/hero-ai-visualization.jpg';
+import heroImage from '@/assets/hero-templates-visualization.jpg';
 
 const Templates = () => {
   const { 
@@ -159,7 +159,7 @@ const Templates = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-soft-lilac/20">
                 <img 
                   src={heroImage} 
-                  alt="Professional app templates visualization"
+                  alt="Collection of professional app templates displayed on multiple devices"
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-royal-purple/10 via-transparent to-emerald-green/10"></div>
