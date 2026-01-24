@@ -1,67 +1,79 @@
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MessageCircle, HeadphonesIcon, TrendingUp, Brain } from 'lucide-react';
+import { MessageCircle, HeadphonesIcon, TrendingUp, Brain, Sparkles } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
-interface AgentConfig {
-  gradient: string;
-  dot: string;
-}
+// Agent configuration - matches AiChatWidget exactly
+const AGENT_CONFIG = {
+  support: {
+    icon: HeadphonesIcon,
+    gradient: 'from-blue-500 to-blue-600',
+    dot: 'bg-blue-500',
+  },
+  sales: {
+    icon: TrendingUp,
+    gradient: 'from-emerald-500 to-teal-600',
+    dot: 'bg-emerald-500',
+  },
+  brain: {
+    icon: Brain,
+    gradient: 'from-purple-500 to-indigo-600',
+    dot: 'bg-purple-500',
+  },
+  general: {
+    icon: Sparkles,
+    gradient: 'from-royal-purple to-electric-blue',
+    dot: 'bg-emerald-500',
+  },
+};
 
-interface CurrentAgent {
-  avatar_url?: string;
-  name?: string;
-  type?: string;
-}
+type AgentType = keyof typeof AGENT_CONFIG;
 
 interface HeaderChatButtonProps {
   onClick: () => void;
-  currentAgent?: CurrentAgent;
-  hasConversation?: boolean;
 }
 
-const AGENT_CONFIG: Record<string, AgentConfig> = {
-  support: {
-    gradient: 'from-blue-500 to-blue-600',
-    dot: 'bg-blue-400',
-  },
-  sales: {
-    gradient: 'from-emerald-500 to-emerald-600',
-    dot: 'bg-emerald-400',
-  },
-  brain: {
-    gradient: 'from-purple-500 to-purple-600',
-    dot: 'bg-purple-400',
-  },
-  general: {
-    gradient: 'from-royal-purple to-electric-blue',
-    dot: 'bg-electric-blue',
-  },
-};
+const HeaderChatButton = ({ onClick }: HeaderChatButtonProps) => {
+  const [currentAgent, setCurrentAgent] = useState<{
+    name: string;
+    type: string;
+    avatar_url?: string;
+  }>({ name: 'Paul', type: 'general' });
 
-const getAgentIcon = (type: string) => {
-  switch (type) {
-    case 'support':
-      return HeadphonesIcon;
-    case 'sales':
-      return TrendingUp;
-    case 'brain':
-      return Brain;
-    default:
-      return MessageCircle;
-  }
-};
+  // Fetch active agent on mount (same as AiChatWidget)
+  useEffect(() => {
+    const fetchActiveAgent = async () => {
+      try {
+        const { data: agents } = await supabase
+          .from('ai_agents')
+          .select('id, name, agent_type, avatar_url')
+          .eq('is_active', true)
+          .order('is_master', { ascending: false })
+          .limit(1);
 
-const HeaderChatButton = ({ 
-  onClick, 
-  currentAgent = { name: 'Paul', type: 'general' },
-  hasConversation = false 
-}: HeaderChatButtonProps) => {
-  const agentType = (currentAgent?.type || 'general') as keyof typeof AGENT_CONFIG;
+        if (agents && agents.length > 0) {
+          const agent = agents[0];
+          setCurrentAgent({
+            name: agent.name || 'Paul',
+            type: agent.agent_type || 'general',
+            avatar_url: agent.avatar_url || undefined,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch agent:', error);
+      }
+    };
+
+    fetchActiveAgent();
+  }, []);
+
+  const agentType = (currentAgent.type || 'general') as AgentType;
   const agentConfig = AGENT_CONFIG[agentType] || AGENT_CONFIG.general;
-  const agentName = currentAgent?.name || 'Paul';
-  const AgentIcon = getAgentIcon(agentType);
+  const agentName = currentAgent.name || 'Paul';
+  const AgentIcon = agentConfig.icon;
   
-  const buttonText = hasConversation ? `Chat with ${agentName}` : 'Chat with us';
+  const buttonText = 'Chat with us';
 
   return (
     <div className="relative group">
@@ -72,7 +84,7 @@ const HeaderChatButton = ({
       >
         <div className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
           <div className="relative">
-            {currentAgent?.avatar_url ? (
+            {currentAgent.avatar_url ? (
               <Avatar className="h-6 w-6 sm:h-7 sm:w-7 ring-2 ring-white/30">
                 <AvatarImage src={currentAgent.avatar_url} alt={agentName} className="object-cover" />
                 <AvatarFallback className="bg-white/20">
