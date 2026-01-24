@@ -2,8 +2,22 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, Github, Linkedin, Twitter } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 const Footer = () => {
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    toast({
+      title: "Subscribed!",
+      description: "You've been added to our newsletter.",
+    });
+    setEmail('');
+  };
   return (
     <footer className="bg-midnight-navy text-slate-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -20,17 +34,17 @@ const Footer = () => {
               "Build. Showcase. Sell. Invest. Sync your vision with the future."
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white">
-                <Mail className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
+                <a href="mailto:contact@vision-sync.com"><Mail className="h-5 w-5" /></a>
               </Button>
-              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white">
-                <Github className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
+                <a href="https://github.com/LeeSpain" target="_blank" rel="noreferrer"><Github className="h-5 w-5" /></a>
               </Button>
-              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white">
-                <Linkedin className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
+                <a href="https://linkedin.com" target="_blank" rel="noreferrer"><Linkedin className="h-5 w-5" /></a>
               </Button>
-              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white">
-                <Twitter className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
+                <a href="https://twitter.com" target="_blank" rel="noreferrer"><Twitter className="h-5 w-5" /></a>
               </Button>
             </div>
           </div>
@@ -63,21 +77,25 @@ const Footer = () => {
             <p className="text-slate-white/80 text-sm mb-4">
               Get notified about new projects and opportunities.
             </p>
-            <div className="flex space-x-2">
-              <Input 
-                placeholder="Your email" 
+            <form onSubmit={handleSubscribe} className="flex space-x-2">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email"
                 className="bg-slate-white/10 border-slate-white/20 text-slate-white placeholder:text-slate-white/60"
+                required
               />
-              <Button variant="invest" size="sm">
+              <Button type="submit" variant="invest" size="sm">
                 Subscribe
               </Button>
-            </div>
+            </form>
           </div>
         </div>
 
         <div className="border-t border-slate-white/20 mt-8 pt-8 text-center">
           <p className="text-slate-white/60 text-sm">
-            © 2024 Vision-Sync. All rights reserved.
+            © {new Date().getFullYear()} Vision-Sync. All rights reserved.
           </p>
         </div>
       </div>

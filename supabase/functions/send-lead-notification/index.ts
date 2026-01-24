@@ -4,8 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 // import { Resend } from "npm:resend@2.0.0";
 // const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
+const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || '*';
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": allowedOrigin,
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
@@ -91,11 +92,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Lead notification logged:", { type, subject, lead: lead.name });
 
-    return new Response(JSON.stringify({ 
-      success: true, 
+    return new Response(JSON.stringify({
+      success: true,
       message: "Lead notification logged successfully",
       subject,
-      type 
+      type
     }), {
       status: 200,
       headers: {
@@ -106,7 +107,9 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-lead-notification function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

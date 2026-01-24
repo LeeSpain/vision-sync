@@ -41,22 +41,21 @@ const HeaderChatButton = ({ onClick }: HeaderChatButtonProps) => {
     avatar_url?: string;
   }>({ name: 'Paul', type: 'general' });
 
-  // Fetch active agent on mount (same as AiChatWidget)
+  // Fetch sales agent on mount (matches original AiChatWidget behavior)
   useEffect(() => {
     const fetchActiveAgent = async () => {
       try {
-        const { data: agents } = await supabase
+        const { data: agent } = await supabase
           .from('ai_agents')
           .select('id, name, agent_type, avatar_url')
           .eq('is_active', true)
-          .order('is_master', { ascending: false })
-          .limit(1);
+          .eq('agent_type', 'sales')
+          .maybeSingle();
 
-        if (agents && agents.length > 0) {
-          const agent = agents[0];
+        if (agent) {
           setCurrentAgent({
             name: agent.name || 'Paul',
-            type: agent.agent_type || 'general',
+            type: agent.agent_type || 'sales',
             avatar_url: agent.avatar_url || undefined,
           });
         }

@@ -2,8 +2,9 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || '*';
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': allowedOrigin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -90,16 +91,16 @@ serve(async (req) => {
     // Extract contact information from conversation history
     const extractContactInfo = (messages: any[]) => {
       const allText = messages.map(m => m.content || m.message || '').join(' ').toLowerCase();
-      
+
       // Extract email
       const emailMatch = allText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
-      
+
       // Extract phone (various formats)
       const phoneMatch = allText.match(/\b(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b/);
-      
+
       // Extract name (look for "my name is", "I'm", "I am", etc.)
       const nameMatch = allText.match(/(?:my name is|i'm|i am|call me|this is)\s+([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i);
-      
+
       return {
         email: emailMatch ? emailMatch[0] : null,
         phone: phoneMatch ? phoneMatch[0].replace(/[^\d+]/g, '') : null,
@@ -111,19 +112,19 @@ serve(async (req) => {
     const fullHistory = conversationHistory || [];
     const contactInfo = extractContactInfo(fullHistory);
     const hasContactInfo = contactInfo.email || contactInfo.phone || contactInfo.name;
-    
+
     // Determine conversation stage based on settings - AGGRESSIVE CONTACT COLLECTION
     const messageCount = fullHistory.length;
     const contactThreshold = contactCollectionTiming === 'immediate' ? 0 :
-                           contactCollectionTiming === 'after_2_messages' ? 1 : // Changed from 2 to 1
-                           contactCollectionTiming === 'after_5_messages' ? 3 : 1; // Changed default from 3 to 1
+      contactCollectionTiming === 'after_2_messages' ? 1 : // Changed from 2 to 1
+        contactCollectionTiming === 'after_5_messages' ? 3 : 1; // Changed default from 3 to 1
     const needsContactInfo = messageCount >= contactThreshold && !hasContactInfo;
-    
+
     // ALWAYS prioritize contact collection if we don't have email
     const shouldAskForContact = !contactInfo.email && messageCount >= 1;
 
     // Check for escalation triggers
-    const hasEscalationTrigger = escalationTriggers.some((trigger: string) => 
+    const hasEscalationTrigger = escalationTriggers.some((trigger: string) =>
       message.toLowerCase().includes(trigger.toLowerCase())
     );
 
@@ -141,14 +142,14 @@ serve(async (req) => {
     // Build comprehensive system prompt with project recommendations
     const projectRecommendations = projects?.map(project => {
       const features = project.key_features ? project.key_features.map((f: any) => f.title || f).join(', ') : '';
-      const pricing = project.price ? `$${project.price}` : 
-                     project.investment_amount ? `Investment: $${project.investment_amount}` : 
-                     project.subscription_price ? `$${project.subscription_price}/month` : 'Contact for pricing';
-      
+      const pricing = project.price ? `$${project.price}` :
+        project.investment_amount ? `Investment: $${project.investment_amount}` :
+          project.subscription_price ? `$${project.subscription_price}/month` : 'Contact for pricing';
+
       return `- ${project.name} (${project.category} - ${project.industry || 'Technology'}): ${project.description}
       Key Features: ${features}
       Pricing: ${pricing}
-      Page Link: https://yoursite.com${project.route}
+      Page Link: ${Deno.env.get('FRONTEND_URL') || 'https://www.vision-sync.com'}${project.route}
       ${project.domain_url ? `Live Demo: ${project.domain_url}` : ''}
       Lead Interest: ${project.leads_count || 0} inquiries`;
     }).join('\n\n') || 'No projects available';
@@ -176,82 +177,82 @@ serve(async (req) => {
 
     // Build comprehensive business context from agent's business knowledge
     const businessKnowledge = agent?.business_knowledge || {};
-    
+
     const buildBusinessContext = () => {
       let context = `We offer custom-built applications, investment opportunities, and ready-to-deploy solutions across various industries including Healthcare, Retail, E-commerce, Real Estate, Emergency Services, Technology, Finance, Education, Food & Beverage, Beauty & Wellness, Entertainment, and Professional Services.\n\n`;
-      
+
       if (businessKnowledge.company_vision) {
         context += `COMPANY VISION: ${businessKnowledge.company_vision}\n\n`;
       }
-      
+
       if (businessKnowledge.company_mission) {
         context += `COMPANY MISSION: ${businessKnowledge.company_mission}\n\n`;
       }
-      
+
       if (businessKnowledge.company_values) {
         context += `CORE VALUES: ${businessKnowledge.company_values}\n\n`;
       }
-      
+
       if (businessKnowledge.company_history) {
         context += `COMPANY BACKGROUND: ${businessKnowledge.company_history}\n\n`;
       }
-      
+
       if (businessKnowledge.industry_expertise) {
         context += `INDUSTRY EXPERTISE: ${businessKnowledge.industry_expertise}\n\n`;
       }
-      
+
       if (businessKnowledge.competitive_advantages) {
         context += `COMPETITIVE ADVANTAGES: ${businessKnowledge.competitive_advantages}\n\n`;
       }
-      
+
       if (businessKnowledge.target_markets) {
         context += `TARGET MARKETS: ${businessKnowledge.target_markets}\n\n`;
       }
-      
+
       if (businessKnowledge.ideal_customers) {
         context += `IDEAL CUSTOMERS: ${businessKnowledge.ideal_customers}\n\n`;
       }
-      
+
       if (businessKnowledge.value_propositions) {
         context += `VALUE PROPOSITIONS: ${businessKnowledge.value_propositions}\n\n`;
       }
-      
+
       if (businessKnowledge.service_catalog) {
         context += `SERVICES & OFFERINGS: ${businessKnowledge.service_catalog}\n\n`;
       }
-      
+
       if (businessKnowledge.pricing_structure) {
         context += `PRICING INFORMATION: ${businessKnowledge.pricing_structure}\n\n`;
       }
-      
+
       if (businessKnowledge.success_stories) {
         context += `SUCCESS STORIES: ${businessKnowledge.success_stories}\n\n`;
       }
-      
+
       if (businessKnowledge.awards_certifications) {
         context += `AWARDS & CERTIFICATIONS: ${businessKnowledge.awards_certifications}\n\n`;
       }
-      
+
       if (businessKnowledge.partnerships) {
         context += `KEY PARTNERSHIPS: ${businessKnowledge.partnerships}\n\n`;
       }
-      
+
       if (businessKnowledge.team_expertise) {
         context += `TEAM EXPERTISE: ${businessKnowledge.team_expertise}\n\n`;
       }
-      
+
       if (businessKnowledge.current_promotions) {
         context += `CURRENT PROMOTIONS: ${businessKnowledge.current_promotions}\n\n`;
       }
-      
+
       if (businessKnowledge.company_policies) {
         context += `COMPANY POLICIES: ${businessKnowledge.company_policies}\n\n`;
       }
-      
+
       if (businessKnowledge.faq_highlights) {
         context += `FAQ HIGHLIGHTS: ${businessKnowledge.faq_highlights}\n\n`;
       }
-      
+
       return context.trim();
     };
 
@@ -375,7 +376,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
               parameters: {
                 type: "object",
                 properties: {
-                  question: { 
+                  question: {
                     type: "string",
                     description: "The question to ask the user"
                   },
@@ -394,8 +395,8 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
                       required: ["id", "label", "value"]
                     }
                   },
-                  category: { 
-                    type: "string", 
+                  category: {
+                    type: "string",
                     enum: ["service_type", "industry", "budget", "timeline"],
                     description: "Category of the question for UI rendering"
                   }
@@ -413,7 +414,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
       // Handle rate limiting
       if (response.status === 429) {
         console.error('Rate limit exceeded');
-        return new Response(JSON.stringify({ 
+        return new Response(JSON.stringify({
           error: 'Rate limit exceeded',
           response: 'I\'m receiving a lot of requests right now. Please try again in a moment.'
         }), {
@@ -421,11 +422,11 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      
+
       // Handle payment required
       if (response.status === 402) {
         console.error('Payment required - credits exhausted');
-        return new Response(JSON.stringify({ 
+        return new Response(JSON.stringify({
           error: 'Service temporarily unavailable',
           response: 'I\'m temporarily unavailable. Please contact us directly for assistance.'
         }), {
@@ -433,23 +434,23 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      
+
       const error = await response.json();
       console.error('AI Gateway error:', error);
       throw new Error(error.error?.message || 'Failed to get AI response');
     }
 
     const aiResponse = await response.json();
-    
+
     // Check if AI used a tool call for interactive options
     const toolCalls = aiResponse.choices[0]?.message?.tool_calls;
     let interactiveResponse = null;
     let aiMessage = aiResponse.choices[0]?.message?.content || '';
-    
+
     if (toolCalls && toolCalls.length > 0) {
       const functionCall = toolCalls[0].function;
       const functionArgs = JSON.parse(functionCall.arguments);
-      
+
       // Map category to interactiveType for frontend rendering
       const interactiveTypeMap: Record<string, string> = {
         service_type: 'service_selector',
@@ -457,7 +458,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
         timeline: 'quick_reply',
         industry: 'multiple_choice'
       };
-      
+
       interactiveResponse = {
         interactiveType: interactiveTypeMap[functionArgs.category] || 'quick_reply',
         options: functionArgs.options,
@@ -466,14 +467,14 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
           category: functionArgs.category
         }
       };
-      
+
       // Use the question from the tool call as the message, not the raw tool code
       aiMessage = functionArgs.question || 'Please select an option:';
     }
-    
+
     // Fallback message if content is empty or contains tool code
     if (!aiMessage || aiMessage.includes('tool_code') || aiMessage.includes('print(')) {
-      aiMessage = interactiveResponse 
+      aiMessage = interactiveResponse
         ? 'Please select an option:'
         : 'I apologize, but I\'m having trouble responding right now.';
     }
@@ -490,12 +491,12 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
     const hasCompleteContact = updatedContactInfo.email && updatedContactInfo.name;
 
     // Check if this looks like a qualified lead
-    const isQualified = message.toLowerCase().includes('price') || 
-                       message.toLowerCase().includes('cost') ||
-                       message.toLowerCase().includes('buy') ||
-                       message.toLowerCase().includes('interested') ||
-                       message.toLowerCase().includes('contact') ||
-                       hasCompleteContact;
+    const isQualified = message.toLowerCase().includes('price') ||
+      message.toLowerCase().includes('cost') ||
+      message.toLowerCase().includes('buy') ||
+      message.toLowerCase().includes('interested') ||
+      message.toLowerCase().includes('contact') ||
+      hasCompleteContact;
 
     // Calculate conversion score
     let conversionScore = 25;
@@ -604,7 +605,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
       }
     }
 
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       response: aiMessage,
       qualified: isQualified,
       sessionId,
@@ -622,7 +623,7 @@ RESPONSE LENGTH: Maximum ${maxResponseLength} tokens. Be helpful but concise.`;
 
   } catch (error) {
     console.error('Error in ai-chat function:', error);
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : 'Unknown error occurred',
       response: 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.'
     }), {

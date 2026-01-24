@@ -30,7 +30,6 @@ class AnalyticsTracker {
   private currentPageId?: string;
   private scrollDepth: number = 0;
   private interactionCount: number = 0;
-  
   constructor() {
     this.sessionId = this.generateSessionId();
     this.initializeTracking();
@@ -44,57 +43,27 @@ class AnalyticsTracker {
   }
 
   private initializeTracking() {
-    // Track page views automatically
-    this.trackPageView(window.location.pathname);
-    
-    // Track navigation changes (for SPA routing)
-    const originalPushState = history.pushState;
-    const originalReplaceState = history.replaceState;
-    
-    history.pushState = function(...args) {
-      originalPushState.apply(history, args);
-      window.dispatchEvent(new Event('pushstate'));
-    };
-    
-    history.replaceState = function(...args) {
-      originalReplaceState.apply(history, args);
-      window.dispatchEvent(new Event('replacestate'));
-    };
-    
-    window.addEventListener('popstate', () => {
-      this.updatePageExit();
-      this.trackPageView(window.location.pathname);
-    });
-    
-    window.addEventListener('pushstate', () => {
-      this.updatePageExit();
-      this.trackPageView(window.location.pathname);
-    });
-    
-    window.addEventListener('replacestate', () => {
-      this.updatePageExit();
-      this.trackPageView(window.location.pathname);
-    });
+    // Tracking is handled by AnalyticsTracker component in App.tsx
   }
 
   private setupScrollTracking() {
     let maxScrollDepth = 0;
-    
+
     const updateScrollDepth = () => {
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
+
       const scrollPercentage = Math.round((scrollTop + windowHeight) / documentHeight * 100);
-      
+
       if (scrollPercentage > maxScrollDepth) {
         maxScrollDepth = scrollPercentage;
         this.scrollDepth = Math.min(maxScrollDepth, 100);
       }
     };
-    
+
     window.addEventListener('scroll', updateScrollDepth, { passive: true });
-    
+
     // Track clicks as interactions
     document.addEventListener('click', () => {
       this.interactionCount++;
@@ -106,7 +75,7 @@ class AnalyticsTracker {
     window.addEventListener('beforeunload', () => {
       this.updatePageExit();
     });
-    
+
     // Also track visibility changes (tab switches)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
@@ -117,9 +86,9 @@ class AnalyticsTracker {
 
   private async updatePageExit() {
     if (!this.currentPageId) return;
-    
+
     const duration = Math.round((Date.now() - this.pageStartTime) / 1000);
-    
+
     try {
       await supabase
         .from('page_analytics')
@@ -149,19 +118,19 @@ class AnalyticsTracker {
   private async capturePerformanceMetrics() {
     try {
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      
+
       if (!navigation) return;
 
       const metrics = {
         // Page Load Time
         pageLoadTime: Math.round(navigation.loadEventEnd - navigation.fetchStart),
-        
+
         // Time to First Byte
         ttfb: Math.round(navigation.responseStart - navigation.requestStart),
-        
+
         // DOM Content Loaded
         domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart),
-        
+
         // Time to Interactive (approximation)
         tti: Math.round(navigation.domInteractive - navigation.fetchStart),
       };
@@ -234,12 +203,12 @@ class AnalyticsTracker {
     // Store in local storage for real-time analytics
     const pageViews = JSON.parse(localStorage.getItem('page_views') || '[]');
     pageViews.push(event);
-    
+
     // Keep only last 100 page views in local storage
     if (pageViews.length > 100) {
       pageViews.shift();
     }
-    
+
     localStorage.setItem('page_views', JSON.stringify(pageViews));
 
     // Get location data
@@ -410,12 +379,12 @@ class AnalyticsTracker {
     // Store in local storage for analytics
     const interactions = JSON.parse(localStorage.getItem('interactions') || '[]');
     interactions.push(event);
-    
+
     // Keep only last 200 interactions
     if (interactions.length > 200) {
       interactions.shift();
     }
-    
+
     localStorage.setItem('interactions', JSON.stringify(interactions));
 
     // Store in database
@@ -460,7 +429,7 @@ class AnalyticsTracker {
     // Store conversions for analytics
     const conversions = JSON.parse(localStorage.getItem('conversions') || '[]');
     conversions.push(event);
-    
+
     localStorage.setItem('conversions', JSON.stringify(conversions));
 
     console.log('Conversion tracked:', event);
@@ -520,7 +489,7 @@ class AnalyticsTracker {
     // Calculate metrics
     const totalPageViews = pageViews.length;
     const uniquePages = [...new Set(pageViews.map(pv => pv.page))].length;
-    
+
     // Page performance
     const pageStats = pageViews.reduce((acc, pv) => {
       acc[pv.page] = (acc[pv.page] || 0) + 1;
@@ -529,7 +498,7 @@ class AnalyticsTracker {
 
     // Top pages
     const topPages = Object.entries(pageStats)
-      .sort(([,a], [,b]) => (b as number) - (a as number))
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 10)
       .map(([page, views]) => ({
         page,
@@ -558,7 +527,7 @@ class AnalyticsTracker {
   private calculatePageConversionRate(page: string, interactions: any[], conversions: any[]): number {
     const pageInteractions = interactions.filter(i => i.page === page);
     const pageConversions = conversions.filter(c => c.source_page === page);
-    
+
     if (pageInteractions.length === 0) return 0;
     return (pageConversions.length / pageInteractions.length) * 100;
   }
@@ -573,17 +542,15 @@ class AnalyticsTracker {
 
     const totalSessions = Object.keys(sessions).length;
     const bouncedSessions = Object.values(sessions).filter(count => count === 1).length;
-    
+
     return totalSessions > 0 ? (bouncedSessions / totalSessions) * 100 : 0;
   }
 
   private calculateAverageSessionTime(pageViews: any[]): number {
-    // Calculate actual average from duration_seconds in page analytics
-    if (!pageViews.length) return 0;
-    
-    const totalDuration = pageViews.reduce((sum, pv) => sum + (pv.duration_seconds || 0), 0);
-    const avgSeconds = totalDuration / pageViews.length;
-    return avgSeconds / 60; // Convert to minutes
+    if (pageViews.length < 2) return 0;
+    const sorted = [...pageViews].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    const durationMs = new Date(sorted[sorted.length - 1].timestamp).getTime() - new Date(sorted[0].timestamp).getTime();
+    return Math.max(1, durationMs / 1000 / 60); // minutes
   }
 
   // Convenience methods for common tracking events

@@ -29,7 +29,7 @@ export const useAuth = () => {
         .select('*')
         .eq('id', userId)
         .single();
-      
+
       if (!error && data) {
         setProfile(data as UserProfile);
       }
@@ -39,51 +39,76 @@ export const useAuth = () => {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
+
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        if (mounted) {
+          setSession(initialSession);
+          setUser(initialSession?.user ?? null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error getting session:", error);
+        if (mounted) setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      (_event, currentSession) => {
+        if (mounted) {
+          setSession(currentSession);
+          setUser(currentSession?.user ?? null);
 
-        // Check admin status
-        if (session?.user) {
-          // Defer Supabase calls and only end loading after admin check completes
-          setTimeout(() => {
-            Promise.all([
-              checkAdminStatus(session.user!.id),
-              fetchProfile(session.user!.id)
-            ]).finally(() => {
-              setLoading(false);
-            });
-          }, 0);
-        } else {
-          setIsAdmin(false);
-          setAdminStatus('unknown');
-          setProfile(null);
-          setLoading(false);
+          // Check admin status
+          if (currentSession?.user) {
+            // Defer Supabase calls and only end loading after admin check completes
+            setTimeout(() => {
+              Promise.all([
+                checkAdminStatus(currentSession.user!.id),
+                fetchProfile(currentSession.user!.id)
+              ]).finally(() => {
+                setLoading(false);
+              });
+            }, 0);
+          } else {
+            setIsAdmin(false);
+            setAdminStatus('unknown');
+            setProfile(null);
+            setLoading(false);
+          }
         }
       }
     );
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+      if (mounted) {
+        setSession(session);
+        setUser(session?.user ?? null);
 
-      if (session?.user) {
-        Promise.all([
-          checkAdminStatus(session.user.id),
-          fetchProfile(session.user.id)
-        ]).finally(() => {
+        if (session?.user) {
+          Promise.all([
+            checkAdminStatus(session.user.id),
+            fetchProfile(session.user.id)
+          ]).finally(() => {
+            setLoading(false);
+          });
+        } else {
+          setAdminStatus('unknown');
           setLoading(false);
-        });
-      } else {
-        setAdminStatus('unknown');
-        setLoading(false);
+        }
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [fetchProfile]);
 
   const checkAdminStatus = async (userId: string) => {
@@ -93,7 +118,7 @@ export const useAuth = () => {
         .select('role')
         .eq('id', userId)
         .single();
-      
+
       if (!error && data) {
         const isAdminRole = (data as any).role === 'admin';
         setIsAdmin(isAdminRole);
@@ -133,7 +158,7 @@ export const useAuth = () => {
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
-    
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -161,13 +186,14 @@ export const useAuth = () => {
     return { error };
   };
 
+
   const signOut = async () => {
     // Clear local state first to ensure UI updates immediately
     setUser(null);
     setSession(null);
     setIsAdmin(false);
     setAdminStatus('unknown');
-    
+
     // Then attempt server signout (may fail if session already expired)
     try {
       await supabase.auth.signOut();

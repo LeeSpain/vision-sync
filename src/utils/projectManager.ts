@@ -213,6 +213,30 @@ export const projectManager = {
     return data;
   },
 
+  // Increment lead count for a project atomically
+  async incrementLeadCount(projectName: string): Promise<void> {
+    const { error } = await supabase.rpc('increment_project_leads' as any, {
+      p_project_name: projectName
+    });
+
+    if (error) {
+      console.error('Error incrementing lead count via RPC:', error);
+      // Fallback to manual update if RPC is not deployed yet
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id, leads_count')
+        .eq('name', projectName)
+        .single();
+
+      if (project) {
+        await supabase
+          .from('projects')
+          .update({ leads_count: ((project as any).leads_count || 0) + 1 })
+          .eq('id', project.id);
+      }
+    }
+  },
+
   // Get project statistics
   async getProjectStats() {
     const { data, error } = await supabase
