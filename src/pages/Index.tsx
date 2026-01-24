@@ -10,7 +10,7 @@ import { FeaturedProjectsCarousel } from '@/components/FeaturedProjectsCarousel'
 import EnhancedTemplatesShowcase from '@/components/EnhancedTemplatesShowcase';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import AiChatWidget from '@/components/chat/AiChatWidget';
+
 import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema, generateFAQSchema } from '@/utils/structuredData';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
@@ -23,7 +23,6 @@ import CustomQuoteModal from '@/components/CustomQuoteModal';
 
 const Index = () => {
   const { formatPrice } = useCurrency();
-  const [isChatMinimized, setIsChatMinimized] = useState(true);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   // Clean build - template components moved to /templates page
   const [contactForm, setContactForm] = useState({
@@ -605,11 +604,6 @@ const Index = () => {
 
       <Footer />
       
-      {/* AI Chat Widget */}
-      <AiChatWidget 
-        isMinimized={isChatMinimized}
-        onToggleMinimize={() => setIsChatMinimized(!isChatMinimized)}
-      />
 
       {/* Custom Quote Modal */}
       <CustomQuoteModal 

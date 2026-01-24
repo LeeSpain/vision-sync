@@ -5,6 +5,7 @@ import { Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CurrencySelector } from '@/components/ui/currency-selector';
 import ShareButton from '@/components/ShareButton';
+import HeaderChatButton from '@/components/chat/HeaderChatButton';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 
 const Header = () => {
@@ -32,6 +33,9 @@ const Header = () => {
               Vision-Sync
             </span>
           </Link>
+          
+          {/* Chat Button - next to logo */}
+          <HeaderChatButton onClick={() => setIsChatOpen(true)} />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -129,11 +133,13 @@ const Header = () => {
         )}
       </nav>
       
-      {/* Chat Widget - positioned below header */}
-      <AiChatWidget 
-        isMinimized={!isChatOpen} 
-        onToggleMinimize={() => setIsChatOpen(!isChatOpen)} 
-      />
+      {/* Chat Widget - only renders when open */}
+      {isChatOpen && (
+        <AiChatWidget 
+          isMinimized={false} 
+          onToggleMinimize={() => setIsChatOpen(false)} 
+        />
+      )}
     </header>
   );
 };
