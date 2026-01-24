@@ -372,138 +372,146 @@ const Index = () => {
       </section>
 
       {/* AI Agents & The Future Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy/5 via-royal-purple/5 to-emerald-green/5 overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-royal-purple/5 to-transparent"></div>
-        <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-green/10 rounded-full blur-xl animate-float"></div>
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-royal-purple/10 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-coral-orange/5 rounded-full blur-2xl"></div>
+      <section className="relative py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy via-midnight-navy/95 to-royal-purple/90 overflow-hidden">
+        {/* Subtle Background Elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-royal-purple/20 via-transparent to-transparent"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-coral-orange/5 rounded-full blur-3xl"></div>
         
         <div className="relative max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 bg-gradient-primary px-6 py-2 rounded-full text-white font-medium mb-6 animate-fade-in shadow-glow">
-              <Sparkles className="h-4 w-4 animate-pulse" />
-              The Future is Now
-            </div>
-            <h2 className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-midnight-navy via-royal-purple to-emerald-green bg-clip-text text-transparent mb-6 animate-slide-up">
-              AI Agents & The Future
-            </h2>
-            <p className="text-xl md:text-2xl text-cool-gray max-w-4xl mx-auto mb-4 animate-fade-in" style={{animationDelay: '0.2s'}}>
-              We're pioneering the next generation of intelligent automation
-            </p>
-            <p className="text-lg text-royal-purple font-medium animate-fade-in" style={{animationDelay: '0.3s'}}>
-              Leading the way in AI innovation - Let us help you transform your business!
-            </p>
-          </div>
-
-          {/* Enhanced AI Capabilities Layout with Avatar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-16">
-            {/* Left Side - Avatar Showcase */}
-            <div className="lg:col-span-1">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-primary rounded-3xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
-                <div className="relative bg-gradient-to-br from-slate-white to-soft-lilac/30 rounded-3xl p-6 shadow-elegant border border-soft-lilac/20 hover:shadow-glow transition-all duration-500">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-heading font-bold text-midnight-navy mb-2">Meet Your AI Agent</h3>
-                    <p className="text-cool-gray">Professional, intelligent, available 24/7</p>
-                  </div>
-                  
-                  <div className="relative mb-6">
-                    <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur opacity-20"></div>
-                    <img 
-                      src="/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
-                      alt="Professional AI Agent Representative"
-                      className="relative w-full h-64 object-cover rounded-2xl shadow-card"
-                    />
-                    <div className="absolute top-4 right-4 w-4 h-4 bg-emerald-green rounded-full animate-pulse shadow-lg"></div>
-                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-emerald-green text-white px-4 py-1 rounded-full text-sm font-medium shadow-lg">
-                      Online Now
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 text-cool-gray">
-                      <div className="w-2 h-2 bg-emerald-green rounded-full"></div>
-                      <span>Instant responses</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-cool-gray">
-                      <div className="w-2 h-2 bg-royal-purple rounded-full"></div>
-                      <span>Context-aware conversations</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-cool-gray">
-                      <div className="w-2 h-2 bg-coral-orange rounded-full"></div>
-                      <span>Multi-language support</span>
-                    </div>
-                  </div>
-                </div>
+          {/* Compact Header */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-12">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-emerald-green text-sm font-medium mb-3">
+                <Sparkles className="h-3 w-3" />
+                The Future is Now
               </div>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">
+                AI Agents & Automation
+              </h2>
+              <p className="text-white/70 max-w-xl">
+                Next-generation intelligent automation that transforms how you work
+              </p>
             </div>
-
-            {/* Right Side - Main Features */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Conversational Intelligence */}
-              <div className="bg-gradient-to-br from-slate-white to-soft-lilac/30 rounded-3xl p-8 shadow-elegant border border-soft-lilac/20 hover:shadow-glow transition-all duration-500 group">
-                <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-card">
-                      <Brain className="h-8 w-8 text-white" />
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-heading font-bold text-midnight-navy mb-3 group-hover:text-royal-purple transition-colors">
-                      Conversational Intelligence
-                    </h3>
-                    <p className="text-cool-gray leading-relaxed mb-4">
-                      Advanced voice agents and conversational AI that understand context, emotion, and intent. Transform customer interactions with natural, intelligent dialogue systems that feel genuinely human.
-                    </p>
-                    <div className="flex items-center gap-2 text-royal-purple font-medium">
-                      <Sparkles className="h-4 w-4" />
-                      Next-gen Communication
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Two-column sub-features */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-emerald-green/10 to-emerald-green/5 rounded-2xl p-6 border border-emerald-green/20 hover:border-emerald-green/40 transition-all duration-300 group hover:shadow-card">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-emerald-green rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-sm">
-                      <Zap className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-heading font-bold text-midnight-navy">Smart Automation</h3>
-                  </div>
-                  <p className="text-cool-gray leading-relaxed">
-                    Intelligent process automation that learns, adapts, and optimizes workflows in real-time, reducing manual tasks by up to 90%.
-                  </p>
-                </div>
-
-                <div className="bg-gradient-to-br from-coral-orange/10 to-coral-orange/5 rounded-2xl p-6 border border-coral-orange/20 hover:border-coral-orange/40 transition-all duration-300 group hover:shadow-card">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-coral-orange rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-sm">
-                      <TrendingUp className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-heading font-bold text-midnight-navy">Predictive Analytics</h3>
-                  </div>
-                  <p className="text-cool-gray leading-relaxed">
-                    AI-powered insights that forecast trends, predict outcomes, and drive strategic decisions with 95% accuracy.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="text-center mt-16">
             <Link to="/ai-agent-questionnaire">
-              <Button variant="hero" size="lg" className="animate-float">
-                <Bot className="h-5 w-5" />
-                Get Your AI Agent Now
-                <ArrowRight className="h-5 w-5" />
+              <Button variant="hero" size="default" className="shadow-glow whitespace-nowrap">
+                <Bot className="h-4 w-4" />
+                Get Your AI Agent
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
 
+          {/* Compact Feature Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* AI Agent Card */}
+            <div className="lg:row-span-2 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all group">
+              <div className="relative mb-4">
+                <img 
+                  src="/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
+                  alt="AI Agent"
+                  className="w-full h-40 object-cover rounded-xl"
+                />
+                <div className="absolute top-2 right-2 flex items-center gap-1.5 bg-emerald-green/90 text-white px-2 py-0.5 rounded-full text-xs font-medium">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                  Online
+                </div>
+              </div>
+              <h3 className="text-lg font-heading font-semibold text-white mb-2">Your AI Agent</h3>
+              <p className="text-white/60 text-sm mb-3">24/7 intelligent assistance</p>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 text-white/70 text-xs">
+                  <CheckCircle className="h-3 w-3 text-emerald-green" />
+                  Instant responses
+                </div>
+                <div className="flex items-center gap-2 text-white/70 text-xs">
+                  <CheckCircle className="h-3 w-3 text-emerald-green" />
+                  Context-aware
+                </div>
+                <div className="flex items-center gap-2 text-white/70 text-xs">
+                  <CheckCircle className="h-3 w-3 text-emerald-green" />
+                  Multi-language
+                </div>
+              </div>
+            </div>
+
+            {/* Conversational Intelligence */}
+            <div className="bg-gradient-to-br from-royal-purple/30 to-royal-purple/10 backdrop-blur-sm rounded-2xl p-5 border border-royal-purple/20 hover:border-royal-purple/40 transition-all group">
+              <div className="w-10 h-10 bg-royal-purple rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Brain className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-base font-heading font-semibold text-white mb-1.5">Conversational AI</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Natural dialogue systems that understand context and emotion
+              </p>
+            </div>
+
+            {/* Smart Automation */}
+            <div className="bg-gradient-to-br from-emerald-green/30 to-emerald-green/10 backdrop-blur-sm rounded-2xl p-5 border border-emerald-green/20 hover:border-emerald-green/40 transition-all group">
+              <div className="w-10 h-10 bg-emerald-green rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Zap className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-base font-heading font-semibold text-white mb-1.5">Smart Automation</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Workflows that learn and adapt, reducing manual tasks by 90%
+              </p>
+            </div>
+
+            {/* Predictive Analytics */}
+            <div className="bg-gradient-to-br from-coral-orange/30 to-coral-orange/10 backdrop-blur-sm rounded-2xl p-5 border border-coral-orange/20 hover:border-coral-orange/40 transition-all group">
+              <div className="w-10 h-10 bg-coral-orange rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-base font-heading font-semibold text-white mb-1.5">Predictive Analytics</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                AI insights that forecast trends with 95% accuracy
+              </p>
+            </div>
+
+            {/* Voice Agents */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all group">
+              <div className="w-10 h-10 bg-electric-blue rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Bot className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-base font-heading font-semibold text-white mb-1.5">Voice Agents</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Real-time voice AI for seamless customer interactions
+              </p>
+            </div>
+
+            {/* Custom Integration */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all group">
+              <div className="w-10 h-10 bg-soft-lilac rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Target className="h-5 w-5 text-midnight-navy" />
+              </div>
+              <h3 className="text-base font-heading font-semibold text-white mb-1.5">Custom Integration</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Tailored AI solutions that fit your existing systems
+              </p>
+            </div>
+          </div>
+
+          {/* Stats Strip */}
+          <div className="mt-10 pt-8 border-t border-white/10">
+            <div className="flex flex-wrap justify-center gap-8 md:gap-16">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">90%</div>
+                <div className="text-xs text-white/50">Task Reduction</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">24/7</div>
+                <div className="text-xs text-white/50">Availability</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">95%</div>
+                <div className="text-xs text-white/50">Accuracy</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">&lt;1s</div>
+                <div className="text-xs text-white/50">Response Time</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
