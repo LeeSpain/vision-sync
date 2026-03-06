@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Pricing() {
     const [plans, setPlans] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchPlans = async () => {
@@ -31,27 +33,27 @@ export default function Pricing() {
     const fallbackPlans = [
         {
             id: 'fallback-p1',
-            name: 'Platform Starter',
-            description: 'Essential orchestration for small teams.',
+            name: t('pricing.fallback.starterName'),
+            description: t('pricing.fallback.starterDesc'),
             monthly_price: 999,
             custom_price_label: null,
-            features: ['1 Core Workflow Integration', 'Basic AI Agent Access', 'Standard Security', 'Email Support']
+            features: t('pricing.fallback.starterFeatures', { returnObjects: true }) as string[]
         },
         {
             id: 'fallback-p2',
-            name: 'Enterprise Sync',
-            description: 'Complete operational control and unlimited scalability.',
+            name: t('pricing.fallback.enterpriseName'),
+            description: t('pricing.fallback.enterpriseDesc'),
             monthly_price: 2499,
             custom_price_label: null,
-            features: ['Unlimited Workflow Integrations', 'Custom Trained AI Agents', 'Advanced Analytics Dashboard', 'Dedicated Success Manager', 'SSO & Advanced Security']
+            features: t('pricing.fallback.enterpriseFeatures', { returnObjects: true }) as string[]
         },
         {
             id: 'fallback-p3',
-            name: 'Custom Blueprint',
-            description: 'On-premise or highly regulated environments.',
+            name: t('pricing.fallback.customName'),
+            description: t('pricing.fallback.customDesc'),
             monthly_price: null,
-            custom_price_label: 'Talk to Sales',
-            features: ['Custom Infrastructure Deployment', 'HIPAA/SOC2 Compliant Architecture', 'White-label Options', '24/7 Phone Support SLA']
+            custom_price_label: t('pricing.fallback.talkToSales'),
+            features: t('pricing.fallback.customFeatures', { returnObjects: true }) as string[]
         }
     ];
 
@@ -64,10 +66,10 @@ export default function Pricing() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-midnight-navy mb-6">
-                            Transparent, Scaleable Pricing
+                            {t('pricing.title')}
                         </h1>
                         <p className="text-lg text-cool-gray">
-                            Choose the foundational platform tier that fits your growth stage, then layer on AI modules as your operational needs evolve.
+                            {t('pricing.subtitle')}
                         </p>
                     </div>
 
@@ -89,7 +91,7 @@ export default function Pricing() {
                                     >
                                         {isPopular && (
                                             <div className="absolute top-0 right-0 left-0 bg-royal-purple text-white text-xs font-bold uppercase tracking-wider py-1.5 text-center">
-                                                Most Popular
+                                                {t('pricing.mostPopular')}
                                             </div>
                                         )}
                                         <CardHeader className={isPopular ? 'pt-10' : ''}>
@@ -103,9 +105,9 @@ export default function Pricing() {
                                                 ) : (
                                                     <>
                                                         <span className="text-4xl font-bold text-midnight-navy">
-                                                            {plan.monthly_price !== null ? `$${plan.monthly_price}` : 'Free'}
+                                                            {plan.monthly_price !== null ? `$${plan.monthly_price}` : t('pricing.free')}
                                                         </span>
-                                                        {plan.monthly_price !== null && <span className="text-cool-gray ml-2">/month</span>}
+                                                        {plan.monthly_price !== null && <span className="text-cool-gray ml-2">{t('pricing.month')}</span>}
                                                     </>
                                                 )}
                                             </div>
@@ -132,7 +134,7 @@ export default function Pricing() {
                                                 variant={isPopular ? 'default' : 'outline'}
                                             >
                                                 <Link to="/contact">
-                                                    Get Started
+                                                    {t('pricing.getStarted')}
                                                 </Link>
                                             </Button>
                                         </CardFooter>

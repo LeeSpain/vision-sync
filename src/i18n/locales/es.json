@@ -42,6 +42,7 @@
             "conversations": "Conversaciones con IA",
             "leads": "Leads",
             "salesPipeline": "Embudo de Ventas",
+            "salesTeam": "Equipo de Ventas",
             "analytics": "Análisis",
             "agentManager": "Gestor de Agentes",
             "brainCommand": "Comando Central",
@@ -89,6 +90,53 @@
             "viewCatalog": "Ver Catálogo Completo",
             "requestBlueprint": "Solicitar Plan Personalizado",
             "viewPricing": "Ver Precios"
+        },
+        "footer": {
+            "tagline": "\"Diseña. Automatiza. Escala. Sincroniza tu visión con el futuro.\"",
+            "quickLinks": "Enlaces Rápidos",
+            "stayUpdated": "Mantente Actualizado",
+            "notifyUpdate": "Recibe notificaciones sobre nuevos módulos de IA y actualizaciones de la plataforma.",
+            "yourEmail": "Tu correo",
+            "subscribe": "Suscribirse",
+            "subscribed": "¡Suscrito!",
+            "newsletterAdded": "Has sido añadido a nuestro boletín.",
+            "rightsReserved": "Vision-Sync. Todos los derechos reservados."
+        },
+        "pricing": {
+            "title": "Precios Transparentes y Escalables",
+            "subtitle": "Elija el nivel de plataforma fundacional que se adapte a su etapa de crecimiento, luego agregue módulos de IA a medida que evolucionen sus necesidades operativas.",
+            "mostPopular": "Más Popular",
+            "month": "/mes",
+            "free": "Gratis",
+            "getStarted": "Empezar",
+            "fallback": {
+                "starterName": "Platform Starter",
+                "starterDesc": "Orquestación esencial para equipos pequeños.",
+                "starterFeatures": [
+                    "1 Integración de flujo de trabajo principal",
+                    "Acceso básico a agentes de IA",
+                    "Seguridad estándar",
+                    "Soporte por correo electrónico"
+                ],
+                "enterpriseName": "Enterprise Sync",
+                "enterpriseDesc": "Control operativo completo y escalabilidad ilimitada.",
+                "enterpriseFeatures": [
+                    "Integraciones de flujos de trabajo ilimitadas",
+                    "Agentes de IA entrenados a medida",
+                    "Panel analítico avanzado",
+                    "Gerente de Éxito Dedicado",
+                    "SSO y Seguridad Avanzada"
+                ],
+                "customName": "Custom Blueprint",
+                "customDesc": "Entornos locales o altamente regulados.",
+                "talkToSales": "Hablar con Ventas",
+                "customFeatures": [
+                    "Despliegue de infraestructura personalizado",
+                    "Arquitectura compatible con HIPAA/SOC2",
+                    "Opciones de Marca Blanca",
+                    "Soporte telefónico 24/7 SLA"
+                ]
+            }
         }
     }
 }

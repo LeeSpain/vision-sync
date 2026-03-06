@@ -42,6 +42,7 @@
             "conversations": "AI Conversations",
             "leads": "Leads",
             "salesPipeline": "Sales Pipeline",
+            "salesTeam": "Sales Team",
             "analytics": "Analytics",
             "agentManager": "Agent Manager",
             "brainCommand": "Brain Command",
@@ -89,6 +90,53 @@
             "viewCatalog": "View Entire Catalog",
             "requestBlueprint": "Request Custom Blueprint",
             "viewPricing": "View Pricing"
+        },
+        "footer": {
+            "tagline": "\"Design. Automate. Scale. Sync your vision with the future.\"",
+            "quickLinks": "Quick Links",
+            "stayUpdated": "Stay Updated",
+            "notifyUpdate": "Get notified about new AI modules and platform updates.",
+            "yourEmail": "Your email",
+            "subscribe": "Subscribe",
+            "subscribed": "Subscribed!",
+            "newsletterAdded": "You've been added to our newsletter.",
+            "rightsReserved": "Vision-Sync. All rights reserved."
+        },
+        "pricing": {
+            "title": "Transparent, Scaleable Pricing",
+            "subtitle": "Choose the foundational platform tier that fits your growth stage, then layer on AI modules as your operational needs evolve.",
+            "mostPopular": "Most Popular",
+            "month": "/month",
+            "free": "Free",
+            "getStarted": "Get Started",
+            "fallback": {
+                "starterName": "Platform Starter",
+                "starterDesc": "Essential orchestration for small teams.",
+                "starterFeatures": [
+                    "1 Core Workflow Integration",
+                    "Basic AI Agent Access",
+                    "Standard Security",
+                    "Email Support"
+                ],
+                "enterpriseName": "Enterprise Sync",
+                "enterpriseDesc": "Complete operational control and unlimited scalability.",
+                "enterpriseFeatures": [
+                    "Unlimited Workflow Integrations",
+                    "Custom Trained AI Agents",
+                    "Advanced Analytics Dashboard",
+                    "Dedicated Success Manager",
+                    "SSO & Advanced Security"
+                ],
+                "customName": "Custom Blueprint",
+                "customDesc": "On-premise or highly regulated environments.",
+                "talkToSales": "Talk to Sales",
+                "customFeatures": [
+                    "Custom Infrastructure Deployment",
+                    "HIPAA/SOC2 Compliant Architecture",
+                    "White-label Options",
+                    "24/7 Phone Support SLA"
+                ]
+            }
         }
     }
 }

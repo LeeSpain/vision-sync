@@ -13,6 +13,7 @@ import {
   Brain,
   MessageCircle,
   Building2,
+  Briefcase,
   Bug,
   ArrowRightLeft,
   Bot,
@@ -47,6 +48,7 @@ const mainItems = [
   { key: "admin.conversations", url: "#conversations", icon: MessageCircle },
   { key: "admin.leads", url: "#leads", icon: Users },
   { key: "admin.salesPipeline", url: "#sales-pipeline", icon: TrendingUp },
+  { key: "admin.salesTeam", url: "#sales-team", icon: Briefcase },
   { key: "admin.analytics", url: "#analytics", icon: BarChart3 },
 ]
 

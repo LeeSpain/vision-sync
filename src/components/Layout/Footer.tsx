@@ -4,17 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Mail, Github, Linkedin, Twitter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
+  const { t } = useTranslation();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     toast({
-      title: "Subscribed!",
-      description: "You've been added to our newsletter.",
+      title: t('footer.subscribed'),
+      description: t('footer.newsletterAdded'),
     });
     setEmail('');
   };
@@ -31,7 +33,7 @@ const Footer = () => {
               <span className="text-xl font-heading font-bold">Vision-Sync</span>
             </div>
             <p className="text-slate-white/80 mb-6 max-w-md">
-              "Design. Automate. Scale. Sync your vision with the future."
+              {t('footer.tagline')}
             </p>
             <div className="flex space-x-4">
               <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
@@ -51,26 +53,26 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-heading font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-heading font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/platform" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  Platform
+                  {t('header.platform')}
                 </Link>
               </li>
               <li>
                 <Link to="/solutions" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  Solutions
+                  {t('header.solutions')}
                 </Link>
               </li>
               <li>
                 <Link to="/modules" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  Modules
+                  {t('header.modules')}
                 </Link>
               </li>
               <li>
                 <Link to="/pricing" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  Pricing
+                  {t('header.pricing')}
                 </Link>
               </li>
             </ul>
@@ -78,21 +80,21 @@ const Footer = () => {
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-heading font-semibold mb-4">Stay Updated</h3>
+            <h3 className="font-heading font-semibold mb-4">{t('footer.stayUpdated')}</h3>
             <p className="text-slate-white/80 text-sm mb-4">
-              Get notified about new AI modules and platform updates.
+              {t('footer.notifyUpdate')}
             </p>
             <form onSubmit={handleSubscribe} className="flex space-x-2">
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email"
+                placeholder={t('footer.yourEmail')}
                 className="bg-slate-white/10 border-slate-white/20 text-slate-white placeholder:text-slate-white/60"
                 required
               />
               <Button type="submit" variant="invest" size="sm">
-                Subscribe
+                {t('footer.subscribe')}
               </Button>
             </form>
           </div>
@@ -100,7 +102,7 @@ const Footer = () => {
 
         <div className="border-t border-slate-white/20 mt-8 pt-8 text-center">
           <p className="text-slate-white/60 text-sm">
-            © {new Date().getFullYear()} Vision-Sync. All rights reserved.
+            © {new Date().getFullYear()} {t('footer.rightsReserved')}
           </p>
         </div>
       </div>

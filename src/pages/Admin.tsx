@@ -28,6 +28,7 @@ import AiAgentManager from '@/components/admin/AiAgentManager';
 import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
 import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
 import RoutingRulesManager from '@/components/admin/RoutingRulesManager';
+import { SalesTeamManager } from '@/components/admin/SalesTeamManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -469,6 +470,9 @@ const Admin = () => {
 
       case 'routing-rules':
         return <RoutingRulesManager />;
+
+      case 'sales-team':
+        return <SalesTeamManager />;
 
       case 'settings':
         return (
