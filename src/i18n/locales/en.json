@@ -137,6 +137,133 @@
                     "24/7 Phone Support SLA"
                 ]
             }
+        },
+        "platform": {
+            "title": "Meet Your New Digital Team",
+            "subtitle": "Vision-Sync makes Artificial Intelligence accessible, safe, and easy to use. Think of us as your digital workforce that never sleeps—ready to help with repetitive tasks so your human team can focus on what they do best.",
+            "exploreSolutions": "Explore Solutions",
+            "requestDemo": "Request a Demo",
+            "feature1Title": "Smart, Friendly AI Helpers",
+            "feature1Desc": "Deploy virtual assistants that actually learn your business. Unlike frustrating, robotic chatbots, our AI helpers can understand context, hold natural conversations, and complete real tasks for you.",
+            "feature2Title": "Connects Safely to Your Tools",
+            "feature2Desc": "Don't worry about migrating your data. Vision-Sync securely plugs into the software you already use every day. We keep your information private, encrypted, and completely secure.",
+            "feature3Title": "Automates the Boring Stuff",
+            "feature3Desc": "Say goodbye to tedious manual data entry. Our platform can automatically handle routine chores—like sorting new leads, organizing emails, or answering common customer questions—while you sleep.",
+            "feature4Title": "You're Always in Control",
+            "feature4Desc": "No rogue AI here. Every single action our digital assistants take can be set to require your human approval first. You have complete visibility and you always hold the keys.",
+            "growBannerTitle": "Grow at Your Own Pace",
+            "growBannerDesc": "Start simple with just one smart AI assistant. As you become more comfortable, you can easily add more skills and capabilities from our growing library.",
+            "browseSkills": "Browse AI Skills"
+        },
+        "solutions": {
+            "title": "Ready-to-Use AI Blueprints",
+            "subtitle": "Not sure where to start with AI? We've created simple, pre-built packages tailored for your industry that plug right into your business.",
+            "seeHowItWorks": "See How It Works",
+            "fallbackDesc": "A simple, ready-to-use AI workflow designed specifically to make your daily operations smoother and faster.",
+            "fallback": {
+                "hubName": "Customer Service Hub",
+                "hubSummary": "Handle common questions automatically 24/7.",
+                "hubDesc": "A friendly AI assistant that automatically replies to common customer questions, tracks lost orders, and routes complex issues to your human team.",
+                "hubIndustries": [
+                    "Retail",
+                    "E-Commerce",
+                    "Professional Services"
+                ],
+                "leadName": "Lead Generation Flow",
+                "leadSummary": "Automatically qualify and book meetings with new leads.",
+                "leadDesc": "Stop letting good leads slip away. This workflow instantly replies to website inquiries, asks simple questions to understand the customer's needs, and books verified meetings on your calendar.",
+                "leadIndustries": [
+                    "Real Estate",
+                    "Consulting",
+                    "B2B Services"
+                ],
+                "teamName": "Internal Team Helper",
+                "teamSummary": "Help employees find company answers instantly.",
+                "teamDesc": "A secure, private assistant that connects to your company knowledge base. Your team can ask questions about HR policies, tech support, or project details and get instant, accurate answers.",
+                "teamIndustries": [
+                    "Any Industry",
+                    "Healthcare",
+                    "Enterprise"
+                ]
+            }
+        },
+        "modules": {
+            "title": "Pick Your AI Superpowers",
+            "subtitle": "Add new skills to your business just like installing apps on your phone. Browse our library of ready-to-use AI helpers.",
+            "coreFeature": "Core Feature",
+            "fallbackDesc": "Add this specific skill to your AI assistant to handle this task completely automatically.",
+            "addonPrice": "Add-on Price",
+            "mo": "/mo",
+            "implementation": "+ ${{fee}} implementation",
+            "included": "Included",
+            "availableAll": "Available on all paid plans",
+            "addSkill": "Add This Skill",
+            "fallback": {
+                "emailName": "Email Assistant",
+                "emailShort": "Drafts replies and organizes your inbox.",
+                "emailLong": "Connects to your business email to automatically sort incoming messages, flag urgent ones, and draft polite, accurate responses for your review.",
+                "emailFeatures": [
+                    "Automatic Sorting",
+                    "Drafting Replies",
+                    "Spam Filtering"
+                ],
+                "webName": "Website Greeter",
+                "webShort": "A smart chat widget that actually helps.",
+                "webLong": "Add a helpful assistant to your website that can guide visitors to the right products, answer pricing questions, or capture their contact information.",
+                "webFeatures": [
+                    "24/7 Availability",
+                    "Natural Conversations",
+                    "Lead Capture"
+                ],
+                "dataName": "Data Sync",
+                "dataShort": "Keeps your different software talking.",
+                "dataLong": "When a new customer signs up on your website, this skill automatically adds them to your CRM, emails your team, and updates your spreadsheets without you lifting a finger.",
+                "dataFeatures": [
+                    "Automatic Updates",
+                    "Error Checking",
+                    "Instant Transfers"
+                ]
+            }
+        },
+        "contact": {
+            "title": "Contact",
+            "titleHighlight": "Us Today",
+            "subtitle": "Ready to transform your business with AI? Let's discuss your project and explore how we can help you succeed.",
+            "infoTitle": "Contact Information",
+            "infoSubtitle": "Tell us about yourself and your organization",
+            "fullName": "Full Name *",
+            "fullNamePlaceholder": "Your full name",
+            "email": "Email Address *",
+            "emailPlaceholder": "your.email@company.com",
+            "phone": "Phone Number *",
+            "phonePlaceholder": "+1 (555) 123-4567",
+            "company": "Company Name *",
+            "companyPlaceholder": "Your company name",
+            "inquiryTitle": "Inquiry Details",
+            "inquirySubtitle": "Help us understand what you're looking for",
+            "inquiryType": "Type of Inquiry *",
+            "industry": "Industry *",
+            "scopeTitle": "Project Scope",
+            "scopeSubtitle": "Tell us about your budget, timeline, and requirements",
+            "budget": "Budget Range *",
+            "timeline": "Timeline *",
+            "message": "Detailed Message *",
+            "messagePlaceholder": "Please describe your specific requirements, goals, or questions in detail...",
+            "sentTitle": "Message Sent!",
+            "sentDesc": "Thank you for reaching out! We've received your inquiry and will get back to you within 24 hours.",
+            "whatsNext": "What happens next?",
+            "next1": "• Our team will review your inquiry",
+            "next2": "• We'll prepare a personalized response",
+            "next3": "• Expect to hear from us within 24 hours",
+            "step": "Step {{current}} of {{total}}",
+            "complete": "{{percent}}% Complete",
+            "prev": "Previous",
+            "next": "Next Step",
+            "send": "Send Message",
+            "aiTitle": "AI Guardian Assistant",
+            "aiSubtitle": "Get instant answers about our services while you fill out the form",
+            "aiAvailable": "AI Available 24/7",
+            "aiResponses": "Instant Responses"
         }
     }
 }

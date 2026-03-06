@@ -47,11 +47,11 @@ export function SalesTeamManager() {
                 </div>
                 <div className="flex gap-3">
                     <Button
-                        onClick={() => navigate('/sales-dashboard')}
+                        onClick={() => window.open('/sales-dashboard', '_blank')}
                         className="bg-brand hover:bg-brand-dark text-white font-medium shadow-sm transition-colors"
                     >
                         <ExternalLink className="mr-2 h-4 w-4" />
-                        Launch Sales OS
+                        View Dashboard Template
                     </Button>
                 </div>
             </div>

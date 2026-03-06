@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight, Layers, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Modules() {
     const [modules, setModules] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchModules = async () => {
@@ -29,27 +31,27 @@ export default function Modules() {
     const fallbackModules = [
         {
             id: 'fallback-m1',
-            name: 'Email Assistant',
-            short_description: 'Drafts replies and organizes your inbox.',
-            long_description: 'Connects to your business email to automatically sort incoming messages, flag urgent ones, and draft polite, accurate responses for your review.',
+            name: t('modules.fallback.emailName'),
+            short_description: t('modules.fallback.emailShort'),
+            long_description: t('modules.fallback.emailLong'),
             monthly_addon_price: 199,
-            features: ['Automatic Sorting', 'Drafting Replies', 'Spam Filtering'],
+            features: t('modules.fallback.emailFeatures', { returnObjects: true }) as string[],
         },
         {
             id: 'fallback-m2',
-            name: 'Website Greeter',
-            short_description: 'A smart chat widget that actually helps.',
-            long_description: 'Add a helpful assistant to your website that can guide visitors to the right products, answer pricing questions, or capture their contact information.',
+            name: t('modules.fallback.webName'),
+            short_description: t('modules.fallback.webShort'),
+            long_description: t('modules.fallback.webLong'),
             monthly_addon_price: 249,
-            features: ['24/7 Availability', 'Natural Conversations', 'Lead Capture'],
+            features: t('modules.fallback.webFeatures', { returnObjects: true }) as string[],
         },
         {
             id: 'fallback-m3',
-            name: 'Data Sync',
-            short_description: 'Keeps your different software talking.',
-            long_description: 'When a new customer signs up on your website, this skill automatically adds them to your CRM, emails your team, and updates your spreadsheets without you lifting a finger.',
+            name: t('modules.fallback.dataName'),
+            short_description: t('modules.fallback.dataShort'),
+            long_description: t('modules.fallback.dataLong'),
             monthly_addon_price: null,
-            features: ['Automatic Updates', 'Error Checking', 'Instant Transfers'],
+            features: t('modules.fallback.dataFeatures', { returnObjects: true }) as string[],
         }
     ];
 
@@ -65,10 +67,10 @@ export default function Modules() {
                             <Layers className="h-6 w-6 text-emerald-green" />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-midnight-navy mb-6">
-                            Pick Your AI Superpowers
+                            {t('modules.title')}
                         </h1>
                         <p className="text-lg text-cool-gray">
-                            Add new skills to your business just like installing apps on your phone. Browse our library of ready-to-use AI helpers.
+                            {t('modules.subtitle')}
                         </p>
                     </div>
 
@@ -85,7 +87,7 @@ export default function Modules() {
                                             <h3 className="text-2xl font-bold text-midnight-navy">{mod.name}</h3>
                                             {mod.monthly_addon_price === null && (
                                                 <span className="px-2.5 py-1 bg-cool-gray/10 text-cool-gray text-xs font-semibold rounded-full uppercase tracking-wider">
-                                                    Core Feature
+                                                    {t('modules.coreFeature')}
                                                 </span>
                                             )}
                                         </div>
@@ -93,7 +95,7 @@ export default function Modules() {
                                             {mod.short_description}
                                         </p>
                                         <p className="text-slate-600 mb-6 line-clamp-3">
-                                            {mod.long_description || "Add this specific skill to your AI assistant to handle this task completely automatically."}
+                                            {mod.long_description || t('modules.fallbackDesc')}
                                         </p>
 
                                         {Array.isArray(mod.features) && mod.features.length > 0 && (
@@ -110,25 +112,25 @@ export default function Modules() {
                                     <div className="md:w-1/3 bg-slate-50 border-t md:border-t-0 md:border-l border-slate-100 p-6 md:p-8 flex flex-col justify-center items-center text-center">
                                         {mod.monthly_addon_price !== null ? (
                                             <div className="mb-6">
-                                                <span className="text-sm font-semibold text-cool-gray uppercase tracking-wide">Add-on Price</span>
+                                                <span className="text-sm font-semibold text-cool-gray uppercase tracking-wide">{t('modules.addonPrice')}</span>
                                                 <div className="mt-2 flex items-baseline justify-center text-midnight-navy">
                                                     <span className="text-4xl font-extrabold tracking-tight">${mod.monthly_addon_price}</span>
-                                                    <span className="text-xl font-medium text-cool-gray ml-1">/mo</span>
+                                                    <span className="text-xl font-medium text-cool-gray ml-1">{t('modules.mo')}</span>
                                                 </div>
                                                 {mod.setup_fee && (
-                                                    <p className="text-xs text-slate-500 mt-2">+ ${mod.setup_fee} implementation</p>
+                                                    <p className="text-xs text-slate-500 mt-2">{t('modules.implementation', { fee: mod.setup_fee })}</p>
                                                 )}
                                             </div>
                                         ) : (
                                             <div className="mb-6">
-                                                <div className="text-2xl font-bold text-midnight-navy">Included</div>
-                                                <p className="text-sm text-slate-500 mt-1">Available on all paid plans</p>
+                                                <div className="text-2xl font-bold text-midnight-navy">{t('modules.included')}</div>
+                                                <p className="text-sm text-slate-500 mt-1">{t('modules.availableAll')}</p>
                                             </div>
                                         )}
 
                                         <Button asChild className="w-full bg-emerald-green hover:bg-emerald-green/90 text-white group">
                                             <Link to="/contact">
-                                                Add This Skill
+                                                {t('modules.addSkill')}
                                                 <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                             </Link>
                                         </Button>

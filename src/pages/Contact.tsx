@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Mail, Phone, MapPin, Send, CheckCircle, ArrowRight, Sparkles, MessageSquare, Building2, Users, Target, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';
+import { useTranslation } from 'react-i18next';
 
 const Contact = () => {
+  const { t } = useTranslation();
   const contactFAQs = [
     {
       question: "How quickly can you start my project?",
@@ -103,55 +105,55 @@ const Contact = () => {
           <div className="space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2">
-                Contact Information
+                {t('contact.infoTitle')}
               </h2>
-              <p className="text-cool-gray">Tell us about yourself and your organization</p>
+              <p className="text-cool-gray">{t('contact.infoSubtitle')}</p>
             </div>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Full Name *
+                  {t('contact.fullName')}
                 </label>
                 <Input
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="Your full name"
+                  placeholder={t('contact.fullNamePlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Email Address *
+                  {t('contact.email')}
                 </label>
                 <Input
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="your.email@company.com"
+                  placeholder={t('contact.emailPlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Phone Number *
+                  {t('contact.phone')}
                 </label>
                 <Input
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder={t('contact.phonePlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Company Name *
+                  {t('contact.company')}
                 </label>
                 <Input
                   value={formData.company}
                   onChange={(e) => handleInputChange('company', e.target.value)}
-                  placeholder="Your company name"
+                  placeholder={t('contact.companyPlaceholder')}
                 />
               </div>
             </div>
@@ -163,15 +165,15 @@ const Contact = () => {
           <div className="space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2">
-                Inquiry Details
+                {t('contact.inquiryTitle')}
               </h2>
-              <p className="text-cool-gray">Help us understand what you're looking for</p>
+              <p className="text-cool-gray">{t('contact.inquirySubtitle')}</p>
             </div>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Type of Inquiry *
+                  {t('contact.inquiryType')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {inquiryTypes.map((type) => (
@@ -180,8 +182,8 @@ const Contact = () => {
                       type="button"
                       onClick={() => handleInputChange('inquiryType', type)}
                       className={`p-3 text-sm rounded-lg border transition-all ${formData.inquiryType === type
-                          ? 'bg-gradient-primary text-white border-royal-purple'
-                          : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
+                        ? 'bg-gradient-primary text-white border-royal-purple'
+                        : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
                         }`}
                     >
                       {type}
@@ -192,7 +194,7 @@ const Contact = () => {
 
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Industry *
+                  {t('contact.industry')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {industries.map((industry) => (
@@ -201,8 +203,8 @@ const Contact = () => {
                       type="button"
                       onClick={() => handleInputChange('industry', industry)}
                       className={`p-3 text-sm rounded-lg border transition-all ${formData.industry === industry
-                          ? 'bg-gradient-primary text-white border-royal-purple'
-                          : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
+                        ? 'bg-gradient-primary text-white border-royal-purple'
+                        : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
                         }`}
                     >
                       {industry}
@@ -219,15 +221,15 @@ const Contact = () => {
           <div className="space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2">
-                Project Scope
+                {t('contact.scopeTitle')}
               </h2>
-              <p className="text-cool-gray">Tell us about your budget, timeline, and requirements</p>
+              <p className="text-cool-gray">{t('contact.scopeSubtitle')}</p>
             </div>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Budget Range *
+                  {t('contact.budget')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {budgetOptions.map((budget) => (
@@ -236,8 +238,8 @@ const Contact = () => {
                       type="button"
                       onClick={() => handleInputChange('budget', budget)}
                       className={`p-3 text-sm rounded-lg border transition-all ${formData.budget === budget
-                          ? 'bg-gradient-primary text-white border-royal-purple'
-                          : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
+                        ? 'bg-gradient-primary text-white border-royal-purple'
+                        : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
                         }`}
                     >
                       {budget}
@@ -248,7 +250,7 @@ const Contact = () => {
 
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Timeline *
+                  {t('contact.timeline')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {timelines.map((timeline) => (
@@ -257,8 +259,8 @@ const Contact = () => {
                       type="button"
                       onClick={() => handleInputChange('timeline', timeline)}
                       className={`p-3 text-sm rounded-lg border transition-all ${formData.timeline === timeline
-                          ? 'bg-gradient-primary text-white border-royal-purple'
-                          : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
+                        ? 'bg-gradient-primary text-white border-royal-purple'
+                        : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
                         }`}
                     >
                       {timeline}
@@ -269,12 +271,12 @@ const Contact = () => {
 
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
-                  Detailed Message *
+                  {t('contact.message')}
                 </label>
                 <Textarea
                   value={formData.message}
                   onChange={(e) => handleInputChange('message', e.target.value)}
-                  placeholder="Please describe your specific requirements, goals, or questions in detail..."
+                  placeholder={t('contact.messagePlaceholder')}
                   className="min-h-[120px]"
                 />
               </div>
@@ -289,19 +291,19 @@ const Contact = () => {
               <CheckCircle className="h-10 w-10 text-emerald-green" />
             </div>
             <h2 className="text-3xl font-heading font-bold text-midnight-navy">
-              Message Sent!
+              {t('contact.sentTitle')}
             </h2>
             <p className="text-lg text-cool-gray max-w-md mx-auto">
-              Thank you for reaching out! We've received your inquiry and will get back to you within 24 hours.
+              {t('contact.sentDesc')}
             </p>
             <div className="bg-gradient-to-r from-emerald-green/10 to-royal-purple/10 p-6 rounded-lg">
               <p className="text-midnight-navy font-medium">
-                What happens next?
+                {t('contact.whatsNext')}
               </p>
               <ul className="text-sm text-cool-gray mt-2 space-y-1">
-                <li>• Our team will review your inquiry</li>
-                <li>• We'll prepare a personalized response</li>
-                <li>• Expect to hear from us within 24 hours</li>
+                <li>{t('contact.next1')}</li>
+                <li>{t('contact.next2')}</li>
+                <li>{t('contact.next3')}</li>
               </ul>
             </div>
           </div>
@@ -336,13 +338,13 @@ const Contact = () => {
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-hero">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-5xl md:text-7xl font-heading font-bold text-midnight-navy mb-6">
-            Contact{' '}
+            {t('contact.title')}{' '}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              Us Today
+              {t('contact.titleHighlight')}
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-cool-gray mb-8 max-w-3xl mx-auto">
-            Ready to transform your business with AI? Let's discuss your project and explore how we can help you succeed.
+            {t('contact.subtitle')}
           </p>
         </div>
       </section>
@@ -358,10 +360,10 @@ const Contact = () => {
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-sm font-medium text-midnight-navy">
-                      Step {currentStep} of 3
+                      {t('contact.step', { current: currentStep, total: 3 })}
                     </span>
                     <span className="text-sm text-cool-gray">
-                      {Math.round((currentStep / 3) * 100)}% Complete
+                      {t('contact.complete', { percent: Math.round((currentStep / 3) * 100) })}
                     </span>
                   </div>
                   <div className="w-full bg-soft-lilac/20 rounded-full h-2">
@@ -386,7 +388,7 @@ const Contact = () => {
                       onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
                       disabled={currentStep === 1}
                     >
-                      Previous
+                      {t('contact.prev')}
                     </Button>
 
                     {currentStep < 3 ? (
@@ -395,7 +397,7 @@ const Contact = () => {
                         onClick={() => setCurrentStep(currentStep + 1)}
                         disabled={!isStepComplete(currentStep)}
                       >
-                        Next Step
+                        {t('contact.next')}
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     ) : (
@@ -404,7 +406,7 @@ const Contact = () => {
                         onClick={handleSubmit}
                         disabled={!isStepComplete(currentStep)}
                       >
-                        Send Message
+                        {t('contact.send')}
                         <Send className="h-4 w-4 ml-2" />
                       </Button>
                     )}
@@ -421,10 +423,10 @@ const Contact = () => {
                     <Shield className="h-8 w-8 text-coral-orange" />
                   </div>
                   <h2 className="text-2xl font-heading font-bold mb-2">
-                    AI Guardian Assistant
+                    {t('contact.aiTitle')}
                   </h2>
                   <p className="text-white/80">
-                    Get instant answers about our services while you fill out the form
+                    {t('contact.aiSubtitle')}
                   </p>
                 </div>
 
@@ -437,11 +439,11 @@ const Contact = () => {
                   <div className="flex items-center justify-center gap-4 text-sm text-white/70">
                     <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-emerald-green rounded-full animate-pulse"></div>
-                      <span>AI Available 24/7</span>
+                      <span>{t('contact.aiAvailable')}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4" />
-                      <span>Instant Responses</span>
+                      <span>{t('contact.aiResponses')}</span>
                     </div>
                   </div>
                 </div>

@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight, Building2, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Solutions() {
     const [solutions, setSolutions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchSolutions = async () => {
@@ -29,31 +31,31 @@ export default function Solutions() {
     const fallbackSolutions = [
         {
             id: 'fallback-1',
-            name: 'Customer Service Hub',
-            summary: 'Handle common questions automatically 24/7.',
-            description: 'A friendly AI assistant that automatically replies to common customer questions, tracks lost orders, and routes complex issues to your human team.',
-            industries: ['Retail', 'E-Commerce', 'Professional Services'],
-            cta_label: 'See How It Works',
+            name: t('solutions.fallback.hubName'),
+            summary: t('solutions.fallback.hubSummary'),
+            description: t('solutions.fallback.hubDesc'),
+            industries: t('solutions.fallback.hubIndustries', { returnObjects: true }) as string[],
+            cta_label: t('solutions.seeHowItWorks'),
             cta_link: '/contact',
             is_featured: true
         },
         {
             id: 'fallback-2',
-            name: 'Lead Generation Flow',
-            summary: 'Automatically qualify and book meetings with new leads.',
-            description: 'Stop letting good leads slip away. This workflow instantly replies to website inquiries, asks simple questions to understand the customer\'s needs, and books verified meetings on your calendar.',
-            industries: ['Real Estate', 'Consulting', 'B2B Services'],
-            cta_label: 'See How It Works',
+            name: t('solutions.fallback.leadName'),
+            summary: t('solutions.fallback.leadSummary'),
+            description: t('solutions.fallback.leadDesc'),
+            industries: t('solutions.fallback.leadIndustries', { returnObjects: true }) as string[],
+            cta_label: t('solutions.seeHowItWorks'),
             cta_link: '/contact',
             is_featured: false
         },
         {
             id: 'fallback-3',
-            name: 'Internal Team Helper',
-            summary: 'Help employees find company answers instantly.',
-            description: 'A secure, private assistant that connects to your company knowledge base. Your team can ask questions about HR policies, tech support, or project details and get instant, accurate answers.',
-            industries: ['Any Industry', 'Healthcare', 'Enterprise'],
-            cta_label: 'See How It Works',
+            name: t('solutions.fallback.teamName'),
+            summary: t('solutions.fallback.teamSummary'),
+            description: t('solutions.fallback.teamDesc'),
+            industries: t('solutions.fallback.teamIndustries', { returnObjects: true }) as string[],
+            cta_label: t('solutions.seeHowItWorks'),
             cta_link: '/contact',
             is_featured: false
         }
@@ -68,10 +70,10 @@ export default function Solutions() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-midnight-navy mb-6">
-                            Ready-to-Use AI Blueprints
+                            {t('solutions.title')}
                         </h1>
                         <p className="text-lg text-cool-gray">
-                            Not sure where to start with AI? We've created simple, pre-built packages tailored for your industry that plug right into your business.
+                            {t('solutions.subtitle')}
                         </p>
                     </div>
 
@@ -97,7 +99,7 @@ export default function Solutions() {
                                     </CardHeader>
                                     <CardContent className="flex-grow">
                                         <p className="text-sm text-slate-600 line-clamp-4">
-                                            {sol.description || "A simple, ready-to-use AI workflow designed specifically to make your daily operations smoother and faster."}
+                                            {sol.description || t('solutions.fallbackDesc')}
                                         </p>
 
                                         {Array.isArray(sol.industries) && sol.industries.length > 0 && (
@@ -113,7 +115,7 @@ export default function Solutions() {
                                     <CardFooter className="pt-6 pb-8">
                                         <Button asChild variant="outline" className="w-full justify-between group hover:bg-electric-blue hover:text-white hover:border-electric-blue transition-colors">
                                             <Link to={sol.cta_link || "/contact"}>
-                                                {sol.cta_label || "See How It Works"}
+                                                {sol.cta_label || t('solutions.seeHowItWorks')}
                                                 <ArrowRight className="h-4 w-4 text-electric-blue group-hover:text-white transition-colors" />
                                             </Link>
                                         </Button>

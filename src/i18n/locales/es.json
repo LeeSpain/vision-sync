@@ -137,6 +137,133 @@
                     "Soporte telefónico 24/7 SLA"
                 ]
             }
+        },
+        "platform": {
+            "title": "Conoce a tu Nuevo Equipo Digital",
+            "subtitle": "Vision-Sync hace que la Inteligencia Artificial sea accesible, segura y fácil de usar. Piensa en nosotros como tu fuerza laboral digital que nunca duerme—lista para ayudarte con tareas repetitivas para que tu equipo humano pueda enfocarse en lo que mejor sabe hacer.",
+            "exploreSolutions": "Explorar Soluciones",
+            "requestDemo": "Solicitar Demostración",
+            "feature1Title": "Ayudantes de IA Inteligentes y Amigables",
+            "feature1Desc": "Despliegue asistentes virtuales que realmente aprenden su negocio. A diferencia de los chatbots frustrantes y robóticos, nuestros ayudantes de IA pueden entender el contexto, mantener conversaciones naturales y completar tareas reales por usted.",
+            "feature2Title": "Se Conecta de Forma Segura a sus Herramientas",
+            "feature2Desc": "No se preocupe por migrar sus datos. Vision-Sync se conecta de forma segura al software que ya utiliza a diario. Mantenemos su información privada, cifrada y completamente segura.",
+            "feature3Title": "Automatiza las Tareas Aburridas",
+            "feature3Desc": "Diga adiós a la tediosa entrada manual de datos. Nuestra plataforma puede manejar automáticamente las tareas rutinarias, como clasificar nuevos clientes potenciales, organizar correos electrónicos o responder preguntas comunes de los clientes, todo mientras duerme.",
+            "feature4Title": "Siempre Tienes el Control",
+            "feature4Desc": "Aquí no hay IA descontrolada. Cada acción que toman nuestros asistentes digitales puede configurarse para requerir tu aprobación humana primero. Tienes visibilidad completa y siempre tienes el control.",
+            "growBannerTitle": "Crece a tu Propio Ritmo",
+            "growBannerDesc": "Comienza fácilmente con un solo asistente de IA inteligente. A medida que te sientas más cómodo, puedes agregar más habilidades y capacidades de nuestra creciente biblioteca fácilmente.",
+            "browseSkills": "Explorar Habilidades de IA"
+        },
+        "solutions": {
+            "title": "Planos de IA Listos para Usar",
+            "subtitle": "¿No estás seguro de por dónde empezar con la IA? Hemos creado paquetes preconstruidos sencillos y adaptados a tu industria que se integran directamente en tu negocio.",
+            "seeHowItWorks": "Ver Cómo Funciona",
+            "fallbackDesc": "Un flujo de trabajo de IA simple y listo para usar, diseñado específicamente para hacer tus operaciones diarias más fluidas y rápidas.",
+            "fallback": {
+                "hubName": "Centro de Servicio al Cliente",
+                "hubSummary": "Maneja preguntas comunes automáticamente 24/7.",
+                "hubDesc": "Un amigable asistente de IA que responde automáticamente a las preguntas comunes de los clientes, rastrea pedidos perdidos y enruta problemas complejos a tu equipo humano.",
+                "hubIndustries": [
+                    "Minorista",
+                    "Comercio Electrónico",
+                    "Servicios Profesionales"
+                ],
+                "leadName": "Flujo de Generación de Leads",
+                "leadSummary": "Califica y reserva reuniones con nuevos leads automáticamente.",
+                "leadDesc": "Deja de permitir que se escapen buenos leads. Este flujo de trabajo responde instantáneamente a las consultas del sitio web, hace preguntas simples para entender las necesidades del cliente y reserva reuniones verificadas en tu calendario.",
+                "leadIndustries": [
+                    "Bienes Raíces",
+                    "Consultoría",
+                    "Servicios B2B"
+                ],
+                "teamName": "Ayudante del Equipo Interno",
+                "teamSummary": "Ayuda a los empleados a encontrar respuestas de la empresa al instante.",
+                "teamDesc": "Un asistente seguro y privado que se conecta a la base de conocimientos de tu empresa. Tu equipo puede hacer preguntas sobre políticas de recursos humanos, soporte técnico o detalles del proyecto y obtener respuestas instantáneas y precisas.",
+                "teamIndustries": [
+                    "Cualquier Industria",
+                    "Salud",
+                    "Empresarial"
+                ]
+            }
+        },
+        "modules": {
+            "title": "Elige Tus Superpoderes de IA",
+            "subtitle": "Agrega nuevas habilidades a tu negocio como si instalaras aplicaciones en tu teléfono. Explora nuestra biblioteca de ayudantes de IA listos para usar.",
+            "coreFeature": "Característica Principal",
+            "fallbackDesc": "Agregue esta habilidad específica a su asistente de IA para manejar esta tarea de forma completamente automática.",
+            "addonPrice": "Precio Adicional",
+            "mo": "/mes",
+            "implementation": "+ ${{fee}} implementación",
+            "included": "Incluido",
+            "availableAll": "Disponible en todos los planes pagos",
+            "addSkill": "Agregar Esta Habilidad",
+            "fallback": {
+                "emailName": "Asistente de Correo",
+                "emailShort": "Redacta respuestas y organiza su bandeja de entrada.",
+                "emailLong": "Se conecta al correo electrónico de su empresa para clasificar automáticamente los mensajes entrantes, marcar los urgentes y redactar respuestas educadas y precisas para su revisión.",
+                "emailFeatures": [
+                    "Clasificación Automática",
+                    "Redacción de Respuestas",
+                    "Filtrado de Spam"
+                ],
+                "webName": "Saludador de Sitio Web",
+                "webShort": "Un widget de chat inteligente que realmente ayuda.",
+                "webLong": "Agregue un asistente útil a su sitio web que pueda guiar a los visitantes a los productos correctos, responder preguntas sobre precios o capturar su información de contacto.",
+                "webFeatures": [
+                    "Disponibilidad 24/7",
+                    "Conversaciones Naturales",
+                    "Captura de Leads"
+                ],
+                "dataName": "Sincronización de Datos",
+                "dataShort": "Mantiene conectado su software diferente.",
+                "dataLong": "Cuando un nuevo cliente se registra en su sitio web, esta habilidad lo agrega automáticamente a su CRM, envía un correo electrónico a su equipo y actualiza sus hojas de cálculo sin que mueva un dedo.",
+                "dataFeatures": [
+                    "Actualizaciones Automáticas",
+                    "Verificación de Errores",
+                    "Transferencias Instantáneas"
+                ]
+            }
+        },
+        "contact": {
+            "title": "Contacta con",
+            "titleHighlight": "Nosotros Hoy",
+            "subtitle": "¿Listo para transformar tu negocio con IA? Discutamos tu proyecto y exploremos cómo podemos ayudarte a tener éxito.",
+            "infoTitle": "Información de Contacto",
+            "infoSubtitle": "Cuéntanos sobre ti y tu organización",
+            "fullName": "Nombre Completo *",
+            "fullNamePlaceholder": "Tu nombre completo",
+            "email": "Correo Electrónico *",
+            "emailPlaceholder": "tu.email@empresa.com",
+            "phone": "Número de Teléfono *",
+            "phonePlaceholder": "+34 600 123 456",
+            "company": "Nombre de la Empresa *",
+            "companyPlaceholder": "Nombre de tu empresa",
+            "inquiryTitle": "Detalles de la Consulta",
+            "inquirySubtitle": "Ayúdanos a entender lo que buscas",
+            "inquiryType": "Tipo de Consulta *",
+            "industry": "Industria *",
+            "scopeTitle": "Alcance del Proyecto",
+            "scopeSubtitle": "Cuéntanos sobre tu presupuesto, cronograma y requisitos",
+            "budget": "Rango de Presupuesto *",
+            "timeline": "Cronograma *",
+            "message": "Mensaje Detallado *",
+            "messagePlaceholder": "Describe tus requisitos específicos, objetivos o preguntas en detalle...",
+            "sentTitle": "¡Mensaje Enviado!",
+            "sentDesc": "¡Gracias por contactarnos! Hemos recibido tu consulta y nos pondremos en contacto contigo en 24 horas.",
+            "whatsNext": "¿Qué sucede ahora?",
+            "next1": "• Nuestro equipo revisará tu consulta",
+            "next2": "• Prepararemos una respuesta personalizada",
+            "next3": "• Espera recibir noticias nuestras en 24 horas",
+            "step": "Paso {{current}} de {{total}}",
+            "complete": "{{percent}}% Completado",
+            "prev": "Atrás",
+            "next": "Siguiente Paso",
+            "send": "Enviar Mensaje",
+            "aiTitle": "Asistente AI Guardian",
+            "aiSubtitle": "Obtén respuestas instantáneas sobre nuestros servicios mientras llenas el formulario",
+            "aiAvailable": "IA Disponible 24/7",
+            "aiResponses": "Respuestas Instantáneas"
         }
     }
 }
