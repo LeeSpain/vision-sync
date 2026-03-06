@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { 
-  LayoutDashboard, 
-  FolderOpen, 
-  Users, 
-  FileText, 
-  Settings, 
+import {
+  LayoutDashboard,
+  FolderOpen,
+  Users,
+  FileText,
+  Settings,
   Plus,
   BarChart3,
   Mail,
@@ -38,14 +38,14 @@ import { supabase } from "@/integrations/supabase/client"
 
 const mainItems = [
   { title: "Dashboard", url: "#overview", icon: LayoutDashboard },
+  { title: "Plans", url: "#plans", icon: FileText },
+  { title: "Modules", url: "#modules", icon: FolderOpen },
+  { title: "Solutions", url: "#solutions", icon: Building2 },
+  { title: "Page Sections", url: "#page-sections", icon: LayoutDashboard },
   { title: "Messages", url: "#messages", icon: Mail },
   { title: "AI Conversations", url: "#conversations", icon: MessageCircle },
-  { title: "Projects", url: "#projects", icon: FolderOpen },
-  { title: "Templates", url: "#templates", icon: FileText },
-  { title: "Industries", url: "#industries", icon: Building2 },
   { title: "Leads", url: "#leads", icon: Users },
   { title: "Sales Pipeline", url: "#sales-pipeline", icon: TrendingUp },
-  { title: "Content", url: "#content", icon: FileText },
   { title: "Analytics", url: "#analytics", icon: BarChart3 },
 ]
 
@@ -64,14 +64,14 @@ export function AdminSidebar() {
   const location = useLocation()
   const navigate = useNavigate()
   const hash = location.hash || "#overview"
-  
+
   const [aiSectionExpanded, setAiSectionExpanded] = useState(true)
-  
+
   const [projectStats, setProjectStats] = useState({
     totalProjects: 0,
     activeProjects: 0
   });
-  
+
   const [leadStats, setLeadStats] = useState({
     totalLeads: 0
   });
@@ -98,7 +98,7 @@ export function AdminSidebar() {
     try {
       const stats = await projectManager.getProjectStats();
       const activeCount = stats.publicProjects || 0;
-      
+
       setProjectStats({
         totalProjects: stats.totalProjects,
         activeProjects: activeCount
@@ -115,9 +115,9 @@ export function AdminSidebar() {
         .from('leads')
         .select('id', { count: 'exact', head: true })
         .neq('status', 'archived');
-      
+
       if (error) throw error;
-      
+
       setLeadStats({
         totalLeads: count || 0
       });
@@ -132,9 +132,9 @@ export function AdminSidebar() {
       const { count, error } = await supabase
         .from('ai_conversations')
         .select('id', { count: 'exact', head: true });
-      
+
       if (error) throw error;
-      
+
       setConversationStats({
         totalConversations: count || 0
       });
@@ -144,7 +144,7 @@ export function AdminSidebar() {
   };
 
   const isActive = (path: string) => hash === path
-  
+
   const handleNavigation = (section: string) => {
     const newHash = section.replace('#', '');
     navigate(`/admin#${newHash}`)
@@ -186,13 +186,12 @@ export function AdminSidebar() {
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <button 
+                    <button
                       onClick={() => handleNavigation(item.url)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                        isActive(item.url) 
-                          ? "bg-royal-purple text-white" 
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${isActive(item.url)
+                          ? "bg-royal-purple text-white"
                           : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center space-x-3">
                         <item.icon className="h-5 w-5" />
@@ -221,7 +220,7 @@ export function AdminSidebar() {
               {/* AI Agents Collapsible Section */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <button 
+                  <button
                     onClick={() => setAiSectionExpanded(!aiSectionExpanded)}
                     className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-indigo-500/10 text-purple-300 hover:from-purple-500/20 hover:to-indigo-500/20 transition-colors"
                   >
@@ -242,11 +241,10 @@ export function AdminSidebar() {
                   {aiAgentItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <button 
+                        <button
                           onClick={() => handleNavigation(item.url)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                            isActive(item.url) 
-                              ? item.theme === 'purple' 
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${isActive(item.url)
+                              ? item.theme === 'purple'
                                 ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
                                 : item.theme === 'amber'
                                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
@@ -254,22 +252,20 @@ export function AdminSidebar() {
                                     ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
                                     : 'bg-royal-purple text-white'
                               : 'text-slate-white/70 hover:bg-slate-white/10 hover:text-white'
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center space-x-3">
-                            <item.icon className={`h-4 w-4 ${
-                              item.theme === 'purple' ? 'text-purple-400' :
-                              item.theme === 'amber' ? 'text-amber-400' :
-                              item.theme === 'cyan' ? 'text-cyan-400' : 'text-slate-white/70'
-                            }`} />
+                            <item.icon className={`h-4 w-4 ${item.theme === 'purple' ? 'text-purple-400' :
+                                item.theme === 'amber' ? 'text-amber-400' :
+                                  item.theme === 'cyan' ? 'text-cyan-400' : 'text-slate-white/70'
+                              }`} />
                             <span>{item.title}</span>
                           </div>
                           {item.badge && (
-                            <Badge className={`text-xs ${
-                              item.theme === 'purple' ? 'bg-purple-500/30 text-purple-200 border-purple-400/30' :
-                              item.theme === 'amber' ? 'bg-amber-500/30 text-amber-200 border-amber-400/30' :
-                              item.theme === 'cyan' ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400/30' : ''
-                            }`}>
+                            <Badge className={`text-xs ${item.theme === 'purple' ? 'bg-purple-500/30 text-purple-200 border-purple-400/30' :
+                                item.theme === 'amber' ? 'bg-amber-500/30 text-amber-200 border-amber-400/30' :
+                                  item.theme === 'cyan' ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400/30' : ''
+                              }`}>
                               {item.badge}
                             </Badge>
                           )}
@@ -289,13 +285,12 @@ export function AdminSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <button 
+                <button
                   onClick={() => handleNavigation('#settings')}
-                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                    isActive("#settings") 
-                      ? "bg-royal-purple text-white" 
+                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${isActive("#settings")
+                      ? "bg-royal-purple text-white"
                       : "text-slate-white/80 hover:bg-slate-white/10 hover:text-white"
-                  }`}
+                    }`}
                 >
                   <Settings className="h-5 w-5" />
                   {!collapsed && <span>Settings</span>}

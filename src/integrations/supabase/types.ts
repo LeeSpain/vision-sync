@@ -14,6 +14,262 @@ export type Database = {
   }
   public: {
     Tables: {
+      plans: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          monthly_price: number | null
+          yearly_price: number | null
+          setup_fee: number | null
+          custom_price_label: string | null
+          description: string | null
+          features: Json | null
+          cta_label: string | null
+          cta_link: string | null
+          is_active: boolean | null
+          sort_order: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          monthly_price?: number | null
+          yearly_price?: number | null
+          setup_fee?: number | null
+          custom_price_label?: string | null
+          description?: string | null
+          features?: Json | null
+          cta_label?: string | null
+          cta_link?: string | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          monthly_price?: number | null
+          yearly_price?: number | null
+          setup_fee?: number | null
+          custom_price_label?: string | null
+          description?: string | null
+          features?: Json | null
+          cta_label?: string | null
+          cta_link?: string | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      modules: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          short_description: string | null
+          long_description: string | null
+          monthly_addon_price: number | null
+          setup_fee: number | null
+          features: Json | null
+          is_active: boolean | null
+          sort_order: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          short_description?: string | null
+          long_description?: string | null
+          monthly_addon_price?: number | null
+          setup_fee?: number | null
+          features?: Json | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          short_description?: string | null
+          long_description?: string | null
+          monthly_addon_price?: number | null
+          setup_fee?: number | null
+          features?: Json | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      solutions: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          summary: string | null
+          description: string | null
+          industries: Json | null
+          included_modules: Json | null
+          cta_label: string | null
+          cta_link: string | null
+          is_featured: boolean | null
+          is_active: boolean | null
+          sort_order: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          summary?: string | null
+          description?: string | null
+          industries?: Json | null
+          included_modules?: Json | null
+          cta_label?: string | null
+          cta_link?: string | null
+          is_featured?: boolean | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          summary?: string | null
+          description?: string | null
+          industries?: Json | null
+          included_modules?: Json | null
+          cta_label?: string | null
+          cta_link?: string | null
+          is_featured?: boolean | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      page_sections: {
+        Row: {
+          id: string
+          page_key: string
+          section_key: string
+          title: string | null
+          subtitle: string | null
+          content: string | null
+          cta_label: string | null
+          cta_link: string | null
+          image_url: string | null
+          is_active: boolean | null
+          sort_order: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          page_key: string
+          section_key: string
+          title?: string | null
+          subtitle?: string | null
+          content?: string | null
+          cta_label?: string | null
+          cta_link?: string | null
+          image_url?: string | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          page_key?: string
+          section_key?: string
+          title?: string | null
+          subtitle?: string | null
+          content?: string | null
+          cta_label?: string | null
+          cta_link?: string | null
+          image_url?: string | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          id: string
+          company_name: string
+          site_title: string | null
+          meta_title: string | null
+          meta_description: string | null
+          contact_email: string | null
+          phone: string | null
+          address: string | null
+          footer_text: string | null
+          primary_cta_label: string | null
+          primary_cta_link: string | null
+          secondary_cta_label: string | null
+          secondary_cta_link: string | null
+          social_links: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          company_name?: string
+          site_title?: string | null
+          meta_title?: string | null
+          meta_description?: string | null
+          contact_email?: string | null
+          phone?: string | null
+          address?: string | null
+          footer_text?: string | null
+          primary_cta_label?: string | null
+          primary_cta_link?: string | null
+          secondary_cta_label?: string | null
+          secondary_cta_link?: string | null
+          social_links?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          company_name?: string
+          site_title?: string | null
+          meta_title?: string | null
+          meta_description?: string | null
+          contact_email?: string | null
+          phone?: string | null
+          address?: string | null
+          footer_text?: string | null
+          primary_cta_label?: string | null
+          primary_cta_link?: string | null
+          secondary_cta_label?: string | null
+          secondary_cta_link?: string | null
+          social_links?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
       agent_conversations: {
         Row: {
           agent_id: string | null
@@ -866,6 +1122,7 @@ export type Database = {
         }
         Relationships: []
       }
+      // Deprecated: legacy table - kept for data retention
       projects: {
         Row: {
           billing_type: string | null
@@ -1081,7 +1338,8 @@ export type Database = {
           },
         ]
       }
-      site_settings: {
+      // Deprecated: legacy table - kept for data retention
+      legacy_site_settings: {
         Row: {
           id: string
           setting_key: string
@@ -1174,116 +1432,116 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+  ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
-    ? R
-    : never
+  ? R
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
-    : never
+    DefaultSchema["Views"])
+  ? (DefaultSchema["Tables"] &
+    DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+      Row: infer R
+    }
+  ? R
+  : never
+  : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
+    Insert: infer I
+  }
+  ? I
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
-    : never
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Insert: infer I
+  }
+  ? I
+  : never
+  : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
-    ? U
-    : never
+    Update: infer U
+  }
+  ? U
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Update: infer U
+  }
+  ? U
+  : never
+  : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Enums"]
+  | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+  : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["CompositeTypes"]
+  | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+  : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : never
 
 export const Constants = {
   public: {

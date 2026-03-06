@@ -20,6 +20,10 @@ import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import { WelcomeSection } from '@/components/admin/WelcomeSection';
 import { TodaySummary } from '@/components/admin/TodaySummary';
 import { SettingsManager } from '@/components/admin/SettingsManager';
+import { PlansManager } from '@/components/admin/PlansManager';
+import { ModulesManager } from '@/components/admin/ModulesManager';
+import { SolutionsManager } from '@/components/admin/SolutionsManager';
+import { PageSectionsManager } from '@/components/admin/PageSectionsManager';
 import AiAgentManager from '@/components/admin/AiAgentManager';
 import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
 import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
@@ -38,7 +42,7 @@ const Admin = () => {
   const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [realTimeMetrics, setRealTimeMetrics] = useState<any>(null);
-  
+
   // Get section from URL hash, default to 'overview'
   const activeSection = location.hash.replace('#', '') || 'overview';
 
@@ -66,15 +70,15 @@ const Admin = () => {
     const fetchRealTimeMetrics = async () => {
       try {
         const today = new Date().toISOString().split('T')[0];
-        
+
         // Use server-side counts and date filtering
         const [
-          conversationsCount, 
+          conversationsCount,
           conversationsToday,
           leadsCount,
           leadsToday,
-          templatesResult, 
-          projectsCount, 
+          templatesResult,
+          projectsCount,
           agentsResult
         ] = await Promise.all([
           supabase.from('ai_conversations').select('id', { count: 'exact', head: true }),
@@ -101,7 +105,7 @@ const Admin = () => {
     };
 
     fetchRealTimeMetrics();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchRealTimeMetrics, 30000);
     return () => clearInterval(interval);
@@ -141,14 +145,14 @@ const Admin = () => {
         return (
           <div className="space-y-6">
             {/* Welcome Section with Quick Actions */}
-            <WelcomeSection 
-              userEmail={user?.email} 
+            <WelcomeSection
+              userEmail={user?.email}
               userProfile={{ firstName: profile?.first_name, lastName: profile?.last_name }}
-              onRefresh={handleRefresh} 
+              onRefresh={handleRefresh}
             />
 
             {/* Today's Summary */}
-            <TodaySummary 
+            <TodaySummary
               metrics={{
                 leadsToday: realTimeMetrics?.leadsToday || 0,
                 conversationsToday: realTimeMetrics?.conversationsToday || 0,
@@ -168,7 +172,7 @@ const Admin = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Action Queue - Takes 1 column */}
                 <ActionQueue />
-                
+
                 {/* Recent Activity - Takes 2 columns */}
                 <div className="lg:col-span-2">
                   <RecentActivity key={refreshKey} />
@@ -251,44 +255,44 @@ const Admin = () => {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Lead Sources Chart */}
-                <LeadSourceChart 
-                  sourceBreakdown={dashboardStats?.sourceBreakdown} 
+                <LeadSourceChart
+                  sourceBreakdown={dashboardStats?.sourceBreakdown}
                   loading={!dashboardStats}
                 />
-                
+
                 {/* Project Performance */}
                 <Card className="bg-gradient-card shadow-card">
                   <CardHeader>
                     <CardTitle className="font-heading">Project Performance</CardTitle>
                   </CardHeader>
                   <CardContent>
-                     <div className="space-y-4">
-                       <div className="flex justify-between items-center">
-                         <span className="text-cool-gray">Total Projects</span>
-                         <span className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.totalProjects || 0}</span>
-                       </div>
-                       <div className="space-y-2">
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Live:</span>
-                           <span className="text-emerald-green font-medium">0</span>
-                         </div>
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Development:</span>
-                           <span className="text-electric-blue font-medium">{realTimeMetrics?.totalProjects || 0}</span>
-                         </div>
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Pipeline Value:</span>
-                           <span className="text-royal-purple font-medium">€{dashboardStats?.totalPipeline?.toLocaleString() || '0'}</span>
-                         </div>
-                       </div>
-                       <div className="pt-3 border-t border-soft-lilac/30">
-                         <div className="text-sm text-cool-gray mb-2">Recent Activity</div>
-                         <div className="text-xs text-midnight-navy">+{realTimeMetrics?.leadsToday || 0} leads today</div>
-                       </div>
-                     </div>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-cool-gray">Total Projects</span>
+                        <span className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.totalProjects || 0}</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Live:</span>
+                          <span className="text-emerald-green font-medium">0</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Development:</span>
+                          <span className="text-electric-blue font-medium">{realTimeMetrics?.totalProjects || 0}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Pipeline Value:</span>
+                          <span className="text-royal-purple font-medium">€{dashboardStats?.totalPipeline?.toLocaleString() || '0'}</span>
+                        </div>
+                      </div>
+                      <div className="pt-3 border-t border-soft-lilac/30">
+                        <div className="text-sm text-cool-gray mb-2">Recent Activity</div>
+                        <div className="text-xs text-midnight-navy">+{realTimeMetrics?.leadsToday || 0} leads today</div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
-                
+
                 {/* AI Agent Performance */}
                 <Card className="bg-gradient-card shadow-card">
                   <CardHeader>
@@ -296,24 +300,24 @@ const Admin = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                       <div className="space-y-2">
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Active Agents:</span>
-                           <span className="font-medium">{realTimeMetrics?.activeAgents || 0}</span>
-                         </div>
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Total Interactions:</span>
-                           <span className="font-medium">{realTimeMetrics?.totalConversations || 0}</span>
-                         </div>
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Lead Generation:</span>
-                           <span className="text-emerald-green font-medium">{realTimeMetrics?.totalLeads && realTimeMetrics?.totalConversations ? `${Math.round((realTimeMetrics.totalLeads / realTimeMetrics.totalConversations) * 100)}%` : '0%'}</span>
-                         </div>
-                         <div className="flex justify-between text-sm">
-                           <span className="text-cool-gray">Today's Conversations:</span>
-                           <span className="text-royal-purple font-medium">+{realTimeMetrics?.conversationsToday || 0}</span>
-                         </div>
-                       </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Active Agents:</span>
+                          <span className="font-medium">{realTimeMetrics?.activeAgents || 0}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Total Interactions:</span>
+                          <span className="font-medium">{realTimeMetrics?.totalConversations || 0}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Lead Generation:</span>
+                          <span className="text-emerald-green font-medium">{realTimeMetrics?.totalLeads && realTimeMetrics?.totalConversations ? `${Math.round((realTimeMetrics.totalLeads / realTimeMetrics.totalConversations) * 100)}%` : '0%'}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-cool-gray">Today's Conversations:</span>
+                          <span className="text-royal-purple font-medium">+{realTimeMetrics?.conversationsToday || 0}</span>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -347,7 +351,7 @@ const Admin = () => {
                           <div className="text-sm text-cool-gray">Conversion Rate</div>
                         </div>
                       </div>
-                      
+
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-cool-gray">Investment Pipeline:</span>
@@ -384,7 +388,7 @@ const Admin = () => {
                           </p>
                         </div>
                       )}
-                      
+
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm">
                           <span className="text-cool-gray">Avg Leads/Day:</span>
@@ -430,6 +434,18 @@ const Admin = () => {
       case 'industries':
         return <IndustryManager />;
 
+      case 'plans':
+        return <PlansManager />;
+
+      case 'modules':
+        return <ModulesManager />;
+
+      case 'solutions':
+        return <SolutionsManager />;
+
+      case 'page-sections':
+        return <PageSectionsManager />;
+
       case 'leads':
         return <LeadsManager />;
 
@@ -456,8 +472,8 @@ const Admin = () => {
 
       case 'settings':
         return (
-          <SettingsManager 
-            userId={user?.id || ''} 
+          <SettingsManager
+            userId={user?.id || ''}
             userEmail={user?.email}
             onProfileUpdate={refreshProfile}
           />

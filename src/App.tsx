@@ -9,19 +9,15 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
 import { analytics } from "@/utils/analytics";
 import Index from "./pages/Index";
-import Templates from "./pages/Templates";
-import TemplateFinder from "./pages/TemplateFinder";
-import TemplateRecommendations from "./pages/TemplateRecommendations";
-import TemplatePreview from "./pages/TemplatePreview";
+import Platform from "./pages/Platform";
+import Solutions from "./pages/Solutions";
+import Modules from "./pages/Modules";
+import Pricing from "./pages/Pricing";
 import DynamicProjectPage from "./components/DynamicProjectPage";
 import Admin from "./pages/Admin";
 import AuthPage from "./pages/AuthPage";
 import { AdminRoute } from "./components/AdminRoute";
-import AiAgents from "./pages/AiAgents";
-import AiAgentQuestionnaire from "./pages/AiAgentQuestionnaire";
 import Contact from "./pages/Contact";
-import CustomBuilds from "./pages/CustomBuilds";
-
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,10 +32,11 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/templates" element={<Templates />} />
-            <Route path="/template-finder" element={<TemplateFinder />} />
-            <Route path="/template-recommendations" element={<TemplateRecommendations />} />
-            <Route path="/template-preview/:id" element={<TemplatePreview />} />
+            <Route path="/platform" element={<Platform />} />
+            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/modules" element={<Modules />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/contact" element={<Contact />} />
 
             {/* CRITICAL: Static admin and system pages MUST come before dynamic routes */}
             <Route path="/admin" element={
@@ -53,21 +50,6 @@ const App = () => (
               </AdminRoute>
             } />
             <Route path="/auth" element={<AuthPage />} />
-            <Route path="/ai-agents" element={<AiAgents />} />
-            <Route path="/ai-agent-questionnaire" element={<AiAgentQuestionnaire />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/custom-builds" element={<CustomBuilds />} />
-            {/* Specific known project routes */}
-            <Route path="/global-health-sync" element={<DynamicProjectPage />} />
-            <Route path="/nurse-sync" element={<DynamicProjectPage />} />
-            <Route path="/conneqt-central" element={<DynamicProjectPage />} />
-            <Route path="/ice-sos-lite" element={<DynamicProjectPage />} />
-            <Route path="/puppy-rescue-spain" element={<DynamicProjectPage />} />
-            <Route path="/wakeman-capital" element={<DynamicProjectPage />} />
-            <Route path="/ai-spain-homes" element={<DynamicProjectPage />} />
-            <Route path="/tether-band" element={<DynamicProjectPage />} />
-            <Route path="/for-investors" element={<DynamicProjectPage />} />
-            <Route path="/for-sale" element={<DynamicProjectPage />} />
 
             {/* Catch-all dynamic route for any other project URLs - MUST be last */}
             <Route path="/:projectRoute" element={<DynamicProjectPage />} />

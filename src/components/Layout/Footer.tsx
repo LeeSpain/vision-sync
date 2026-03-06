@@ -31,7 +31,7 @@ const Footer = () => {
               <span className="text-xl font-heading font-bold">Vision-Sync</span>
             </div>
             <p className="text-slate-white/80 mb-6 max-w-md">
-              "Build. Showcase. Sell. Invest. Sync your vision with the future."
+              "Design. Automate. Scale. Sync your vision with the future."
             </p>
             <div className="flex space-x-4">
               <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
@@ -54,18 +54,23 @@ const Footer = () => {
             <h3 className="font-heading font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/for-investors" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  For Investors
+                <Link to="/platform" className="text-slate-white/80 hover:text-slate-white transition-colors">
+                  Platform
                 </Link>
               </li>
               <li>
-                <Link to="/for-sale" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  For Sale
+                <Link to="/solutions" className="text-slate-white/80 hover:text-slate-white transition-colors">
+                  Solutions
                 </Link>
               </li>
               <li>
-                <Link to="/custom-builds" className="text-slate-white/80 hover:text-slate-white transition-colors">
-                  Custom Builds
+                <Link to="/modules" className="text-slate-white/80 hover:text-slate-white transition-colors">
+                  Modules
+                </Link>
+              </li>
+              <li>
+                <Link to="/pricing" className="text-slate-white/80 hover:text-slate-white transition-colors">
+                  Pricing
                 </Link>
               </li>
             </ul>
@@ -75,7 +80,7 @@ const Footer = () => {
           <div>
             <h3 className="font-heading font-semibold mb-4">Stay Updated</h3>
             <p className="text-slate-white/80 text-sm mb-4">
-              Get notified about new projects and opportunities.
+              Get notified about new AI modules and platform updates.
             </p>
             <form onSubmit={handleSubscribe} className="flex space-x-2">
               <Input

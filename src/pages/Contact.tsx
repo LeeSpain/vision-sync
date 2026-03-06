@@ -42,12 +42,12 @@ const Contact = () => {
   });
 
   const inquiryTypes = [
-    'AI Agent Development', 'Platform Purchase', 'Custom Development', 
-    'Investment Opportunity', 'Partnership', 'General Inquiry'
+    'AI Agent Development', 'Enterprise AI Automation', 'Module Integration',
+    'Demo Request', 'Partnership', 'General Inquiry'
   ];
 
   const industries = [
-    'Healthcare', 'Real Estate', 'Finance', 'E-commerce', 'Manufacturing', 
+    'Healthcare', 'Real Estate', 'Finance', 'E-commerce', 'Manufacturing',
     'Education', 'Technology', 'Marketing', 'Legal', 'Other'
   ];
 
@@ -76,7 +76,7 @@ const Contact = () => {
           message: formData.message
         }
       });
-      
+
       setCurrentStep(4); // Success step
     } catch (error) {
       console.error('Error submitting contact form:', error);
@@ -107,7 +107,7 @@ const Contact = () => {
               </h2>
               <p className="text-cool-gray">Tell us about yourself and your organization</p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
@@ -119,7 +119,7 @@ const Contact = () => {
                   placeholder="Your full name"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
                   Email Address *
@@ -131,7 +131,7 @@ const Contact = () => {
                   placeholder="your.email@company.com"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
                   Phone Number *
@@ -143,7 +143,7 @@ const Contact = () => {
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
                   Company Name *
@@ -167,7 +167,7 @@ const Contact = () => {
               </h2>
               <p className="text-cool-gray">Help us understand what you're looking for</p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
@@ -179,18 +179,17 @@ const Contact = () => {
                       key={type}
                       type="button"
                       onClick={() => handleInputChange('inquiryType', type)}
-                      className={`p-3 text-sm rounded-lg border transition-all ${
-                        formData.inquiryType === type
+                      className={`p-3 text-sm rounded-lg border transition-all ${formData.inquiryType === type
                           ? 'bg-gradient-primary text-white border-royal-purple'
                           : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
-                      }`}
+                        }`}
                     >
                       {type}
                     </button>
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
                   Industry *
@@ -201,11 +200,10 @@ const Contact = () => {
                       key={industry}
                       type="button"
                       onClick={() => handleInputChange('industry', industry)}
-                      className={`p-3 text-sm rounded-lg border transition-all ${
-                        formData.industry === industry
+                      className={`p-3 text-sm rounded-lg border transition-all ${formData.industry === industry
                           ? 'bg-gradient-primary text-white border-royal-purple'
                           : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
-                      }`}
+                        }`}
                     >
                       {industry}
                     </button>
@@ -225,7 +223,7 @@ const Contact = () => {
               </h2>
               <p className="text-cool-gray">Tell us about your budget, timeline, and requirements</p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
@@ -237,18 +235,17 @@ const Contact = () => {
                       key={budget}
                       type="button"
                       onClick={() => handleInputChange('budget', budget)}
-                      className={`p-3 text-sm rounded-lg border transition-all ${
-                        formData.budget === budget
+                      className={`p-3 text-sm rounded-lg border transition-all ${formData.budget === budget
                           ? 'bg-gradient-primary text-white border-royal-purple'
                           : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
-                      }`}
+                        }`}
                     >
                       {budget}
                     </button>
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
                   Timeline *
@@ -259,18 +256,17 @@ const Contact = () => {
                       key={timeline}
                       type="button"
                       onClick={() => handleInputChange('timeline', timeline)}
-                      className={`p-3 text-sm rounded-lg border transition-all ${
-                        formData.timeline === timeline
+                      className={`p-3 text-sm rounded-lg border transition-all ${formData.timeline === timeline
                           ? 'bg-gradient-primary text-white border-royal-purple'
                           : 'bg-white text-midnight-navy border-soft-lilac/20 hover:border-royal-purple/40'
-                      }`}
+                        }`}
                     >
                       {timeline}
                     </button>
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-midnight-navy mb-2">
                   Detailed Message *
@@ -322,20 +318,20 @@ const Contact = () => {
         title="Contact Vision-Sync Forge | Get Your Free Consultation"
         description="Get in touch with Vision-Sync Forge for custom software development, AI solutions, and app templates. Free consultation and personalized recommendations."
         keywords="contact, consultation, software development inquiry, custom software quote, AI solutions contact"
-        canonical="https://vision-sync-forge.lovable.app/contact"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/contact.jpg"
+        canonical="https://vision-sync.com/contact"
+        ogImage="https://vision-sync.com/og-images/contact.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
-            name: "Contact Vision-Sync Forge",
+            name: "Contact Vision-Sync",
             description: "Get in touch for custom software development and AI solutions",
-            url: "https://vision-sync-forge.lovable.app/contact"
+            url: "https://vision-sync.com/contact"
           }),
           generateFAQSchema(contactFAQs)
         ]}
       />
       <Header />
-      
+
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-hero">
         <div className="max-w-7xl mx-auto text-center">
@@ -369,7 +365,7 @@ const Contact = () => {
                     </span>
                   </div>
                   <div className="w-full bg-soft-lilac/20 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-gradient-primary h-2 rounded-full transition-all duration-300"
                       style={{ width: `${(currentStep / 3) * 100}%` }}
                     ></div>
@@ -381,20 +377,20 @@ const Contact = () => {
                 <div className="flex-1">
                   {renderStep()}
                 </div>
-                
+
                 {/* Navigation Buttons */}
                 {currentStep < 4 && (
                   <div className="flex justify-between mt-8 pt-6 border-t border-soft-lilac/20">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
                       disabled={currentStep === 1}
                     >
                       Previous
                     </Button>
-                    
+
                     {currentStep < 3 ? (
-                      <Button 
+                      <Button
                         variant="hero"
                         onClick={() => setCurrentStep(currentStep + 1)}
                         disabled={!isStepComplete(currentStep)}
@@ -403,7 +399,7 @@ const Contact = () => {
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     ) : (
-                      <Button 
+                      <Button
                         variant="hero"
                         onClick={handleSubmit}
                         disabled={!isStepComplete(currentStep)}
@@ -431,12 +427,12 @@ const Contact = () => {
                     Get instant answers about our services while you fill out the form
                   </p>
                 </div>
-                
+
                 {/* Embedded AI Guardian Chat */}
                 <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 flex-1 min-h-[500px] max-h-[600px] overflow-hidden flex">
                   <AiChatWidget embedded={true} />
                 </div>
-                
+
                 <div className="mt-6 text-center">
                   <div className="flex items-center justify-center gap-4 text-sm text-white/70">
                     <div className="flex items-center gap-1">

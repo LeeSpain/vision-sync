@@ -15,9 +15,11 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   const navigation = [
-    { name: 'Templates', href: '/templates' },
-    { name: 'Contact Us', href: '/contact' },
-    { name: 'Meet Your AI Agent', href: '/ai-agents' },
+    { name: 'Platform', href: '/platform' },
+    { name: 'Solutions', href: '/solutions' },
+    { name: 'Modules', href: '/modules' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   return (
@@ -33,7 +35,7 @@ const Header = () => {
               Vision-Sync
             </span>
           </Link>
-          
+
           {/* Chat Button - next to logo */}
           <HeaderChatButton onClick={() => setIsChatOpen(true)} />
 
@@ -43,11 +45,10 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-royal-purple ${
-                  location.pathname === item.href
+                className={`text-sm font-medium transition-colors hover:text-royal-purple ${location.pathname === item.href
                     ? 'text-royal-purple'
                     : 'text-midnight-navy/80'
-                }`}
+                  }`}
               >
                 {item.name}
               </Link>
@@ -132,12 +133,12 @@ const Header = () => {
           </div>
         )}
       </nav>
-      
+
       {/* Chat Widget - only renders when open */}
       {isChatOpen && (
-        <AiChatWidget 
-          isMinimized={false} 
-          onToggleMinimize={() => setIsChatOpen(false)} 
+        <AiChatWidget
+          isMinimized={false}
+          onToggleMinimize={() => setIsChatOpen(false)}
         />
       )}
     </header>
