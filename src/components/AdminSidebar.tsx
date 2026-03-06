@@ -65,7 +65,6 @@ export function AdminSidebar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const hash = location.hash || "#overview"
 
   const [aiSectionExpanded, setAiSectionExpanded] = useState(true)
