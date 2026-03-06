@@ -186,14 +186,43 @@ export default function Index() {
                 </Button>
               </div>
             </div>
-            <div className="relative z-10">
-              <div className="aspect-video lg:aspect-square bg-slate-900/50 rounded-2xl border border-white/10 p-6 flex flex-col justify-center items-center shadow-2xl overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/20 to-royal-purple/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <Bot className="h-24 w-24 text-electric-blue mb-6 group-hover:scale-110 transition-transform duration-500" />
-                <h4 className="text-2xl font-bold mb-2">Standalone or Integrated</h4>
-                <p className="text-center text-white/70 max-w-sm">
-                  Run AI Sales Sync as its own powerful platform, or plug it directly into your Vision-Sync operations as a core revenue module.
-                </p>
+            <div className="relative z-10 lg:h-full">
+              <div className="h-full bg-slate-900/50 rounded-2xl border border-white/10 p-8 shadow-2xl overflow-hidden group relative flex flex-col justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                <h4 className="text-2xl font-bold mb-8 text-white">The Automated AI Funnel</h4>
+
+                <div className="space-y-0 relative">
+                  {[
+                    { number: 1, title: 'Find', desc: 'Discover leads' },
+                    { number: 2, title: 'Outreach', desc: 'Send messages' },
+                    { number: 3, title: 'Calls', desc: 'AI conversations' },
+                    { number: 4, title: 'Proposals', desc: 'Generate docs' },
+                    { number: 5, title: 'Close', desc: 'Win the deal', isLast: true }
+                  ].map((step) => (
+                    <div key={step.number} className="flex gap-5 relative">
+                      {/* Vertical line connector */}
+                      {!step.isLast && (
+                        <div className="absolute left-[15px] top-[32px] bottom-[-8px] w-px bg-white/10"></div>
+                      )}
+
+                      <div className="relative z-10 flex flex-col items-center shrink-0">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-transform duration-300 group-hover:scale-110 ${step.isLast
+                            ? 'bg-emerald-green/20 border border-emerald-green text-emerald-green shadow-emerald-green/20'
+                            : 'bg-electric-blue/10 border border-electric-blue/50 text-electric-blue shadow-electric-blue/10'
+                          }`}>
+                          {step.number}
+                        </div>
+                      </div>
+
+                      <div className={step.isLast ? 'pt-1' : 'pb-8 pt-1'}>
+                        <h5 className="font-bold text-lg text-white leading-none mb-1">{step.title}</h5>
+                        <p className="text-white/60 text-sm">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
               </div>
             </div>
           </div>
