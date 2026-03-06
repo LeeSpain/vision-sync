@@ -1,126 +1,92 @@
-import { useEffect, useState } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, Layers, Cpu, Network, ShieldCheck, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { Layers, Zap, Shield, Database, Cpu, ArrowRight } from 'lucide-react';
 
 export default function Platform() {
-    const [sections, setSections] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchSections = async () => {
-            const { data, error } = await supabase
-                .from('page_sections')
-                .select('*')
-                .eq('page_key', 'platform')
-                .eq('is_active', true)
-                .order('sort_order', { ascending: true });
-
-            if (data) {
-                setSections(data);
-            }
-            setLoading(false);
-        };
-
-        fetchSections();
-    }, []);
-
-    const getSection = (key: string) => sections.find(s => s.section_key === key);
-
-    const heroSection = getSection('hero-area') || {
-        title: 'The Vision-Sync Platform Architecture',
-        content: 'An enterprise-grade orchestration layer that connects disparate business systems through intelligent AI agents. Designed for scalability, security, and seamless integration.'
-    };
-
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 font-sans cursor-default">
+        <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
             <Header />
             <main className="flex-grow pt-32 pb-24">
-                {/* Dynamic Hero Section */}
-                <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-20 text-center max-w-4xl">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-midnight-navy mb-6 leading-tight">
-                        {heroSection.title}
-                    </h1>
-                    <p className="text-lg md:text-xl text-cool-gray">
-                        {heroSection.content}
-                    </p>
-                </section>
-
-                {/* Architecture Visualization */}
-                <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-24 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-electric-blue/5 to-transparent rounded-3xl -z-10 mt-20"></div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 max-w-6xl mx-auto">
-                        {/* Layer 1 */}
-                        <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm transform transition duration-500 hover:-translate-y-2">
-                            <CardContent className="p-8 text-center flex flex-col items-center">
-                                <div className="w-16 h-16 bg-electric-blue/10 rounded-2xl flex items-center justify-center mb-6 text-electric-blue">
-                                    <Layers className="h-8 w-8" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-midnight-navy mb-3">Core Application Layer</h3>
-                                <p className="text-cool-gray leading-relaxed">
-                                    Your foundational business software and databases. We integrate seamlessly with your existing tech stack, whether legacy or modern.
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        {/* Layer 2 */}
-                        <Card className="border-2 border-emerald-green/20 shadow-2xl bg-white transform md:-translate-y-8 transition duration-500 hover:-translate-y-10 relative">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-green text-white px-4 py-1 rounded-full text-sm font-semibold tracking-wide flex items-center shadow-lg">
-                                <Zap className="w-4 h-4 mr-1" /> VISION-SYNC ENGINE
-                            </div>
-                            <CardContent className="p-8 text-center flex flex-col items-center pt-10">
-                                <div className="w-20 h-20 bg-gradient-to-br from-emerald-green to-teal-500 rounded-2xl flex items-center justify-center mb-6 text-white shadow-inner">
-                                    <Cpu className="h-10 w-10" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-midnight-navy mb-3">Orchestration & AI</h3>
-                                <p className="text-cool-gray leading-relaxed">
-                                    The central nervous system. Our proprietary routers direct requests to the appropriate AI modules, maintaining context, security, and state.
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        {/* Layer 3 */}
-                        <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm transform transition duration-500 hover:-translate-y-2">
-                            <CardContent className="p-8 text-center flex flex-col items-center">
-                                <div className="w-16 h-16 bg-royal-purple/10 rounded-2xl flex items-center justify-center mb-6 text-royal-purple">
-                                    <Network className="h-8 w-8" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-midnight-navy mb-3">Automation Endpoints</h3>
-                                <p className="text-cool-gray leading-relaxed">
-                                    The outputs. From automated customer support emails to CRM data entry and real-time dashboard analytics.
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </section>
-
-                {/* Dynamic Sections Loop */}
-                <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-                    {loading ? (
-                        <div className="flex justify-center items-center py-20">
-                            <Loader2 className="h-8 w-8 animate-spin text-electric-blue" />
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Hero Section */}
+                    <div className="text-center max-w-4xl mx-auto mb-20 animate-fade-in">
+                        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-midnight-navy mb-6 leading-tight">
+                            Meet Your New Digital Team
+                        </h1>
+                        <p className="text-xl text-slate-600 mb-10 max-w-3xl mx-auto">
+                            Vision-Sync makes Artificial Intelligence accessible, safe, and easy to use. Think of us as your digital workforce that never sleeps—ready to help with repetitive tasks so your human team can focus on what they do best.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Button asChild size="lg" className="bg-electric-blue hover:bg-electric-blue/90 text-white rounded-full px-8">
+                                <Link to="/solutions">Explore Solutions</Link>
+                            </Button>
+                            <Button asChild size="lg" variant="outline" className="rounded-full px-8 text-midnight-navy border-slate-300 hover:bg-slate-100">
+                                <Link to="/contact">Request a Demo <ArrowRight className="h-4 w-4 ml-2" /></Link>
+                            </Button>
                         </div>
-                    ) : (
-                        sections.filter(s => s.section_key !== 'hero-area').map((sec) => (
-                            <div key={sec.id} className="mb-20 bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                                <div className="flex items-center mb-6">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mr-4 border border-slate-100">
-                                        <ShieldCheck className="h-6 w-6 text-midnight-navy" />
-                                    </div>
-                                    <h2 className="text-3xl font-bold text-midnight-navy">{sec.title}</h2>
-                                </div>
-                                <div className="prose prose-lg prose-slate max-w-none text-cool-gray">
-                                    {sec.content?.split('\n').map((paragraph: string, i: number) => (
-                                        <p key={i}>{paragraph}</p>
-                                    ))}
-                                </div>
+                    </div>
+
+                    {/* Architecture Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto mt-24">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-royal-purple/30 transition-colors">
+                            <div className="h-12 w-12 bg-royal-purple/10 rounded-xl flex items-center justify-center mb-6">
+                                <Cpu className="h-6 w-6 text-royal-purple" />
                             </div>
-                        ))
-                    )}
-                </section>
+                            <h3 className="text-2xl font-bold text-midnight-navy mb-4">Smart, Friendly AI Helpers</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                Deploy virtual assistants that actually learn your business. Unlike frustrating, robotic chatbots, our AI helpers can understand context, hold natural conversations, and complete real tasks for you.
+                            </p>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-emerald-green/30 transition-colors">
+                            <div className="h-12 w-12 bg-emerald-green/10 rounded-xl flex items-center justify-center mb-6">
+                                <Database className="h-6 w-6 text-emerald-green" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-midnight-navy mb-4">Connects Safely to Your Tools</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                Don't worry about migrating your data. Vision-Sync securely plugs into the software you already use every day. We keep your information private, encrypted, and completely secure.
+                            </p>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-electric-blue/30 transition-colors">
+                            <div className="h-12 w-12 bg-electric-blue/10 rounded-xl flex items-center justify-center mb-6">
+                                <Zap className="h-6 w-6 text-electric-blue" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-midnight-navy mb-4">Automates the Boring Stuff</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                Say goodbye to tedious manual data entry. Our platform can automatically handle routine chores—like sorting new leads, organizing emails, or answering common customer questions—while you sleep.
+                            </p>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-coral-orange/30 transition-colors">
+                            <div className="h-12 w-12 bg-coral-orange/10 rounded-xl flex items-center justify-center mb-6">
+                                <Shield className="h-6 w-6 text-coral-orange" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-midnight-navy mb-4">You're Always in Control</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                No rogue AI here. Every single action our digital assistants take can be set to require your human approval first. You have complete visibility and you always hold the keys.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Modular Add-ons Banner */}
+                    <div className="mt-32 bg-gradient-to-br from-midnight-navy to-royal-purple rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-8 opacity-10">
+                            <Layers className="h-64 w-64" />
+                        </div>
+                        <div className="relative z-10 max-w-3xl mx-auto">
+                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Grow at Your Own Pace</h2>
+                            <p className="text-lg text-slate-300 mb-8">
+                                Start simple with just one smart AI assistant. As you become more comfortable, you can easily add more skills and capabilities from our growing library.
+                            </p>
+                            <Button asChild size="lg" className="bg-white text-midnight-navy hover:bg-slate-100">
+                                <Link to="/modules">Browse AI Skills</Link>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             </main>
             <Footer />
         </div>

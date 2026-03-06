@@ -4,7 +4,7 @@ import Footer from '@/components/Layout/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
+import { Loader2, ArrowRight, Layers, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Modules() {
@@ -13,49 +13,18 @@ export default function Modules() {
 
     useEffect(() => {
         const fetchModules = async () => {
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from('modules')
                 .select('*')
                 .eq('is_active', true)
                 .order('sort_order', { ascending: true });
 
-            if (data) {
-                setModules(data);
-            }
+            if (data) setModules(data);
             setLoading(false);
         };
 
         fetchModules();
     }, []);
-
-    const fallbackModules = [
-        {
-            id: 'fallback-m1',
-            name: 'Sales Automation',
-            short_description: 'Intelligent lead generation and automated pipeline management.',
-            long_description: 'Our Sales Automation module integrates with your CRM to automatically categorize, score, and route leads based on predictive behavior analytics.',
-            monthly_addon_price: 299,
-            features: ['Automated Lead Scoring', 'Pipeline Routing', 'Behavioral Triggers'],
-        },
-        {
-            id: 'fallback-m2',
-            name: 'Agentic Support',
-            short_description: 'Deploy 24/7 AI agents that seamlessly integrate into your knowledge bases.',
-            long_description: 'Train your custom agent on your helpdesk articles and internal wikis. Resolves up to 70% of tier-1 support tickets autonomously with human-like accuracy.',
-            monthly_addon_price: 499,
-            features: ['RAG Knowledge Integration', 'Multi-channel Deployment', 'Human Handoff Protocol'],
-        },
-        {
-            id: 'fallback-m3',
-            name: 'Vision CRM Sync',
-            short_description: 'Bi-directional data synchronization across all your business tools.',
-            long_description: 'Maintain a single source of truth. Vision CRM Sync ensures your sales, support, and marketing platforms share unified, real-time customer states.',
-            monthly_addon_price: 199,
-            features: ['Real-time Bi-directional Sync', 'Conflict Resolution', 'Custom Field Mapping'],
-        }
-    ];
-
-    const displayModules = modules.length > 0 ? modules : fallbackModules;
 
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
@@ -63,11 +32,14 @@ export default function Modules() {
             <main className="flex-grow pt-32 pb-24">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
+                        <div className="inline-flex items-center justify-center p-3 bg-emerald-green/10 rounded-2xl mb-6">
+                            <Layers className="h-6 w-6 text-emerald-green" />
+                        </div>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-midnight-navy mb-6">
-                            Platform Modules
+                            Pick Your AI Superpowers
                         </h1>
                         <p className="text-lg text-cool-gray">
-                            Composable AI infrastructure. Select individual modules to enhance your existing stack or combine them for a complete Vision-Sync automation engine.
+                            Add new skills to your business just like installing apps on your phone. Browse our library of ready-to-use AI helpers.
                         </p>
                     </div>
 
@@ -75,50 +47,68 @@ export default function Modules() {
                         <div className="flex justify-center items-center py-20">
                             <Loader2 className="h-10 w-10 animate-spin text-emerald-green" />
                         </div>
+                    ) : modules.length === 0 ? (
+                        <div className="text-center text-cool-gray py-20 bg-white rounded-xl shadow-sm border border-slate-100">
+                            <p className="text-lg font-medium">New skills are being added!</p>
+                            <p className="text-sm mt-2">We're currently training our AI on more helpful tasks. Check back soon.</p>
+                        </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {displayModules.map((mod) => (
-                                <Card key={mod.id} className="flex flex-col h-full border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 bg-white relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-green/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-                                    <CardHeader>
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="p-3 bg-emerald-green/10 rounded-xl text-emerald-green">
-                                                <Zap className="h-6 w-6" />
-                                            </div>
-                                            {mod.monthly_addon_price !== null && (
-                                                <div className="text-right">
-                                                    <span className="text-2xl font-bold text-midnight-navy">${mod.monthly_addon_price}</span>
-                                                    <span className="text-sm text-cool-gray">/mo</span>
-                                                </div>
+                        <div className="space-y-8 max-w-5xl mx-auto">
+                            {modules.map((mod) => (
+                                <Card key={mod.id} className="flex flex-col md:flex-row overflow-hidden bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="md:w-2/3 p-6 md:p-8 flex flex-col justify-center">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <h3 className="text-2xl font-bold text-midnight-navy">{mod.name}</h3>
+                                            {mod.monthly_addon_price === null && (
+                                                <span className="px-2.5 py-1 bg-cool-gray/10 text-cool-gray text-xs font-semibold rounded-full uppercase tracking-wider">
+                                                    Core Feature
+                                                </span>
                                             )}
                                         </div>
-                                        <CardTitle className="text-xl text-midnight-navy">{mod.name}</CardTitle>
-                                        <CardDescription className="text-sm mt-2">
+                                        <p className="text-lg text-emerald-green font-medium mb-4">
                                             {mod.short_description}
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="flex-grow">
-                                        {mod.long_description && (
-                                            <p className="text-sm text-slate-600 mb-6">{mod.long_description}</p>
-                                        )}
+                                        </p>
+                                        <p className="text-slate-600 mb-6 line-clamp-3">
+                                            {mod.long_description || "Add this specific skill to your AI assistant to handle this task completely automatically."}
+                                        </p>
+
                                         {Array.isArray(mod.features) && mod.features.length > 0 && (
-                                            <ul className="space-y-2 mt-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-auto">
                                                 {mod.features.map((feat: string, idx: number) => (
-                                                    <li key={idx} className="flex items-start text-sm text-slate-700">
-                                                        <CheckCircle2 className="h-4 w-4 text-emerald-green mr-2 mt-0.5 shrink-0" />
+                                                    <div key={idx} className="flex items-start text-sm text-slate-700">
+                                                        <CheckCircle2 className="h-4 w-4 mr-2 mt-0.5 text-emerald-green shrink-0" />
                                                         <span>{feat}</span>
-                                                    </li>
+                                                    </div>
                                                 ))}
-                                            </ul>
+                                            </div>
                                         )}
-                                    </CardContent>
-                                    <CardFooter className="pt-4 pb-6 px-6">
-                                        <Button asChild variant="outline" className="w-full border-emerald-green text-emerald-green hover:bg-emerald-green hover:text-white transition-colors">
+                                    </div>
+                                    <div className="md:w-1/3 bg-slate-50 border-t md:border-t-0 md:border-l border-slate-100 p-6 md:p-8 flex flex-col justify-center items-center text-center">
+                                        {mod.monthly_addon_price !== null ? (
+                                            <div className="mb-6">
+                                                <span className="text-sm font-semibold text-cool-gray uppercase tracking-wide">Add-on Price</span>
+                                                <div className="mt-2 flex items-baseline justify-center text-midnight-navy">
+                                                    <span className="text-4xl font-extrabold tracking-tight">${mod.monthly_addon_price}</span>
+                                                    <span className="text-xl font-medium text-cool-gray ml-1">/mo</span>
+                                                </div>
+                                                {mod.setup_fee && (
+                                                    <p className="text-xs text-slate-500 mt-2">+ ${mod.setup_fee} implementation</p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="mb-6">
+                                                <div className="text-2xl font-bold text-midnight-navy">Included</div>
+                                                <p className="text-sm text-slate-500 mt-1">Available on all paid plans</p>
+                                            </div>
+                                        )}
+
+                                        <Button asChild className="w-full bg-emerald-green hover:bg-emerald-green/90 text-white group">
                                             <Link to="/contact">
-                                                Request Integration
+                                                Add This Skill
+                                                <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                             </Link>
                                         </Button>
-                                    </CardFooter>
+                                    </div>
                                 </Card>
                             ))}
                         </div>
