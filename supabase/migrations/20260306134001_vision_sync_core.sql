@@ -1,76 +1,57 @@
--- Migration: Vision-sync core tables
--- Creates the newly required tables for Plans, Modules, Solutions, Page Sections, and Site Settings
--- Safe: Uses IF NOT EXISTS and does not drop any existing tables.
+-- Vision-Sync Core Migration
+-- Creates Plans, Modules, Solutions, Page Sections, and Site Settings tables
 
--- 1. plans
+-- 1. Plans Table
 CREATE TABLE IF NOT EXISTS public.plans (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
-    monthly_price DECIMAL(10,2),
-    yearly_price DECIMAL(10,2),
-    setup_fee DECIMAL(10,2),
+    monthly_price NUMERIC(10, 2),
+    yearly_price NUMERIC(10, 2),
+    setup_fee NUMERIC(10, 2),
     custom_price_label TEXT,
     description TEXT,
-    features JSONB DEFAULT '[]'::jsonb,
-    cta_label TEXT,
-    cta_link TEXT,
+    features JSONB DEFAULT '[]'::JSONB,
     is_active BOOLEAN DEFAULT true,
     sort_order INTEGER DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS and add basic policies for plans
-ALTER TABLE public.plans ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Enable read access for all users on plans" ON public.plans FOR SELECT USING (true);
-CREATE POLICY "Enable all access for authenticated admins on plans" ON public.plans FOR ALL USING (auth.role() = 'authenticated');
-
--- 2. modules
+-- 2. Modules Table
 CREATE TABLE IF NOT EXISTS public.modules (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
     short_description TEXT,
     long_description TEXT,
-    monthly_addon_price DECIMAL(10,2),
-    setup_fee DECIMAL(10,2),
-    features JSONB DEFAULT '[]'::jsonb,
+    monthly_addon_price NUMERIC(10, 2),
+    setup_fee NUMERIC(10, 2),
+    features JSONB DEFAULT '[]'::JSONB,
     is_active BOOLEAN DEFAULT true,
     sort_order INTEGER DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS and add basic policies for modules
-ALTER TABLE public.modules ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Enable read access for all users on modules" ON public.modules FOR SELECT USING (true);
-CREATE POLICY "Enable all access for authenticated admins on modules" ON public.modules FOR ALL USING (auth.role() = 'authenticated');
-
--- 3. solutions
+-- 3. Solutions Table
 CREATE TABLE IF NOT EXISTS public.solutions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
     summary TEXT,
     description TEXT,
-    industries JSONB DEFAULT '[]'::jsonb,
-    included_modules JSONB DEFAULT '[]'::jsonb,
+    industries JSONB DEFAULT '[]'::JSONB,
     cta_label TEXT,
     cta_link TEXT,
     is_featured BOOLEAN DEFAULT false,
     is_active BOOLEAN DEFAULT true,
     sort_order INTEGER DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS and add basic policies for solutions
-ALTER TABLE public.solutions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Enable read access for all users on solutions" ON public.solutions FOR SELECT USING (true);
-CREATE POLICY "Enable all access for authenticated admins on solutions" ON public.solutions FOR ALL USING (auth.role() = 'authenticated');
-
--- 4. page_sections
+-- 4. Page Sections Table
 CREATE TABLE IF NOT EXISTS public.page_sections (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     page_key TEXT NOT NULL,
@@ -83,42 +64,94 @@ CREATE TABLE IF NOT EXISTS public.page_sections (
     image_url TEXT,
     is_active BOOLEAN DEFAULT true,
     sort_order INTEGER DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     UNIQUE(page_key, section_key)
 );
 
--- Enable RLS and add basic policies for page_sections
+-- 5. Row Level Security Setup
+-- Enable RLS for all newly created tables
+ALTER TABLE public.plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.modules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.solutions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.page_sections ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Enable read access for all users on page_sections" ON public.page_sections FOR SELECT USING (true);
-CREATE POLICY "Enable all access for authenticated admins on page_sections" ON public.page_sections FOR ALL USING (auth.role() = 'authenticated');
 
--- 5. site_settings
-CREATE TABLE IF NOT EXISTS public.site_settings (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    company_name TEXT DEFAULT 'Vision-Sync' NOT NULL,
-    site_title TEXT DEFAULT 'Vision-Sync | AI Automation Platform',
-    meta_title TEXT DEFAULT 'Vision-Sync | AI Automation Platform for Businesses',
-    meta_description TEXT DEFAULT 'Vision-Sync provides modular AI systems, automation infrastructure, business workflows, and CRM solutions.',
-    contact_email TEXT,
-    phone TEXT,
-    address TEXT,
-    footer_text TEXT,
-    primary_cta_label TEXT DEFAULT 'Request a Demo',
-    primary_cta_link TEXT DEFAULT '/contact',
-    secondary_cta_label TEXT DEFAULT 'Explore Platform',
-    secondary_cta_link TEXT DEFAULT '/platform',
-    social_links JSONB DEFAULT '{"twitter": "", "linkedin": "", "github": ""}'::jsonb,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
+-- 6. Public Read Policies
+-- Allow anyone to read active plans
+CREATE POLICY "Enable read access for all users on active plans" 
+ON public.plans FOR SELECT 
+USING (is_active = true);
 
--- Enable RLS and add basic policies for site_settings
-ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Enable read access for all users on site_settings" ON public.site_settings FOR SELECT USING (true);
-CREATE POLICY "Enable all access for authenticated admins on site_settings" ON public.site_settings FOR ALL USING (auth.role() = 'authenticated');
+-- Allow admins to read all plans (regardless of is_active)
+CREATE POLICY "Enable admin read access for all plans" 
+ON public.plans FOR SELECT 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
 
--- Insert one default row into site_settings so it exists
-INSERT INTO public.site_settings (company_name)
-SELECT 'Vision-Sync'
-WHERE NOT EXISTS (SELECT 1 FROM public.site_settings);
+-- Allow anyone to read active modules
+CREATE POLICY "Enable read access for all users on active modules" 
+ON public.modules FOR SELECT 
+USING (is_active = true);
+
+-- Allow admins to read all modules
+CREATE POLICY "Enable admin read access for all modules" 
+ON public.modules FOR SELECT 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- Allow anyone to read active solutions
+CREATE POLICY "Enable read access for all users on active solutions" 
+ON public.solutions FOR SELECT 
+USING (is_active = true);
+
+-- Allow admins to read all solutions
+CREATE POLICY "Enable admin read access for all solutions" 
+ON public.solutions FOR SELECT 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- Allow anyone to read active page_sections
+CREATE POLICY "Enable read access for all users on active page sections" 
+ON public.page_sections FOR SELECT 
+USING (is_active = true);
+
+-- Allow admins to read all page sections
+CREATE POLICY "Enable admin read access for all page sections" 
+ON public.page_sections FOR SELECT 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- 7. Admin Write Policies (Insert, Update, Delete)
+-- Plans
+CREATE POLICY "Enable admin write access for plans" 
+ON public.plans FOR ALL 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'))
+WITH CHECK (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- Modules
+CREATE POLICY "Enable admin write access for modules" 
+ON public.modules FOR ALL 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'))
+WITH CHECK (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- Solutions
+CREATE POLICY "Enable admin write access for solutions" 
+ON public.solutions FOR ALL 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'))
+WITH CHECK (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- Page Sections
+CREATE POLICY "Enable admin write access for page sections" 
+ON public.page_sections FOR ALL 
+USING (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'))
+WITH CHECK (auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin'));
+
+-- Add triggers for updated_at timestamps
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER handle_updated_at_plans BEFORE UPDATE ON public.plans FOR EACH ROW EXECUTE PROCEDURE public.handle_updated_at();
+CREATE TRIGGER handle_updated_at_modules BEFORE UPDATE ON public.modules FOR EACH ROW EXECUTE PROCEDURE public.handle_updated_at();
+CREATE TRIGGER handle_updated_at_solutions BEFORE UPDATE ON public.solutions FOR EACH ROW EXECUTE PROCEDURE public.handle_updated_at();
+CREATE TRIGGER handle_updated_at_page_sections BEFORE UPDATE ON public.page_sections FOR EACH ROW EXECUTE PROCEDURE public.handle_updated_at();

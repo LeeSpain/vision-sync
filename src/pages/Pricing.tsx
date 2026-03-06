@@ -28,6 +28,35 @@ export default function Pricing() {
         fetchPlans();
     }, []);
 
+    const fallbackPlans = [
+        {
+            id: 'fallback-p1',
+            name: 'Platform Starter',
+            description: 'Essential orchestration for small teams.',
+            monthly_price: 999,
+            custom_price_label: null,
+            features: ['1 Core Workflow Integration', 'Basic AI Agent Access', 'Standard Security', 'Email Support']
+        },
+        {
+            id: 'fallback-p2',
+            name: 'Enterprise Sync',
+            description: 'Complete operational control and unlimited scalability.',
+            monthly_price: 2499,
+            custom_price_label: null,
+            features: ['Unlimited Workflow Integrations', 'Custom Trained AI Agents', 'Advanced Analytics Dashboard', 'Dedicated Success Manager', 'SSO & Advanced Security']
+        },
+        {
+            id: 'fallback-p3',
+            name: 'Custom Blueprint',
+            description: 'On-premise or highly regulated environments.',
+            monthly_price: null,
+            custom_price_label: 'Talk to Sales',
+            features: ['Custom Infrastructure Deployment', 'HIPAA/SOC2 Compliant Architecture', 'White-label Options', '24/7 Phone Support SLA']
+        }
+    ];
+
+    const displayPlans = plans.length > 0 ? plans : fallbackPlans;
+
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
             <Header />
@@ -46,20 +75,16 @@ export default function Pricing() {
                         <div className="flex justify-center items-center py-20">
                             <Loader2 className="h-10 w-10 animate-spin text-royal-purple" />
                         </div>
-                    ) : plans.length === 0 ? (
-                        <div className="text-center text-cool-gray py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                            <p className="text-lg">Check back soon for pricing details.</p>
-                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                            {plans.map((plan, index) => {
+                            {displayPlans.map((plan, index) => {
                                 const isPopular = index === 1; // Highlight the middle plan nominally
                                 return (
                                     <Card
                                         key={plan.id}
                                         className={`flex flex-col h-full bg-white relative overflow-hidden transition-all duration-300 ${isPopular
-                                                ? 'border-royal-purple shadow-xl shadow-royal-purple/10 scale-105 z-10'
-                                                : 'border-slate-200 shadow-sm hover:shadow-md'
+                                            ? 'border-royal-purple shadow-xl shadow-royal-purple/10 scale-105 z-10'
+                                            : 'border-slate-200 shadow-sm hover:shadow-md'
                                             }`}
                                     >
                                         {isPopular && (
@@ -101,8 +126,8 @@ export default function Pricing() {
                                             <Button
                                                 asChild
                                                 className={`w-full py-6 text-base ${isPopular
-                                                        ? 'bg-royal-purple hover:bg-royal-purple/90 text-white shadow-md'
-                                                        : 'bg-white hover:bg-slate-50 text-midnight-navy border-2 border-slate-200 hover:border-slate-300'
+                                                    ? 'bg-royal-purple hover:bg-royal-purple/90 text-white shadow-md'
+                                                    : 'bg-white hover:bg-slate-50 text-midnight-navy border-2 border-slate-200 hover:border-slate-300'
                                                     }`}
                                                 variant={isPopular ? 'default' : 'outline'}
                                             >

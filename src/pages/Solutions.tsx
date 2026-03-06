@@ -28,6 +28,38 @@ export default function Solutions() {
         fetchSolutions();
     }, []);
 
+    const fallbackSolutions = [
+        {
+            id: 'fallback-1',
+            name: 'Healthcare Patient Sync',
+            summary: 'HIPAA-compliant patient data orchestration and automated outreach.',
+            description: 'Connect your EMR to automated communication workflows. Reduce no-shows via intelligent SMS routing and streamline patient onboarding through secure conversational AI agents.',
+            industries: ['Healthcare', 'Telemedicine', 'Private Practice'],
+            cta_label: 'Explore Healthcare AI',
+            cta_link: '/contact'
+        },
+        {
+            id: 'fallback-2',
+            name: 'Real Estate Deal Flow',
+            summary: 'Automated property matching and buyer qualification pipelines.',
+            description: 'Ingest property data and instantly match with your buyer CRM. Qualify incoming inquiries 24/7 using Vision-Sync conversational agents tuned on your property portfolio.',
+            industries: ['Real Estate', 'Property Management', 'Commercial Brokerage'],
+            cta_label: 'Explore Real Estate AI',
+            cta_link: '/contact'
+        },
+        {
+            id: 'fallback-3',
+            name: 'Enterprise E-Commerce',
+            summary: 'Predictive inventory routing and VIP customer support automations.',
+            description: 'Unify Shopify, ERP, and customer support. Vision-Sync resolves tier-1 tickets autonomously while escalating complex issues with full CRM context to your human agents.',
+            industries: ['E-Commerce', 'Retail', 'DTC Brands'],
+            cta_label: 'Explore Retail AI',
+            cta_link: '/contact'
+        }
+    ];
+
+    const displaySolutions = solutions.length > 0 ? solutions : fallbackSolutions;
+
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
             <Header />
@@ -46,13 +78,9 @@ export default function Solutions() {
                         <div className="flex justify-center items-center py-20">
                             <Loader2 className="h-10 w-10 animate-spin text-electric-blue" />
                         </div>
-                    ) : solutions.length === 0 ? (
-                        <div className="text-center text-cool-gray py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                            <p className="text-lg">Check back soon for our featured solutions.</p>
-                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {solutions.map((sol) => (
+                            {displaySolutions.map((sol) => (
                                 <Card key={sol.id} className="flex flex-col h-full border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-white overflow-hidden">
                                     <div className="h-2 w-full bg-gradient-to-r from-electric-blue to-royal-purple"></div>
                                     <CardHeader>

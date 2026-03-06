@@ -28,6 +28,35 @@ export default function Modules() {
         fetchModules();
     }, []);
 
+    const fallbackModules = [
+        {
+            id: 'fallback-m1',
+            name: 'Sales Automation',
+            short_description: 'Intelligent lead generation and automated pipeline management.',
+            long_description: 'Our Sales Automation module integrates with your CRM to automatically categorize, score, and route leads based on predictive behavior analytics.',
+            monthly_addon_price: 299,
+            features: ['Automated Lead Scoring', 'Pipeline Routing', 'Behavioral Triggers'],
+        },
+        {
+            id: 'fallback-m2',
+            name: 'Agentic Support',
+            short_description: 'Deploy 24/7 AI agents that seamlessly integrate into your knowledge bases.',
+            long_description: 'Train your custom agent on your helpdesk articles and internal wikis. Resolves up to 70% of tier-1 support tickets autonomously with human-like accuracy.',
+            monthly_addon_price: 499,
+            features: ['RAG Knowledge Integration', 'Multi-channel Deployment', 'Human Handoff Protocol'],
+        },
+        {
+            id: 'fallback-m3',
+            name: 'Vision CRM Sync',
+            short_description: 'Bi-directional data synchronization across all your business tools.',
+            long_description: 'Maintain a single source of truth. Vision CRM Sync ensures your sales, support, and marketing platforms share unified, real-time customer states.',
+            monthly_addon_price: 199,
+            features: ['Real-time Bi-directional Sync', 'Conflict Resolution', 'Custom Field Mapping'],
+        }
+    ];
+
+    const displayModules = modules.length > 0 ? modules : fallbackModules;
+
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
             <Header />
@@ -46,13 +75,9 @@ export default function Modules() {
                         <div className="flex justify-center items-center py-20">
                             <Loader2 className="h-10 w-10 animate-spin text-emerald-green" />
                         </div>
-                    ) : modules.length === 0 ? (
-                        <div className="text-center text-cool-gray py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                            <p className="text-lg">Check back soon for our module catalog.</p>
-                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {modules.map((mod) => (
+                            {displayModules.map((mod) => (
                                 <Card key={mod.id} className="flex flex-col h-full border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 bg-white relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-green/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
                                     <CardHeader>
