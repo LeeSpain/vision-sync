@@ -26,6 +26,41 @@ export default function Solutions() {
         fetchSolutions();
     }, []);
 
+    const fallbackSolutions = [
+        {
+            id: 'fallback-1',
+            name: 'Customer Service Hub',
+            summary: 'Handle common questions automatically 24/7.',
+            description: 'A friendly AI assistant that automatically replies to common customer questions, tracks lost orders, and routes complex issues to your human team.',
+            industries: ['Retail', 'E-Commerce', 'Professional Services'],
+            cta_label: 'See How It Works',
+            cta_link: '/contact',
+            is_featured: true
+        },
+        {
+            id: 'fallback-2',
+            name: 'Lead Generation Flow',
+            summary: 'Automatically qualify and book meetings with new leads.',
+            description: 'Stop letting good leads slip away. This workflow instantly replies to website inquiries, asks simple questions to understand the customer\'s needs, and books verified meetings on your calendar.',
+            industries: ['Real Estate', 'Consulting', 'B2B Services'],
+            cta_label: 'See How It Works',
+            cta_link: '/contact',
+            is_featured: false
+        },
+        {
+            id: 'fallback-3',
+            name: 'Internal Team Helper',
+            summary: 'Help employees find company answers instantly.',
+            description: 'A secure, private assistant that connects to your company knowledge base. Your team can ask questions about HR policies, tech support, or project details and get instant, accurate answers.',
+            industries: ['Any Industry', 'Healthcare', 'Enterprise'],
+            cta_label: 'See How It Works',
+            cta_link: '/contact',
+            is_featured: false
+        }
+    ];
+
+    const displaySolutions = solutions.length > 0 ? solutions : fallbackSolutions;
+
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
             <Header />
@@ -44,15 +79,9 @@ export default function Solutions() {
                         <div className="flex justify-center items-center py-20">
                             <Loader2 className="h-10 w-10 animate-spin text-electric-blue" />
                         </div>
-                    ) : solutions.length === 0 ? (
-                        <div className="text-center text-cool-gray py-20 bg-white rounded-xl shadow-sm">
-                            <Building2 className="h-12 w-12 mx-auto text-cool-gray mb-4 opacity-50" />
-                            <p className="text-lg font-medium">More ready-to-use blueprints are being built.</p>
-                            <p className="text-sm">Check back soon for more simple AI workflows tailored to your industry.</p>
-                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {solutions.map((sol) => (
+                            {displaySolutions.map((sol) => (
                                 <Card key={sol.id} className={`flex flex-col h-full bg-white relative overflow-hidden transition-all duration-300 border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 ${sol.is_featured ? 'border-electric-blue/50 shadow-electric-blue/10' : ''}`}>
                                     {sol.is_featured && (
                                         <div className="absolute top-0 right-0 p-3">

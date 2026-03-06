@@ -26,6 +26,35 @@ export default function Modules() {
         fetchModules();
     }, []);
 
+    const fallbackModules = [
+        {
+            id: 'fallback-m1',
+            name: 'Email Assistant',
+            short_description: 'Drafts replies and organizes your inbox.',
+            long_description: 'Connects to your business email to automatically sort incoming messages, flag urgent ones, and draft polite, accurate responses for your review.',
+            monthly_addon_price: 199,
+            features: ['Automatic Sorting', 'Drafting Replies', 'Spam Filtering'],
+        },
+        {
+            id: 'fallback-m2',
+            name: 'Website Greeter',
+            short_description: 'A smart chat widget that actually helps.',
+            long_description: 'Add a helpful assistant to your website that can guide visitors to the right products, answer pricing questions, or capture their contact information.',
+            monthly_addon_price: 249,
+            features: ['24/7 Availability', 'Natural Conversations', 'Lead Capture'],
+        },
+        {
+            id: 'fallback-m3',
+            name: 'Data Sync',
+            short_description: 'Keeps your different software talking.',
+            long_description: 'When a new customer signs up on your website, this skill automatically adds them to your CRM, emails your team, and updates your spreadsheets without you lifting a finger.',
+            monthly_addon_price: null,
+            features: ['Automatic Updates', 'Error Checking', 'Instant Transfers'],
+        }
+    ];
+
+    const displayModules = modules.length > 0 ? modules : fallbackModules;
+
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
             <Header />
@@ -47,14 +76,9 @@ export default function Modules() {
                         <div className="flex justify-center items-center py-20">
                             <Loader2 className="h-10 w-10 animate-spin text-emerald-green" />
                         </div>
-                    ) : modules.length === 0 ? (
-                        <div className="text-center text-cool-gray py-20 bg-white rounded-xl shadow-sm border border-slate-100">
-                            <p className="text-lg font-medium">New skills are being added!</p>
-                            <p className="text-sm mt-2">We're currently training our AI on more helpful tasks. Check back soon.</p>
-                        </div>
                     ) : (
                         <div className="space-y-8 max-w-5xl mx-auto">
-                            {modules.map((mod) => (
+                            {displayModules.map((mod) => (
                                 <Card key={mod.id} className="flex flex-col md:flex-row overflow-hidden bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="md:w-2/3 p-6 md:p-8 flex flex-col justify-center">
                                         <div className="flex items-center gap-3 mb-3">

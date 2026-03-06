@@ -153,6 +153,53 @@ export default function Index() {
         </div>
       </section>
 
+      {/* AI Sales Sync Promo */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-midnight-navy text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-electric-blue/10 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 border border-white/10">
+                <Target className="h-4 w-4 text-emerald-green" />
+                Featured Integration
+              </div>
+              <h3 className="text-4xl font-heading font-bold mb-6">
+                Supercharge Revenue with <span className="text-electric-blue">AI Sales Sync</span>
+              </h3>
+              <p className="text-lg text-white/80 mb-6 leading-relaxed">
+                Connect Vision-Sync to our specialized AI Sales platform. Automate your entire sales funnel, from lead generation and qualifying conversations to meeting bookings and follow-ups.
+              </p>
+              <ul className="space-y-4 mb-8">
+                {['Autonomous Lead Qualification', '24/7 Multi-channel Sales Agents', 'Seamless Vision-Sync CRM Integration'].map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3 font-medium text-white/90">
+                    <CheckCircle className="h-5 w-5 text-emerald-green" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button asChild variant="hero" size="lg" className="shadow-lg group">
+                  <a href="https://www.aisales-sync.com/" target="_blank" rel="noopener noreferrer">
+                    Explore AI Sales Sync
+                    <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+            <div className="relative z-10">
+              <div className="aspect-video lg:aspect-square bg-slate-900/50 rounded-2xl border border-white/10 p-6 flex flex-col justify-center items-center shadow-2xl overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/20 to-royal-purple/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <Bot className="h-24 w-24 text-electric-blue mb-6 group-hover:scale-110 transition-transform duration-500" />
+                <h4 className="text-2xl font-bold mb-2">Standalone or Integrated</h4>
+                <p className="text-center text-white/70 max-w-sm">
+                  Run AI Sales Sync as its own powerful platform, or plug it directly into your Vision-Sync operations as a core revenue module.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Dynamic Sections Loop (Middle Sections) */}
       {sections.filter(s => !['hero-area', 'platform-overview', 'final-cta'].includes(s.section_key)).map((sec) => (
         <section key={sec.id} className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-b border-soft-lilac/20">
