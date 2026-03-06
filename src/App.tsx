@@ -20,6 +20,19 @@ import { AdminRoute } from "./components/AdminRoute";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
+import { SalesDashboardLayout } from "./components/sales-dashboard/layout/SalesDashboardLayout";
+import DashboardOverview from "./pages/SalesDashboard/DashboardOverview";
+import ProspectFinder from "./pages/SalesDashboard/ProspectFinder";
+import LeadsManagement from "./pages/SalesDashboard/LeadsManagement";
+import SalesPipeline from "./pages/SalesDashboard/SalesPipeline";
+import DealRooms from "./pages/SalesDashboard/DealRooms";
+import DemoGenerator from "./pages/SalesDashboard/DemoGenerator";
+import Quotes from "./pages/SalesDashboard/Quotes";
+import Contracts from "./pages/SalesDashboard/Contracts";
+import Payments from "./pages/SalesDashboard/Payments";
+import Analytics from "./pages/SalesDashboard/Analytics";
+import SalesCopilot from "./pages/SalesDashboard/SalesCopilot";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,6 +62,21 @@ const App = () => (
                 <Admin />
               </AdminRoute>
             } />
+
+            {/* Sales Dashboard Routes */}
+            <Route path="/sales-dashboard" element={<AdminRoute><SalesDashboardLayout><DashboardOverview /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/prospects" element={<AdminRoute><SalesDashboardLayout><ProspectFinder /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/leads" element={<AdminRoute><SalesDashboardLayout><LeadsManagement /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/pipeline" element={<AdminRoute><SalesDashboardLayout><SalesPipeline /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/deals" element={<AdminRoute><SalesDashboardLayout><DealRooms /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/deals/:id" element={<AdminRoute><SalesDashboardLayout><DealRooms /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/demos" element={<AdminRoute><SalesDashboardLayout><DemoGenerator /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/quotes" element={<AdminRoute><SalesDashboardLayout><Quotes /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/contracts" element={<AdminRoute><SalesDashboardLayout><Contracts /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/payments" element={<AdminRoute><SalesDashboardLayout><Payments /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/analytics" element={<AdminRoute><SalesDashboardLayout><Analytics /></SalesDashboardLayout></AdminRoute>} />
+            <Route path="/sales-dashboard/copilot" element={<AdminRoute><SalesDashboardLayout><SalesCopilot /></SalesDashboardLayout></AdminRoute>} />
+
             <Route path="/auth" element={<AuthPage />} />
 
             {/* Catch-all dynamic route for any other project URLs - MUST be last */}

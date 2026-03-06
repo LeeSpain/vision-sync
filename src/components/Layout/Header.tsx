@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CurrencySelector } from '@/components/ui/currency-selector';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 import ShareButton from '@/components/ShareButton';
 import HeaderChatButton from '@/components/chat/HeaderChatButton';
 import AiChatWidget from '@/components/chat/AiChatWidget';
@@ -13,13 +15,14 @@ const Header = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { t } = useTranslation();
 
   const navigation = [
-    { name: 'Platform', href: '/platform' },
-    { name: 'Solutions', href: '/solutions' },
-    { name: 'Modules', href: '/modules' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Contact', href: '/contact' },
+    { name: t('header.platform'), href: '/platform' },
+    { name: t('header.solutions'), href: '/solutions' },
+    { name: t('header.modules'), href: '/modules' },
+    { name: t('header.pricing'), href: '/pricing' },
+    { name: t('header.contact'), href: '/contact' },
   ];
 
   return (
@@ -46,8 +49,8 @@ const Header = () => {
                 key={item.name}
                 to={item.href}
                 className={`text-sm font-medium transition-colors hover:text-royal-purple ${location.pathname === item.href
-                    ? 'text-royal-purple'
-                    : 'text-midnight-navy/80'
+                  ? 'text-royal-purple'
+                  : 'text-midnight-navy/80'
                   }`}
               >
                 {item.name}
@@ -55,24 +58,25 @@ const Header = () => {
             ))}
             <div className="flex items-center space-x-3">
               <ShareButton />
+              <LanguageSwitcher variant="compact" />
               <CurrencySelector variant="compact" />
               {user ? (
                 <div className="flex items-center space-x-2">
                   <Link to="/admin">
                     <Button variant="outline" size="sm">
                       <LayoutDashboard className="h-4 w-4 mr-1" />
-                      Dashboard
+                      {t('header.dashboard')}
                     </Button>
                   </Link>
                   <Button variant="ghost" size="sm" onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-1" />
-                    Sign Out
+                    {t('header.signOut')}
                   </Button>
                 </div>
               ) : (
                 <Link to="/auth">
                   <Button variant="hero" size="sm">
-                    Sign In
+                    {t('header.signIn')}
                   </Button>
                 </Link>
               )}
@@ -106,7 +110,8 @@ const Header = () => {
                 </Link>
               ))}
               <ShareButton fullWidth />
-              <div className="mb-4">
+              <div className="mb-4 flex space-x-2">
+                <LanguageSwitcher />
                 <CurrencySelector />
               </div>
               {user ? (
@@ -114,18 +119,18 @@ const Header = () => {
                   <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full">
                       <LayoutDashboard className="h-4 w-4 mr-1" />
-                      Dashboard
+                      {t('header.dashboard')}
                     </Button>
                   </Link>
                   <Button variant="ghost" size="sm" onClick={signOut} className="w-full">
                     <LogOut className="h-4 w-4 mr-1" />
-                    Sign Out
+                    {t('header.signOut')}
                   </Button>
                 </div>
               ) : (
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="hero" size="sm" className="w-full">
-                    Sign In
+                    {t('header.signIn')}
                   </Button>
                 </Link>
               )}

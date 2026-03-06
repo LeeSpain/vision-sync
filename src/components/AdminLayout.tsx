@@ -4,6 +4,7 @@ import { AdminSidebar } from './AdminSidebar';
 import { Button } from '@/components/ui/button';
 import { LogOut, Menu } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -50,6 +51,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                     </div>
                     <div className="text-xs text-slate-white/70">Local Time</div>
                   </div>
+
+                  <LanguageSwitcher variant="inline" />
 
                   <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
                     <span className="text-sm font-bold text-slate-white">{initial}</span>

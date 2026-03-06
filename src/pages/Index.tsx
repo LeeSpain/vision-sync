@@ -9,12 +9,14 @@ import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/struc
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowRight, Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Target, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
 import CustomQuoteModal from '@/components/CustomQuoteModal';
+import { useTranslation } from 'react-i18next';
 
 export default function Index() {
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [sections, setSections] = useState<any[]>([]);
   const [modules, setModules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +75,7 @@ export default function Index() {
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <div className="inline-flex items-center justify-center gap-2 bg-gradient-primary px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 shadow-glow mx-auto">
             <Sparkles className="h-4 w-4" />
-            Enterprise Infrastructure
+            {t('index.enterpriseInfrastructure')}
           </div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 tracking-tight">
             {hero.title.split(' For Your Business')[0]}<br />
@@ -86,13 +88,13 @@ export default function Index() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button variant="hero" size="lg" onClick={() => setShowQuoteModal(true)} className="shadow-lg group">
-              {hero.ctaLabel || 'Request a Demo'}
+              {hero.ctaLabel || t('index.requestDemo')}
               <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Link to={hero.ctaLink || "/platform"}>
               <Button variant="outline" size="lg" className="group">
                 <Network className="h-5 w-5 mr-2" />
-                Explore Platform
+                {t('index.explorePlatform')}
               </Button>
             </Link>
           </div>
@@ -104,7 +106,7 @@ export default function Index() {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-sm font-bold text-royal-purple uppercase tracking-wider mb-3">Platform Overview</h2>
+              <h2 className="text-sm font-bold text-royal-purple uppercase tracking-wider mb-3">{t('index.platformOverview')}</h2>
               <h3 className="text-4xl font-heading font-bold text-midnight-navy mb-6">
                 {overview.title}
               </h3>
@@ -112,7 +114,7 @@ export default function Index() {
                 {overview.content}
               </p>
               <ul className="space-y-4">
-                {['Modular Architecture', 'Seamless Automation', 'Predictive Intelligence', 'Granular Control & Analytics'].map((feature, i) => (
+                {[t('index.modularArchitecture'), t('index.seamlessAutomation'), t('index.predictiveIntelligence'), t('index.granularControl')].map((feature, i) => (
                   <li key={i} className="flex items-center gap-3 text-midnight-navy font-medium">
                     <CheckCircle className="h-6 w-6 text-emerald-green" />
                     {feature}
@@ -128,7 +130,7 @@ export default function Index() {
                   <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
                   <div className="absolute bottom-4 left-4 right-4 text-white font-medium text-sm flex items-center">
                     <Brain className="h-4 w-4 mr-2 text-royal-purple" />
-                    Cognitive Engine
+                    {t('index.cognitiveEngine')}
                   </div>
                 </div>
                 <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative group">
@@ -136,7 +138,7 @@ export default function Index() {
                   <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
                   <div className="absolute bottom-4 left-4 right-4 text-white font-medium text-sm flex items-center">
                     <Workflow className="h-4 w-4 mr-2 text-emerald-green" />
-                    Automated Flows
+                    {t('index.automatedFlows')}
                   </div>
                 </div>
                 <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative col-span-2 group">
@@ -144,7 +146,7 @@ export default function Index() {
                   <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
                   <div className="absolute bottom-6 left-6 right-6 text-white font-medium text-lg flex items-center">
                     <Network className="h-6 w-6 mr-3 text-electric-blue" />
-                    Global Orchestration Layer
+                    {t('index.globalOrchestration')}
                   </div>
                 </div>
               </div>
@@ -161,16 +163,16 @@ export default function Index() {
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 border border-white/10">
                 <Target className="h-4 w-4 text-emerald-green" />
-                Featured Integration
+                {t('index.featuredIntegration')}
               </div>
               <h3 className="text-4xl font-heading font-bold mb-6">
-                Supercharge Revenue with <span className="text-electric-blue">AI Sales Sync</span>
+                {t('index.superchargeRevenue')}<span className="text-electric-blue">{t('index.aiSalesSync')}</span>
               </h3>
               <p className="text-lg text-white/80 mb-6 leading-relaxed">
-                Connect Vision-Sync to our specialized AI Sales platform. Automate your entire sales funnel, from lead generation and qualifying conversations to meeting bookings and follow-ups.
+                {t('index.connectVisionSync')}
               </p>
               <ul className="space-y-4 mb-8">
-                {['Autonomous Lead Qualification', '24/7 Multi-channel Sales Agents', 'Seamless Vision-Sync CRM Integration'].map((feature, i) => (
+                {[t('index.autonomousLeadQual'), t('index.multichannelAgents'), t('index.seamlessCrm')].map((feature, i) => (
                   <li key={i} className="flex items-center gap-3 font-medium text-white/90">
                     <CheckCircle className="h-5 w-5 text-emerald-green" />
                     {feature}
@@ -180,7 +182,7 @@ export default function Index() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild variant="hero" size="lg" className="shadow-lg group">
                   <a href="https://www.aisales-sync.com/" target="_blank" rel="noopener noreferrer">
-                    Explore AI Sales Sync
+                    {t('index.exploreAiSales')}
                     <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </a>
                 </Button>
@@ -190,15 +192,15 @@ export default function Index() {
               <div className="h-full bg-slate-900/50 rounded-2xl border border-white/10 p-8 shadow-2xl overflow-hidden group relative flex flex-col justify-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                <h4 className="text-2xl font-bold mb-8 text-white">The Automated AI Funnel</h4>
+                <h4 className="text-2xl font-bold mb-8 text-white">{t('index.automatedAiFunnel')}</h4>
 
                 <div className="space-y-0 relative">
                   {[
-                    { number: 1, title: 'Find', desc: 'Discover leads' },
-                    { number: 2, title: 'Outreach', desc: 'Send messages' },
-                    { number: 3, title: 'Calls', desc: 'AI conversations' },
-                    { number: 4, title: 'Proposals', desc: 'Generate docs' },
-                    { number: 5, title: 'Close', desc: 'Win the deal', isLast: true }
+                    { number: 1, title: t('index.find'), desc: t('index.discoverLeads') },
+                    { number: 2, title: t('index.outreach'), desc: t('index.sendMessages') },
+                    { number: 3, title: t('index.calls'), desc: t('index.aiConversations') },
+                    { number: 4, title: t('index.proposals'), desc: t('index.generateDocs') },
+                    { number: 5, title: t('index.close'), desc: t('index.winDeal'), isLast: true }
                   ].map((step) => (
                     <div key={step.number} className="flex gap-5 relative">
                       {/* Vertical line connector */}
@@ -208,8 +210,8 @@ export default function Index() {
 
                       <div className="relative z-10 flex flex-col items-center shrink-0">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-transform duration-300 group-hover:scale-110 ${step.isLast
-                            ? 'bg-emerald-green/20 border border-emerald-green text-emerald-green shadow-emerald-green/20'
-                            : 'bg-electric-blue/10 border border-electric-blue/50 text-electric-blue shadow-electric-blue/10'
+                          ? 'bg-emerald-green/20 border border-emerald-green text-emerald-green shadow-emerald-green/20'
+                          : 'bg-electric-blue/10 border border-electric-blue/50 text-electric-blue shadow-electric-blue/10'
                           }`}>
                           {step.number}
                         </div>
@@ -256,10 +258,10 @@ export default function Index() {
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-electric-blue/5 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-sm font-bold text-electric-blue uppercase tracking-wider mb-3">Modular Architecture</h2>
-              <h3 className="text-4xl font-heading font-bold text-midnight-navy">Core Platform Modules</h3>
+              <h2 className="text-sm font-bold text-electric-blue uppercase tracking-wider mb-3">{t('index.modularArchitecture')}</h2>
+              <h3 className="text-4xl font-heading font-bold text-midnight-navy">{t('index.coreModules')}</h3>
               <p className="mt-4 text-lg text-cool-gray max-w-2xl mx-auto">
-                Select and integrate specialized intelligence nodes to construct a bespoke ecosystem tailored precisely to your operational needs.
+                {t('index.selectModulesDesc')}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -278,7 +280,7 @@ export default function Index() {
                   <div className="px-6 pb-6 mt-auto">
                     <Button asChild variant="ghost" className="w-full justify-between hover:bg-slate-50 text-electric-blue group/btn">
                       <Link to="/modules">
-                        Explore Module
+                        {t('index.exploreModule')}
                         <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
                       </Link>
                     </Button>
@@ -288,7 +290,7 @@ export default function Index() {
             </div>
             <div className="mt-12 text-center">
               <Button asChild variant="outline" size="lg" className="border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-white">
-                <Link to="/modules">View Entire Catalog</Link>
+                <Link to="/modules">{t('index.viewCatalog')}</Link>
               </Button>
             </div>
           </div>
@@ -306,12 +308,12 @@ export default function Index() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="hero" size="lg" onClick={() => setShowQuoteModal(true)}>
-              {finalCta.ctaLabel || 'Request Custom Blueprint'}
+              {finalCta.ctaLabel || t('index.requestBlueprint')}
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
             <Link to={finalCta.ctaLink || "/pricing"}>
               <Button variant="outline" size="lg" className="border-white text-midnight-navy bg-white hover:bg-slate-100">
-                View Pricing
+                {t('index.viewPricing')}
               </Button>
             </Link>
           </div>

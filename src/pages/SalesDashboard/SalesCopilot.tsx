@@ -1,0 +1,147 @@
+import { useState, useRef, useEffect } from "react";
+import {
+    Bot,
+    Send,
+    Sparkles,
+    AlignLeft,
+    MessageSquare,
+    Search,
+    FileText
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export default function SalesCopilot() {
+    const [messages, setMessages] = useState([
+        {
+            id: 1,
+            role: "assistant",
+            text: "Hi there! I'm your Vision Sales Copilot. How can I help you close more deals today?"
+        }
+    ]);
+    const [inputValue, setInputValue] = useState("");
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const handleSend = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inputValue.trim()) return;
+
+        const newMsg = { id: Date.now(), role: "user", text: inputValue };
+        setMessages(prev => [...prev, newMsg]);
+        setInputValue("");
+
+        // Simulate AI response
+        setTimeout(() => {
+            setMessages(prev => [...prev, {
+                id: Date.now(),
+                role: "assistant",
+                text: "I'm currently running in mockup mode, but when fully wired, I can help analyze businesses, generate emails, and prepare quotes for you!"
+            }]);
+        }, 1000);
+    };
+
+    const prompts = [
+        { icon: Search, label: "Analyze Company", prompt: "Can you analyze Costa Blanca Villas and identify their digital weaknesses?" },
+        { icon: AlignLeft, label: "Summarize Prospect", prompt: "Summarize the prospect 'Marina Dental Clinic' and suggest a package to pitch." },
+        { icon: MessageSquare, label: "Write WhatsApp", prompt: "Write a short follow-up WhatsApp message for Almeria Motors." },
+        { icon: FileText, label: "Quote Summary", prompt: "Generate a bullet-point summary of the quote we sent to Sun Coast Care Home." }
+    ];
+
+    return (
+        <div className="space-y-6 animate-fade-in max-w-4xl mx-auto flex flex-col h-[calc(100vh-8rem)]">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                        <Bot className="h-6 w-6 text-indigo-500" />
+                        AI Sales Copilot
+                    </h2>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">
+                        Your intelligent assistant for research, drafting, and deal strategy.
+                    </p>
+                </div>
+            </div>
+
+            <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden relative">
+
+                {/* Chat Area */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                    {messages.map((msg) => (
+                        <div key={msg.id} className={`flex max-w-[85%] ${msg.role === 'user' ? 'ml-auto' : 'mr-auto'} gap-3`}>
+                            {msg.role === 'assistant' && (
+                                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-1">
+                                    <Bot className="h-4 w-4" />
+                                </div>
+                            )}
+
+                            <div className={`p-4 rounded-xl text-sm leading-relaxed ${msg.role === 'user'
+                                ? 'bg-brand text-white rounded-tr-sm'
+                                : 'bg-slate-50 border border-slate-200 text-slate-800 dark:bg-slate-800/40 dark:border-slate-700 dark:text-slate-200 rounded-tl-sm'
+                                }`}>
+                                {msg.text}
+                            </div>
+
+                            {msg.role === 'user' && (
+                                <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 mt-1 text-xs font-bold">
+                                    ME
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                </div>
+
+                {/* Input Area */}
+                <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/20 shrink-0">
+
+                    {/* Quick Prompts */}
+                    {messages.length < 3 && (
+                        <div className="mb-4">
+                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-1"><Sparkles className="h-3 w-3 inline mr-1" /> Try asking</p>
+                            <div className="flex flex-wrap gap-2">
+                                {prompts.map((p, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setInputValue(p.prompt)}
+                                        className="flex items-center text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand/40 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-full transition-colors"
+                                    >
+                                        <p.icon className="h-3 w-3 mr-1.5 text-slate-400" />
+                                        {p.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Form */}
+                    <form onSubmit={handleSend} className="relative">
+                        <Input
+                            placeholder="Ask Copilot anything..."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            className="pr-12 bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 h-14 text-base shadow-sm focus-visible:ring-brand"
+                        />
+                        <Button
+                            type="submit"
+                            size="icon"
+                            disabled={!inputValue.trim()}
+                            className="absolute right-2 top-2 h-10 w-10 bg-brand hover:bg-brand-dark text-white rounded-md"
+                        >
+                            <Send className="h-4 w-4" />
+                        </Button>
+                    </form>
+                    <div className="text-center mt-2">
+                        <span className="text-[10px] text-slate-400">Copilot may produce inaccurate information about businesses. Always verify details.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
