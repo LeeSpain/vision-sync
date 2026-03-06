@@ -13,24 +13,24 @@ import CustomQuoteModal from '@/components/CustomQuoteModal';
 export default function Index() {
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [sections, setSections] = useState<any[]>([]);
+  const [modules, setModules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSections = async () => {
-      const { data, error } = await supabase
-        .from('page_sections')
-        .select('*')
-        .eq('page_key', 'homepage')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
+    const fetchData = async () => {
+      const [sectionsRes, modulesRes] = await Promise.all([
+        supabase.from('page_sections').select('*').eq('page_key', 'homepage').eq('is_active', true).order('sort_order', { ascending: true }),
+        supabase.from('modules').select('*').eq('is_active', true).order('sort_order', { ascending: true }).limit(6)
+      ]);
 
-      if (data && data.length > 0) {
-        setSections(data);
+      if (sectionsRes.data && sectionsRes.data.length > 0) {
+        setSections(sectionsRes.data);
       }
+      if (modulesRes.data) setModules(modulesRes.data);
       setLoading(false);
     };
 
-    fetchSections();
+    fetchData();
   }, []);
 
   // Helper to extract a section by key or provide a fallback
@@ -120,17 +120,31 @@ export default function Index() {
                 ))}
               </ul>
             </div>
-            <div className="relative">
-              <div className="aspect-square rounded-2xl bg-gradient-to-tr from-slate-100 to-slate-50 border border-slate-200 shadow-xl flex items-center justify-center p-8">
-                <div className="grid grid-cols-2 gap-4 w-full h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
-                    <Brain className="h-12 w-12 text-royal-purple/50" />
+            <div className="relative isolate">
+              <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-emerald-green/20 to-royal-purple/20 blur-3xl opacity-50 rounded-full"></div>
+              <div className="aspect-square grid grid-cols-2 gap-4 w-full h-full">
+                <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative group">
+                  <img src="/images/platform_ai_brain.png" alt="AI Neural Network" className="object-cover w-full h-full transform transition duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
+                  <div className="absolute bottom-4 left-4 right-4 text-white font-medium text-sm flex items-center">
+                    <Brain className="h-4 w-4 mr-2 text-royal-purple" />
+                    Cognitive Engine
                   </div>
-                  <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
-                    <Workflow className="h-12 w-12 text-emerald-green/50" />
+                </div>
+                <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative group">
+                  <img src="/images/platform_workflow.png" alt="Data Pipeline Workflow" className="object-cover w-full h-full transform transition duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
+                  <div className="absolute bottom-4 left-4 right-4 text-white font-medium text-sm flex items-center">
+                    <Workflow className="h-4 w-4 mr-2 text-emerald-green" />
+                    Automated Flows
                   </div>
-                  <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center col-span-2">
-                    <Network className="h-16 w-16 text-electric-blue/50" />
+                </div>
+                <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative col-span-2 group">
+                  <img src="/images/platform_network.png" alt="Global Network Orchestration" className="object-cover w-full h-full transform transition duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
+                  <div className="absolute bottom-6 left-6 right-6 text-white font-medium text-lg flex items-center">
+                    <Network className="h-6 w-6 mr-3 text-electric-blue" />
+                    Global Orchestration Layer
                   </div>
                 </div>
               </div>
@@ -160,30 +174,46 @@ export default function Index() {
         </section>
       ))}
 
-      {/* Fallback Static Cards if no dynamic sections exist */}
-      {sections.length === 0 && (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-50">
-          <div className="max-w-7xl mx-auto text-center">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-16">Core Modules</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex justify-center flex-col items-center">
-                    <Target className="h-10 w-10 text-royal-purple mb-4" />
-                    Sales Automation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-cool-gray">Intelligent lead generation and automated pipeline management.</CardContent>
-              </Card>
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex justify-center flex-col items-center">
-                    <Bot className="h-10 w-10 text-emerald-green mb-4" />
-                    Agentic Support
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-cool-gray">Deploy 24/7 AI agents that seamlessly integrate into your knowledge bases.</CardContent>
-              </Card>
+      {/* Core Modules (Dynamic) */}
+      {modules.length > 0 && (
+        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 border-b border-soft-lilac/20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-electric-blue/5 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-sm font-bold text-electric-blue uppercase tracking-wider mb-3">Modular Architecture</h2>
+              <h3 className="text-4xl font-heading font-bold text-midnight-navy">Core Platform Modules</h3>
+              <p className="mt-4 text-lg text-cool-gray max-w-2xl mx-auto">
+                Select and integrate specialized intelligence nodes to construct a bespoke ecosystem tailored precisely to your operational needs.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {modules.map((mod: any) => (
+                <Card key={mod.id} className="hover:shadow-xl transition-all duration-300 border-slate-200 bg-white group hover:-translate-y-1 flex flex-col">
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center mb-4 text-midnight-navy group-hover:bg-electric-blue/10 group-hover:text-electric-blue transition-colors">
+                      <Zap className="h-6 w-6" />
+                    </div>
+                    <CardTitle className="text-xl text-midnight-navy">{mod.name}</CardTitle>
+                    <CardDescription className="text-base mt-2 line-clamp-2">{mod.short_description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    {/* Room for quick module metrics or feature list */}
+                  </CardContent>
+                  <div className="px-6 pb-6 mt-auto">
+                    <Button asChild variant="ghost" className="w-full justify-between hover:bg-slate-50 text-electric-blue group/btn">
+                      <Link to="/modules">
+                        Explore Module
+                        <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
+                      </Link>
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Button asChild variant="outline" size="lg" className="border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-white">
+                <Link to="/modules">View Entire Catalog</Link>
+              </Button>
             </div>
           </div>
         </section>
