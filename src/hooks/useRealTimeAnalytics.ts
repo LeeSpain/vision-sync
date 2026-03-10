@@ -134,7 +134,7 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
       } else {
         pageQuery = pageQuery.gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
       }
-      
+
       if (filters.dateRange?.to) {
         const toDate = new Date(filters.dateRange.to);
         toDate.setHours(23, 59, 59, 999);
@@ -255,8 +255,8 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
       const activeQuotes = quotesData?.filter(q => q.status !== 'rejected' && q.status !== 'draft') || [];
       const acceptedQuotes = quotesData?.filter(q => q.status === 'accepted') || [];
       const pipelineValue = activeQuotes.reduce((sum, q) => sum + (Number(q.total) || 0), 0);
-      const avgDealSize = acceptedQuotes.length > 0 
-        ? acceptedQuotes.reduce((sum, q) => sum + (Number(q.total) || 0), 0) / acceptedQuotes.length 
+      const avgDealSize = acceptedQuotes.length > 0
+        ? acceptedQuotes.reduce((sum, q) => sum + (Number(q.total) || 0), 0) / acceptedQuotes.length
         : 0;
       const winRate = quotesData && quotesData.length > 0
         ? Math.round((acceptedQuotes.length / quotesData.length) * 100)
@@ -278,10 +278,10 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
       // Calculate project performance with comprehensive metrics
       const projectStats = projectsData?.map(project => {
         const projectRoute = project.route || '';
-        const projectPageViews = pageAnalyticsData?.filter(p => 
+        const projectPageViews = pageAnalyticsData?.filter(p =>
           p.page_path.includes(projectRoute) || p.page_path.includes(project.id)
         ).length || 0;
-        
+
         const projectLeads = todayLeads?.filter(l => {
           const formData = l.form_data as any;
           return formData?.projectId === project.id || l.message?.includes(project.title);
@@ -307,10 +307,10 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
           return projectViews.length > 0 ? Math.round((bounces / projectViews.length) * 100) : 0;
         })();
 
-        const revenue = quotesData?.filter(q => 
+        const revenue = quotesData?.filter(q =>
           q.project_name?.includes(project.title) && q.status === 'accepted'
         ).reduce((sum, q) => sum + (Number(q.total) || 0), 0) || 0;
-        
+
         return {
           id: project.id,
           name: project.title,
@@ -352,8 +352,8 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
 
       // Calculate avg session time and bounce rate
       const totalDuration = pageAnalyticsData?.reduce((sum, p) => sum + (p.duration_seconds || 0), 0) || 0;
-      const avgSessionTime = pageAnalyticsData && pageAnalyticsData.length > 0 
-        ? Math.round(totalDuration / pageAnalyticsData.length) 
+      const avgSessionTime = pageAnalyticsData && pageAnalyticsData.length > 0
+        ? Math.round(totalDuration / pageAnalyticsData.length)
         : 0;
       const bounceRate = pageAnalyticsData && pageAnalyticsData.length > 0
         ? Math.round((pageAnalyticsData.filter(p => (p.duration_seconds || 0) < 10).length / pageAnalyticsData.length) * 100)
@@ -388,19 +388,19 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
       const closedDeals = quotesData?.filter(q => q.status === 'accepted' && q.accepted_at && q.created_at) || [];
       const dealVelocity = closedDeals.length > 0
         ? Math.round(closedDeals.reduce((sum, q) => {
-            const created = new Date(q.created_at).getTime();
-            const accepted = new Date(q.accepted_at!).getTime();
-            const days = (accepted - created) / (1000 * 60 * 60 * 24);
-            return sum + days;
-          }, 0) / closedDeals.length)
+          const created = new Date(q.created_at).getTime();
+          const accepted = new Date(q.accepted_at!).getTime();
+          const days = (accepted - created) / (1000 * 60 * 60 * 24);
+          return sum + days;
+        }, 0) / closedDeals.length)
         : 0;
 
       // Calculate real engagement metrics
       const totalSessions = new Set(pageAnalyticsData?.map(p => p.session_id) || []).size;
-      const pagesPerSession = totalSessions > 0 
+      const pagesPerSession = totalSessions > 0
         ? Math.round((pageAnalyticsData?.length || 0) / totalSessions * 10) / 10
         : 0;
-      
+
       const avgScrollDepth = pageAnalyticsData && pageAnalyticsData.length > 0
         ? Math.round(pageAnalyticsData.reduce((sum, p) => sum + (p.scroll_depth || 0), 0) / pageAnalyticsData.length)
         : 0;
@@ -463,6 +463,51 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
       });
       setProjectPerformance(projectStats);
       setLastUpdate(new Date());
+
+      // Sync Hub Reporting: Finance Snapshot
+      try {
+        const { updateFinance } = await import('@/lib/syncHub');
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const revenueToday = acceptedQuotes.filter(q => {
+          if (!q.accepted_at) return false;
+          return new Date(q.accepted_at) >= today;
+        }).reduce((sum, q) => sum + (Number(q.total) || 0), 0);
+
+        const revenueMtd = acceptedQuotes.filter(q => {
+          if (!q.accepted_at) return false;
+          return new Date(q.accepted_at) >= startOfMonth;
+        }).reduce((sum, q) => sum + (Number(q.total) || 0), 0);
+
+        const revenueYtd = acceptedQuotes.filter(q => {
+          if (!q.accepted_at) return false;
+          return new Date(q.accepted_at).getFullYear() === now.getFullYear();
+        }).reduce((sum, q) => sum + (Number(q.total) || 0), 0);
+
+        const totalRevenue = acceptedQuotes.reduce((sum, q) => sum + (Number(q.total) || 0), 0);
+
+        // Using acceptedQuotes count as total customers for now
+        const totalCustomers = acceptedQuotes.length;
+
+        // MRR and active subs proxy for Vision-Sync (projects with subscription_price)
+        const mrr = projectsData?.reduce((sum, p) => sum + (Number(p.subscription_price) || 0), 0) || 0;
+        const activeSubs = projectsData?.filter(p => Number(p.subscription_price) > 0).length || 0;
+
+        await updateFinance({
+          mrrPence: Math.round(mrr * 100),
+          arrPence: Math.round(mrr * 12 * 100),
+          totalRevenuePence: Math.round(totalRevenue * 100),
+          revenueTodayPence: Math.round(revenueToday * 100),
+          revenueMtdPence: Math.round(revenueMtd * 100),
+          revenueYtdPence: Math.round(revenueYtd * 100),
+          totalCustomers: totalCustomers,
+          activeSubscriptions: activeSubs,
+        });
+      } catch (e) {
+        console.warn('[SyncHub] Failed to update finance snapshot:', e);
+      }
 
       if (showNotification) {
         toast.success('Analytics data updated in real-time!', {

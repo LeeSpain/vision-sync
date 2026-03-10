@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { reportEvent, updateDailyMetrics } from '@/lib/syncHub';
 
 export interface UserProfile {
   id: string;
@@ -181,6 +182,13 @@ export const useAuth = () => {
         title: "Success!",
         description: "Please check your email to confirm your account."
       });
+
+      // Sync Hub Reporting
+      await reportEvent('new_signup', {
+        label: `New Vision-Sync member — ${fullName}`,
+        metadata: { name: fullName }
+      });
+      await updateDailyMetrics({ newSignups: 1 });
     }
 
     return { error };

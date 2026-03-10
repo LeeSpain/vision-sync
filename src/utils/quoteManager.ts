@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { reportEvent, updateDailyMetrics } from '@/lib/syncHub';
 
 export interface QuoteLineItem {
   id: string;
@@ -34,7 +35,7 @@ export const quoteManager = {
     try {
       // Generate quote number
       const quoteNumber = `QT-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
-      
+
       const { data, error } = await supabase
         .from('quotes')
         .insert([{
@@ -111,7 +112,7 @@ export const quoteManager = {
       if (updates.line_items) {
         updateData.line_items = updates.line_items as any;
       }
-      
+
       const { data, error } = await supabase
         .from('quotes')
         .update(updateData as any)
@@ -177,6 +178,18 @@ export const quoteManager = {
 
   async acceptQuote(quoteId: string): Promise<boolean> {
     try {
+      // Fetch quote details first for Sync Hub reporting
+      const { data: quote, error: fetchError } = await supabase
+        .from('quotes')
+        .select('*')
+        .eq('id', quoteId)
+        .single();
+
+      if (fetchError || !quote) {
+        console.error('Error fetching quote for acceptance:', fetchError);
+        return false;
+      }
+
       const { error } = await supabase
         .from('quotes')
         .update({
@@ -189,6 +202,16 @@ export const quoteManager = {
         console.error('Error accepting quote:', error);
         return false;
       }
+
+      // Sync Hub Reporting
+      const quoteDetails: any = quote;
+      const amountPence = Math.round(Number(quoteDetails.total || 0) * 100);
+      await reportEvent('new_sale', {
+        amount: amountPence,
+        label: `Vision-Sync sale — ${quoteDetails.project_name || 'Project'} £${(amountPence / 100).toFixed(2)}`,
+        metadata: { projectName: quoteDetails.project_name, quoteId }
+      });
+      await updateDailyMetrics({ revenuePence: amountPence });
 
       return true;
     } catch (error) {

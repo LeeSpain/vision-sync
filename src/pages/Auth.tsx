@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Session, User } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
+import { reportEvent, updateDailyMetrics } from '@/lib/syncHub';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -76,6 +77,13 @@ const Auth = () => {
           title: t('auth.success'),
           description: t('auth.checkEmail')
         });
+
+        // Sync Hub Reporting
+        await reportEvent('new_signup', {
+          label: `New Vision-Sync member — ${displayName}`,
+          metadata: { name: displayName }
+        });
+        await updateDailyMetrics({ newSignups: 1 });
       }
     } catch (error) {
       toast({
