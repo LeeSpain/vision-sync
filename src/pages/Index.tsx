@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowRight, Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Target, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
 import CustomQuoteModal from '@/components/CustomQuoteModal';
 import { useTranslation } from 'react-i18next';
+import { INDUSTRIES } from '@/data/industries';
 
 export default function Index() {
   const [showQuoteModal, setShowQuoteModal] = useState(false);
@@ -227,6 +228,46 @@ export default function Index() {
 
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Industry Selector Section */}
+      <section id="industries" className="py-24 px-4 sm:px-6 lg:px-8 bg-white border-b border-soft-lilac/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-sm font-bold text-electric-blue uppercase tracking-wider mb-3">Your Industry</h2>
+            <h3 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
+              What type of business are you?
+            </h3>
+            <p className="text-lg text-cool-gray max-w-2xl mx-auto">
+              Pick your industry and we'll show you exactly what Vision-Sync can do for you.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {INDUSTRIES.map((industry) => (
+              <Link
+                key={industry.slug}
+                to={`/solutions/${industry.slug}`}
+                className="group bg-white border-2 border-slate-200 rounded-2xl p-6 hover:border-electric-blue hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+              >
+                <div className="mb-4">
+                  <div className="w-12 h-12 bg-slate-50 group-hover:bg-electric-blue/10 rounded-xl flex items-center justify-center transition-colors">
+                    <Briefcase className="h-6 w-6 text-midnight-navy group-hover:text-electric-blue transition-colors" />
+                  </div>
+                </div>
+                <h4 className="font-bold text-midnight-navy group-hover:text-electric-blue transition-colors mb-2 leading-snug">
+                  {industry.name}
+                </h4>
+                <p className="text-sm text-cool-gray line-clamp-2 flex-grow leading-relaxed">
+                  {industry.painStatement}
+                </p>
+                <div className="mt-4 flex items-center text-electric-blue text-sm font-medium group-hover:gap-2 transition-all">
+                  See how it works
+                  <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

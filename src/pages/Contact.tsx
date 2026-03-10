@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import SEOHead from '@/components/SEOHead';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Shield } from 'lucide-react';
+import { Shield, CheckCircle, ArrowRight, Send, MessageSquare } from 'lucide-react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';

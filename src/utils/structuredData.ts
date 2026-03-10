@@ -7,8 +7,8 @@ export const generateOrganizationSchema = () => ({
   "@type": "Organization",
   "name": "Vision-Sync Forge",
   "description": "Professional AI-powered web development and custom software solutions",
-  "url": "https://vision-sync-forge.lovable.app",
-  "logo": "https://vision-sync-forge.lovable.app/favicon.png",
+  "url": "https://www.vision-sync.co",
+  "logo": "https://www.vision-sync.co/og-image.svg",
   "sameAs": [
     // Add social media links here when available
   ],

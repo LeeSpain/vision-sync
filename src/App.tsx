@@ -2,13 +2,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Platform from "./pages/Platform";
 import Solutions from "./pages/Solutions";
+import ModulePicker from './pages/ModulePicker';
+import QuotePortal from './pages/QuotePortal';
 import Modules from "./pages/Modules";
 import Pricing from "./pages/Pricing";
 import DynamicProjectPage from "./components/DynamicProjectDetail";
@@ -44,7 +46,10 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/platform" element={<Platform />} />
-            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/solutions" element={<Navigate to="/#industries" replace />} />
+            <Route path="/solutions/:industrySlug" element={<Solutions />} />
+            <Route path="/solutions/:industrySlug/build" element={<ModulePicker />} />
+            <Route path="/quote/:quoteReference" element={<QuotePortal />} />
             <Route path="/modules" element={<Modules />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact" element={<Contact />} />

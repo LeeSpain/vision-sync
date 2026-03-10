@@ -77,6 +77,13 @@ export type Database = {
           long_description: string | null
           monthly_addon_price: number | null
           setup_fee: number | null
+          internal_cost: number | null
+          ex_vat_price: number | null
+          iva_amount: number | null
+          total_inc_vat: number | null
+          is_voice_module: boolean | null
+          voice_minutes: number | null
+          industry_slugs: Json | null
           features: Json | null
           is_active: boolean | null
           sort_order: number | null
@@ -91,6 +98,13 @@ export type Database = {
           long_description?: string | null
           monthly_addon_price?: number | null
           setup_fee?: number | null
+          internal_cost?: number | null
+          ex_vat_price?: number | null
+          iva_amount?: number | null
+          total_inc_vat?: number | null
+          is_voice_module?: boolean | null
+          voice_minutes?: number | null
+          industry_slugs?: Json | null
           features?: Json | null
           is_active?: boolean | null
           sort_order?: number | null
@@ -105,6 +119,13 @@ export type Database = {
           long_description?: string | null
           monthly_addon_price?: number | null
           setup_fee?: number | null
+          internal_cost?: number | null
+          ex_vat_price?: number | null
+          iva_amount?: number | null
+          total_inc_vat?: number | null
+          is_voice_module?: boolean | null
+          voice_minutes?: number | null
+          industry_slugs?: Json | null
           features?: Json | null
           is_active?: boolean | null
           sort_order?: number | null
@@ -120,6 +141,16 @@ export type Database = {
           slug: string
           summary: string | null
           description: string | null
+          industry_slug: string | null
+          internal_cost: number | null
+          ex_vat_price: number | null
+          iva_amount: number | null
+          total_inc_vat: number | null
+          voice_included: boolean | null
+          voice_minutes_included: number | null
+          pain_statement: string | null
+          base_includes: Json | null
+          icon_name: string | null
           industries: Json | null
           included_modules: Json | null
           cta_label: string | null
@@ -136,6 +167,16 @@ export type Database = {
           slug: string
           summary?: string | null
           description?: string | null
+          industry_slug?: string | null
+          internal_cost?: number | null
+          ex_vat_price?: number | null
+          iva_amount?: number | null
+          total_inc_vat?: number | null
+          voice_included?: boolean | null
+          voice_minutes_included?: number | null
+          pain_statement?: string | null
+          base_includes?: Json | null
+          icon_name?: string | null
           industries?: Json | null
           included_modules?: Json | null
           cta_label?: string | null
@@ -152,6 +193,16 @@ export type Database = {
           slug?: string
           summary?: string | null
           description?: string | null
+          industry_slug?: string | null
+          internal_cost?: number | null
+          ex_vat_price?: number | null
+          iva_amount?: number | null
+          total_inc_vat?: number | null
+          voice_included?: boolean | null
+          voice_minutes_included?: number | null
+          pain_statement?: string | null
+          base_includes?: Json | null
+          icon_name?: string | null
           industries?: Json | null
           included_modules?: Json | null
           cta_label?: string | null
@@ -207,6 +258,96 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quotes: {
+        Row: {
+          id: string
+          quote_reference: string
+          client_first_name: string
+          client_last_name: string
+          business_name: string
+          email: string
+          phone: string | null
+          industry_slug: string
+          industry_name: string
+          base_package_name: string
+          base_ex_vat: number
+          base_iva: number
+          base_inc_vat: number
+          modules_selected: Json
+          modules_ex_vat_total: number
+          modules_iva_total: number
+          modules_inc_vat_total: number
+          total_ex_vat: number
+          total_iva: number
+          total_inc_vat: number
+          client_notes: string | null
+          status: string
+          sent_at: string | null
+          viewed_at: string | null
+          contacted_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          quote_reference?: string
+          client_first_name: string
+          client_last_name: string
+          business_name: string
+          email: string
+          phone?: string | null
+          industry_slug: string
+          industry_name: string
+          base_package_name: string
+          base_ex_vat: number
+          base_iva: number
+          base_inc_vat: number
+          modules_selected?: Json
+          modules_ex_vat_total?: number
+          modules_iva_total?: number
+          modules_inc_vat_total?: number
+          total_ex_vat: number
+          total_iva: number
+          total_inc_vat: number
+          client_notes?: string | null
+          status?: string
+          sent_at?: string | null
+          viewed_at?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          quote_reference?: string
+          client_first_name?: string
+          client_last_name?: string
+          business_name?: string
+          email?: string
+          phone?: string | null
+          industry_slug?: string
+          industry_name?: string
+          base_package_name?: string
+          base_ex_vat?: number
+          base_iva?: number
+          base_inc_vat?: number
+          modules_selected?: Json
+          modules_ex_vat_total?: number
+          modules_iva_total?: number
+          modules_inc_vat_total?: number
+          total_ex_vat?: number
+          total_iva?: number
+          total_inc_vat?: number
+          client_notes?: string | null
+          status?: string
+          sent_at?: string | null
+          viewed_at?: string | null
+          contacted_at?: string | null
           created_at?: string
           updated_at?: string
         }

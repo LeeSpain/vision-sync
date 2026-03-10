@@ -3,12 +3,12 @@
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://vision-sync-forge.lovable.app/#organization",
+      "@id": "https://www.vision-sync.co/#organization",
       "name": "Vision-Sync Forge",
-      "url": "https://vision-sync-forge.lovable.app",
+      "url": "https://www.vision-sync.co",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://vision-sync-forge.lovable.app/favicon.png"
+        "url": "https://www.vision-sync.co/og-image.svg"
       },
       "sameAs": [],
       "description": "Leading provider of AI agents, chatbots, and intelligent automation solutions for businesses"
@@ -35,7 +35,7 @@
       "@type": "Service",
       "serviceType": "AI Agent Development",
       "provider": {
-        "@id": "https://vision-sync-forge.lovable.app/#organization"
+        "@id": "https://www.vision-sync.co/#organization"
       },
       "areaServed": "Worldwide",
       "hasOfferCatalog": {

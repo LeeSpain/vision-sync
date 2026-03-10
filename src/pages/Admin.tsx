@@ -29,6 +29,7 @@ import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
 import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
 import RoutingRulesManager from '@/components/admin/RoutingRulesManager';
 import { SalesTeamManager } from '@/components/admin/SalesTeamManager';
+import { QuotesManager } from '@/components/admin/QuotesManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -451,6 +452,9 @@ const Admin = () => {
 
       case 'leads':
         return <LeadsManager />;
+
+      case 'quotes':
+        return <QuotesManager />;
 
       case 'sales-pipeline':
         return <EnhancedLeadsManager />;
