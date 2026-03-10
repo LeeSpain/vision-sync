@@ -96,15 +96,19 @@ export function ConversationsManager() {
   const calculateStats = (convos: Conversation[]) => {
     const totalConversations = convos.length;
     const activeChats = convos.filter(c => c.session_id).length;
-    const qualifiedLeads = Math.floor(convos.length * 0.3); // Mock calculation
-    const avgScore = 7.5; // Mock average score
-    const totalMessages = convos.length * 2; // Estimate 2 messages per conversation
+    const qualifiedLeads = convos.filter(c => c.lead_qualified === true).length;
+    const scoredConvos = convos.filter(c => typeof c.conversion_score === 'number' && c.conversion_score > 0);
+    const avgScore = scoredConvos.length > 0
+      ? scoredConvos.reduce((sum, c) => sum + (c.conversion_score ?? 0), 0) / scoredConvos.length
+      : 0;
+    // Each row = 1 user message + 1 AI response = 2 messages
+    const totalMessages = totalConversations * 2;
 
     setStats({
       totalConversations,
       activeChats,
       qualificationRate: totalConversations > 0 ? (qualifiedLeads / totalConversations) * 100 : 0,
-      averageScore: avgScore,
+      averageScore: Math.round(avgScore * 10) / 10,
       totalMessages,
       avgMessagesPerConvo: 2
     });

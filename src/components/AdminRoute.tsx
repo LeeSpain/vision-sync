@@ -4,10 +4,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-    const { user, loading } = useAuth();
+    const { user, loading, adminStatus } = useAuth();
     const location = useLocation();
 
-    if (loading) {
+    if (loading || (user && adminStatus === 'unknown')) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
                 <div className="flex flex-col items-center">
@@ -18,12 +18,12 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
         );
     }
 
-    // In a production app, you should also verify the user's role here
-    // typically by checking a custom claim or querying a user_roles table
-    // For now, we ensure they are authenticated
     if (!user) {
-        // Redirect to auth page and save the attempted URL
         return <Navigate to="/auth" state={{ from: location }} replace />;
+    }
+
+    if (adminStatus !== 'admin') {
+        return <Navigate to="/" replace />;
     }
 
     return <>{children}</>;

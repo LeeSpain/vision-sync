@@ -3,8 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { CurrencySelector } from '@/components/ui/currency-selector';
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { LocaleSelector } from '@/components/common/LocaleSelector';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/components/ShareButton';
 import HeaderChatButton from '@/components/chat/HeaderChatButton';
@@ -58,8 +57,7 @@ const Header = () => {
             ))}
             <div className="flex items-center space-x-3">
               <ShareButton />
-              <LanguageSwitcher variant="compact" />
-              <CurrencySelector variant="compact" />
+              <LocaleSelector variant="compact" />
               {user ? (
                 <div className="flex items-center space-x-2">
                   <Link to="/admin">
@@ -110,10 +108,7 @@ const Header = () => {
                 </Link>
               ))}
               <ShareButton fullWidth />
-              <div className="mb-4 flex space-x-2">
-                <LanguageSwitcher />
-                <CurrencySelector />
-              </div>
+              <LocaleSelector className="w-full" />
               {user ? (
                 <div className="flex flex-col space-y-2">
                   <Link to="/admin" onClick={() => setIsMenuOpen(false)}>

@@ -98,8 +98,8 @@ const BrainAgentDashboard: React.FC = () => {
 
   useEffect(() => {
     loadDashboardData();
-    setupRealtimeSubscription();
-    
+    const cleanup = setupRealtimeSubscription();
+
     // Add welcome message from Nexus
     setBrainMessages([{
       id: 'welcome',
@@ -107,6 +107,8 @@ const BrainAgentDashboard: React.FC = () => {
       content: "Hello! I'm Nexus, your AI orchestrator. I have full visibility into all business operations, conversations, leads, and metrics. How can I help you today?",
       timestamp: new Date()
     }]);
+
+    return cleanup;
   }, []);
 
   const setupRealtimeSubscription = () => {

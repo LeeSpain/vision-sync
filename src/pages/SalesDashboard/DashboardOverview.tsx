@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
     Users,
@@ -11,22 +11,102 @@ import {
     CreditCard,
     ChevronRight,
     ArrowUpRight,
-    TrendingDown
+    TrendingDown,
+    Loader2
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
+
+interface DashboardMetrics {
+    totalProspects: number;
+    activeLeads: number;
+    activeDeals: number;
+    pipelineValue: number;
+    demosGenerated: number;
+    quotesSent: number;
+    contractsPending: number;
+    wonThisMonth: number;
+}
 
 export default function DashboardOverview() {
     const { t } = useTranslation();
-    const [metrics] = useState({
-        totalProspects: 1420,
-        activeLeads: 85,
-        activeDeals: 24,
-        pipelineValue: 450000,
-        demosGenerated: 12,
-        quotesSent: 8,
-        contractsPending: 3,
-        wonThisMonth: 5,
+    const [metrics, setMetrics] = useState<DashboardMetrics>({
+        totalProspects: 0,
+        activeLeads: 0,
+        activeDeals: 0,
+        pipelineValue: 0,
+        demosGenerated: 0,
+        quotesSent: 0,
+        contractsPending: 0,
+        wonThisMonth: 0,
     });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadMetrics();
+    }, []);
+
+    const loadMetrics = async () => {
+        try {
+            const startOfMonth = new Date();
+            startOfMonth.setDate(1);
+            startOfMonth.setHours(0, 0, 0, 0);
+
+            const [
+                prospectsResult,
+                leadsResult,
+                newLeadsResult,
+                qualifiedLeadsResult,
+                conversationsResult,
+            ] = await Promise.all([
+                // Total prospects (all leads ever captured)
+                supabase.from('leads').select('*', { count: 'exact', head: true }),
+                // Active leads (not closed)
+                supabase.from('leads').select('*', { count: 'exact', head: true }).not('status', 'in', '("Won","Lost","Closed")'),
+                // New leads this month
+                supabase.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()).eq('status', 'New'),
+                // Qualified leads (won this month)
+                supabase.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()).eq('status', 'Won'),
+                // AI conversations this month (used for pipeline activity)
+                supabase.from('ai_conversations').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
+            ]);
+
+            // Estimate pipeline value from active leads (opportunityScore * avg deal size)
+            const { data: activeLeadData } = await supabase
+                .from('leads')
+                .select('opportunity_score')
+                .not('status', 'in', '("Won","Lost","Closed")');
+
+            const avgDealSize = 5000;
+            const pipelineValue = (activeLeadData || []).reduce((sum, lead) => {
+                const score = (lead as { opportunity_score: number | null }).opportunity_score ?? 5;
+                return sum + (score / 10) * avgDealSize;
+            }, 0);
+
+            setMetrics({
+                totalProspects: prospectsResult.count ?? 0,
+                activeLeads: leadsResult.count ?? 0,
+                activeDeals: qualifiedLeadsResult.count ?? 0,
+                pipelineValue: Math.round(pipelineValue),
+                demosGenerated: conversationsResult.count ?? 0,
+                quotesSent: newLeadsResult.count ?? 0,
+                contractsPending: 0,
+                wonThisMonth: qualifiedLeadsResult.count ?? 0,
+            });
+        } catch (err) {
+            console.error('Error loading dashboard metrics:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-brand" />
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -60,28 +140,28 @@ export default function DashboardOverview() {
                     value={metrics.totalProspects.toLocaleString()}
                     icon={<Target className="h-5 w-5 text-blue-500" />}
                     trend={t('salesDashboard.overview.prospectsTrend')}
-                    trendUp={true}
+                    trendUp={metrics.totalProspects > 0}
                 />
                 <MetricCard
                     title={t('salesDashboard.overview.activeLeads')}
                     value={metrics.activeLeads}
                     icon={<Users className="h-5 w-5 text-indigo-500" />}
                     trend={t('salesDashboard.overview.leadsTrend')}
-                    trendUp={true}
+                    trendUp={metrics.activeLeads > 0}
                 />
                 <MetricCard
                     title={t('salesDashboard.overview.activeDeals')}
                     value={metrics.activeDeals}
                     icon={<Briefcase className="h-5 w-5 text-orange-500" />}
                     trend={t('salesDashboard.overview.dealsTrend')}
-                    trendUp={true}
+                    trendUp={metrics.activeDeals > 0}
                 />
                 <MetricCard
                     title={t('salesDashboard.overview.pipelineValue')}
-                    value={`$${(metrics.pipelineValue / 1000).toFixed(0)}k`}
+                    value={metrics.pipelineValue > 0 ? `$${(metrics.pipelineValue / 1000).toFixed(0)}k` : '$0'}
                     icon={<TrendingUp className="h-5 w-5 text-emerald-500" />}
                     trend={t('salesDashboard.overview.pipelineTrend')}
-                    trendUp={true}
+                    trendUp={metrics.pipelineValue > 0}
                     highlight={true}
                 />
             </div>
@@ -151,33 +231,82 @@ export default function DashboardOverview() {
                     </div>
                 </div>
 
-                {/* Pipeline Summary Chart Placeholder */}
+                {/* Pipeline Summary */}
                 <div className="bg-white dark:bg-slate-900 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col h-[400px]">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('salesDashboard.overview.pipelineChart')}</h3>
                         <span className="text-sm text-slate-500 dark:text-slate-400">{t('salesDashboard.overview.byStage')}</span>
                     </div>
-                    <div className="flex-1 flex flex-col justify-end space-y-3">
-                        {[
-                            { stage: t('salesDashboard.overview.stageLead'), count: 42, color: "bg-slate-300 dark:bg-slate-700", width: "100%" },
-                            { stage: t('salesDashboard.overview.stageContacted'), count: 28, color: "bg-blue-400", width: "80%" },
-                            { stage: t('salesDashboard.overview.stageDemo'), count: 14, color: "bg-indigo-500", width: "60%" },
-                            { stage: t('salesDashboard.overview.stageProposal'), count: 8, color: "bg-brand", width: "40%" },
-                            { stage: t('salesDashboard.overview.stageClosing'), count: 3, color: "bg-emerald-500", width: "20%" },
-                        ].map((bar, i) => (
-                            <div key={i} className="w-full">
-                                <div className="flex justify-between text-xs mb-1">
-                                    <span className="font-medium text-slate-600 dark:text-slate-400">{bar.stage}</span>
-                                    <span className="text-slate-900 dark:text-white font-bold">{bar.count}</span>
-                                </div>
-                                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className={`h-full ${bar.color} rounded-full`} style={{ width: bar.width }}></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <PipelineStages />
                 </div>
             </div>
+        </div>
+    );
+}
+
+function PipelineStages() {
+    const { t } = useTranslation();
+    const [stageCounts, setStageCounts] = useState<Record<string, number>>({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadStages = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('leads')
+                    .select('status');
+
+                if (error) throw error;
+
+                const counts: Record<string, number> = {};
+                (data || []).forEach(lead => {
+                    counts[lead.status] = (counts[lead.status] ?? 0) + 1;
+                });
+                setStageCounts(counts);
+            } catch (err) {
+                console.error('Error loading pipeline stages:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadStages();
+    }, []);
+
+    const stages = [
+        { key: 'New', label: t('salesDashboard.overview.stageLead'), color: "bg-slate-300 dark:bg-slate-700" },
+        { key: 'Contacted', label: t('salesDashboard.overview.stageContacted'), color: "bg-blue-400" },
+        { key: 'Qualified', label: t('salesDashboard.overview.stageDemo'), color: "bg-indigo-500" },
+        { key: 'Proposal', label: t('salesDashboard.overview.stageProposal'), color: "bg-brand" },
+        { key: 'Won', label: t('salesDashboard.overview.stageClosing'), color: "bg-emerald-500" },
+    ];
+
+    const maxCount = Math.max(...stages.map(s => stageCounts[s.key] ?? 0), 1);
+
+    if (loading) {
+        return (
+            <div className="flex-1 flex items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex-1 flex flex-col justify-end space-y-3">
+            {stages.map((stage) => {
+                const count = stageCounts[stage.key] ?? 0;
+                const widthPct = `${Math.max((count / maxCount) * 100, count > 0 ? 5 : 0)}%`;
+                return (
+                    <div key={stage.key} className="w-full">
+                        <div className="flex justify-between text-xs mb-1">
+                            <span className="font-medium text-slate-600 dark:text-slate-400">{stage.label}</span>
+                            <span className="text-slate-900 dark:text-white font-bold">{count}</span>
+                        </div>
+                        <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div className={`h-full ${stage.color} rounded-full transition-all duration-500`} style={{ width: widthPct }}></div>
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     );
 }

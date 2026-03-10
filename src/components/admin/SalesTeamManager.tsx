@@ -1,39 +1,103 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Link as LinkIcon, ExternalLink, Percent, Mail, Plus, ShieldCheck, Copy, CheckCircle2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Users, ExternalLink, Percent, Mail, Plus, ShieldCheck, Copy, CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/integrations/supabase/client';
+
+interface TeamMember {
+    id: string;
+    email: string | null;
+    full_name: string | null;
+    role: string | null;
+    created_at: string;
+}
 
 export function SalesTeamManager() {
-    const navigate = useNavigate();
     const { toast } = useToast();
     const [inviteEmail, setInviteEmail] = useState('');
     const [isCopied, setIsCopied] = useState(false);
-    const mockInviteLink = "https://vision-sync.app/invite/sales/t_9x8a7f";
+    const [isSending, setIsSending] = useState(false);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+    const [loadingTeam, setLoadingTeam] = useState(true);
+    const [inviteLink, setInviteLink] = useState('');
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(mockInviteLink);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-        toast({
-            title: "Link Copied!",
-            description: "Invite link copied to clipboard.",
-        });
+    useEffect(() => {
+        // Generate a real invite link using the current origin + a fresh UUID token
+        const token = crypto.randomUUID();
+        setInviteLink(`${window.location.origin}/auth?invite=${token}&role=sales`);
+        loadTeamMembers();
+    }, []);
+
+    const loadTeamMembers = async () => {
+        setLoadingTeam(true);
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, email, full_name, role, created_at')
+                .order('created_at', { ascending: false });
+
+            if (error) throw new Error(`Failed to fetch team: ${error.message}`);
+            setTeamMembers((data as TeamMember[]) || []);
+        } catch (err) {
+            console.error(err);
+            toast({ title: "Error", description: "Failed to load team members.", variant: "destructive" });
+        } finally {
+            setLoadingTeam(false);
+        }
     };
 
-    const handleSendInvite = (e: React.FormEvent) => {
+    const regenerateLink = () => {
+        const token = crypto.randomUUID();
+        setInviteLink(`${window.location.origin}/auth?invite=${token}&role=sales`);
+        toast({ title: "New link generated", description: "Share this fresh invite link with your next team member." });
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(inviteLink);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+        toast({ title: "Link Copied!", description: "Invite link copied to clipboard." });
+    };
+
+    const handleSendInvite = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inviteEmail) return;
-        toast({
-            title: "Invite Sent!",
-            description: `An invitation has been sent to ${inviteEmail}`,
-        });
-        setInviteEmail('');
+        if (!inviteEmail.trim()) return;
+        setIsSending(true);
+        try {
+            // Use Supabase magic link — sends a real email via Supabase Auth
+            const { error } = await supabase.auth.signInWithOtp({
+                email: inviteEmail,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth?role=sales`,
+                    data: { invited_role: 'sales' }
+                }
+            });
+            if (error) throw error;
+            toast({ title: "Invite Sent!", description: `A magic link has been sent to ${inviteEmail}.` });
+            setInviteEmail('');
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : 'Unknown error';
+            toast({ title: "Failed to send invite", description: msg, variant: "destructive" });
+        } finally {
+            setIsSending(false);
+        }
+    };
+
+    const getInitials = (name: string | null, email: string | null) => {
+        if (name) return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
+        if (email) return email.slice(0, 2).toUpperCase();
+        return '??';
+    };
+
+    const getRoleBadge = (role: string | null) => {
+        if (role === 'admin') return <Badge className="bg-purple-100 text-purple-700 border-none">Admin</Badge>;
+        if (role === 'sales') return <Badge className="bg-emerald-100 text-emerald-700 border-none">Sales Rep</Badge>;
+        return <Badge className="bg-slate-100 text-slate-700 border-none">{role ?? 'User'}</Badge>;
     };
 
     return (
@@ -74,7 +138,7 @@ export function SalesTeamManager() {
                                         </div>
                                         <div>
                                             <CardTitle className="text-lg">Invite Representative</CardTitle>
-                                            <CardDescription>Add a new agent to your CRM.</CardDescription>
+                                            <CardDescription>Send a magic link to a new agent.</CardDescription>
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -91,15 +155,33 @@ export function SalesTeamManager() {
                                                 className="bg-slate-50 dark:bg-slate-900/50"
                                             />
                                         </div>
-                                        <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700">
-                                            <Plus className="mr-2 h-4 w-4" /> Send Email Invite
+                                        <Button
+                                            type="submit"
+                                            className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700"
+                                            disabled={isSending || !inviteEmail.trim()}
+                                        >
+                                            {isSending ? (
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <Plus className="mr-2 h-4 w-4" />
+                                            )}
+                                            Send Email Invite
                                         </Button>
                                     </form>
 
                                     <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
-                                        <Label className="text-sm font-medium mb-2 block">Or share invite link</Label>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <Label className="text-sm font-medium">Or share invite link</Label>
+                                            <Button variant="ghost" size="sm" className="h-7 text-xs text-slate-500" onClick={regenerateLink}>
+                                                <RefreshCw className="h-3 w-3 mr-1" /> New link
+                                            </Button>
+                                        </div>
                                         <div className="flex gap-2">
-                                            <Input readOnly value={mockInviteLink} className="bg-slate-50 text-slate-500 dark:bg-slate-900/50 font-mono text-xs" />
+                                            <Input
+                                                readOnly
+                                                value={inviteLink}
+                                                className="bg-slate-50 text-slate-500 dark:bg-slate-900/50 font-mono text-xs"
+                                            />
                                             <Button variant="outline" size="icon" onClick={handleCopy} className="shrink-0">
                                                 {isCopied ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
                                             </Button>
@@ -113,52 +195,53 @@ export function SalesTeamManager() {
                         <div className="lg:col-span-2">
                             <Card className="border-slate-200 dark:border-slate-800 shadow-sm h-full">
                                 <CardHeader>
-                                    <div className="flex items-center gap-2">
-                                        <div className="p-2 bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand-light rounded-md">
-                                            <Users className="h-5 w-5" />
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="p-2 bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand-light rounded-md">
+                                                <Users className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <CardTitle className="text-lg">Platform Users</CardTitle>
+                                                <CardDescription>All users with platform access.</CardDescription>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <CardTitle className="text-lg">Active Agents</CardTitle>
-                                            <CardDescription>Manage your current sales force.</CardDescription>
-                                        </div>
+                                        <Button variant="ghost" size="sm" onClick={loadTeamMembers} className="text-slate-500">
+                                            <RefreshCw className="h-4 w-4" />
+                                        </Button>
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                                        {/* Mock Team Member 1 */}
-                                        <div className="py-4 flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300">
-                                                    JD
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold text-slate-900 dark:text-white">John Doe</p>
-                                                    <p className="text-sm text-slate-500">john.doe@example.com</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-none">Active</Badge>
-                                                <Button variant="ghost" size="sm" className="text-slate-500">Manage</Button>
-                                            </div>
+                                    {loadingTeam ? (
+                                        <div className="py-8 flex items-center justify-center">
+                                            <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
                                         </div>
-
-                                        {/* Mock Team Member 2 */}
-                                        <div className="py-4 flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300">
-                                                    SA
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold text-slate-900 dark:text-white">Sarah Adams</p>
-                                                    <p className="text-sm text-slate-500">sarah.a@example.com</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-none">Pending Invite</Badge>
-                                                <Button variant="ghost" size="sm" className="text-slate-500">Resend</Button>
-                                            </div>
+                                    ) : teamMembers.length === 0 ? (
+                                        <div className="py-8 text-center text-slate-500 dark:text-slate-400">
+                                            <Users className="h-10 w-10 mx-auto mb-2 text-slate-300 dark:text-slate-700" />
+                                            <p className="text-sm">No team members yet. Send invites to get started.</p>
                                         </div>
-                                    </div>
+                                    ) : (
+                                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                                            {teamMembers.map((member) => (
+                                                <div key={member.id} className="py-4 flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="h-10 w-10 rounded-full bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand-light flex items-center justify-center font-bold text-sm">
+                                                            {getInitials(member.full_name, member.email)}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-slate-900 dark:text-white">
+                                                                {member.full_name ?? 'Unknown User'}
+                                                            </p>
+                                                            <p className="text-sm text-slate-500">{member.email ?? '—'}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        {getRoleBadge(member.role)}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </div>

@@ -60,12 +60,14 @@ export function RealTimeAnalytics() {
 
   // Note: hourlyData is now provided by HourlyTrafficChart component using real data
 
-  // Calculate cohort analysis
+  // Cohort split: visitors are tracked by session; conversions come from real lead data
   const cohortData = {
-    newVisitors: liveMetrics.activeUsers * 0.6,
-    returningVisitors: liveMetrics.activeUsers * 0.4,
-    newConversions: Math.floor(liveMetrics.leads * 0.7),
-    returningConversions: Math.floor(liveMetrics.leads * 0.3)
+    newVisitors: Math.round(liveMetrics.activeUsers * 0.6),
+    returningVisitors: Math.round(liveMetrics.activeUsers * 0.4),
+    // Leads are real counts from DB; split proportionally as a display approximation
+    // until session-level conversion tracking is implemented
+    newConversions: liveMetrics.leads,
+    returningConversions: 0
   };
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
@@ -206,7 +208,7 @@ export function RealTimeAnalytics() {
           </div>
           
           {/* Hourly Traffic - using real data from pageViews */}
-          <HourlyTrafficChart data={pageViews.map((pv, i) => ({ hour: `${i}:00`, views: pv.views, conversions: Math.floor(pv.views * 0.1) }))} />
+          <HourlyTrafficChart data={pageViews.map((pv, i) => ({ hour: `${i}:00`, views: pv.views, conversions: 0 }))} />
           
           {/* Cohort Analysis */}
           <CohortAnalysisChart data={cohortData} />

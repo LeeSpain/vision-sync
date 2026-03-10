@@ -578,12 +578,11 @@ serve(async (req) => {
   }
 
   try {
-    const { 
-      message, 
-      sessionId, 
-      conversationHistory = [], 
-      isAdmin = false, 
-      adminToken,
+    const {
+      message,
+      sessionId,
+      conversationHistory = [],
+      isAdmin = false,
       forceBrain = false,
       pageContext = '',
       currentAgentId = null
@@ -597,6 +596,29 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+    // Auth verification: admin/brain requests require a valid JWT
+    let authenticatedUserId: string | undefined;
+    if (isAdmin || forceBrain) {
+      const authHeader = req.headers.get('Authorization');
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return new Response(JSON.stringify({ error: 'Unauthorized: admin requests require authentication' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      const jwt = authHeader.slice(7);
+      const anonClient = createClient(supabaseUrl, supabaseAnonKey);
+      const { data: { user }, error: authError } = await anonClient.auth.getUser(jwt);
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized: invalid or expired token' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      authenticatedUserId = user.id;
+    }
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
     if (!lovableApiKey) {
@@ -664,7 +686,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'anthropic/claude-sonnet-4-5',
         messages,
         max_tokens: agent.max_tokens || 500,
         temperature: agent.temperature || 0.7,
@@ -808,6 +830,28 @@ serve(async (req) => {
           status: 'pending'
         });
     }
+
+    // Write ai_actions audit record on every response
+    await supabase
+      .from('ai_actions')
+      .insert({
+        agent_id: agent.id,
+        agent_type: agent.agent_type,
+        session_id: finalSessionId,
+        user_id: authenticatedUserId ?? null,
+        user_identifier: finalSessionId,
+        input: message,
+        output: responseText,
+        intent: analysis.intent,
+        confidence: analysis.confidence,
+        sentiment: analysis.sentiment,
+        flagged_for_review: analysis.confidence < 0.7,
+        lead_created: !!leadInfo,
+        escalated: analysis.escalationRequested,
+        handoff_triggered: handoffOccurred,
+        source: 'ai-router',
+        model: 'anthropic/claude-sonnet-4-5',
+      });
 
     const response: RouterResponse = {
       response: responseText,
