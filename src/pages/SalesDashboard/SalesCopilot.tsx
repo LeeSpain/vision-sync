@@ -10,13 +10,15 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 export default function SalesCopilot() {
+    const { t } = useTranslation();
     const [messages, setMessages] = useState([
         {
             id: 1,
             role: "assistant",
-            text: "Hi there! I'm your Vision Sales Copilot. How can I help you close more deals today?"
+            text: t('salesDashboard.salesCopilot.initialMessage')
         }
     ]);
     const [inputValue, setInputValue] = useState("");
@@ -43,16 +45,16 @@ export default function SalesCopilot() {
             setMessages(prev => [...prev, {
                 id: Date.now(),
                 role: "assistant",
-                text: "I'm currently running in mockup mode, but when fully wired, I can help analyze businesses, generate emails, and prepare quotes for you!"
+                text: t('salesDashboard.salesCopilot.mockupResponse')
             }]);
         }, 1000);
     };
 
     const prompts = [
-        { icon: Search, label: "Analyze Company", prompt: "Can you analyze Costa Blanca Villas and identify their digital weaknesses?" },
-        { icon: AlignLeft, label: "Summarize Prospect", prompt: "Summarize the prospect 'Marina Dental Clinic' and suggest a package to pitch." },
-        { icon: MessageSquare, label: "Write WhatsApp", prompt: "Write a short follow-up WhatsApp message for Almeria Motors." },
-        { icon: FileText, label: "Quote Summary", prompt: "Generate a bullet-point summary of the quote we sent to Sun Coast Care Home." }
+        { icon: Search, label: t('salesDashboard.salesCopilot.prompts.analyze.label'), prompt: t('salesDashboard.salesCopilot.prompts.analyze.prompt') },
+        { icon: AlignLeft, label: t('salesDashboard.salesCopilot.prompts.summarize.label'), prompt: t('salesDashboard.salesCopilot.prompts.summarize.prompt') },
+        { icon: MessageSquare, label: t('salesDashboard.salesCopilot.prompts.whatsapp.label'), prompt: t('salesDashboard.salesCopilot.prompts.whatsapp.prompt') },
+        { icon: FileText, label: t('salesDashboard.salesCopilot.prompts.quote.label'), prompt: t('salesDashboard.salesCopilot.prompts.quote.prompt') }
     ];
 
     return (
@@ -61,10 +63,10 @@ export default function SalesCopilot() {
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                         <Bot className="h-6 w-6 text-indigo-500" />
-                        AI Sales Copilot
+                        {t('salesDashboard.salesCopilot.title')}
                     </h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Your intelligent assistant for research, drafting, and deal strategy.
+                        {t('salesDashboard.salesCopilot.subtitle')}
                     </p>
                 </div>
             </div>
@@ -90,7 +92,7 @@ export default function SalesCopilot() {
 
                             {msg.role === 'user' && (
                                 <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 mt-1 text-xs font-bold">
-                                    ME
+                                    {t('salesDashboard.salesCopilot.me')}
                                 </div>
                             )}
                         </div>
@@ -104,7 +106,7 @@ export default function SalesCopilot() {
                     {/* Quick Prompts */}
                     {messages.length < 3 && (
                         <div className="mb-4">
-                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-1"><Sparkles className="h-3 w-3 inline mr-1" /> Try asking</p>
+                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-1"><Sparkles className="h-3 w-3 inline mr-1" /> {t('salesDashboard.salesCopilot.tryAsking')}</p>
                             <div className="flex flex-wrap gap-2">
                                 {prompts.map((p, i) => (
                                     <button
@@ -123,7 +125,7 @@ export default function SalesCopilot() {
                     {/* Form */}
                     <form onSubmit={handleSend} className="relative">
                         <Input
-                            placeholder="Ask Copilot anything..."
+                            placeholder={t('salesDashboard.salesCopilot.askAnything')}
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             className="pr-12 bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 h-14 text-base shadow-sm focus-visible:ring-brand"
@@ -138,7 +140,7 @@ export default function SalesCopilot() {
                         </Button>
                     </form>
                     <div className="text-center mt-2">
-                        <span className="text-[10px] text-slate-400">Copilot may produce inaccurate information about businesses. Always verify details.</span>
+                        <span className="text-[10px] text-slate-400">{t('salesDashboard.salesCopilot.disclaimer')}</span>
                     </div>
                 </div>
             </div>

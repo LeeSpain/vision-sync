@@ -8,8 +8,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation, Trans } from "react-i18next";
 
 export default function Contracts() {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const dealId = searchParams.get("deal");
 
@@ -17,14 +19,14 @@ export default function Contracts() {
         <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Contracts</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{t('salesDashboard.contracts.title')}</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Generate and manage digital service agreements.
+                        {t('salesDashboard.contracts.subtitle')}
                     </p>
                 </div>
                 <div className="flex gap-3">
                     <Button className="bg-brand hover:bg-brand-dark text-white shadow-sm">
-                        <FileSignature className="h-4 w-4 mr-2" /> Generate Agreement
+                        <FileSignature className="h-4 w-4 mr-2" /> {t('salesDashboard.contracts.generateAgreement')}
                     </Button>
                 </div>
             </div>
@@ -34,26 +36,28 @@ export default function Contracts() {
                     <FileSignature className="h-10 w-10 text-indigo-500" />
                 </div>
 
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">No Active Contract</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{t('salesDashboard.contracts.noActiveContract')}</h3>
 
                 {dealId ? (
                     <>
                         <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
-                            A contract has not been generated for deal <strong>{dealId}</strong> yet. Generating a contract will auto-fill terms based on the accepted quote.
+                            <Trans i18nKey="salesDashboard.contracts.noContractForDeal" values={{ dealId }}>
+                                A contract has not been generated for deal <strong>{{ dealId }}</strong> yet. Generating a contract will auto-fill terms based on the accepted quote.
+                            </Trans>
                         </p>
                         <Button className="bg-brand hover:bg-brand-dark text-white w-full sm:w-auto px-8">
-                            Generate Draft Contract from Quote
+                            {t('salesDashboard.contracts.generateDraft')}
                         </Button>
                     </>
                 ) : (
                     <>
                         <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
-                            Select a deal from your pipeline to generate and manage its specific legal agreements and signatures.
+                            {t('salesDashboard.contracts.selectDeal')}
                         </p>
                         <div className="p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-lg flex items-start text-left gap-3 max-w-lg">
                             <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
                             <p className="text-sm text-amber-800 dark:text-amber-200">
-                                <strong>Digital Signature Engine:</strong> The contract platform integration (e.g. DocuSign/HelloSign representation) is ready for live wiring pending production launch.
+                                <strong>{t('salesDashboard.contracts.digitalSignatureEngine')}</strong> {t('salesDashboard.contracts.signatureEngineDesc')}
                             </p>
                         </div>
                     </>
@@ -62,23 +66,23 @@ export default function Contracts() {
 
             {/* Template Mockup Display */}
             <div className="opacity-50 pointer-events-none mt-12">
-                <h4 className="text-sm border-b border-slate-200 dark:border-slate-800 pb-2 mb-6 font-bold uppercase tracking-wider text-slate-400 text-center">Contract Preview Interface Mockup</h4>
+                <h4 className="text-sm border-b border-slate-200 dark:border-slate-800 pb-2 mb-6 font-bold uppercase tracking-wider text-slate-400 text-center">{t('salesDashboard.contracts.previewMockup')}</h4>
                 <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-md">
                             <FileCheck className="h-6 w-6 text-emerald-500" />
                         </div>
                         <div>
-                            <h4 className="font-bold text-slate-900 dark:text-white">Master Service Agreement</h4>
+                            <h4 className="font-bold text-slate-900 dark:text-white">{t('salesDashboard.contracts.masterServiceAgreement')}</h4>
                             <div className="text-sm text-slate-500 flex gap-4 mt-1">
-                                <span>Generated: Oct 12, 2026</span>
-                                <span>Signatory: Elena Rodriguez</span>
+                                <span>{t('salesDashboard.contracts.generated')} Oct 12, 2026</span>
+                                <span>{t('salesDashboard.contracts.signatory')} Elena Rodriguez</span>
                             </div>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-none">Fully Signed</Badge>
-                        <Button variant="outline" size="sm">Download PDF</Button>
+                        <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-none">{t('salesDashboard.contracts.fullySigned')}</Badge>
+                        <Button variant="outline" size="sm">{t('salesDashboard.contracts.downloadPdf')}</Button>
                     </div>
                 </div>
             </div>

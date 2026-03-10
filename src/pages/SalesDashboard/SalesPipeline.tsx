@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Deal } from "@/types/sales";
+import { useTranslation } from "react-i18next";
 
 // Mock Data
 const STAGES = [
@@ -73,6 +74,7 @@ const mockDeals: Deal[] = [
 ];
 
 export default function SalesPipeline() {
+    const { t } = useTranslation();
     const [deals, setDeals] = useState<Deal[]>(mockDeals);
 
     // Filter deals by stage
@@ -94,14 +96,14 @@ export default function SalesPipeline() {
         <div className="flex flex-col h-[calc(100vh-8rem)] animate-fade-in">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0 mb-6">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Sales Pipeline</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{t('salesDashboard.pipeline.title')}</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Drag and drop deals across stages to track progress.
+                        {t('salesDashboard.pipeline.subtitle')}
                     </p>
                 </div>
                 <div className="flex gap-3">
                     <Button className="bg-brand hover:bg-brand-dark text-white shadow-sm whitespace-nowrap">
-                        <Plus className="h-4 w-4 mr-2" /> Add Deal
+                        <Plus className="h-4 w-4 mr-2" /> {t('salesDashboard.pipeline.addDeal')}
                     </Button>
                 </div>
             </div>
@@ -120,7 +122,7 @@ export default function SalesPipeline() {
                                 {/* Column Header */}
                                 <div className="p-4 border-b border-slate-200 dark:border-slate-800 shrink-0 select-none">
                                     <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{stage}</h3>
+                                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{t(`salesDashboard.pipeline.stage${stage.replace(/\s+/g, '')}`)}</h3>
                                         <Badge variant="outline" className="text-xs bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700">
                                             {stageDeals.length}
                                         </Badge>
@@ -154,19 +156,19 @@ export default function SalesPipeline() {
                                             <div className="flex flex-wrap gap-2 mb-3">
                                                 {deal.priority === 'High' && (
                                                     <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/30 dark:text-rose-400 shadow-none border-none text-[10px] uppercase tracking-wider rounded">
-                                                        Hot Priority
+                                                        {t('salesDashboard.pipeline.hotPriority')}
                                                     </Badge>
                                                 )}
                                                 {deal.quoteStatus && (
                                                     <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 shadow-none border-none text-[10px] uppercase tracking-wider rounded">
-                                                        Quote: {deal.quoteStatus}
+                                                        {t('salesDashboard.pipeline.quote')} {deal.quoteStatus}
                                                     </Badge>
                                                 )}
                                             </div>
 
                                             {deal.nextAction && (
                                                 <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2 truncate">
-                                                    <span className="text-slate-400 font-normal mr-1">Next:</span> {deal.nextAction}
+                                                    <span className="text-slate-400 font-normal mr-1">{t('salesDashboard.pipeline.next')}</span> {deal.nextAction}
                                                 </div>
                                             )}
 
@@ -177,7 +179,7 @@ export default function SalesPipeline() {
                                                     ) : (
                                                         <Calendar className="h-3.5 w-3.5 mr-1 text-slate-400" />
                                                     )}
-                                                    {deal.followUpDate ? new Date(deal.followUpDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'No date'}
+                                                    {deal.followUpDate ? new Date(deal.followUpDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : t('salesDashboard.pipeline.noDate')}
                                                 </div>
 
                                                 <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center text-[10px] font-bold">
@@ -189,7 +191,7 @@ export default function SalesPipeline() {
 
                                     {stageDeals.length === 0 && (
                                         <div className="h-24 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-lg flex items-center justify-center">
-                                            <p className="text-sm font-medium text-slate-400 dark:text-slate-500">Drop deals here</p>
+                                            <p className="text-sm font-medium text-slate-400 dark:text-slate-500">{t('salesDashboard.pipeline.dropDealsHere')}</p>
                                         </div>
                                     )}
                                 </div>

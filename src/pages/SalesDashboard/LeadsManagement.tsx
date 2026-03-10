@@ -21,6 +21,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Lead } from "@/types/sales";
+import { useTranslation } from "react-i18next";
 
 // Mock Data
 const mockLeads: Lead[] = [
@@ -69,6 +70,7 @@ const mockLeads: Lead[] = [
 ];
 
 export default function LeadsManagement() {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredLeads = mockLeads.filter(lead =>
@@ -89,20 +91,20 @@ export default function LeadsManagement() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Leads Management</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{t('salesDashboard.leads.title')}</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Track and prioritize your saved business contacts.
+                        {t('salesDashboard.leads.subtitle')}
                     </p>
                 </div>
                 <div className="flex gap-3">
                     <Button variant="outline" className="border-slate-200 dark:border-slate-800">
-                        Import Leads
+                        {t('salesDashboard.leads.importLeads')}
                     </Button>
                     <Link
                         to="/sales-dashboard/pipeline"
                         className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-colors bg-brand hover:bg-brand-dark rounded-md shadow-sm whitespace-nowrap"
                     >
-                        Create New Lead
+                        {t('salesDashboard.leads.createNewLead')}
                     </Link>
                 </div>
             </div>
@@ -112,7 +114,7 @@ export default function LeadsManagement() {
                 <div className="relative w-full md:w-96">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
-                        placeholder="Search leads..."
+                        placeholder={t('salesDashboard.leads.searchPlaceholder')}
                         className="pl-9 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -122,14 +124,14 @@ export default function LeadsManagement() {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="sm" className="w-full md:w-auto border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                                <Filter className="h-4 w-4 mr-2" /> Filter by Status
+                                <Filter className="h-4 w-4 mr-2" /> {t('salesDashboard.leads.filterByStatus')}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>All Leads</DropdownMenuItem>
-                            <DropdownMenuItem>New</DropdownMenuItem>
-                            <DropdownMenuItem>Contacted</DropdownMenuItem>
-                            <DropdownMenuItem>Qualified</DropdownMenuItem>
+                            <DropdownMenuItem>{t('salesDashboard.leads.allLeads')}</DropdownMenuItem>
+                            <DropdownMenuItem>{t('salesDashboard.leads.statusNew')}</DropdownMenuItem>
+                            <DropdownMenuItem>{t('salesDashboard.leads.statusContacted')}</DropdownMenuItem>
+                            <DropdownMenuItem>{t('salesDashboard.leads.statusQualified')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -139,18 +141,18 @@ export default function LeadsManagement() {
             <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
                 {/* Desktop Table Header */}
                 <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    <div className="col-span-4">Lead Contact / Business</div>
-                    <div className="col-span-2">Status</div>
-                    <div className="col-span-3">Contact Info</div>
-                    <div className="col-span-2">Next Follow-up</div>
-                    <div className="col-span-1 text-right">Actions</div>
+                    <div className="col-span-4">{t('salesDashboard.leads.colLead')}</div>
+                    <div className="col-span-2">{t('salesDashboard.leads.colStatus')}</div>
+                    <div className="col-span-3">{t('salesDashboard.leads.colContact')}</div>
+                    <div className="col-span-2">{t('salesDashboard.leads.colNext')}</div>
+                    <div className="col-span-1 text-right">{t('salesDashboard.leads.colActions')}</div>
                 </div>
 
                 {/* Lead Rows */}
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {filteredLeads.length === 0 ? (
                         <div className="p-12 text-center text-slate-500 dark:text-slate-400">
-                            No leads found matching "{searchQuery}". Try a different term.
+                            {t('salesDashboard.leads.noLeadsFound', { query: searchQuery })}
                         </div>
                     ) : (
                         filteredLeads.map((lead) => (
@@ -174,7 +176,7 @@ export default function LeadsManagement() {
                                 {/* Status */}
                                 <div className="col-span-1 md:col-span-2">
                                     <Badge className={`${getStatusColor(lead.status)} border-none shadow-none`}>
-                                        {lead.status}
+                                        {t(`salesDashboard.leads.status${lead.status}`)}
                                     </Badge>
                                 </div>
 
@@ -202,7 +204,7 @@ export default function LeadsManagement() {
                                             {new Date(lead.followUpDate).toLocaleDateString()}
                                         </div>
                                     ) : (
-                                        <span className="text-sm text-slate-400">Not set</span>
+                                        <span className="text-sm text-slate-400">{t('salesDashboard.leads.notSet')}</span>
                                     )}
                                 </div>
 
@@ -215,10 +217,10 @@ export default function LeadsManagement() {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem>View Lead Profile</DropdownMenuItem>
-                                            <DropdownMenuItem>Edit Details</DropdownMenuItem>
-                                            <DropdownMenuItem>Convert to Deal</DropdownMenuItem>
-                                            <DropdownMenuItem className="text-rose-500">Delete Lead</DropdownMenuItem>
+                                            <DropdownMenuItem>{t('salesDashboard.leads.viewProfile')}</DropdownMenuItem>
+                                            <DropdownMenuItem>{t('salesDashboard.leads.editDetails')}</DropdownMenuItem>
+                                            <DropdownMenuItem>{t('salesDashboard.leads.convertDeal')}</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-rose-500">{t('salesDashboard.leads.deleteLead')}</DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>

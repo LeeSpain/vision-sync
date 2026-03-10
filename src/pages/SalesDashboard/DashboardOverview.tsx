@@ -13,8 +13,10 @@ import {
     ArrowUpRight,
     TrendingDown
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function DashboardOverview() {
+    const { t } = useTranslation();
     const [metrics] = useState({
         totalProspects: 1420,
         activeLeads: 85,
@@ -30,9 +32,9 @@ export default function DashboardOverview() {
         <div className="space-y-8 animate-fade-in">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Sales Control Center</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{t('salesDashboard.overview.title')}</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Your high-level pipeline and prospect overview.
+                        {t('salesDashboard.overview.subtitle')}
                     </p>
                 </div>
                 <div className="flex gap-3">
@@ -40,13 +42,13 @@ export default function DashboardOverview() {
                         to="/sales-dashboard/prospects"
                         className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-white border border-slate-200 hover:bg-slate-100 rounded-md dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-700 shadow-sm whitespace-nowrap"
                     >
-                        Find Prospects
+                        {t('salesDashboard.overview.findProspects')}
                     </Link>
                     <Link
                         to="/sales-dashboard/pipeline"
                         className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-colors bg-brand hover:bg-brand-dark rounded-md shadow-sm whitespace-nowrap"
                     >
-                        View Pipeline
+                        {t('salesDashboard.overview.viewPipeline')}
                     </Link>
                 </div>
             </div>
@@ -54,31 +56,31 @@ export default function DashboardOverview() {
             {/* Primary Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard
-                    title="Total Prospects"
+                    title={t('salesDashboard.overview.totalProspects')}
                     value={metrics.totalProspects.toLocaleString()}
                     icon={<Target className="h-5 w-5 text-blue-500" />}
-                    trend="+120 this week"
+                    trend={t('salesDashboard.overview.prospectsTrend')}
                     trendUp={true}
                 />
                 <MetricCard
-                    title="Active Leads"
+                    title={t('salesDashboard.overview.activeLeads')}
                     value={metrics.activeLeads}
                     icon={<Users className="h-5 w-5 text-indigo-500" />}
-                    trend="+12 this week"
+                    trend={t('salesDashboard.overview.leadsTrend')}
                     trendUp={true}
                 />
                 <MetricCard
-                    title="Active Deals"
+                    title={t('salesDashboard.overview.activeDeals')}
                     value={metrics.activeDeals}
                     icon={<Briefcase className="h-5 w-5 text-orange-500" />}
-                    trend="3 closing soon"
+                    trend={t('salesDashboard.overview.dealsTrend')}
                     trendUp={true}
                 />
                 <MetricCard
-                    title="Pipeline Value"
+                    title={t('salesDashboard.overview.pipelineValue')}
                     value={`$${(metrics.pipelineValue / 1000).toFixed(0)}k`}
                     icon={<TrendingUp className="h-5 w-5 text-emerald-500" />}
-                    trend="+15% vs last month"
+                    trend={t('salesDashboard.overview.pipelineTrend')}
                     trendUp={true}
                     highlight={true}
                 />
@@ -87,22 +89,22 @@ export default function DashboardOverview() {
             {/* Secondary Metrics Array */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <MiniMetric
-                    title="Demos"
+                    title={t('salesDashboard.overview.miniDemos')}
                     value={metrics.demosGenerated}
                     icon={<PlaySquare className="h-4 w-4 text-purple-500" />}
                 />
                 <MiniMetric
-                    title="Quotes"
+                    title={t('salesDashboard.overview.miniQuotes')}
                     value={metrics.quotesSent}
                     icon={<FileText className="h-4 w-4 text-amber-500" />}
                 />
                 <MiniMetric
-                    title="Contracts"
+                    title={t('salesDashboard.overview.miniContracts')}
                     value={metrics.contractsPending}
                     icon={<PenTool className="h-4 w-4 text-rose-500" />}
                 />
                 <MiniMetric
-                    title="Won"
+                    title={t('salesDashboard.overview.miniWon')}
                     value={metrics.wonThisMonth}
                     icon={<CreditCard className="h-4 w-4 text-emerald-500" />}
                 />
@@ -112,17 +114,17 @@ export default function DashboardOverview() {
                 {/* AI Recommendations */}
                 <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col h-[400px]">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">AI Recommendations</h3>
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('salesDashboard.overview.aiRecs')}</h3>
                         <span className="px-2.5 py-1 text-xs font-semibold text-purple-700 bg-purple-100 rounded-full dark:bg-purple-900/30 dark:text-purple-300">
-                            Copilot Active
+                            {t('salesDashboard.overview.copilotActive')}
                         </span>
                     </div>
 
                     <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
                         {[
-                            { title: "3 high-opportunity estate agents in Almería", desc: "These prospects have outdated websites and no mobile optimization.", action: "Review Prospects", type: "Prospect" },
-                            { title: "Follow up: Dental Care Plus", desc: "Demo was sent 3 days ago. They opened the link twice today.", action: "Open Deal Room", type: "Deal" },
-                            { title: "Contract Pending: TechFlow Solutions", desc: "Contract has been pending for over 5 days.", action: "View Contract", type: "Contract" }
+                            { title: t('salesDashboard.overview.rec1Title'), desc: t('salesDashboard.overview.rec1Desc'), action: t('salesDashboard.overview.actionProspects'), type: t('salesDashboard.overview.typeProspect') },
+                            { title: t('salesDashboard.overview.rec2Title'), desc: t('salesDashboard.overview.rec2Desc'), action: t('salesDashboard.overview.actionDeal'), type: t('salesDashboard.overview.typeDeal') },
+                            { title: t('salesDashboard.overview.rec3Title'), desc: t('salesDashboard.overview.rec3Desc'), action: t('salesDashboard.overview.actionContract'), type: t('salesDashboard.overview.typeContract') }
                         ].map((rec, i) => (
                             <div key={i} className="flex gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 transition-colors">
                                 <div className="flex-shrink-0 mt-1 relative flex h-3 w-3">
@@ -152,16 +154,16 @@ export default function DashboardOverview() {
                 {/* Pipeline Summary Chart Placeholder */}
                 <div className="bg-white dark:bg-slate-900 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col h-[400px]">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Sales Pipeline</h3>
-                        <span className="text-sm text-slate-500 dark:text-slate-400">By Stage</span>
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('salesDashboard.overview.pipelineChart')}</h3>
+                        <span className="text-sm text-slate-500 dark:text-slate-400">{t('salesDashboard.overview.byStage')}</span>
                     </div>
                     <div className="flex-1 flex flex-col justify-end space-y-3">
                         {[
-                            { stage: "Lead Saved", count: 42, color: "bg-slate-300 dark:bg-slate-700", width: "100%" },
-                            { stage: "Contacted", count: 28, color: "bg-blue-400", width: "80%" },
-                            { stage: "Demo Sent", count: 14, color: "bg-indigo-500", width: "60%" },
-                            { stage: "Proposal", count: 8, color: "bg-brand", width: "40%" },
-                            { stage: "Closing", count: 3, color: "bg-emerald-500", width: "20%" },
+                            { stage: t('salesDashboard.overview.stageLead'), count: 42, color: "bg-slate-300 dark:bg-slate-700", width: "100%" },
+                            { stage: t('salesDashboard.overview.stageContacted'), count: 28, color: "bg-blue-400", width: "80%" },
+                            { stage: t('salesDashboard.overview.stageDemo'), count: 14, color: "bg-indigo-500", width: "60%" },
+                            { stage: t('salesDashboard.overview.stageProposal'), count: 8, color: "bg-brand", width: "40%" },
+                            { stage: t('salesDashboard.overview.stageClosing'), count: 3, color: "bg-emerald-500", width: "20%" },
                         ].map((bar, i) => (
                             <div key={i} className="w-full">
                                 <div className="flex justify-between text-xs mb-1">

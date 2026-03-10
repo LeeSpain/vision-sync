@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Prospect } from "@/types/sales";
 import { ProspectIntelligencePanel } from "@/components/sales-dashboard/ProspectIntelligencePanel";
+import { useTranslation } from "react-i18next";
 
 // Mock data
 const mockProspects: Prospect[] = [
@@ -85,6 +86,7 @@ const mockProspects: Prospect[] = [
 ];
 
 export default function ProspectFinder() {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState("");
     const [industryFilter, setIndustryFilter] = useState("");
     const [locationFilter, setLocationFilter] = useState("");
@@ -102,9 +104,9 @@ export default function ProspectFinder() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Prospect Finder</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{t('salesDashboard.prospectFinder.title')}</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Discover new businesses and generate AI intelligence reports.
+                        {t('salesDashboard.prospectFinder.subtitle')}
                     </p>
                 </div>
             </div>
@@ -116,26 +118,26 @@ export default function ProspectFinder() {
                         <div className="flex-1 relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                             <Input
-                                placeholder="e.g. 'Estate agents in Almeria' or 'Dentists near Malaga'"
+                                placeholder={t('salesDashboard.prospectFinder.searchPlaceholder')}
                                 className="pl-10 h-12 text-base border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                         <Button type="submit" disabled={isSearching} className="h-12 px-8 bg-brand hover:bg-brand-dark text-white text-base">
-                            {isSearching ? "Searching..." : "Find Prospects"}
+                            {isSearching ? t('salesDashboard.prospectFinder.searching') : t('salesDashboard.prospectFinder.findBtn')}
                         </Button>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 pt-2">
                         <div className="flex items-center text-sm font-medium text-slate-500 dark:text-slate-400 mr-2">
-                            <Filter className="h-4 w-4 mr-2" /> Filters
+                            <Filter className="h-4 w-4 mr-2" /> {t('salesDashboard.prospectFinder.filters')}
                         </div>
 
                         <div className="relative">
                             <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input
-                                placeholder="Industry"
+                                placeholder={t('salesDashboard.prospectFinder.industry')}
                                 className="pl-9 h-9 text-sm w-[150px] border-slate-200 dark:border-slate-800"
                                 value={industryFilter}
                                 onChange={(e) => setIndustryFilter(e.target.value)}
@@ -145,7 +147,7 @@ export default function ProspectFinder() {
                         <div className="relative">
                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input
-                                placeholder="Location"
+                                placeholder={t('salesDashboard.prospectFinder.location')}
                                 className="pl-9 h-9 text-sm w-[150px] border-slate-200 dark:border-slate-800"
                                 value={locationFilter}
                                 onChange={(e) => setLocationFilter(e.target.value)}
@@ -155,28 +157,28 @@ export default function ProspectFinder() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="sm" className="h-9 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                                    Opportunity Score <ChevronDown className="h-4 w-4 ml-2" />
+                                    {t('salesDashboard.prospectFinder.oppScoreFilter')} <ChevronDown className="h-4 w-4 ml-2" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start">
-                                <DropdownMenuItem>Any Score</DropdownMenuItem>
-                                <DropdownMenuItem>High (8-10)</DropdownMenuItem>
-                                <DropdownMenuItem>Medium (5-7)</DropdownMenuItem>
-                                <DropdownMenuItem>Low (0-4)</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.anyScore')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.highScore')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.mediumScore')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.lowScore')}</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="sm" className="h-9 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                                    Website Status <ChevronDown className="h-4 w-4 ml-2" />
+                                    {t('salesDashboard.prospectFinder.websiteStatus')} <ChevronDown className="h-4 w-4 ml-2" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start">
-                                <DropdownMenuItem>Any Status</DropdownMenuItem>
-                                <DropdownMenuItem>Has Website</DropdownMenuItem>
-                                <DropdownMenuItem>No Website</DropdownMenuItem>
-                                <DropdownMenuItem>Low Score (&lt; 5)</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.anyStatus')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.hasWebsite')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.noWebsite')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.lowScoreWeb')}</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -187,11 +189,11 @@ export default function ProspectFinder() {
             <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
                 <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/20">
                     <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                        {mockProspects.length} Results Found
+                        {t('salesDashboard.prospectFinder.resultsFound', { count: mockProspects.length })}
                     </h3>
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="text-xs h-8">Export List</Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8 ml-2">Save Search</Button>
+                        <Button variant="outline" size="sm" className="text-xs h-8">{t('salesDashboard.prospectFinder.exportList')}</Button>
+                        <Button variant="outline" size="sm" className="text-xs h-8 ml-2">{t('salesDashboard.prospectFinder.saveSearch')}</Button>
                     </div>
                 </div>
 
@@ -207,7 +209,7 @@ export default function ProspectFinder() {
                                         </h4>
                                         {prospect.opportunityScore >= 8 && (
                                             <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800">
-                                                High Opp
+                                                {t('salesDashboard.prospectFinder.highOpp')}
                                             </Badge>
                                         )}
                                     </div>
@@ -220,14 +222,14 @@ export default function ProspectFinder() {
                                                 <Globe className="h-4 w-4 mr-1.5" /> {prospect.website}
                                             </a>
                                         ) : (
-                                            <span className="flex items-center text-rose-500"><Globe className="h-4 w-4 mr-1.5" /> No Website</span>
+                                            <span className="flex items-center text-rose-500"><Globe className="h-4 w-4 mr-1.5" /> {t('salesDashboard.prospectFinder.noWebsiteBadge')}</span>
                                         )}
                                     </div>
 
                                     <div className="p-3 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800/30 rounded-md flex items-start gap-3">
                                         <BrainCircuit className="h-5 w-5 text-indigo-500 shrink-0 mt-0.5" />
                                         <p className="text-sm text-indigo-900 dark:text-indigo-200">
-                                            <span className="font-semibold">AI Insight:</span> {prospect.aiSummary}
+                                            <span className="font-semibold">{t('salesDashboard.prospectFinder.aiInsight')}</span> {prospect.aiSummary}
                                         </p>
                                     </div>
                                 </div>
@@ -239,23 +241,23 @@ export default function ProspectFinder() {
                                             <span className="text-2xl font-bold text-slate-900 dark:text-white leading-none">{prospect.opportunityScore}</span>
                                             <span className="text-sm text-slate-500">/10</span>
                                         </div>
-                                        <span className="text-xs uppercase tracking-wider font-semibold text-slate-500">Opp Score</span>
+                                        <span className="text-xs uppercase tracking-wider font-semibold text-slate-500">{t('salesDashboard.prospectFinder.oppScoreBadge')}</span>
                                     </div>
 
                                     <div className="flex flex-col gap-2 w-full max-w-[140px]">
                                         <Button size="sm" className="w-full bg-brand hover:bg-brand-dark text-white">
-                                            <Plus className="h-4 w-4 mr-1" /> Save Lead
+                                            <Plus className="h-4 w-4 mr-1" /> {t('salesDashboard.prospectFinder.saveLead')}
                                         </Button>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="outline" size="sm" className="w-full h-8">
-                                                    More Actions <ChevronDown className="h-3 w-3 ml-2" />
+                                                    {t('salesDashboard.prospectFinder.moreActions')} <ChevronDown className="h-3 w-3 ml-2" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => setSelectedProspect(prospect)}>View Full Profile</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => setSelectedProspect(prospect)}>Run Deep AI Analysis</DropdownMenuItem>
-                                                <DropdownMenuItem>Generate Demo</DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => setSelectedProspect(prospect)}>{t('salesDashboard.prospectFinder.viewProfile')}</DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => setSelectedProspect(prospect)}>{t('salesDashboard.prospectFinder.runAnalysis')}</DropdownMenuItem>
+                                                <DropdownMenuItem>{t('salesDashboard.prospectFinder.generateDemo')}</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>

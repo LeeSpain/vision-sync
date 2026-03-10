@@ -264,6 +264,501 @@
             "aiSubtitle": "Get instant answers about our services while you fill out the form",
             "aiAvailable": "AI Available 24/7",
             "aiResponses": "Instant Responses"
+        },
+        "salesDashboard": {
+            "sidebar": {
+                "visionSales": "Vision Sales",
+                "coreWorkflow": "Core Workflow",
+                "salesTools": "Sales Tools",
+                "intelligence": "Intelligence",
+                "overview": "Overview",
+                "prospectFinder": "Prospect Finder",
+                "leads": "Leads",
+                "pipeline": "Pipeline",
+                "deals": "Deals",
+                "demoGenerator": "Demo Generator",
+                "quotes": "Quotes",
+                "contracts": "Contracts",
+                "payments": "Payments",
+                "analytics": "Analytics",
+                "salesCopilot": "Sales AI Copilot"
+            },
+            "layout": {
+                "salesRep": "Sales Rep",
+                "title": "Vision-Sync Sales OS",
+                "signOut": "Sign Out"
+            },
+            "overview": {
+                "title": "Sales Control Center",
+                "subtitle": "Your high-level pipeline and prospect overview.",
+                "findProspects": "Find Prospects",
+                "viewPipeline": "View Pipeline",
+                "totalProspects": "Total Prospects",
+                "prospectsTrend": "+120 this week",
+                "activeLeads": "Active Leads",
+                "leadsTrend": "+12 this week",
+                "activeDeals": "Active Deals",
+                "dealsTrend": "3 closing soon",
+                "pipelineValue": "Pipeline Value",
+                "pipelineTrend": "+15% vs last month",
+                "miniDemos": "Demos",
+                "miniQuotes": "Quotes",
+                "miniContracts": "Contracts",
+                "miniWon": "Won",
+                "aiRecs": "AI Recommendations",
+                "copilotActive": "Copilot Active",
+                "rec1Title": "3 high-opportunity estate agents in Almería",
+                "rec1Desc": "These prospects have outdated websites and no mobile optimization.",
+                "actionProspects": "Review Prospects",
+                "typeProspect": "Prospect",
+                "rec2Title": "Follow up: Dental Care Plus",
+                "rec2Desc": "Demo was sent 3 days ago. They opened the link twice today.",
+                "actionDeal": "Open Deal Room",
+                "typeDeal": "Deal",
+                "rec3Title": "Contract Pending: TechFlow Solutions",
+                "rec3Desc": "Contract has been pending for over 5 days.",
+                "actionContract": "View Contract",
+                "typeContract": "Contract",
+                "pipelineChart": "Sales Pipeline",
+                "byStage": "By Stage",
+                "stageLead": "Lead Saved",
+                "stageContacted": "Contacted",
+                "stageDemo": "Demo Sent",
+                "stageProposal": "Proposal",
+                "stageClosing": "Closing"
+            },
+            "prospectFinder": {
+                "title": "Prospect Finder",
+                "subtitle": "Discover new businesses and generate AI intelligence reports.",
+                "searchPlaceholder": "e.g. 'Estate agents in Almeria' or 'Dentists near Malaga'",
+                "searching": "Searching...",
+                "findBtn": "Find Prospects",
+                "filters": "Filters",
+                "industry": "Industry",
+                "location": "Location",
+                "oppScoreFilter": "Opportunity Score",
+                "anyScore": "Any Score",
+                "highScore": "High (8-10)",
+                "mediumScore": "Medium (5-7)",
+                "lowScore": "Low (0-4)",
+                "websiteStatus": "Website Status",
+                "anyStatus": "Any Status",
+                "hasWebsite": "Has Website",
+                "noWebsite": "No Website",
+                "lowScoreWeb": "Low Score (< 5)",
+                "resultsFound": "{{count}} Results Found",
+                "exportList": "Export List",
+                "saveSearch": "Save Search",
+                "highOpp": "High Opp",
+                "noWebsiteBadge": "No Website",
+                "aiInsight": "AI Insight:",
+                "oppScoreBadge": "Opp Score",
+                "saveLead": "Save Lead",
+                "moreActions": "More Actions",
+                "viewProfile": "View Full Profile",
+                "runAnalysis": "Run Deep AI Analysis",
+                "generateDemo": "Generate Demo"
+            },
+            "pipeline": {
+                "title": "Sales Pipeline",
+                "subtitle": "Drag and drop deals across stages to track progress.",
+                "addDeal": "Add Deal",
+                "stageNewLead": "New Lead",
+                "stageContacted": "Contacted",
+                "stageDemoPrepared": "Demo Prepared",
+                "stageProposalSent": "Proposal Sent",
+                "stageClosing": "Closing",
+                "stageWon": "Won",
+                "hotPriority": "Hot Priority",
+                "quote": "Quote:",
+                "next": "Next:",
+                "noDate": "No date",
+                "dropDealsHere": "Drop deals here"
+            },
+            "leads": {
+                "title": "Leads Management",
+                "subtitle": "Track and prioritize your saved business contacts.",
+                "importLeads": "Import Leads",
+                "createNewLead": "Create New Lead",
+                "searchPlaceholder": "Search leads...",
+                "filterByStatus": "Filter by Status",
+                "allLeads": "All Leads",
+                "statusNew": "New",
+                "statusContacted": "Contacted",
+                "statusQualified": "Qualified",
+                "colLead": "Lead Contact / Business",
+                "colStatus": "Status",
+                "colContact": "Contact Info",
+                "colNext": "Next Follow-up",
+                "colActions": "Actions",
+                "noLeadsFound": "No leads found matching \"{{query}}\". Try a different term.",
+                "notSet": "Not set",
+                "viewProfile": "View Lead Profile",
+                "editDetails": "Edit Details",
+                "convertDeal": "Convert to Deal",
+                "deleteLead": "Delete Lead"
+            },
+            "demoGen": {
+                "title": "Demo Generator",
+                "beta": "Beta",
+                "subtitle": "Instantly spin up a mockup website or landing page to present to a prospect.",
+                "attachedDeal": "Attached to Deal: {{id}}",
+                "stepper": {
+                    "step": "Step",
+                    "selectTemplate": "Select Template",
+                    "brandDetails": "Brand Details",
+                    "previewSave": "Preview & Save"
+                },
+                "step1": {
+                    "title": "1. Choose a Starting Template",
+                    "searchPlaceholder": "Search templates...",
+                    "nextBtn": "Next: Brand Details"
+                },
+                "step2": {
+                    "title": "2. Customize Brand Settings",
+                    "subtitle": "Let AI autofill the copy, or tweak it yourself.",
+                    "projectName": "Demo Project Name",
+                    "brandColor": "Primary Brand Color",
+                    "businessName": "Business Name (for copy)",
+                    "businessNamePlaceholder": "e.g. Marina Dental",
+                    "backBtn": "Back",
+                    "generateBtn": "Generate Demo",
+                    "aiReadyTitle": "AI Copy Engine Ready",
+                    "aiReadyDesc": "Once you proceed, Vision-Sync will rapidly assemble a functioning prototype with tailored copy."
+                },
+                "step3": {
+                    "adjustBtn": "Adjust Settings",
+                    "previewReady": "Preview Ready",
+                    "openFullscreen": "Open Fullscreen",
+                    "saveBtn": "Save to Deal Room",
+                    "heroTitle": "Transform Your Business Online",
+                    "heroDesc": "This is a randomly generated placeholder showcasing the chosen template structure.",
+                    "ctaBtn": "Book a Consultation",
+                    "contentSection": "Content Section",
+                    "presentationMode": "Launch Presentation Mode"
+                }
+            },
+            "quotes": {
+                "title": "Quote Builder",
+                "subtitle": "Generate and send professional pricing proposals.",
+                "dealLabel": "Deal: {{dealId}}",
+                "pdfPreview": "PDF Preview",
+                "sendProposal": "Send Proposal",
+                "lineItems": "Line Items",
+                "addItem": "Add Item",
+                "setupFees": "One-time Setup Fees",
+                "monthlyServices": "Ongoing Monthly Services",
+                "termsNotes": "Terms & Notes",
+                "defaultTerms": "Standard 12-month contract commitment applies. Prices exclude VAT. Payment for setup is due upon signature. Monthly subscription begins 30 days post-launch.",
+                "proposalSummary": "Proposal Summary",
+                "totalSetup": "Total Setup Cost",
+                "oneTime": "One-time",
+                "monthlySub": "Monthly Subscription",
+                "perMonth": "/mo",
+                "recurring": "Recurring",
+                "contractTerm": "Contract Term",
+                "months12": "12 Months",
+                "annualValue": "Annualized Value",
+                "markAccepted": "Mark as Accepted",
+                "newAddon": "New Add-on Service"
+            },
+            "payments": {
+                "title": "Payments & Invoicing",
+                "subtitle": "Track requested and completed deal payments.",
+                "requestPayment": "Request Payment",
+                "paymentHistory": "Payment History",
+                "forDeal": "for Deal {{id}}",
+                "noDealSelected": "Select a specific deal to view filtered payment history, or view all global transactions.",
+                "paymentMethods": "Payment Methods",
+                "expires": "Expires",
+                "primary": "Primary",
+                "addPaymentMethod": "+ Add Payment Method",
+                "stripeReady": "Stripe Integration Ready",
+                "stripeDesc": "The platform is architected to utilize Stripe Connect for direct invoicing and recurring subscription handling.",
+                "manageStripe": "Manage Stripe Dashboard",
+                "setupFee": "Setup Fee",
+                "monthlySubscription": "Monthly Subscription",
+                "statusPaid": "Paid",
+                "statusPending": "Pending"
+            },
+            "analytics": {
+                "title": "Sales Analytics",
+                "subtitle": "Review your performance, conversion rates, and pipeline health.",
+                "last30Days": "Last 30 Days",
+                "thisQuarter": "This Quarter",
+                "thisYear": "This Year",
+                "winRate": "Win Rate",
+                "avgDealSize": "Avg Deal Size",
+                "salesCycle": "Sales Cycle",
+                "lostDeals": "Lost Deals",
+                "revenueForecast": "Revenue Forecast",
+                "leadsByIndustry": "Leads by Industry",
+                "conversionFunnel": "Conversion Funnel",
+                "prospectsFound": "Prospects Found",
+                "leadsSaved": "Leads Saved",
+                "demosSent": "Demos Sent",
+                "proposals": "Proposals",
+                "wonDeals": "Won Deals"
+            },
+            "contracts": {
+                "title": "Contracts",
+                "subtitle": "Generate and manage digital service agreements.",
+                "generateAgreement": "Generate Agreement",
+                "noActiveContract": "No Active Contract",
+                "noContractForDeal": "A contract has not been generated for deal <1>{{dealId}}</1> yet. Generating a contract will auto-fill terms based on the accepted quote.",
+                "generateDraft": "Generate Draft Contract from Quote",
+                "selectDeal": "Select a deal from your pipeline to generate and manage its specific legal agreements and signatures.",
+                "digitalSignatureEngine": "Digital Signature Engine:",
+                "signatureEngineDesc": "The contract platform integration (e.g. DocuSign/HelloSign representation) is ready for live wiring pending production launch.",
+                "previewMockup": "Contract Preview Interface Mockup",
+                "masterServiceAgreement": "Master Service Agreement",
+                "generated": "Generated:",
+                "signatory": "Signatory:",
+                "fullySigned": "Fully Signed",
+                "downloadPdf": "Download PDF"
+            },
+            "dealRooms": {
+                "backToPipeline": "Back to Pipeline",
+                "highPriority": "High Priority",
+                "estimatedValue": "Estimated Value",
+                "presentPitch": "Present Pitch",
+                "primaryContact": "Primary Contact",
+                "aiDealOverview": "AI Deal Overview",
+                "openFullAnalysis": "Open Full Analysis",
+                "salesHub": "Sales Hub",
+                "demo": "Demo",
+                "ready": "Ready",
+                "quote": "Quote",
+                "createPlus": "Create +",
+                "contract": "Contract",
+                "payment": "Payment",
+                "setupPlus": "Setup +",
+                "timelineNotes": "Timeline & Notes",
+                "emailsComms": "Emails & Comms",
+                "nextSteps": "Next Steps",
+                "logActivity": "Log a call, meeting, or internal note...",
+                "postNote": "Post Note",
+                "loggedA": "logged a {{type}}",
+                "emailSandbox": "Email Integration Sandbox",
+                "emailSandboxDesc": "Connect your Google Workspace or Microsoft 365 account to sync emails directly into this deal room.",
+                "connectEmail": "Connect Email Account",
+                "upcomingTasks": "Upcoming Tasks",
+                "noTasks": "No tasks scheduled for this deal. Add follow-up reminders and to-dos here.",
+                "addTask": "Add Task"
+            },
+            "salesCopilot": {
+                "title": "AI Sales Copilot",
+                "subtitle": "Your intelligent assistant for research, drafting, and deal strategy.",
+                "initialMessage": "Hi there! I'm your Vision Sales Copilot. How can I help you close more deals today?",
+                "mockupResponse": "I'm currently running in mockup mode, but when fully wired, I can help analyze businesses, generate emails, and prepare quotes for you!",
+                "me": "ME",
+                "tryAsking": "Try asking",
+                "askAnything": "Ask Copilot anything...",
+                "disclaimer": "Copilot may produce inaccurate information about businesses. Always verify details.",
+                "prompts": {
+                    "analyze": {
+                        "label": "Analyze Company",
+                        "prompt": "Can you analyze Costa Blanca Villas and identify their digital weaknesses?"
+                    },
+                    "summarize": {
+                        "label": "Summarize Prospect",
+                        "prompt": "Summarize the prospect 'Marina Dental Clinic' and suggest a package to pitch."
+                    },
+                    "whatsapp": {
+                        "label": "Write WhatsApp",
+                        "prompt": "Write a short follow-up WhatsApp message for Almeria Motors."
+                    },
+                    "quote": {
+                        "label": "Quote Summary",
+                        "prompt": "Generate a bullet-point summary of the quote we sent to Sun Coast Care Home."
+                    }
+                }
+            }
+        },
+        "templateFinder": {
+            "title": "Find Your Perfect App Template",
+            "subtitle": "Answer a few questions and we'll recommend the best template for your business",
+            "step": "Step {{current}} of {{total}}",
+            "back": "Back",
+            "next": "Next",
+            "finding": "Finding Templates...",
+            "getRecommendations": "Get My Recommendations",
+            "step1": {
+                "title": "What type of business do you run?",
+                "subtitle": "This helps us understand your core business model",
+                "service": {
+                    "title": "Service-Based Business",
+                    "desc": "Appointments, consultations, or on-site services"
+                },
+                "product": {
+                    "title": "Product-Based Business",
+                    "desc": "Selling physical or digital products"
+                },
+                "location": {
+                    "title": "Location-Based Business",
+                    "desc": "Restaurant, gym, retail store, or physical location"
+                },
+                "platform": {
+                    "title": "Platform/Marketplace",
+                    "desc": "Connecting buyers and sellers or service providers"
+                }
+            },
+            "step2": {
+                "title": "What industry are you in?",
+                "subtitle": "We'll customize features for your specific industry"
+            },
+            "step3": {
+                "title": "What features do you need?",
+                "subtitle": "Select all that apply to your business"
+            },
+            "step4": {
+                "title": "How big is your business?",
+                "subtitle": "This helps us recommend the right scale of solution",
+                "solo": {
+                    "title": "Solo Entrepreneur",
+                    "desc": "Just me running the business"
+                },
+                "small": {
+                    "title": "Small Team (2-10 people)",
+                    "desc": "Small business with a few employees"
+                },
+                "medium": {
+                    "title": "Growing Business (10-50 people)",
+                    "desc": "Established business looking to scale"
+                },
+                "large": {
+                    "title": "Large Organization (50+ people)",
+                    "desc": "Enterprise-level requirements"
+                }
+            },
+            "step5": {
+                "title": "How comfortable are you with technology?",
+                "subtitle": "We'll match you with the right level of complexity",
+                "basic": {
+                    "title": "Basic",
+                    "desc": "I prefer simple, easy-to-use solutions"
+                },
+                "intermediate": {
+                    "title": "Intermediate",
+                    "desc": "I'm comfortable with most apps and tools"
+                },
+                "advanced": {
+                    "title": "Advanced",
+                    "desc": "I want powerful features and customization options"
+                }
+            },
+            "step6": {
+                "title": "What's your budget range?",
+                "subtitle": "Our templates start at $2,000 and can be customized to fit your needs",
+                "b2000": {
+                    "title": "$2,000 - $5,000",
+                    "desc": "Basic template with minimal customization"
+                },
+                "b5000": {
+                    "title": "$5,000 - $10,000",
+                    "desc": "Template with moderate customization"
+                },
+                "b10000": {
+                    "title": "$10,000 - $20,000",
+                    "desc": "Fully customized template with additional features"
+                },
+                "b20000": {
+                    "title": "$20,000+",
+                    "desc": "Premium solution with advanced features"
+                }
+            },
+            "step7": {
+                "title": "When do you need this ready?",
+                "subtitle": "Most templates can be delivered in 2-6 weeks",
+                "asap": {
+                    "title": "As soon as possible",
+                    "desc": "Rush delivery (2-3 weeks)"
+                },
+                "month1": {
+                    "title": "Within 1 month",
+                    "desc": "Standard delivery (3-4 weeks)"
+                },
+                "month2": {
+                    "title": "Within 2 months",
+                    "desc": "Extended timeline for complex customization"
+                },
+                "flexible": {
+                    "title": "I'm flexible",
+                    "desc": "No rush, focus on getting it right"
+                }
+            },
+            "industries": {
+                "Beauty & Wellness": "Beauty & Wellness",
+                "Home Services": "Home Services",
+                "Food & Beverage": "Food & Beverage",
+                "Healthcare": "Healthcare",
+                "Fitness & Sports": "Fitness & Sports",
+                "Education": "Education",
+                "Real Estate": "Real Estate",
+                "Professional Services": "Professional Services",
+                "Retail & E-commerce": "Retail & E-commerce",
+                "Events & Entertainment": "Events & Entertainment",
+                "Technology": "Technology",
+                "Other": "Other"
+            },
+            "requirements": {
+                "Online Booking/Scheduling": "Online Booking/Scheduling",
+                "Payment Processing": "Payment Processing",
+                "Customer Management": "Customer Management",
+                "Inventory Management": "Inventory Management",
+                "Mobile App": "Mobile App",
+                "User Accounts/Profiles": "User Accounts/Profiles",
+                "Messaging/Chat": "Messaging/Chat",
+                "Reviews & Ratings": "Reviews & Ratings",
+                "Location Services": "Location Services",
+                "Analytics & Reporting": "Analytics & Reporting",
+                "Email Marketing": "Email Marketing",
+                "Social Media Integration": "Social Media Integration"
+            }
+        },
+        "adminOverview": {
+            "loading": "Loading...",
+            "actionCenter": "Action Center",
+            "quickMetrics": "Quick Metrics",
+            "messages": "Messages",
+            "today": "+{{count}} today",
+            "viaContactForms": "Via contact forms",
+            "aiConversations": "AI Conversations",
+            "activeAgents": "{{count}} active agents",
+            "templates": "Templates",
+            "activeTemplates": "Active templates",
+            "readyForUse": "Ready for use",
+            "projects": "Projects",
+            "totalProjects": "Total projects",
+            "inPortfolio": "In portfolio",
+            "analyticsInsights": "Analytics & Insights",
+            "projectPerformance": "Project Performance",
+            "live": "Live:",
+            "development": "Development:",
+            "pipelineValue": "Pipeline Value:",
+            "recentActivity": "Recent Activity",
+            "leadsToday": "+{{count}} leads today",
+            "aiAgentMetrics": "AI Agent Metrics",
+            "totalInteractions": "Total Interactions:",
+            "leadGeneration": "Lead Generation:",
+            "todaysConversations": "Today's Conversations:",
+            "businessIntelligence": "Business Intelligence",
+            "revenueIntelligence": "Revenue Intelligence",
+            "totalPipeline": "Total Pipeline",
+            "conversionRate": "Conversion Rate",
+            "investmentPipeline": "Investment Pipeline:",
+            "oneTimeRevenue": "One-time Revenue:",
+            "monthlyRecurring": "Monthly Recurring:",
+            "operationalMetrics": "Operational Metrics",
+            "actionRequired": "Action Required",
+            "leadsNeedFollowUp": "{{count}} leads need follow-up",
+            "avgLeadsPerDay": "Avg Leads/Day:",
+            "thisWeek": "This Week:",
+            "leads": "{{count}} leads",
+            "qualified": "Qualified:",
+            "converted": "Converted:",
+            "highPriority": "High Priority:",
+            "sectionNotFound": "Section not found"
         }
     }
 }

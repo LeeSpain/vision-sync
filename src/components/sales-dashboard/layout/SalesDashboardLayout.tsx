@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut, Bell } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface SalesDashboardLayoutProps {
     children: ReactNode;
@@ -13,7 +14,8 @@ interface SalesDashboardLayoutProps {
 export function SalesDashboardLayout({ children }: SalesDashboardLayoutProps) {
     const { user, signOut } = useAuthContext();
     const navigate = useNavigate();
-    const userName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Sales Rep';
+    const { t } = useTranslation();
+    const userName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || t('salesDashboard.layout.salesRep');
     const initial = userName.charAt(0).toUpperCase();
 
     const handleSignOut = async () => {
@@ -35,7 +37,7 @@ export function SalesDashboardLayout({ children }: SalesDashboardLayoutProps) {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h1 className="text-lg font-heading font-semibold text-slate-900 dark:text-white mb-0.5">
-                                        Vision-Sync Sales OS
+                                        {t('salesDashboard.layout.title')}
                                     </h1>
                                 </div>
 
@@ -55,7 +57,7 @@ export function SalesDashboardLayout({ children }: SalesDashboardLayoutProps) {
                                         className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                                     >
                                         <LogOut className="h-4 w-4 md:mr-2" />
-                                        <span className="hidden md:inline">Sign Out</span>
+                                        <span className="hidden md:inline">{t('salesDashboard.layout.signOut')}</span>
                                     </Button>
                                 </div>
                             </div>

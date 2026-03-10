@@ -35,8 +35,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { FileText, Plus, Eye, Mail, RefreshCw, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 const Admin = () => {
+  const { t } = useTranslation();
   const { user, adminStatus, loading: authLoading, signOut, profile, refreshProfile } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -135,7 +137,7 @@ const Admin = () => {
   if (authLoading || !user || adminStatus !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
-        <div className="text-white">Loading...</div>
+        <div className="text-white">{t('adminOverview.loading')}</div>
       </div>
     );
   }
@@ -168,7 +170,7 @@ const Admin = () => {
             {/* Section: Action Center */}
             <div>
               <h2 className="text-sm font-semibold text-cool-gray uppercase tracking-wide mb-4">
-                Action Center
+                {t('adminOverview.actionCenter')}
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Action Queue - Takes 1 column */}
@@ -184,21 +186,21 @@ const Admin = () => {
             {/* Section: Quick Metrics */}
             <div>
               <h2 className="text-sm font-semibold text-cool-gray uppercase tracking-wide mb-4">
-                Quick Metrics
+                {t('adminOverview.quickMetrics')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Messages Metrics */}
                 <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium text-cool-gray">Messages</CardTitle>
+                      <CardTitle className="text-sm font-medium text-cool-gray">{t('adminOverview.messages')}</CardTitle>
                       <Mail className="h-4 w-4 text-electric-blue" />
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.totalLeads || 0}</div>
-                    <div className="text-xs text-emerald-green">+{realTimeMetrics?.leadsToday || 0} today</div>
-                    <div className="text-xs text-cool-gray mt-1">Via contact forms</div>
+                    <div className="text-xs text-emerald-green">{t('adminOverview.today', { count: realTimeMetrics?.leadsToday || 0 })}</div>
+                    <div className="text-xs text-cool-gray mt-1">{t('adminOverview.viaContactForms')}</div>
                   </CardContent>
                 </Card>
 
@@ -206,14 +208,14 @@ const Admin = () => {
                 <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium text-cool-gray">AI Conversations</CardTitle>
+                      <CardTitle className="text-sm font-medium text-cool-gray">{t('adminOverview.aiConversations')}</CardTitle>
                       <MessageCircle className="h-4 w-4 text-royal-purple" />
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.totalConversations || 0}</div>
-                    <div className="text-xs text-royal-purple">+{realTimeMetrics?.conversationsToday || 0} today</div>
-                    <div className="text-xs text-cool-gray mt-1">{realTimeMetrics?.activeAgents || 0} active agents</div>
+                    <div className="text-xs text-royal-purple">{t('adminOverview.today', { count: realTimeMetrics?.conversationsToday || 0 })}</div>
+                    <div className="text-xs text-cool-gray mt-1">{t('adminOverview.activeAgents', { count: realTimeMetrics?.activeAgents || 0 })}</div>
                   </CardContent>
                 </Card>
 
@@ -221,14 +223,14 @@ const Admin = () => {
                 <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium text-cool-gray">Templates</CardTitle>
+                      <CardTitle className="text-sm font-medium text-cool-gray">{t('adminOverview.templates')}</CardTitle>
                       <FileText className="h-4 w-4 text-emerald-green" />
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.activeTemplates || 0}</div>
-                    <div className="text-xs text-emerald-green">Active templates</div>
-                    <div className="text-xs text-cool-gray mt-1">Ready for use</div>
+                    <div className="text-xs text-emerald-green">{t('adminOverview.activeTemplates')}</div>
+                    <div className="text-xs text-cool-gray mt-1">{t('adminOverview.readyForUse')}</div>
                   </CardContent>
                 </Card>
 
@@ -236,14 +238,14 @@ const Admin = () => {
                 <Card className="bg-gradient-card shadow-card hover:shadow-elegant transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium text-cool-gray">Projects</CardTitle>
+                      <CardTitle className="text-sm font-medium text-cool-gray">{t('adminOverview.projects')}</CardTitle>
                       <Eye className="h-4 w-4 text-sky-blue" />
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.totalProjects || 0}</div>
-                    <div className="text-xs text-sky-blue">Total projects</div>
-                    <div className="text-xs text-cool-gray mt-1">In portfolio</div>
+                    <div className="text-xs text-sky-blue">{t('adminOverview.totalProjects')}</div>
+                    <div className="text-xs text-cool-gray mt-1">{t('adminOverview.inPortfolio')}</div>
                   </CardContent>
                 </Card>
               </div>
@@ -252,7 +254,7 @@ const Admin = () => {
             {/* Section: Analytics */}
             <div>
               <h2 className="text-sm font-semibold text-cool-gray uppercase tracking-wide mb-4">
-                Analytics & Insights
+                {t('adminOverview.analyticsInsights')}
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Lead Sources Chart */}
@@ -264,31 +266,31 @@ const Admin = () => {
                 {/* Project Performance */}
                 <Card className="bg-gradient-card shadow-card">
                   <CardHeader>
-                    <CardTitle className="font-heading">Project Performance</CardTitle>
+                    <CardTitle className="font-heading">{t('adminOverview.projectPerformance')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-cool-gray">Total Projects</span>
+                        <span className="text-cool-gray">{t('adminOverview.totalProjects')}</span>
                         <span className="text-2xl font-bold text-midnight-navy">{realTimeMetrics?.totalProjects || 0}</span>
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Live:</span>
+                          <span className="text-cool-gray">{t('adminOverview.live')}</span>
                           <span className="text-emerald-green font-medium">0</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Development:</span>
+                          <span className="text-cool-gray">{t('adminOverview.development')}</span>
                           <span className="text-electric-blue font-medium">{realTimeMetrics?.totalProjects || 0}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Pipeline Value:</span>
+                          <span className="text-cool-gray">{t('adminOverview.pipelineValue')}</span>
                           <span className="text-royal-purple font-medium">€{dashboardStats?.totalPipeline?.toLocaleString() || '0'}</span>
                         </div>
                       </div>
                       <div className="pt-3 border-t border-soft-lilac/30">
-                        <div className="text-sm text-cool-gray mb-2">Recent Activity</div>
-                        <div className="text-xs text-midnight-navy">+{realTimeMetrics?.leadsToday || 0} leads today</div>
+                        <div className="text-sm text-cool-gray mb-2">{t('adminOverview.recentActivity')}</div>
+                        <div className="text-xs text-midnight-navy">{t('adminOverview.leadsToday', { count: realTimeMetrics?.leadsToday || 0 })}</div>
                       </div>
                     </div>
                   </CardContent>
@@ -297,25 +299,25 @@ const Admin = () => {
                 {/* AI Agent Performance */}
                 <Card className="bg-gradient-card shadow-card">
                   <CardHeader>
-                    <CardTitle className="font-heading">AI Agent Metrics</CardTitle>
+                    <CardTitle className="font-heading">{t('adminOverview.aiAgentMetrics')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Active Agents:</span>
+                          <span className="text-cool-gray">{t('adminOverview.activeAgents', { count: '' }).trim()}:</span>
                           <span className="font-medium">{realTimeMetrics?.activeAgents || 0}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Total Interactions:</span>
+                          <span className="text-cool-gray">{t('adminOverview.totalInteractions')}</span>
                           <span className="font-medium">{realTimeMetrics?.totalConversations || 0}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Lead Generation:</span>
+                          <span className="text-cool-gray">{t('adminOverview.leadGeneration')}</span>
                           <span className="text-emerald-green font-medium">{realTimeMetrics?.totalLeads && realTimeMetrics?.totalConversations ? `${Math.round((realTimeMetrics.totalLeads / realTimeMetrics.totalConversations) * 100)}%` : '0%'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Today's Conversations:</span>
+                          <span className="text-cool-gray">{t('adminOverview.todaysConversations')}</span>
                           <span className="text-royal-purple font-medium">+{realTimeMetrics?.conversationsToday || 0}</span>
                         </div>
                       </div>
@@ -328,13 +330,13 @@ const Admin = () => {
             {/* Section: Business Intelligence */}
             <div>
               <h2 className="text-sm font-semibold text-cool-gray uppercase tracking-wide mb-4">
-                Business Intelligence
+                {t('adminOverview.businessIntelligence')}
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Revenue & Sales Intelligence */}
                 <Card className="bg-gradient-card shadow-card">
                   <CardHeader>
-                    <CardTitle className="font-heading">Revenue Intelligence</CardTitle>
+                    <CardTitle className="font-heading">{t('adminOverview.revenueIntelligence')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -343,27 +345,27 @@ const Admin = () => {
                           <div className="text-2xl font-bold text-emerald-green">
                             €{dashboardStats?.totalPipeline?.toLocaleString() || '0'}
                           </div>
-                          <div className="text-sm text-cool-gray">Total Pipeline</div>
+                          <div className="text-sm text-cool-gray">{t('adminOverview.totalPipeline')}</div>
                         </div>
                         <div className="text-center p-4 bg-gradient-subtle rounded-lg">
                           <div className="text-2xl font-bold text-royal-purple">
                             {dashboardStats?.conversionRate ? `${Math.round(dashboardStats.conversionRate)}%` : '0%'}
                           </div>
-                          <div className="text-sm text-cool-gray">Conversion Rate</div>
+                          <div className="text-sm text-cool-gray">{t('adminOverview.conversionRate')}</div>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Investment Pipeline:</span>
+                          <span className="text-cool-gray">{t('adminOverview.investmentPipeline')}</span>
                           <span className="text-royal-purple font-medium">€{dashboardStats?.projectStats?.revenueByBilling?.investment?.toLocaleString() || '0'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">One-time Revenue:</span>
+                          <span className="text-cool-gray">{t('adminOverview.oneTimeRevenue')}</span>
                           <span className="text-emerald-green font-medium">€{dashboardStats?.projectStats?.revenueByBilling?.['one-time']?.toLocaleString() || '0'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Monthly Recurring:</span>
+                          <span className="text-cool-gray">{t('adminOverview.monthlyRecurring')}</span>
                           <span className="text-sky-blue font-medium">€{dashboardStats?.projectStats?.revenueByBilling?.subscription?.toLocaleString() || '0'}</span>
                         </div>
                       </div>
@@ -374,7 +376,7 @@ const Admin = () => {
                 {/* Operational Intelligence */}
                 <Card className="bg-gradient-card shadow-card">
                   <CardHeader>
-                    <CardTitle className="font-heading">Operational Metrics</CardTitle>
+                    <CardTitle className="font-heading">{t('adminOverview.operationalMetrics')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -382,33 +384,33 @@ const Admin = () => {
                         <div className="p-4 bg-coral-orange/10 border border-coral-orange/30 rounded-lg">
                           <div className="flex items-center gap-2 text-coral-orange mb-1">
                             <RefreshCw className="h-4 w-4" />
-                            <span className="font-medium">Action Required</span>
+                            <span className="font-medium">{t('adminOverview.actionRequired')}</span>
                           </div>
                           <p className="text-sm text-midnight-navy">
-                            {dashboardStats.followUpNeeded} leads need follow-up
+                            {t('adminOverview.leadsNeedFollowUp', { count: dashboardStats.followUpNeeded })}
                           </p>
                         </div>
                       )}
 
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Avg Leads/Day:</span>
+                          <span className="text-cool-gray">{t('adminOverview.avgLeadsPerDay')}</span>
                           <span className="font-medium">{dashboardStats?.avgLeadsPerDay || 0}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">This Week:</span>
-                          <span className="font-medium">{dashboardStats?.weekLeads || 0} leads</span>
+                          <span className="text-cool-gray">{t('adminOverview.thisWeek')}</span>
+                          <span className="font-medium">{t('adminOverview.leads', { count: dashboardStats?.weekLeads || 0 })}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Qualified:</span>
+                          <span className="text-cool-gray">{t('adminOverview.qualified')}</span>
                           <span className="text-emerald-green font-medium">{dashboardStats?.qualified || 0}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">Converted:</span>
+                          <span className="text-cool-gray">{t('adminOverview.converted')}</span>
                           <span className="text-royal-purple font-medium">{dashboardStats?.converted || 0}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-cool-gray">High Priority:</span>
+                          <span className="text-cool-gray">{t('adminOverview.highPriority')}</span>
                           <span className="text-coral-orange font-medium">{dashboardStats?.highPriorityCount || 0}</span>
                         </div>
                       </div>
@@ -484,7 +486,7 @@ const Admin = () => {
         );
 
       default:
-        return <div>Section not found</div>;
+        return <div>{t('adminOverview.sectionNotFound')}</div>;
     }
   };
 

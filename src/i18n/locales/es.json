@@ -264,6 +264,497 @@
             "aiSubtitle": "Obtén respuestas instantáneas sobre nuestros servicios mientras llenas el formulario",
             "aiAvailable": "IA Disponible 24/7",
             "aiResponses": "Respuestas Instantáneas"
+        },
+        "salesDashboard": {
+            "sidebar": {
+                "visionSales": "Ventas Vision",
+                "coreWorkflow": "Flujo de Trabajo Principal",
+                "salesTools": "Herramientas de Ventas",
+                "intelligence": "Inteligencia",
+                "overview": "Resumen",
+                "prospectFinder": "Buscador de Prospectos",
+                "leads": "Leads",
+                "pipeline": "Embudo",
+                "deals": "Tratos",
+                "demoGenerator": "Generador de Demostraciones",
+                "quotes": "Cotizaciones",
+                "contracts": "Contratos",
+                "payments": "Pagos",
+                "analytics": "Análisis",
+                "salesCopilot": "Copiloto AI de Ventas"
+            },
+            "layout": {
+                "salesRep": "Representante de Ventas",
+                "title": "Vision-Sync Sales OS",
+                "signOut": "Cerrar Sesión"
+            },
+            "overview": {
+                "title": "Centro de Control de Ventas",
+                "subtitle": "Su resumen de alto nivel de embudo y prospectos.",
+                "findProspects": "Buscar Prospectos",
+                "viewPipeline": "Ver Embudo",
+                "totalProspects": "Total de Prospectos",
+                "prospectsTrend": "+120 esta semana",
+                "activeLeads": "Leads Activos",
+                "leadsTrend": "+12 esta semana",
+                "activeDeals": "Tratos Activos",
+                "dealsTrend": "3 cerrando pronto",
+                "pipelineValue": "Valor del Embudo",
+                "pipelineTrend": "+15% vs el mes pasado",
+                "miniDemos": "Demos",
+                "miniQuotes": "Cotiz",
+                "miniContracts": "Contr",
+                "miniWon": "Ganados",
+                "aiRecs": "Recomendaciones de IA",
+                "copilotActive": "Copiloto Activo",
+                "rec1Title": "3 agentes inmobiliarios de alta oportunidad en Almería",
+                "rec1Desc": "Estos prospectos tienen sitios web desactualizados y no están optimizados para móviles.",
+                "actionProspects": "Revisar Prospectos",
+                "typeProspect": "Prospecto",
+                "rec2Title": "Seguimiento: Dental Care Plus",
+                "rec2Desc": "La demo fue enviada hace 3 días. Abrieron el enlace dos veces hoy.",
+                "actionDeal": "Sala de Tratos",
+                "typeDeal": "Trato",
+                "rec3Title": "Contrato Pendiente: TechFlow Solutions",
+                "rec3Desc": "El contrato lleva pendiente más de 5 días.",
+                "actionContract": "Ver Contrato",
+                "typeContract": "Contrato"
+            },
+            "payments": {
+                "title": "Pagos y Facturación",
+                "subtitle": "Rastrea pagos solicitados y completados de tratos.",
+                "requestPayment": "Solicitar Pago",
+                "paymentHistory": "Historial de Pagos",
+                "forDeal": "para el Trato {{id}}",
+                "noDealSelected": "Selecciona un trato específico para ver el historial de pagos filtrado, o ver todas las transacciones globales.",
+                "paymentMethods": "Métodos de Pago",
+                "expires": "Expira",
+                "primary": "Principal",
+                "addPaymentMethod": "+ Añadir Método de Pago",
+                "stripeReady": "Integración con Stripe Lista",
+                "stripeDesc": "La plataforma está diseñada para utilizar Stripe Connect para facturación directa y manejo de suscripciones recurrentes.",
+                "manageStripe": "Gestionar Panel de Stripe",
+                "setupFee": "Tarifa de Configuración",
+                "monthlySubscription": "Suscripción Mensual",
+                "statusPaid": "Pagado",
+                "statusPending": "Pendiente"
+            },
+            "prospectFinder": {
+                "title": "Buscador de Prospectos",
+                "subtitle": "Descubre nuevos negocios y genera informes de inteligencia artificial.",
+                "searchPlaceholder": "ej. 'Agentes inmobiliarios en Almería' o 'Dentistas cerca de Málaga'",
+                "searching": "Buscando...",
+                "findBtn": "Buscar Prospectos",
+                "filters": "Filtros",
+                "industry": "Industria",
+                "location": "Ubicación",
+                "oppScoreFilter": "Puntuación de Oportunidad",
+                "anyScore": "Cualquier Puntuación",
+                "highScore": "Alta (8-10)",
+                "mediumScore": "Media (5-7)",
+                "lowScore": "Baja (0-4)",
+                "websiteStatus": "Estado del Sitio Web",
+                "anyStatus": "Cualquier Estado",
+                "hasWebsite": "Tiene Sitio Web",
+                "noWebsite": "Sin Sitio Web",
+                "lowScoreWeb": "Puntuación Baja (< 5)",
+                "resultsFound": "{{count}} Resultados Encontrados",
+                "exportList": "Exportar Lista",
+                "saveSearch": "Guardar Búsqueda",
+                "highOpp": "Alta Oportunidad",
+                "noWebsiteBadge": "Sin Sitio Web",
+                "aiInsight": "Insight IA:",
+                "oppScoreBadge": "Punt. de Oportunidad",
+                "saveLead": "Guardar Lead",
+                "moreActions": "Más Acciones",
+                "viewProfile": "Ver Perfil Completo",
+                "runAnalysis": "Análisis Profundo con IA",
+                "generateDemo": "Generar Demo"
+            },
+            "pipeline": {
+                "title": "Embudo de Ventas",
+                "subtitle": "Arrastre y suelte tratos entre etapas para rastrear el progreso.",
+                "addDeal": "Añadir Trato",
+                "stageNewLead": "Nuevo Lead",
+                "stageContacted": "Contactado",
+                "stageDemoPrepared": "Demo Preparada",
+                "stageProposalSent": "Propuesta Enviada",
+                "stageClosing": "Cierre",
+                "stageWon": "Ganado",
+                "hotPriority": "Prioridad Alta",
+                "quote": "Cotiz:",
+                "next": "Sig:",
+                "noDate": "Sin fecha",
+                "dropDealsHere": "Suelte tratos aquí"
+            },
+            "leads": {
+                "title": "Gestión de Leads",
+                "subtitle": "Rastrea y prioriza tus contactos comerciales guardados.",
+                "importLeads": "Importar Leads",
+                "createNewLead": "Crear Nuevo Lead",
+                "searchPlaceholder": "Buscar leads...",
+                "filterByStatus": "Filtrar por Estado",
+                "allLeads": "Todos los Leads",
+                "statusNew": "Nuevo",
+                "statusContacted": "Contactado",
+                "statusQualified": "Calificado",
+                "colLead": "Contacto / Negocio",
+                "colStatus": "Estado",
+                "colContact": "Información de Contacto",
+                "colNext": "Próximo Seguimiento",
+                "colActions": "Acciones",
+                "noLeadsFound": "No se encontraron leads que coincidan con \"{{query}}\". Intenta con un término diferente.",
+                "notSet": "No establecido",
+                "viewProfile": "Ver Perfil del Lead",
+                "editDetails": "Editar Detalles",
+                "convertDeal": "Convertir a Trato",
+                "deleteLead": "Eliminar Lead"
+            },
+            "demoGen": {
+                "title": "Generador de Demos",
+                "beta": "Beta",
+                "subtitle": "Cree instantáneamente un sitio web de prueba o página de destino para presentar a un prospecto.",
+                "attachedDeal": "Adjunto al Trato: {{id}}",
+                "stepper": {
+                    "step": "Paso",
+                    "selectTemplate": "Seleccionar Plantilla",
+                    "brandDetails": "Detalles de Marca",
+                    "previewSave": "Previsualizar y Guardar"
+                },
+                "step1": {
+                    "title": "1. Elija una Plantilla Inicial",
+                    "searchPlaceholder": "Buscar plantillas...",
+                    "nextBtn": "Siguiente: Detalles de Marca"
+                },
+                "step2": {
+                    "title": "2. Personalizar Ajustes de Marca",
+                    "subtitle": "Deje que la IA autocomplete el texto, o ajústelo usted mismo.",
+                    "projectName": "Nombre del Proyecto Demo",
+                    "brandColor": "Color Principal de Marca",
+                    "businessName": "Nombre del Negocio (para el texto)",
+                    "businessNamePlaceholder": "ej. Marina Dental",
+                    "backBtn": "Volver",
+                    "generateBtn": "Generar Demo",
+                    "aiReadyTitle": "Motor de Texto IA Listo",
+                    "aiReadyDesc": "Una vez que continúe, Vision-Sync ensamblará rápidamente un prototipo funcional con texto personalizado."
+                },
+                "step3": {
+                    "adjustBtn": "Ajustar Configuración",
+                    "previewReady": "Vista Previa Lista",
+                    "openFullscreen": "Abrir en Pantalla Completa",
+                    "saveBtn": "Guardar en Sala de Tratos",
+                    "heroTitle": "Transforme su Negocio en Línea",
+                    "heroDesc": "A este es un marcador de posición generado aleatoriamente que muestra la estructura de plantilla elegida.",
+                    "ctaBtn": "Reservar una Consulta",
+                    "contentSection": "Sección de Contenido",
+                    "presentationMode": "Iniciar Modo Presentación"
+                }
+            },
+            "quotes": {
+                "title": "Generador de Cotizaciones",
+                "subtitle": "Crea y envía cotizaciones y propuestas profesionales.",
+                "newQuote": "Nueva Cotización",
+                "clientInfo": "Información del Cliente",
+                "clientName": "Nombre del Cliente",
+                "companyName": "Nombre de la Empresa",
+                "emailAddress": "Correo Electrónico",
+                "services": "Servicios Incluidos",
+                "webDevelopment": "Desarrollo Web",
+                "seoOptimization": "Optimización SEO",
+                "aiChatbot": "Integración de Chatbot IA",
+                "monthlyServices": "Servicios Mensuales Continuos",
+                "termsNotes": "Términos y Notas",
+                "defaultTerms": "Se aplica un compromiso estándar de contrato de 12 meses. Los precios no incluyen IVA. El pago por la configuración debe realizarse al firmar. La suscripción mensual comienza 30 días después del lanzamiento.",
+                "proposalSummary": "Resumen de la Propuesta",
+                "totalSetup": "Costo Total de Configuración",
+                "oneTime": "Única vez",
+                "monthlySub": "Suscripción Mensual",
+                "perMonth": "/mes",
+                "recurring": "Recurrente",
+                "contractTerm": "Término del Contrato",
+                "months12": "12 Meses",
+                "annualValue": "Valor Anualizado",
+                "markAccepted": "Marcar como Aceptada",
+                "newAddon": "Nuevo Servicio Adicional"
+            },
+            "analytics": {
+                "title": "Análisis de Ventas",
+                "subtitle": "Revisa tu rendimiento, tasas de conversión y salud del embudo.",
+                "last30Days": "Últimos 30 Días",
+                "thisQuarter": "Este Trimestre",
+                "thisYear": "Este Año",
+                "winRate": "Tasa de Éxito",
+                "avgDealSize": "Tamaño Prom. del Trato",
+                "salesCycle": "Ciclo de Ventas",
+                "lostDeals": "Tratos Perdidos",
+                "revenueForecast": "Pronóstico de Ingresos",
+                "leadsByIndustry": "Leads por Industria",
+                "conversionFunnel": "Embudo de Conversión",
+                "prospectsFound": "Prospectos Encontrados",
+                "leadsSaved": "Leads Guardados",
+                "demosSent": "Demos Enviadas",
+                "proposals": "Propuestas",
+                "wonDeals": "Tratos Ganados"
+            },
+            "contracts": {
+                "title": "Contratos",
+                "subtitle": "Genera y administra acuerdos de servicio digitales.",
+                "generateAgreement": "Generar Acuerdo",
+                "noActiveContract": "Sin Contrato Activo",
+                "noContractForDeal": "Aún no se ha generado un contrato para el trato <1>{{dealId}}</1>. Al generar un contrato, se autocompletarán los términos basados en la cotización aceptada.",
+                "generateDraft": "Generar Borrador de Contrato desde Cotización",
+                "selectDeal": "Seleccione un trato de su embudo para generar y administrar sus acuerdos legales específicos y firmas.",
+                "digitalSignatureEngine": "Motor de Firma Digital:",
+                "signatureEngineDesc": "La integración de la plataforma de contratos (ej. representación de DocuSign/HelloSign) está lista para funcionar pendiente del lanzamiento en producción.",
+                "previewMockup": "Maqueta de Interfaz de Vista Previa de Contrato",
+                "masterServiceAgreement": "Acuerdo Maestro de Servicios",
+                "generated": "Generado:",
+                "signatory": "Signatario:",
+                "fullySigned": "Totalmente Firmado",
+                "downloadPdf": "Descargar PDF"
+            },
+            "dealRooms": {
+                "backToPipeline": "Volver al Embudo",
+                "highPriority": "Alta Prioridad",
+                "estimatedValue": "Valor Estimado",
+                "presentPitch": "Presentar Pitch",
+                "primaryContact": "Contacto Principal",
+                "aiDealOverview": "Resumen de Trato IA",
+                "openFullAnalysis": "Abrir Análisis Completo",
+                "salesHub": "Centro de Ventas",
+                "demo": "Demo",
+                "ready": "Listo",
+                "quote": "Cotización",
+                "createPlus": "Crear +",
+                "contract": "Contrato",
+                "payment": "Pago",
+                "setupPlus": "Configurar +",
+                "timelineNotes": "Línea de Tiempo y Notas",
+                "emailsComms": "Correos y Comunicaciones",
+                "nextSteps": "Próximos Pasos",
+                "logActivity": "Registra una llamada, reunión o nota interna...",
+                "postNote": "Publicar Nota",
+                "loggedA": "registró un/a {{type}}",
+                "emailSandbox": "Sandbox de Integración de Correo",
+                "emailSandboxDesc": "Conecta tu cuenta de Google Workspace o Microsoft 365 para sincronizar correos directamente en esta sala de trato.",
+                "connectEmail": "Conectar Cuenta de Correo",
+                "upcomingTasks": "Próximas Tareas",
+                "noTasks": "No hay tareas programadas para este trato. Añade recordatorios y tareas pendientes aquí.",
+                "addTask": "Añadir Tarea"
+            },
+            "salesCopilot": {
+                "title": "Copiloto de Ventas IA",
+                "subtitle": "Tu asistente inteligente para investigación, redacción y estrategia de tratos.",
+                "initialMessage": "¡Hola! Soy tu Copiloto de Ventas Vision. ¿Cómo puedo ayudarte a cerrar más tratos hoy?",
+                "mockupResponse": "Actualmente estoy funcionando en modo de simulación, pero cuando esté completamente conectado, ¡podré ayudarte a analizar empresas, generar correos y preparar cotizaciones para ti!",
+                "me": "YO",
+                "tryAsking": "Intenta preguntar",
+                "askAnything": "Pregúntale a Copilot cualquier cosa...",
+                "disclaimer": "Copilot puede producir información inexacta sobre las empresas. Siempre verifica los detalles.",
+                "prompts": {
+                    "analyze": {
+                        "label": "Analizar Empresa",
+                        "prompt": "¿Puedes analizar Costa Blanca Villas e identificar sus debilidades digitales?"
+                    },
+                    "summarize": {
+                        "label": "Resumir Prospecto",
+                        "prompt": "Resume el prospecto 'Marina Dental Clinic' y sugiere un paquete para proponer."
+                    },
+                    "whatsapp": {
+                        "label": "Escribir WhatsApp",
+                        "prompt": "Escribe un breve mensaje de seguimiento por WhatsApp para Almeria Motors."
+                    },
+                    "quote": {
+                        "label": "Resumen de Cotización",
+                        "prompt": "Genera un resumen en viñetas de la cotización que enviamos a Sun Coast Care Home."
+                    }
+                }
+            }
+        },
+        "templateFinder": {
+            "title": "Encuentra tu Plantilla de App Perfecta",
+            "subtitle": "Responde unas preguntas y te recomendaremos la mejor plantilla para tu negocio",
+            "step": "Paso {{current}} de {{total}}",
+            "back": "Atrás",
+            "next": "Siguiente",
+            "finding": "Buscando Plantillas...",
+            "getRecommendations": "Obtener mis Recomendaciones",
+            "step1": {
+                "title": "¿Qué tipo de negocio diriges?",
+                "subtitle": "Esto nos ayuda a entender tu modelo de negocio principal",
+                "service": {
+                    "title": "Negocio Basado en Servicios",
+                    "desc": "Citas, consultas o servicios presenciales"
+                },
+                "product": {
+                    "title": "Negocio Basado en Productos",
+                    "desc": "Venta de productos físicos o digitales"
+                },
+                "location": {
+                    "title": "Negocio Basado en Ubicación",
+                    "desc": "Restaurante, gimnasio, tienda minorista o ubicación física"
+                },
+                "platform": {
+                    "title": "Plataforma/Marketplace",
+                    "desc": "Conectando compradores con vendedores o proveedores de servicios"
+                }
+            },
+            "step2": {
+                "title": "¿En qué industria estás?",
+                "subtitle": "Personalizaremos las características para tu industria específica"
+            },
+            "step3": {
+                "title": "¿Qué características necesitas?",
+                "subtitle": "Selecciona todas las que apliquen a tu negocio"
+            },
+            "step4": {
+                "title": "¿Qué tamaño tiene tu negocio?",
+                "subtitle": "Esto nos ayuda a recomendar la escala correcta de la solución",
+                "solo": {
+                    "title": "Emprendedor Solitario",
+                    "desc": "Solo yo dirigiendo el negocio"
+                },
+                "small": {
+                    "title": "Equipo Pequeño (2-10 personas)",
+                    "desc": "Pequeña empresa con algunos empleados"
+                },
+                "medium": {
+                    "title": "Negocio en Crecimiento (10-50 personas)",
+                    "desc": "Negocio establecido buscando escalar"
+                },
+                "large": {
+                    "title": "Organización Grande (50+ personas)",
+                    "desc": "Requisitos de nivel empresarial"
+                }
+            },
+            "step5": {
+                "title": "¿Qué tan cómodo te sientes con la tecnología?",
+                "subtitle": "Te emparejaremos con el nivel de complejidad adecuado",
+                "basic": {
+                    "title": "Básico",
+                    "desc": "Prefiero soluciones simples y fáciles de usar"
+                },
+                "intermediate": {
+                    "title": "Intermedio",
+                    "desc": "Me siento cómodo con la mayoría de las apps y herramientas"
+                },
+                "advanced": {
+                    "title": "Avanzado",
+                    "desc": "Quiero características potentes y opciones de personalización"
+                }
+            },
+            "step6": {
+                "title": "¿Cuál es tu rango de presupuesto?",
+                "subtitle": "Nuestras plantillas comienzan en $2,000 y pueden personalizarse para satisfacer tus necesidades",
+                "b2000": {
+                    "title": "$2,000 - $5,000",
+                    "desc": "Plantilla básica con personalización mínima"
+                },
+                "b5000": {
+                    "title": "$5,000 - $10,000",
+                    "desc": "Plantilla con personalización moderada"
+                },
+                "b10000": {
+                    "title": "$10,000 - $20,000",
+                    "desc": "Plantilla totalmente personalizada con características adicionales"
+                },
+                "b20000": {
+                    "title": "$20,000+",
+                    "desc": "Solución premium con características avanzadas"
+                }
+            },
+            "step7": {
+                "title": "¿Cuándo necesitas esto listo?",
+                "subtitle": "La mayoría de las plantillas se pueden entregar en 2-6 semanas",
+                "asap": {
+                    "title": "Lo antes posible",
+                    "desc": "Entrega urgente (2-3 semanas)"
+                },
+                "month1": {
+                    "title": "Dentro de 1 mes",
+                    "desc": "Entrega estándar (3-4 semanas)"
+                },
+                "month2": {
+                    "title": "Dentro de 2 meses",
+                    "desc": "Plazo extendido para personalización compleja"
+                },
+                "flexible": {
+                    "title": "Soy flexible",
+                    "desc": "Sin prisas, enfocado en hacerlo bien"
+                }
+            },
+            "industries": {
+                "Beauty & Wellness": "Belleza y Bienestar",
+                "Home Services": "Servicios para el Hogar",
+                "Food & Beverage": "Alimentos y Bebidas",
+                "Healthcare": "Cuidado de la Salud",
+                "Fitness & Sports": "Fitness y Deportes",
+                "Education": "Educación",
+                "Real Estate": "Bienes Raíces",
+                "Professional Services": "Servicios Profesionales",
+                "Retail & E-commerce": "Comercio Minorista",
+                "Events & Entertainment": "Eventos y Entretenimiento",
+                "Technology": "Tecnología",
+                "Other": "Otros"
+            },
+            "requirements": {
+                "Online Booking/Scheduling": "Reservas Online",
+                "Payment Processing": "Procesamiento de Pagos",
+                "Customer Management": "Gestión de Clientes",
+                "Inventory Management": "Gestión de Inventario",
+                "Mobile App": "App Móvil",
+                "User Accounts/Profiles": "Cuentas/Perfiles de Usuario",
+                "Messaging/Chat": "Mensajería/Chat",
+                "Reviews & Ratings": "Reseñas y Calificaciones",
+                "Location Services": "Servicios de Ubicación",
+                "Analytics & Reporting": "Análisis e Informes",
+                "Email Marketing": "Marketing por Correo",
+                "Social Media Integration": "Integración de Redes Sociales"
+            }
+        },
+        "adminOverview": {
+            "loading": "Cargando...",
+            "actionCenter": "Centro de Acción",
+            "quickMetrics": "Métricas Rápidas",
+            "messages": "Mensajes",
+            "today": "+{{count}} hoy",
+            "viaContactForms": "Vía formularios de contacto",
+            "aiConversations": "Conversaciones IA",
+            "activeAgents": "{{count}} agentes activos",
+            "templates": "Plantillas",
+            "activeTemplates": "Plantillas activas",
+            "readyForUse": "Listas para usar",
+            "projects": "Proyectos",
+            "totalProjects": "Proyectos totales",
+            "inPortfolio": "En cartera",
+            "analyticsInsights": "Análisis y Perspectivas",
+            "projectPerformance": "Rendimiento de Proyectos",
+            "live": "En Vivo:",
+            "development": "Desarrollo:",
+            "pipelineValue": "Valor del Embudo:",
+            "recentActivity": "Actividad Reciente",
+            "leadsToday": "+{{count}} leads hoy",
+            "aiAgentMetrics": "Métricas de Agentes IA",
+            "totalInteractions": "Interacciones Totales:",
+            "leadGeneration": "Generación de Leads:",
+            "todaysConversations": "Conversaciones de Hoy:",
+            "businessIntelligence": "Inteligencia de Negocios",
+            "revenueIntelligence": "Inteligencia de Ingresos",
+            "totalPipeline": "Embudo Total",
+            "conversionRate": "Tasa de Conversión",
+            "investmentPipeline": "Embudo de Inversión:",
+            "oneTimeRevenue": "Ingresos Únicos:",
+            "monthlyRecurring": "Recurrente Mensual:",
+            "operationalMetrics": "Métricas Operativas",
+            "actionRequired": "Acción Requerida",
+            "leadsNeedFollowUp": "{{count}} leads necesitan seguimiento",
+            "avgLeadsPerDay": "Promedio Leads/Día:",
+            "thisWeek": "Esta Semana:",
+            "leads": "{{count}} leads",
+            "qualified": "Calificados:",
+            "converted": "Convertidos:",
+            "highPriority": "Alta Prioridad:",
+            "sectionNotFound": "Sección no encontrada"
         }
     }
 }
