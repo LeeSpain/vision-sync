@@ -79,17 +79,15 @@ export default function SolutionsIndex() {
                       ))}
                     </ul>
 
-                    {/* Price preview */}
+                    {/* Status line */}
                     <div className="border-t border-slate-100 pt-4 mb-4">
-                      <p className="text-xs text-cool-gray uppercase tracking-wider mb-1">From</p>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-midnight-navy">€{industry.exVatPrice}</span>
-                        <span className="text-sm text-cool-gray">/mo ex IVA</span>
-                      </div>
+                      <p className="text-sm font-medium text-slate-500">
+                        Fully configured · Live in 48 hours
+                      </p>
                     </div>
 
                     {/* CTA */}
-                    <Link to={`/solutions/${industry.slug}`}>
+                    <Link to="/pricing">
                       <Button className={`w-full ${ds.primaryButton} group`}>
                         See this solution
                         <ArrowRight className={ds.ctaArrow} />
