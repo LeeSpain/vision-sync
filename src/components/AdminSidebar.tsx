@@ -18,7 +18,8 @@ import {
   ArrowRightLeft,
   Bot,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  Network
 } from "lucide-react"
 
 import {
@@ -43,6 +44,7 @@ const mainItems = [
   { key: "admin.plans", url: "#plans", icon: FileText },
   { key: "admin.modules", url: "#modules", icon: FolderOpen },
   { key: "admin.solutions", url: "#solutions", icon: Building2 },
+  { key: "Vision Family", url: "#vision-family", icon: Network },
   { key: "admin.pageSections", url: "#page-sections", icon: LayoutDashboard },
   { key: "admin.messages", url: "#messages", icon: Mail },
   { key: "admin.conversations", url: "#conversations", icon: MessageCircle },

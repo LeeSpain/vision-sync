@@ -8,6 +8,7 @@ import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowRight, Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Target, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
+import { VisionFamilySection } from '@/components/home/VisionFamilySection';
 import CustomQuoteModal from '@/components/CustomQuoteModal';
 import { useTranslation } from 'react-i18next';
 import { INDUSTRIES } from '@/data/industries';
@@ -155,6 +156,9 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Vision Family Ecosystem */}
+      <VisionFamilySection />
 
       {/* AI Sales Sync Promo */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-midnight-navy text-white relative overflow-hidden">
