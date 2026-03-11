@@ -42,22 +42,6 @@ export const useAuth = () => {
   useEffect(() => {
     let mounted = true;
 
-    const initializeAuth = async () => {
-      try {
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        if (mounted) {
-          setSession(initialSession);
-          setUser(initialSession?.user ?? null);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error getting session:", error);
-        if (mounted) setLoading(false);
-      }
-    };
-
-    initializeAuth();
-
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, currentSession) => {
@@ -73,36 +57,34 @@ export const useAuth = () => {
                 checkAdminStatus(currentSession.user!.id),
                 fetchProfile(currentSession.user!.id)
               ]).finally(() => {
-                setLoading(false);
+                if (mounted) setLoading(false);
               });
             }, 0);
           } else {
             setIsAdmin(false);
             setAdminStatus('unknown');
             setProfile(null);
-            setLoading(false);
+            if (mounted) setLoading(false);
           }
         }
       }
     );
 
-    // Check for existing session
+    // One definitive fallback check
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (mounted) {
-        setSession(session);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
+      if (mounted && session?.user) {
+        if (!user) { // Only do this if the listener didn't catch it
+          setSession(session);
+          setUser(session.user);
           Promise.all([
             checkAdminStatus(session.user.id),
             fetchProfile(session.user.id)
           ]).finally(() => {
-            setLoading(false);
+            if (mounted) setLoading(false);
           });
-        } else {
-          setAdminStatus('unknown');
-          setLoading(false);
         }
+      } else if (mounted) {
+        setLoading(false);
       }
     });
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-    const { user, loading, adminStatus } = useAuth();
+    const { user, loading, adminStatus } = useAuthContext();
     const location = useLocation();
 
     if (loading || (user && adminStatus === 'unknown')) {
