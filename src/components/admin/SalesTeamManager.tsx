@@ -235,8 +235,17 @@ export function SalesTeamManager() {
                                                             <p className="text-sm text-slate-500">{member.email ?? '—'}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-3">
                                                         {getRoleBadge(member.role)}
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => window.open('/sales-dashboard', '_blank')}
+                                                            className="text-slate-400 hover:text-brand dark:text-slate-500 dark:hover:text-brand"
+                                                            title="View Sales Dashboard"
+                                                        >
+                                                            <ExternalLink className="h-4 w-4" />
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             ))}
