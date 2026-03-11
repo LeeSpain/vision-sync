@@ -283,7 +283,7 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
         ).length || 0;
 
         const projectLeads = todayLeads?.filter(l => {
-          const formData = l.form_data as any;
+          const formData = l.form_data as Record<string, unknown>;
           return formData?.projectId === project.id || l.message?.includes(project.title);
         }).length || 0;
 
@@ -519,7 +519,6 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
     } catch (error) {
       console.error('Error fetching analytics data:', error);
       setIsLive(false);
-      setIsLive(false);
       toast.error('Analytics update failed', {
         description: 'Real-time connection lost. Retrying...',
         duration: 3000,
@@ -596,7 +595,7 @@ export function useRealTimeAnalytics(filters: AnalyticsFilters = {}) {
       clearInterval(interval);
       debouncedFetch.cancel();
     };
-  }, [debouncedFetch]);
+  }, [debouncedFetch, fetchAnalyticsData]);
 
   return {
     liveMetrics,
