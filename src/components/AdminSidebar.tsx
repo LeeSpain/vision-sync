@@ -19,7 +19,10 @@ import {
   Bot,
   ChevronDown,
   Sparkles,
-  Network
+  Network,
+  Gem,
+  Puzzle,
+  Factory
 } from "lucide-react"
 
 import {
@@ -41,8 +44,9 @@ import { useTranslation } from "react-i18next";
 
 const mainItems = [
   { key: "admin.dashboard", url: "#overview", icon: LayoutDashboard },
-  { key: "admin.plans", url: "#plans", icon: FileText },
-  { key: "admin.modules", url: "#modules", icon: FolderOpen },
+  { key: "admin.plans", url: "#plans", icon: Gem },
+  { key: "admin.modules", url: "#modules", icon: Puzzle },
+  { key: "admin.industries", url: "#industries", icon: Factory },
   { key: "admin.solutions", url: "#solutions", icon: Building2 },
   { key: "Vision Family", url: "#vision-family", icon: Network },
   { key: "admin.pageSections", url: "#page-sections", icon: LayoutDashboard },
