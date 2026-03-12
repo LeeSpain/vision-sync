@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import { VisionFamilyApp, VisionFamilyAppInsert, VisionFamilyAppUpdate } from "@/types/visionFamily";
 import {
+    fetchAllApps, insertApp, updateApp, deleteApp, isUsingLocalStorage
+} from "@/lib/visionFamilyStore";
+import {
     Plus, Edit, Trash2, Eye, EyeOff, Star, StarOff,
-    ExternalLink, Loader2, Save, X, AlertTriangle
+    Loader2, Save, AlertTriangle, Database
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -37,7 +39,7 @@ const DEFAULT_FORM_STATE: Partial<VisionFamilyApp> = {
     description: "",
     url: "",
     logo_url: "",
-    logo_emoji: "🔗",
+    logo_emoji: "\u{1F517}",
     accent_color: "#06b6d4",
     category: "App",
     is_published: false,
@@ -49,6 +51,7 @@ const DEFAULT_FORM_STATE: Partial<VisionFamilyApp> = {
 export function VisionFamilyManager() {
     const [apps, setApps] = useState<VisionFamilyApp[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLocal, setIsLocal] = useState(false);
 
     // Modal states
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -61,17 +64,12 @@ export function VisionFamilyManager() {
     const [formData, setFormData] = useState<Partial<VisionFamilyApp>>(DEFAULT_FORM_STATE);
     const [poweredByInput, setPoweredByInput] = useState("");
 
-    const fetchApps = async () => {
+    const loadApps = async () => {
         setIsLoading(true);
         try {
-            const { data, error } = await supabase
-                .from("vision_family_apps")
-                .select("*")
-                .order("display_order", { ascending: true })
-                .order("created_at", { ascending: false });
-
-            if (error) throw error;
-            setApps(data || []);
+            const result = await fetchAllApps();
+            setApps(result.data);
+            setIsLocal(result.isLocal);
         } catch (error) {
             console.error("Error fetching apps:", error);
             toast.error("Failed to load apps");
@@ -81,7 +79,7 @@ export function VisionFamilyManager() {
     };
 
     useEffect(() => {
-        fetchApps();
+        loadApps();
     }, []);
 
     const handleOpenForm = (app?: VisionFamilyApp) => {
@@ -104,7 +102,7 @@ export function VisionFamilyManager() {
         setPoweredByInput("");
     };
 
-    const handleFormChange = (field: keyof VisionFamilyApp, value: any) => {
+    const handleFormChange = (field: keyof VisionFamilyApp, value: string | number | boolean | string[] | null) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -116,19 +114,18 @@ export function VisionFamilyManager() {
 
         setIsSubmitting(true);
         try {
-            // Process powered_by string to array
             const powered_by = poweredByInput
                 .split(",")
                 .map((s) => s.trim())
                 .filter((s) => s.length > 0);
 
             const payload = {
-                name: formData.name,
-                tagline: formData.tagline,
-                description: formData.description,
+                name: formData.name!,
+                tagline: formData.tagline!,
+                description: formData.description!,
                 url: formData.url || null,
                 logo_url: formData.logo_url || null,
-                logo_emoji: formData.logo_emoji || "🔗",
+                logo_emoji: formData.logo_emoji || "\u{1F517}",
                 accent_color: formData.accent_color || "#06b6d4",
                 category: formData.category || "App",
                 is_published: formData.is_published ?? false,
@@ -138,27 +135,19 @@ export function VisionFamilyManager() {
             };
 
             if (editingId) {
-                const { error } = await supabase
-                    .from("vision_family_apps")
-                    .update(payload as VisionFamilyAppUpdate)
-                    .eq("id", editingId);
-
-                if (error) throw error;
+                await updateApp(editingId, payload as VisionFamilyAppUpdate);
                 toast.success("App updated successfully");
             } else {
-                const { error } = await supabase
-                    .from("vision_family_apps")
-                    .insert([payload as VisionFamilyAppInsert]);
-
-                if (error) throw error;
+                await insertApp(payload as VisionFamilyAppInsert);
                 toast.success("App created successfully");
             }
 
             handleCloseForm();
-            fetchApps();
-        } catch (error: any) {
+            loadApps();
+        } catch (error: unknown) {
+            const e = error as { message?: string };
             console.error("Save error:", error);
-            toast.error(`Failed to save: ${error.message}`);
+            toast.error(`Failed to save: ${e.message || "Unknown error"}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -166,36 +155,24 @@ export function VisionFamilyManager() {
 
     const handleTogglePublish = async (id: string, currentStatus: boolean) => {
         try {
-            const { error } = await supabase
-                .from("vision_family_apps")
-                .update({ is_published: !currentStatus })
-                .eq("id", id);
-
-            if (error) throw error;
-
+            await updateApp(id, { is_published: !currentStatus });
             setApps(apps.map((app) =>
                 app.id === id ? { ...app, is_published: !currentStatus } : app
             ));
             toast.success(`App ${!currentStatus ? 'published' : 'unpublished'}`);
-        } catch (error) {
+        } catch {
             toast.error("Failed to update status");
         }
     };
 
     const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
         try {
-            const { error } = await supabase
-                .from("vision_family_apps")
-                .update({ is_featured: !currentStatus })
-                .eq("id", id);
-
-            if (error) throw error;
-
+            await updateApp(id, { is_featured: !currentStatus });
             setApps(apps.map((app) =>
                 app.id === id ? { ...app, is_featured: !currentStatus } : app
             ));
             toast.success(`App ${!currentStatus ? 'featured' : 'unfeatured'}`);
-        } catch (error) {
+        } catch {
             toast.error("Failed to update featured status");
         }
     };
@@ -205,18 +182,12 @@ export function VisionFamilyManager() {
 
         setIsSubmitting(true);
         try {
-            const { error } = await supabase
-                .from("vision_family_apps")
-                .delete()
-                .eq("id", deletingId);
-
-            if (error) throw error;
-
+            await deleteApp(deletingId);
             setApps(apps.filter((app) => app.id !== deletingId));
             toast.success("App deleted successfully");
             setIsDeleteOpen(false);
             setDeletingId(null);
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete app");
         } finally {
             setIsSubmitting(false);
@@ -225,6 +196,20 @@ export function VisionFamilyManager() {
 
     return (
         <div className="w-full space-y-6">
+            {isLocal && (
+                <div className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+                    <Database className="h-5 w-5 text-amber-500 mt-0.5 shrink-0" />
+                    <div className="text-sm">
+                        <p className="font-medium text-amber-400">Using local storage (database table not found)</p>
+                        <p className="text-amber-400/70 mt-1">
+                            The <code className="text-xs bg-white/5 px-1 py-0.5 rounded">vision_family_apps</code> table
+                            doesn't exist in Supabase yet. Data is saved to your browser's local storage.
+                            Run migration <code className="text-xs bg-white/5 px-1 py-0.5 rounded">013_add_vision_family.sql</code> in the Supabase SQL editor to enable database storage.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">Vision Family Apps</h2>

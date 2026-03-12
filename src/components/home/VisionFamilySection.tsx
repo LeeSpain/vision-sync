@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { VisionFamilyApp } from "@/types/visionFamily";
+import { fetchPublishedApps } from "@/lib/visionFamilyStore";
 import { ExternalLink } from "lucide-react";
 
 export function VisionFamilySection() {
@@ -8,16 +8,10 @@ export function VisionFamilySection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchApps = async () => {
+        const loadApps = async () => {
             try {
-                const { data, error } = await supabase
-                    .from("vision_family_apps")
-                    .select("*")
-                    .eq("is_published", true)
-                    .order("display_order", { ascending: true });
-
-                if (error) throw error;
-                setApps(data || []);
+                const result = await fetchPublishedApps();
+                setApps(result.data);
             } catch (error) {
                 console.error("Error fetching vision family apps:", error);
             } finally {
@@ -25,7 +19,7 @@ export function VisionFamilySection() {
             }
         };
 
-        fetchApps();
+        loadApps();
     }, []);
 
     if (loading) {
