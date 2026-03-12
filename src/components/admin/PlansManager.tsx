@@ -285,17 +285,17 @@ export function PlansManager() {
   // ─── Render ─────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0a0f1e] -m-6 p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">
-              <Gem className="h-5 w-5 text-indigo-400" />
+          <h1 className="text-2xl font-bold text-midnight-navy flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+              <Gem className="h-5 w-5 text-indigo-500" />
             </div>
             Plans Manager
           </h1>
-          <p className="text-white/50 mt-1 ml-[52px]">Manage pricing tiers and subscriptions</p>
+          <p className="text-cool-gray mt-1 ml-[52px]">Manage pricing tiers and subscriptions</p>
         </div>
         <Button
           onClick={openCreate}
@@ -314,11 +314,11 @@ export function PlansManager() {
           { label: 'Active Plans', value: stats.activePlans.toString(), icon: CreditCard, iconColor: 'text-indigo-400', iconBg: 'bg-indigo-500/20' },
           { label: 'Avg per Subscriber', value: `\u20AC${stats.avgPerSubscriber}`, icon: BarChart3, iconColor: 'text-amber-400', iconBg: 'bg-amber-500/20' },
         ].map(stat => (
-          <div key={stat.label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+          <div key={stat.label} className="bg-gradient-card shadow-card rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/40 text-sm">{stat.label}</p>
-                <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
+                <p className="text-cool-gray text-sm">{stat.label}</p>
+                <p className="text-2xl font-bold text-midnight-navy mt-1">{stat.value}</p>
               </div>
               <div className={`h-11 w-11 rounded-lg ${stat.iconBg} flex items-center justify-center`}>
                 <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
@@ -337,11 +337,11 @@ export function PlansManager() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === tab.key
                 ? 'bg-indigo-600 text-white'
-                : 'bg-white/[0.03] text-white/50 hover:bg-white/[0.06] hover:text-white/70'
+                : 'bg-white/[0.03] text-cool-gray hover:bg-white/[0.06] hover:text-cool-gray'
             }`}
           >
             {tab.label}
-            <span className={`ml-2 text-xs ${activeTab === tab.key ? 'text-indigo-200' : 'text-white/30'}`}>
+            <span className={`ml-2 text-xs ${activeTab === tab.key ? 'text-indigo-200' : 'text-cool-gray/60'}`}>
               {tab.count}
             </span>
           </button>
@@ -350,10 +350,10 @@ export function PlansManager() {
 
       {/* Plan Cards Grid */}
       {filteredPlans.length === 0 ? (
-        <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-16 text-center">
-          <Gem className="h-12 w-12 mx-auto text-white/20 mb-4" />
-          <h3 className="text-lg font-medium text-white/60">No plans found</h3>
-          <p className="text-white/30 mt-1">Create your first pricing plan to get started</p>
+        <div className="bg-gradient-card shadow-card rounded-xl p-16 text-center">
+          <Gem className="h-12 w-12 mx-auto text-cool-gray/40 mb-4" />
+          <h3 className="text-lg font-medium text-midnight-navy/60">No plans found</h3>
+          <p className="text-cool-gray/60 mt-1">Create your first pricing plan to get started</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -362,7 +362,7 @@ export function PlansManager() {
             return (
               <div
                 key={plan.id}
-                className={`bg-white/[0.03] border border-white/[0.06] rounded-xl overflow-hidden transition-all hover:bg-white/[0.05] hover:border-white/[0.1] ${
+                className={`bg-gradient-card shadow-card rounded-xl overflow-hidden transition-all hover:shadow-lg hover:border-soft-lilac/40 ${
                   !plan.isActive ? 'opacity-60' : ''
                 }`}
               >
@@ -374,7 +374,7 @@ export function PlansManager() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
+                        <h3 className="text-lg font-semibold text-midnight-navy">{plan.name}</h3>
                         {plan.isPopular && (
                           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs">
                             <Star className="h-3 w-3 mr-1" />
@@ -389,26 +389,26 @@ export function PlansManager() {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-2xl font-bold text-midnight-navy">
                         {'\u20AC'}{plan.price}
                       </p>
-                      <p className="text-white/40 text-xs">/{plan.billingCycle === 'monthly' ? 'mo' : 'yr'}</p>
+                      <p className="text-cool-gray text-xs">/{plan.billingCycle === 'monthly' ? 'mo' : 'yr'}</p>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="text-white/50 text-sm mb-4 line-clamp-2">{plan.description}</p>
+                  <p className="text-cool-gray text-sm mb-4 line-clamp-2">{plan.description}</p>
 
                   {/* Features */}
                   <div className="space-y-2 mb-5">
                     {plan.features.slice(0, 5).map(f => (
-                      <div key={f.id} className="flex items-center gap-2 text-sm text-white/70">
+                      <div key={f.id} className="flex items-center gap-2 text-sm text-cool-gray">
                         <Check className={`h-3.5 w-3.5 ${c.text} flex-shrink-0`} />
                         {f.text}
                       </div>
                     ))}
                     {plan.features.length > 5 && (
-                      <p className="text-xs text-white/30 pl-5">
+                      <p className="text-xs text-cool-gray/60 pl-5">
                         +{plan.features.length - 5} more features
                       </p>
                     )}
@@ -416,22 +416,22 @@ export function PlansManager() {
 
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="bg-white/[0.03] rounded-lg p-3">
-                      <p className="text-white/40 text-xs">Subscribers</p>
-                      <p className="text-white font-semibold">{plan.subscribers}</p>
+                    <div className="bg-soft-lilac/10 rounded-lg p-3">
+                      <p className="text-cool-gray text-xs">Subscribers</p>
+                      <p className="text-midnight-navy font-semibold">{plan.subscribers}</p>
                     </div>
-                    <div className="bg-white/[0.03] rounded-lg p-3">
-                      <p className="text-white/40 text-xs">Revenue</p>
-                      <p className="text-white font-semibold">{'\u20AC'}{plan.revenue.toLocaleString()}</p>
+                    <div className="bg-soft-lilac/10 rounded-lg p-3">
+                      <p className="text-cool-gray text-xs">Revenue</p>
+                      <p className="text-midnight-navy font-semibold">{'\u20AC'}{plan.revenue.toLocaleString()}</p>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+                  <div className="flex items-center justify-between pt-4 border-t border-soft-lilac/20">
                     <button
                       onClick={() => toggleActive(plan.id)}
                       className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
-                        plan.isActive ? 'text-emerald-400 hover:text-emerald-300' : 'text-white/40 hover:text-white/60'
+                        plan.isActive ? 'text-emerald-400 hover:text-emerald-300' : 'text-cool-gray hover:text-midnight-navy/60'
                       }`}
                     >
                       {plan.isActive ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
@@ -441,7 +441,7 @@ export function PlansManager() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-white/40 hover:text-indigo-400 hover:bg-indigo-500/10"
+                        className="h-8 w-8 text-cool-gray hover:text-indigo-400 hover:bg-indigo-500/10"
                         onClick={() => openEdit(plan)}
                       >
                         <Edit2 className="h-3.5 w-3.5" />
@@ -449,7 +449,7 @@ export function PlansManager() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-white/40 hover:text-red-400 hover:bg-red-500/10"
+                        className="h-8 w-8 text-cool-gray hover:text-red-400 hover:bg-red-500/10"
                         onClick={() => setDeleteTarget(plan)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -465,13 +465,13 @@ export function PlansManager() {
 
       {/* ─── Create / Edit Modal ─────────────────────────────── */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0f1629] border-white/10 text-white">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-slate-200">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-midnight-navy flex items-center gap-2">
               <Gem className="h-5 w-5 text-indigo-400" />
               {isEditing ? 'Edit Plan' : 'Create New Plan'}
             </DialogTitle>
-            <DialogDescription className="text-white/50">
+            <DialogDescription className="text-cool-gray">
               {isEditing ? 'Update plan details and features' : 'Configure a new pricing tier'}
             </DialogDescription>
           </DialogHeader>
@@ -480,77 +480,77 @@ export function PlansManager() {
             {/* Row: Name + Badge */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-white/70">Plan Name *</Label>
+                <Label className="text-cool-gray">Plan Name *</Label>
                 <Input
                   value={editingPlan.name}
                   onChange={e => updateField('name', e.target.value)}
                   placeholder="e.g. Growth"
-                  className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30"
+                  className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Badge Label</Label>
+                <Label className="text-cool-gray">Badge Label</Label>
                 <Input
                   value={editingPlan.badge}
                   onChange={e => updateField('badge', e.target.value)}
                   placeholder="e.g. Most Popular"
-                  className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30"
+                  className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray"
                 />
               </div>
             </div>
 
             {/* Description */}
             <div className="space-y-2">
-              <Label className="text-white/70">Description</Label>
+              <Label className="text-cool-gray">Description</Label>
               <Textarea
                 value={editingPlan.description}
                 onChange={e => updateField('description', e.target.value)}
                 placeholder="Brief description for the pricing card"
                 rows={2}
-                className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30 resize-none"
+                className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray resize-none"
               />
             </div>
 
             {/* Row: Price + Billing Cycle + Currency */}
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label className="text-white/70">Price *</Label>
+                <Label className="text-cool-gray">Price *</Label>
                 <Input
                   type="number"
                   value={editingPlan.price || ''}
                   onChange={e => updateField('price', parseFloat(e.target.value) || 0)}
                   placeholder="149"
-                  className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30"
+                  className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Billing Cycle</Label>
+                <Label className="text-cool-gray">Billing Cycle</Label>
                 <Select
                   value={editingPlan.billingCycle}
                   onValueChange={v => updateField('billingCycle', v as Plan['billingCycle'])}
                 >
-                  <SelectTrigger className="bg-white/[0.05] border-white/10 text-white">
+                  <SelectTrigger className="bg-white border-slate-200 text-midnight-navy">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a2035] border-white/10">
-                    <SelectItem value="monthly" className="text-white hover:bg-white/10">Monthly</SelectItem>
-                    <SelectItem value="yearly" className="text-white hover:bg-white/10">Yearly</SelectItem>
+                    <SelectItem value="monthly" className="text-midnight-navy hover:bg-soft-lilac/10">Monthly</SelectItem>
+                    <SelectItem value="yearly" className="text-midnight-navy hover:bg-soft-lilac/10">Yearly</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Currency</Label>
+                <Label className="text-cool-gray">Currency</Label>
                 <Select
                   value={editingPlan.currency}
                   onValueChange={v => updateField('currency', v)}
                 >
-                  <SelectTrigger className="bg-white/[0.05] border-white/10 text-white">
+                  <SelectTrigger className="bg-white border-slate-200 text-midnight-navy">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a2035] border-white/10">
-                    <SelectItem value="EUR" className="text-white hover:bg-white/10">EUR ({'\u20AC'})</SelectItem>
-                    <SelectItem value="USD" className="text-white hover:bg-white/10">USD ($)</SelectItem>
-                    <SelectItem value="GBP" className="text-white hover:bg-white/10">GBP ({'\u00A3'})</SelectItem>
+                    <SelectItem value="EUR" className="text-midnight-navy hover:bg-soft-lilac/10">EUR ({'\u20AC'})</SelectItem>
+                    <SelectItem value="USD" className="text-midnight-navy hover:bg-soft-lilac/10">USD ($)</SelectItem>
+                    <SelectItem value="GBP" className="text-midnight-navy hover:bg-soft-lilac/10">GBP ({'\u00A3'})</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -558,7 +558,7 @@ export function PlansManager() {
 
             {/* Color Picker */}
             <div className="space-y-2">
-              <Label className="text-white/70">Accent Color</Label>
+              <Label className="text-cool-gray">Accent Color</Label>
               <div className="flex gap-2">
                 {COLOR_OPTIONS.map(c => (
                   <button
@@ -575,50 +575,50 @@ export function PlansManager() {
             {/* Limits */}
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label className="text-white/70">Max Agents</Label>
+                <Label className="text-cool-gray">Max Agents</Label>
                 <Input
                   type="number"
                   value={editingPlan.maxAgents || ''}
                   onChange={e => updateField('maxAgents', parseInt(e.target.value) || 0)}
-                  className="bg-white/[0.05] border-white/10 text-white"
+                  className="bg-white border-slate-200 text-midnight-navy"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Max Conversations</Label>
+                <Label className="text-cool-gray">Max Conversations</Label>
                 <Input
                   type="number"
                   value={editingPlan.maxConversations || ''}
                   onChange={e => updateField('maxConversations', parseInt(e.target.value) || 0)}
-                  className="bg-white/[0.05] border-white/10 text-white"
+                  className="bg-white border-slate-200 text-midnight-navy"
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Max Contacts</Label>
+                <Label className="text-cool-gray">Max Contacts</Label>
                 <Input
                   type="number"
                   value={editingPlan.maxContacts || ''}
                   onChange={e => updateField('maxContacts', parseInt(e.target.value) || 0)}
-                  className="bg-white/[0.05] border-white/10 text-white"
+                  className="bg-white border-slate-200 text-midnight-navy"
                 />
               </div>
             </div>
 
             {/* Features */}
             <div className="space-y-3">
-              <Label className="text-white/70">Features</Label>
+              <Label className="text-cool-gray">Features</Label>
               <div className="flex gap-2">
                 <Input
                   value={newFeatureText}
                   onChange={e => setNewFeatureText(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addFeature(); } }}
                   placeholder="Type a feature and press Enter"
-                  className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30"
+                  className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray"
                 />
                 <Button
                   type="button"
                   onClick={addFeature}
                   variant="outline"
-                  className="border-white/10 text-white/70 hover:bg-white/10 shrink-0"
+                  className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10 shrink-0"
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -626,48 +626,48 @@ export function PlansManager() {
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {editingPlan.features.map(f => (
                   <div key={f.id} className="flex items-center justify-between bg-white/[0.03] rounded-lg px-3 py-2 group">
-                    <div className="flex items-center gap-2 text-sm text-white/70">
+                    <div className="flex items-center gap-2 text-sm text-cool-gray">
                       <Check className="h-3.5 w-3.5 text-indigo-400" />
                       {f.text}
                     </div>
                     <button
                       onClick={() => removeFeature(f.id)}
-                      className="text-white/20 hover:text-red-400 transition-colors"
+                      className="text-cool-gray/40 hover:text-red-400 transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 ))}
                 {editingPlan.features.length === 0 && (
-                  <p className="text-white/20 text-sm text-center py-3">No features added yet</p>
+                  <p className="text-cool-gray/40 text-sm text-center py-3">No features added yet</p>
                 )}
               </div>
             </div>
 
             {/* Toggles */}
-            <div className="flex items-center gap-6 p-4 bg-white/[0.03] rounded-lg border border-white/[0.06]">
+            <div className="flex items-center gap-6 p-4 bg-white/[0.03] rounded-lg border border-soft-lilac/20">
               <div className="flex items-center gap-3">
                 <Switch
                   checked={editingPlan.isActive}
                   onCheckedChange={v => updateField('isActive', v)}
                 />
-                <Label className="text-white/70">Active</Label>
+                <Label className="text-cool-gray">Active</Label>
               </div>
               <div className="flex items-center gap-3">
                 <Switch
                   checked={editingPlan.isPopular}
                   onCheckedChange={v => updateField('isPopular', v)}
                 />
-                <Label className="text-white/70">Mark as Popular</Label>
+                <Label className="text-cool-gray">Mark as Popular</Label>
               </div>
             </div>
           </div>
 
-          <DialogFooter className="border-t border-white/[0.06] pt-4">
+          <DialogFooter className="border-t border-soft-lilac/20 pt-4">
             <Button
               variant="outline"
               onClick={() => setIsModalOpen(false)}
-              className="border-white/10 text-white/70 hover:bg-white/10"
+              className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10"
             >
               Cancel
             </Button>
@@ -680,14 +680,14 @@ export function PlansManager() {
 
       {/* ─── Delete Confirmation ─────────────────────────────── */}
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <DialogContent className="max-w-md bg-[#0f1629] border-white/10 text-white">
+        <DialogContent className="max-w-md bg-white border-slate-200">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-midnight-navy flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-red-400" />
               Delete Plan
             </DialogTitle>
-            <DialogDescription className="text-white/50">
-              Are you sure you want to delete <strong className="text-white">{deleteTarget?.name}</strong>?
+            <DialogDescription className="text-cool-gray">
+              Are you sure you want to delete <strong className="text-midnight-navy">{deleteTarget?.name}</strong>?
               This action cannot be undone. All subscriber data associated with this plan will be affected.
             </DialogDescription>
           </DialogHeader>
@@ -695,7 +695,7 @@ export function PlansManager() {
             <Button
               variant="outline"
               onClick={() => setDeleteTarget(null)}
-              className="border-white/10 text-white/70 hover:bg-white/10"
+              className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10"
             >
               Cancel
             </Button>

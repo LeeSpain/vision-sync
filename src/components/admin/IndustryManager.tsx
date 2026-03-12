@@ -65,7 +65,7 @@ const getColor = (color: string) => COLOR_MAP[color] || COLOR_MAP.indigo;
 const STATUS_STYLES: Record<IndustryStatus, { bg: string; text: string; label: string }> = {
   active:   { bg: 'bg-emerald-500/20', text: 'text-emerald-400', label: 'Active' },
   beta:     { bg: 'bg-purple-500/20',  text: 'text-purple-400',  label: 'Beta' },
-  inactive: { bg: 'bg-white/10',       text: 'text-white/40',    label: 'Inactive' },
+  inactive: { bg: 'bg-white/10',       text: 'text-cool-gray',    label: 'Inactive' },
 };
 
 const ICON_GRID = [
@@ -312,17 +312,17 @@ export function IndustryManager() {
   // ─── Render ─────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0a0f1e] -m-6 p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-lg">
+          <h1 className="text-2xl font-bold text-midnight-navy flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-lg">
               🏭
             </div>
             Industry Manager
           </h1>
-          <p className="text-white/50 mt-1 ml-[52px]">Manage industry packages and pricing</p>
+          <p className="text-cool-gray mt-1 ml-[52px]">Manage industry packages and pricing</p>
         </div>
         <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
           <Plus className="h-4 w-4" /> Add Industry
@@ -337,11 +337,11 @@ export function IndustryManager() {
           { label: 'Featured Industries', value: stats.featured.toString(), icon: Award, ic: 'text-amber-400', ib: 'bg-amber-500/20' },
           { label: 'Avg Conversion Rate', value: `${stats.avgConversion}%`, icon: TrendingUp, ic: 'text-indigo-400', ib: 'bg-indigo-500/20' },
         ].map(s => (
-          <div key={s.label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5">
+          <div key={s.label} className="bg-gradient-card shadow-card rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/40 text-sm">{s.label}</p>
-                <p className="text-2xl font-bold text-white mt-1">{s.value}</p>
+                <p className="text-cool-gray text-sm">{s.label}</p>
+                <p className="text-2xl font-bold text-midnight-navy mt-1">{s.value}</p>
               </div>
               <div className={`h-11 w-11 rounded-lg ${s.ib} flex items-center justify-center`}>
                 <s.icon className={`h-5 w-5 ${s.ic}`} />
@@ -354,12 +354,12 @@ export function IndustryManager() {
       {/* Search + Filter Tabs */}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
         <div className="relative flex-1 w-full md:max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cool-gray/60" />
           <Input
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search industries..."
-            className="pl-10 bg-white/[0.05] border-white/10 text-white placeholder:text-white/30"
+            className="pl-10 bg-white border-slate-200 text-white placeholder:text-cool-gray/60"
           />
         </div>
         <div className="flex items-center gap-1.5 flex-wrap">
@@ -370,11 +370,11 @@ export function IndustryManager() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeTab === tab.key
                   ? 'bg-indigo-600 text-white'
-                  : 'bg-white/[0.03] text-white/50 hover:bg-white/[0.06] hover:text-white/70'
+                  : 'bg-soft-lilac/10 text-cool-gray hover:bg-white/[0.06] hover:text-cool-gray'
               }`}
             >
               {tab.label}
-              <span className={`ml-1.5 ${activeTab === tab.key ? 'text-indigo-200' : 'text-white/30'}`}>{tab.count}</span>
+              <span className={`ml-1.5 ${activeTab === tab.key ? 'text-indigo-200' : 'text-cool-gray/60'}`}>{tab.count}</span>
             </button>
           ))}
         </div>
@@ -382,10 +382,10 @@ export function IndustryManager() {
 
       {/* Industry Cards */}
       {filteredIndustries.length === 0 ? (
-        <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-16 text-center">
-          <Factory className="h-12 w-12 mx-auto text-white/20 mb-4" />
-          <h3 className="text-lg font-medium text-white/60">No industries found</h3>
-          <p className="text-white/30 mt-1">Try a different search or filter</p>
+        <div className="bg-gradient-card shadow-card rounded-xl p-16 text-center">
+          <Factory className="h-12 w-12 mx-auto text-cool-gray/40 mb-4" />
+          <h3 className="text-lg font-medium text-midnight-navy/60">No industries found</h3>
+          <p className="text-cool-gray/60 mt-1">Try a different search or filter</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -396,7 +396,7 @@ export function IndustryManager() {
             return (
               <div
                 key={ind.id}
-                className="bg-white/[0.03] border border-white/[0.06] rounded-xl overflow-hidden transition-all hover:bg-white/[0.04]"
+                className="bg-gradient-card shadow-card rounded-xl overflow-hidden transition-all hover:bg-white/[0.04]"
               >
                 <div className={`h-1 ${c.accent}`} />
                 <div className="p-6">
@@ -408,33 +408,33 @@ export function IndustryManager() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-white">{ind.name}</h3>
+                          <h3 className="text-lg font-semibold text-midnight-navy">{ind.name}</h3>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${st.bg} ${st.text}`}>{st.label}</span>
                           {ind.isFeatured && (
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/20 text-amber-400">
                               <Star className="h-2.5 w-2.5 inline mr-0.5 fill-amber-400" />Featured
                             </span>
                           )}
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-white/[0.05] text-white/40">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-white text-cool-gray">
                             <Globe className="h-2.5 w-2.5 inline mr-0.5" />{ind.region}
                           </span>
                         </div>
-                        <p className="text-white/50 text-sm mt-1 max-w-2xl">{ind.description}</p>
+                        <p className="text-cool-gray text-sm mt-1 max-w-2xl">{ind.description}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <button
                         onClick={() => toggleFeatured(ind.id)}
                         className={`p-2 rounded-lg transition-colors ${
-                          ind.isFeatured ? 'text-amber-400 hover:bg-amber-500/10' : 'text-white/30 hover:bg-white/[0.05]'
+                          ind.isFeatured ? 'text-amber-400 hover:bg-amber-500/10' : 'text-cool-gray/60 hover:bg-white'
                         }`}
                       >
                         <Star className={`h-4 w-4 ${ind.isFeatured ? 'fill-amber-400' : ''}`} />
                       </button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-white/40 hover:text-indigo-400 hover:bg-indigo-500/10" onClick={() => openEdit(ind)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-cool-gray hover:text-indigo-400 hover:bg-indigo-500/10" onClick={() => openEdit(ind)}>
                         <Edit2 className="h-3.5 w-3.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-white/40 hover:text-red-400 hover:bg-red-500/10" onClick={() => setDeleteTarget(ind)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-cool-gray hover:text-red-400 hover:bg-red-500/10" onClick={() => setDeleteTarget(ind)}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -442,16 +442,16 @@ export function IndustryManager() {
 
                   {/* 3 Metric Grid */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="bg-white/[0.03] rounded-lg p-3">
-                      <p className="text-white/40 text-xs">Clients</p>
+                    <div className="bg-soft-lilac/10 rounded-lg p-3">
+                      <p className="text-cool-gray text-xs">Clients</p>
                       <p className="text-xl font-bold text-white">{ind.clients}</p>
                     </div>
-                    <div className="bg-white/[0.03] rounded-lg p-3">
-                      <p className="text-white/40 text-xs">Avg MRR</p>
+                    <div className="bg-soft-lilac/10 rounded-lg p-3">
+                      <p className="text-cool-gray text-xs">Avg MRR</p>
                       <p className="text-xl font-bold text-white">{'\u20AC'}{ind.avgMRR}</p>
                     </div>
-                    <div className="bg-white/[0.03] rounded-lg p-3">
-                      <p className="text-white/40 text-xs">Conversion Rate</p>
+                    <div className="bg-soft-lilac/10 rounded-lg p-3">
+                      <p className="text-cool-gray text-xs">Conversion Rate</p>
                       <p className="text-xl font-bold text-white">{ind.conversionRate}%</p>
                     </div>
                   </div>
@@ -465,13 +465,13 @@ export function IndustryManager() {
                       </div>
                       <div className="text-right">
                         <p className="text-white font-bold">{'\u20AC'}{ind.basePackage.price}/mo</p>
-                        <p className="text-white/40 text-xs">+ {'\u20AC'}{ind.basePackage.setupFee} setup</p>
+                        <p className="text-cool-gray text-xs">+ {'\u20AC'}{ind.basePackage.setupFee} setup</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 mt-2">
-                      <span className="text-white/40 text-xs">{ind.basePackage.modules.length} modules:</span>
+                      <span className="text-cool-gray text-xs">{ind.basePackage.modules.length} modules:</span>
                       {ind.basePackage.modules.map(m => (
-                        <span key={m} className="px-1.5 py-0.5 rounded text-[10px] bg-white/[0.08] text-white/60">{m}</span>
+                        <span key={m} className="px-1.5 py-0.5 rounded text-[10px] bg-white/[0.08] text-midnight-navy/60">{m}</span>
                       ))}
                     </div>
                   </div>
@@ -479,7 +479,7 @@ export function IndustryManager() {
                   {/* Expand/Collapse */}
                   <button
                     onClick={() => toggleExpanded(ind.id)}
-                    className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors"
+                    className="flex items-center gap-1 text-xs text-cool-gray hover:text-midnight-navy/60 transition-colors"
                   >
                     {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                     {isExpanded ? 'Collapse' : 'Show use cases, keywords & modules'}
@@ -487,20 +487,20 @@ export function IndustryManager() {
 
                   {/* Expandable section */}
                   {isExpanded && (
-                    <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-4">
+                    <div className="mt-4 pt-4 border-t border-soft-lilac/20 space-y-4">
                       {/* Use Cases */}
                       <div>
-                        <p className="text-white/50 text-xs font-medium mb-2">Use Cases</p>
+                        <p className="text-cool-gray text-xs font-medium mb-2">Use Cases</p>
                         <div className="flex flex-wrap gap-1.5">
                           {ind.useCases.map(uc => (
-                            <span key={uc} className="px-2 py-1 rounded-full bg-white/[0.05] text-white/60 text-xs">{uc}</span>
+                            <span key={uc} className="px-2 py-1 rounded-full bg-white text-midnight-navy/60 text-xs">{uc}</span>
                           ))}
                         </div>
                       </div>
 
                       {/* SEO Keywords */}
                       <div>
-                        <p className="text-white/50 text-xs font-medium mb-2">SEO Keywords</p>
+                        <p className="text-cool-gray text-xs font-medium mb-2">SEO Keywords</p>
                         <div className="flex flex-wrap gap-1.5">
                           {ind.seoKeywords.map(kw => (
                             <span key={kw} className={`px-2 py-1 rounded-full text-xs ${c.bg} ${c.text}`}>#{kw}</span>
@@ -510,7 +510,7 @@ export function IndustryManager() {
 
                       {/* Included Modules */}
                       <div>
-                        <p className="text-white/50 text-xs font-medium mb-2">Included Modules</p>
+                        <p className="text-cool-gray text-xs font-medium mb-2">Included Modules</p>
                         <div className="flex flex-wrap gap-1.5">
                           {ind.basePackage.modules.map(m => (
                             <span key={m} className="px-2 py-1 rounded-full bg-indigo-500/15 text-indigo-300 text-xs">{m}</span>
@@ -528,13 +528,13 @@ export function IndustryManager() {
 
       {/* ─── Create / Edit Modal ─────────────────────────────── */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0f1629] border-white/10 text-white">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-slate-200 text-white">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center gap-2">
               <Factory className="h-5 w-5 text-indigo-400" />
               {isEditing ? 'Edit Industry' : 'Create New Industry'}
             </DialogTitle>
-            <DialogDescription className="text-white/50">
+            <DialogDescription className="text-cool-gray">
               {isEditing ? 'Update industry configuration and base package' : 'Add a new industry vertical'}
             </DialogDescription>
           </DialogHeader>
@@ -543,36 +543,36 @@ export function IndustryManager() {
             {/* Name + Slug */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-white/70">Name *</Label>
-                <Input value={editingIndustry.name} onChange={e => updateField('name', e.target.value)} placeholder="E-Commerce & Retail" className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30" />
+                <Label className="text-cool-gray">Name *</Label>
+                <Input value={editingIndustry.name} onChange={e => updateField('name', e.target.value)} placeholder="E-Commerce & Retail" className="bg-white border-slate-200 text-white placeholder:text-cool-gray/60" />
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Slug *</Label>
-                <Input value={editingIndustry.slug} onChange={e => updateField('slug', e.target.value)} placeholder="e-commerce-retail" className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30" />
+                <Label className="text-cool-gray">Slug *</Label>
+                <Input value={editingIndustry.slug} onChange={e => updateField('slug', e.target.value)} placeholder="e-commerce-retail" className="bg-white border-slate-200 text-white placeholder:text-cool-gray/60" />
               </div>
             </div>
 
             {/* Icon + Color */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-white/70">Icon</Label>
+                <Label className="text-cool-gray">Icon</Label>
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setShowIconPicker(!showIconPicker)}
-                    className="w-full flex items-center gap-2 px-3 py-2 bg-white/[0.05] border border-white/10 rounded-md text-left"
+                    className="w-full flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-md text-left"
                   >
                     <span className="text-lg">{editingIndustry.icon}</span>
-                    <span className="text-white/40 text-sm">Click to change</span>
+                    <span className="text-cool-gray text-sm">Click to change</span>
                   </button>
                   {showIconPicker && (
-                    <div className="absolute z-10 mt-1 p-3 bg-[#1a2035] border border-white/10 rounded-lg shadow-xl grid grid-cols-8 gap-1.5">
+                    <div className="absolute z-10 mt-1 p-3 bg-[#1a2035] border border-slate-200 rounded-lg shadow-xl grid grid-cols-8 gap-1.5">
                       {ICON_GRID.map(emoji => (
                         <button
                           key={emoji}
                           type="button"
                           onClick={() => { updateField('icon', emoji); setShowIconPicker(false); }}
-                          className={`h-8 w-8 rounded flex items-center justify-center text-lg hover:bg-white/10 transition-colors ${
+                          className={`h-8 w-8 rounded flex items-center justify-center text-lg hover:bg-soft-lilac/10 transition-colors ${
                             editingIndustry.icon === emoji ? 'bg-indigo-500/30 ring-1 ring-indigo-500' : ''
                           }`}
                         >
@@ -584,7 +584,7 @@ export function IndustryManager() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Accent Color</Label>
+                <Label className="text-cool-gray">Accent Color</Label>
                 <div className="flex gap-2 pt-1">
                   {COLOR_OPTIONS.map(co => (
                     <button
@@ -603,23 +603,23 @@ export function IndustryManager() {
             {/* Status + Region */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-white/70">Status</Label>
+                <Label className="text-cool-gray">Status</Label>
                 <Select value={editingIndustry.status} onValueChange={v => updateField('status', v as IndustryStatus)}>
-                  <SelectTrigger className="bg-white/[0.05] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#1a2035] border-white/10">
-                    <SelectItem value="active" className="text-white hover:bg-white/10">Active</SelectItem>
-                    <SelectItem value="beta" className="text-white hover:bg-white/10">Beta</SelectItem>
-                    <SelectItem value="inactive" className="text-white hover:bg-white/10">Inactive</SelectItem>
+                  <SelectTrigger className="bg-white border-slate-200 text-white"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#1a2035] border-slate-200">
+                    <SelectItem value="active" className="text-white hover:bg-soft-lilac/10">Active</SelectItem>
+                    <SelectItem value="beta" className="text-white hover:bg-soft-lilac/10">Beta</SelectItem>
+                    <SelectItem value="inactive" className="text-white hover:bg-soft-lilac/10">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Region</Label>
+                <Label className="text-cool-gray">Region</Label>
                 <Select value={editingIndustry.region} onValueChange={v => updateField('region', v)}>
-                  <SelectTrigger className="bg-white/[0.05] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#1a2035] border-white/10">
+                  <SelectTrigger className="bg-white border-slate-200 text-white"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#1a2035] border-slate-200">
                     {REGION_OPTIONS.map(r => (
-                      <SelectItem key={r} value={r} className="text-white hover:bg-white/10">{r}</SelectItem>
+                      <SelectItem key={r} value={r} className="text-white hover:bg-soft-lilac/10">{r}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -628,20 +628,20 @@ export function IndustryManager() {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label className="text-white/70">Description</Label>
-              <Textarea value={editingIndustry.description} onChange={e => updateField('description', e.target.value)} placeholder="Industry description..." rows={2} className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30 resize-none" />
+              <Label className="text-cool-gray">Description</Label>
+              <Textarea value={editingIndustry.description} onChange={e => updateField('description', e.target.value)} placeholder="Industry description..." rows={2} className="bg-white border-slate-200 text-white placeholder:text-cool-gray/60 resize-none" />
             </div>
 
             {/* Use Cases */}
             <div className="space-y-2">
-              <Label className="text-white/70">Use Cases</Label>
+              <Label className="text-cool-gray">Use Cases</Label>
               <div className="flex gap-2">
-                <Input value={newUseCase} onChange={e => setNewUseCase(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addUseCase(); } }} placeholder="Type a use case and press Enter" className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30" />
-                <Button type="button" onClick={addUseCase} variant="outline" className="border-white/10 text-white/70 hover:bg-white/10 shrink-0"><Plus className="h-4 w-4" /></Button>
+                <Input value={newUseCase} onChange={e => setNewUseCase(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addUseCase(); } }} placeholder="Type a use case and press Enter" className="bg-white border-slate-200 text-white placeholder:text-cool-gray/60" />
+                <Button type="button" onClick={addUseCase} variant="outline" className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10 shrink-0"><Plus className="h-4 w-4" /></Button>
               </div>
               <div className="flex flex-wrap gap-1.5 mt-1">
                 {editingIndustry.useCases.map((uc, idx) => (
-                  <span key={idx} className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/[0.05] text-white/60 text-xs">
+                  <span key={idx} className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-midnight-navy/60 text-xs">
                     {uc}
                     <button type="button" onClick={() => removeUseCase(idx)} className="hover:text-red-400"><X className="h-3 w-3" /></button>
                   </span>
@@ -651,8 +651,8 @@ export function IndustryManager() {
 
             {/* SEO Keywords */}
             <div className="space-y-2">
-              <Label className="text-white/70">SEO Keywords</Label>
-              <Input value={newKeyword} onChange={e => setNewKeyword(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addKeyword(); } }} placeholder="Type keyword and press Enter" className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30" />
+              <Label className="text-cool-gray">SEO Keywords</Label>
+              <Input value={newKeyword} onChange={e => setNewKeyword(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addKeyword(); } }} placeholder="Type keyword and press Enter" className="bg-white border-slate-200 text-white placeholder:text-cool-gray/60" />
               <div className="flex flex-wrap gap-1.5 mt-1">
                 {editingIndustry.seoKeywords.map(kw => (
                   <span key={kw} className="flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs">
@@ -664,32 +664,32 @@ export function IndustryManager() {
             </div>
 
             {/* Base Package */}
-            <div className="space-y-4 p-4 bg-white/[0.03] rounded-lg border border-white/[0.06]">
+            <div className="space-y-4 p-4 bg-soft-lilac/10 rounded-lg border border-soft-lilac/20">
               <p className="text-white font-medium text-sm">Base Package</p>
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-white/70">Package Name</Label>
-                  <Input value={editingIndustry.basePackage.name} onChange={e => updatePackageField('name', e.target.value)} placeholder="Retail Starter" className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/30" />
+                  <Label className="text-cool-gray">Package Name</Label>
+                  <Input value={editingIndustry.basePackage.name} onChange={e => updatePackageField('name', e.target.value)} placeholder="Retail Starter" className="bg-white border-slate-200 text-white placeholder:text-cool-gray/60" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-white/70">Price ({'\u20AC'}/mo)</Label>
-                  <Input type="number" value={editingIndustry.basePackage.price || ''} onChange={e => updatePackageField('price', parseFloat(e.target.value) || 0)} className="bg-white/[0.05] border-white/10 text-white" />
+                  <Label className="text-cool-gray">Price ({'\u20AC'}/mo)</Label>
+                  <Input type="number" value={editingIndustry.basePackage.price || ''} onChange={e => updatePackageField('price', parseFloat(e.target.value) || 0)} className="bg-white border-slate-200 text-white" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-white/70">Setup Fee ({'\u20AC'})</Label>
-                  <Input type="number" value={editingIndustry.basePackage.setupFee || ''} onChange={e => updatePackageField('setupFee', parseFloat(e.target.value) || 0)} className="bg-white/[0.05] border-white/10 text-white" />
+                  <Label className="text-cool-gray">Setup Fee ({'\u20AC'})</Label>
+                  <Input type="number" value={editingIndustry.basePackage.setupFee || ''} onChange={e => updatePackageField('setupFee', parseFloat(e.target.value) || 0)} className="bg-white border-slate-200 text-white" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70">Included Modules</Label>
+                <Label className="text-cool-gray">Included Modules</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {MODULE_OPTIONS.map(mod => (
-                    <label key={mod} className="flex items-center gap-2 cursor-pointer text-sm text-white/70">
+                    <label key={mod} className="flex items-center gap-2 cursor-pointer text-sm text-cool-gray">
                       <input
                         type="checkbox"
                         checked={editingIndustry.basePackage.modules.includes(mod)}
                         onChange={() => toggleModule(mod)}
-                        className="rounded border-white/20 bg-white/[0.05] text-indigo-600"
+                        className="rounded border-white/20 bg-white text-indigo-600"
                       />
                       {mod}
                     </label>
@@ -699,8 +699,8 @@ export function IndustryManager() {
             </div>
           </div>
 
-          <DialogFooter className="border-t border-white/[0.06] pt-4">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="border-white/10 text-white/70 hover:bg-white/10">Cancel</Button>
+          <DialogFooter className="border-t border-soft-lilac/20 pt-4">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10">Cancel</Button>
             <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white">
               {isEditing ? 'Update Industry' : 'Create Industry'}
             </Button>
@@ -710,19 +710,19 @@ export function IndustryManager() {
 
       {/* ─── Delete Confirmation ─────────────────────────────── */}
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <DialogContent className="max-w-md bg-[#0f1629] border-white/10 text-white">
+        <DialogContent className="max-w-md bg-white border-slate-200 text-white">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-red-400" />
               Delete Industry
             </DialogTitle>
-            <DialogDescription className="text-white/50">
+            <DialogDescription className="text-cool-gray">
               Are you sure you want to delete <strong className="text-white">{deleteTarget?.name}</strong>?
               This will affect {deleteTarget?.clients} clients using this industry package.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="pt-4">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="border-white/10 text-white/70 hover:bg-white/10">Cancel</Button>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10">Cancel</Button>
             <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">Delete Industry</Button>
           </DialogFooter>
         </DialogContent>

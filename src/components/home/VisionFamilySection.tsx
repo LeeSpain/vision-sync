@@ -63,7 +63,7 @@ export function VisionFamilySection() {
                         </span>
                     </div>
 
-                    <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+                    <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-white">
                         Part of the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Vision Family</span>
                     </h2>
                     <p className="text-lg text-slate-400 max-w-2xl mx-auto">
@@ -71,11 +71,11 @@ export function VisionFamilySection() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {featuredApps.map((app) => (
                         <div
                             key={app.id}
-                            className="md:col-span-2 group relative bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/[0.07] transition-all duration-300 overflow-hidden"
+                            className="group relative bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/[0.07] transition-all duration-300 overflow-hidden"
                             style={{ '--app-accent': app.accent_color } as React.CSSProperties}
                         >
                             <div
@@ -149,7 +149,7 @@ export function VisionFamilySection() {
                     {regularApps.map((app) => (
                         <div
                             key={app.id}
-                            className="group relative bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/[0.07] transition-all duration-300 flex flex-col h-full overflow-hidden"
+                            className="group relative bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/[0.07] transition-all duration-300 flex flex-col overflow-hidden"
                             style={{ '--app-accent': app.accent_color } as React.CSSProperties}
                         >
                             <div
