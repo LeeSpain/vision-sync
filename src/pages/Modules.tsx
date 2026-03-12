@@ -255,32 +255,17 @@ export default function Modules() {
                       )}
 
                       <div className="border-t border-slate-100 pt-4 mt-auto">
-                        {!isCoreFeature ? (
+                        {isCoreFeature && (
                           <div className="mb-4">
-                            <p className="text-xs text-cool-gray uppercase tracking-wider mb-1">
-                              {t('modules.addonPrice', 'Add-on from')}
-                            </p>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-2xl font-black text-midnight-navy">€{mod.monthly_addon_price}</span>
-                              <span className="text-sm text-cool-gray">{t('modules.mo', '/mo ex IVA')}</span>
-                            </div>
-                            {mod.setup_fee != null && (
-                              <p className="text-xs text-slate-500 mt-1">
-                                + €{mod.setup_fee} {t('modules.setupFee', 'one-time setup')}
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="mb-4">
-                            <span className="text-lg font-bold text-midnight-navy">
+                            <span className="text-sm font-semibold text-emerald-600">
                               {t('modules.included', 'Included in all packages')}
                             </span>
                           </div>
                         )}
 
                         <Button asChild className={`w-full ${ds.primaryButton} group`}>
-                          <Link to="/contact">
-                            {t('modules.addSkill', 'Add this module')}
+                          <Link to="/pricing">
+                            {t('modules.getQuote', 'Get Your Quote')}
                             <ArrowRight className={ds.ctaArrow} />
                           </Link>
                         </Button>
@@ -294,10 +279,10 @@ export default function Modules() {
 
           {/* Bottom CTA */}
           <div className="text-center mt-16">
-            <p className="text-cool-gray mb-4">Want to see exactly what's right for your business?</p>
+            <p className="text-cool-gray mb-4">Ready to build your perfect AI stack?</p>
             <Link to="/pricing">
               <Button variant="outline" size="lg" className={ds.secondaryButton}>
-                View industry packages
+                Get Your Custom Quote
               </Button>
             </Link>
           </div>

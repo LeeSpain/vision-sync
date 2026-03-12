@@ -56,9 +56,9 @@ export default function Solutions() {
               {industry.painStatement}
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to={`/solutions/${industry.slug}/build`}>
+              <Link to="/pricing">
                 <Button className="bg-white text-[#0A1628] hover:bg-slate-100 font-bold px-8 py-6 text-base shadow-lg">
-                  Build your package
+                  Get Your Quote
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </Link>
@@ -122,11 +122,11 @@ export default function Solutions() {
                 <div className="bg-[#0A1628] rounded-2xl p-6 text-white">
                   <h3 className="font-bold text-lg mb-2">Ready to get started?</h3>
                   <p className="text-white/70 text-sm mb-6">
-                    Build your custom package. Your personalised quote is emailed to you instantly — no phone calls, no obligation.
+                    Get a personalised quote for your business — select your industry, pick your AI skills, and receive your custom proposal instantly.
                   </p>
-                  <Link to={`/solutions/${industry.slug}/build`} className="block">
+                  <Link to="/pricing" className="block">
                     <Button className="w-full bg-electric-blue hover:bg-electric-blue/90 text-white font-bold py-5">
-                      Build your package →
+                      Get Your Quote →
                     </Button>
                   </Link>
                 </div>

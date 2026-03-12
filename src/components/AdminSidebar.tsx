@@ -20,7 +20,6 @@ import {
   ChevronDown,
   Sparkles,
   Network,
-  Gem,
   Puzzle,
   Factory
 } from "lucide-react"
@@ -44,16 +43,15 @@ import { useTranslation } from "react-i18next";
 
 const mainItems = [
   { key: "admin.dashboard", url: "#overview", icon: LayoutDashboard },
-  { key: "admin.plans", url: "#plans", icon: Gem },
-  { key: "admin.modules", url: "#modules", icon: Puzzle },
   { key: "admin.industries", url: "#industries", icon: Factory },
+  { key: "admin.skills", url: "#skills", icon: Puzzle },
   { key: "admin.solutions", url: "#solutions", icon: Building2 },
+  { key: "admin.quotes", url: "#quotes", icon: FileText, badge: null },
   { key: "Vision Family", url: "#vision-family", icon: Network },
   { key: "admin.pageSections", url: "#page-sections", icon: LayoutDashboard },
   { key: "admin.messages", url: "#messages", icon: Mail },
   { key: "admin.conversations", url: "#conversations", icon: MessageCircle },
   { key: "admin.leads", url: "#leads", icon: Users },
-  { key: "admin.quotes", url: "#quotes", icon: FileText, badge: null },
   { key: "admin.salesPipeline", url: "#sales-pipeline", icon: TrendingUp },
   { key: "admin.salesTeam", url: "#sales-team", icon: Briefcase },
   { key: "admin.analytics", url: "#analytics", icon: BarChart3 },

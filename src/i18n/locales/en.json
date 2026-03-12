@@ -34,9 +34,8 @@
         },
         "admin": {
             "dashboard": "Dashboard",
-            "plans": "Plans",
-            "modules": "Modules",
             "industries": "Industries",
+            "skills": "Skills",
             "solutions": "Solutions",
             "pageSections": "Page Sections",
             "messages": "Messages",

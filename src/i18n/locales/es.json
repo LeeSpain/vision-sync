@@ -34,9 +34,8 @@
         },
         "admin": {
             "dashboard": "Panel de Control",
-            "plans": "Planes",
-            "modules": "Módulos",
             "industries": "Industrias",
+            "skills": "Habilidades",
             "solutions": "Soluciones",
             "pageSections": "Secciones de Página",
             "messages": "Mensajes",

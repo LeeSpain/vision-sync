@@ -20,9 +20,8 @@ import { RealTimeAnalytics } from '@/components/admin/RealTimeAnalytics';
 import { WelcomeSection } from '@/components/admin/WelcomeSection';
 import { TodaySummary } from '@/components/admin/TodaySummary';
 import { SettingsManager } from '@/components/admin/SettingsManager';
-import { PlansManager } from '@/components/admin/PlansManager';
-import { ModulesManager } from '@/components/admin/ModulesManager';
 import { SolutionsManager } from '@/components/admin/SolutionsManager';
+import { SkillsManager } from '@/components/admin/SkillsManager';
 import { PageSectionsManager } from '@/components/admin/PageSectionsManager';
 import AiAgentManager from '@/components/admin/AiAgentManager';
 import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
@@ -439,11 +438,8 @@ const Admin = () => {
       case 'industries':
         return <IndustryManager />;
 
-      case 'plans':
-        return <PlansManager />;
-
-      case 'modules':
-        return <ModulesManager />;
+      case 'skills':
+        return <SkillsManager />;
 
       case 'solutions':
         return <SolutionsManager />;
