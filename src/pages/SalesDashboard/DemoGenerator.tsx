@@ -1,39 +1,64 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
     PlaySquare,
     Search,
     Monitor,
     CheckCircle2,
-    Image as ImageIcon,
     Type,
-    Palette,
     Eye,
-    ArrowRight
+    ArrowRight,
+    Loader2,
+    ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock templates and deals
-const MOCK_TEMPLATES = [
-    { id: "t1", name: "Modern Real Estate", category: "Real Estate", thumbnail: "bg-slate-200" },
-    { id: "t2", name: "Local Service Pro", category: "Services", thumbnail: "bg-blue-100" },
-    { id: "t3", name: "Healthcare Clinic", category: "Healthcare", thumbnail: "bg-brand/10" },
-    { id: "t4", name: "Restaurant Delivery", category: "Hospitality", thumbnail: "bg-emerald-100" }
-];
+interface DemoTemplate {
+    id: string;
+    name: string;
+    category: string;
+    thumbnail: string;
+    description: string | null;
+}
+
+function dbRowToTemplate(row: Record<string, unknown>): DemoTemplate {
+    return {
+        id: row.id as string,
+        name: row.name as string,
+        category: (row.category as string) ?? '',
+        thumbnail: (row.thumbnail_class as string) ?? 'bg-slate-200',
+        description: (row.description as string) ?? null,
+    };
+}
 
 export default function DemoGenerator() {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const dealId = searchParams.get("deal");
 
+    const [templates, setTemplates] = useState<DemoTemplate[]>([]);
+    const [loadingTemplates, setLoadingTemplates] = useState(true);
     const [step, setStep] = useState(1);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const [demoName, setDemoName] = useState("Demo for Prospect");
     const [primaryColor, setPrimaryColor] = useState("#6366f1");
+
+    useEffect(() => { fetchTemplates(); }, []);
+
+    async function fetchTemplates() {
+        setLoadingTemplates(true);
+        const { data, error } = await supabase
+            .from('demo_templates')
+            .select('*')
+            .eq('is_active', true)
+            .order('sort_order');
+        if (!error && data) setTemplates(data.map(r => dbRowToTemplate(r as Record<string, unknown>)));
+        setLoadingTemplates(false);
+    }
 
     return (
         <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
@@ -88,7 +113,16 @@ export default function DemoGenerator() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {MOCK_TEMPLATES.map((tpl) => (
+                            {loadingTemplates ? (
+                                <div className="col-span-full flex justify-center py-12">
+                                    <Loader2 className="h-8 w-8 animate-spin text-brand" />
+                                </div>
+                            ) : templates.length === 0 ? (
+                                <div className="col-span-full text-center py-12 text-slate-500 dark:text-slate-400">
+                                    <Monitor className="h-10 w-10 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                    <p className="text-sm font-medium">{t('salesDashboard.demoGen.step1.noTemplates', 'No templates available')}</p>
+                                </div>
+                            ) : templates.map((tpl) => (
                                 <div
                                     key={tpl.id}
                                     onClick={() => setSelectedTemplate(tpl.id)}

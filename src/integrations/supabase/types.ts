@@ -1543,6 +1543,205 @@ export type Database = {
         }
         Relationships: []
       }
+      deals: {
+        Row: {
+          id: string
+          lead_id: string | null
+          business_name: string
+          industry: string | null
+          location: string | null
+          website: string | null
+          current_stage: string
+          estimated_value: number | null
+          priority: string | null
+          next_action: string | null
+          follow_up_date: string | null
+          contact_name: string | null
+          contact_title: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          ai_summary: string | null
+          quote_status: string | null
+          contract_status: string | null
+          payment_status: string | null
+          demo_id: string | null
+          assigned_to: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          lead_id?: string | null
+          business_name: string
+          industry?: string | null
+          location?: string | null
+          website?: string | null
+          current_stage?: string
+          estimated_value?: number | null
+          priority?: string | null
+          next_action?: string | null
+          follow_up_date?: string | null
+          contact_name?: string | null
+          contact_title?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          ai_summary?: string | null
+          quote_status?: string | null
+          contract_status?: string | null
+          payment_status?: string | null
+          demo_id?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          lead_id?: string | null
+          business_name?: string
+          industry?: string | null
+          location?: string | null
+          website?: string | null
+          current_stage?: string
+          estimated_value?: number | null
+          priority?: string | null
+          next_action?: string | null
+          follow_up_date?: string | null
+          contact_name?: string | null
+          contact_title?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          ai_summary?: string | null
+          quote_status?: string | null
+          contract_status?: string | null
+          payment_status?: string | null
+          demo_id?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deal_activities: {
+        Row: {
+          id: string
+          deal_id: string
+          activity_type: string
+          message: string
+          actor: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          deal_id: string
+          activity_type: string
+          message: string
+          actor: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          deal_id?: string
+          activity_type?: string
+          message?: string
+          actor?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_activities_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_payments: {
+        Row: {
+          id: string
+          deal_id: string | null
+          payment_type: string
+          amount: number
+          currency: string | null
+          status: string | null
+          reference: string | null
+          due_date: string | null
+          paid_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          deal_id?: string | null
+          payment_type?: string
+          amount?: number
+          currency?: string | null
+          status?: string | null
+          reference?: string | null
+          due_date?: string | null
+          paid_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          deal_id?: string | null
+          payment_type?: string
+          amount?: number
+          currency?: string | null
+          status?: string | null
+          reference?: string | null
+          due_date?: string | null
+          paid_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_payments_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      demo_templates: {
+        Row: {
+          id: string
+          name: string
+          category: string
+          thumbnail_class: string | null
+          description: string | null
+          is_active: boolean | null
+          sort_order: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          category?: string
+          thumbnail_class?: string | null
+          description?: string | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          category?: string
+          thumbnail_class?: string | null
+          description?: string | null
+          is_active?: boolean | null
+          sort_order?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

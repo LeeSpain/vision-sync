@@ -1,14 +1,14 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
   Plus, Edit2, Trash2, Search, Star, Download, ToggleLeft, ToggleRight,
-  Grid3X3, List, AlertTriangle, X, Package, DollarSign, BarChart3, Sparkles
+  Grid3X3, List, AlertTriangle, X, Package, DollarSign, Sparkles, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from '@/components/ui/dialog';
@@ -57,6 +57,10 @@ const COLOR_MAP: Record<string, { bg: string; border: string; text: string; acce
   cyan:    { bg: 'bg-cyan-500/10',    border: 'border-cyan-500/30',    text: 'text-cyan-400',    accent: 'bg-cyan-500',    ring: 'ring-cyan-500' },
   red:     { bg: 'bg-red-500/10',     border: 'border-red-500/30',     text: 'text-red-400',     accent: 'bg-red-500',     ring: 'ring-red-500' },
   blue:    { bg: 'bg-blue-500/10',    border: 'border-blue-500/30',    text: 'text-blue-400',    accent: 'bg-blue-500',    ring: 'ring-blue-500' },
+  green:   { bg: 'bg-green-500/10',   border: 'border-green-500/30',   text: 'text-green-400',   accent: 'bg-green-500',   ring: 'ring-green-500' },
+  orange:  { bg: 'bg-orange-500/10',  border: 'border-orange-500/30',  text: 'text-orange-400',  accent: 'bg-orange-500',  ring: 'ring-orange-500' },
+  rose:    { bg: 'bg-rose-500/10',    border: 'border-rose-500/30',    text: 'text-rose-400',    accent: 'bg-rose-500',    ring: 'ring-rose-500' },
+  violet:  { bg: 'bg-violet-500/10',  border: 'border-violet-500/30',  text: 'text-violet-400',  accent: 'bg-violet-500',  ring: 'ring-violet-500' },
 };
 
 const getColor = (color: string) => COLOR_MAP[color] || COLOR_MAP.indigo;
@@ -91,80 +95,67 @@ const EMOJI_GRID = [
 
 const PLAN_OPTIONS = ['Starter', 'Growth', 'Enterprise'] as const;
 
-// ─── Seed Data ────────────────────────────────────────────────
+// ─── DB Mappers ──────────────────────────────────────────────
 
-const makeSeedModules = (): Module[] => [
-  {
-    id: crypto.randomUUID(), name: 'Email Follow-Up Agent', slug: 'email-follow-up-agent', version: '1.0.0',
-    description: 'Automated personalised follow-ups that convert leads while you sleep. Sends personalised sequences triggered by enquiry type, urgency, and behaviour.',
-    category: 'sales', status: 'active', pricingModel: 'addon', price: 199, color: 'blue', icon: '📧',
-    installCount: 312, rating: 4.7, plans: ['Growth', 'Enterprise'], tags: ['email', 'follow-up', 'lead-gen', 'automation'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'Voice Assistant', slug: 'voice-assistant', version: '1.0.0',
-    description: 'AI answers your phone line in English and Spanish \u2014 24/7, zero hold times. Handles FAQs, captures caller details, and escalates urgently.',
-    category: 'communication', status: 'active', pricingModel: 'addon', price: 349, color: 'emerald', icon: '\uD83C\uDFA4',
-    installCount: 187, rating: 4.5, plans: ['Growth', 'Enterprise'], tags: ['voice', 'phone', 'inbound', 'multilingual'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'Data Intelligence Hub', slug: 'data-intelligence-hub', version: '1.0.0',
-    description: 'Live dashboards showing leads, conversations, conversions, and agent performance \u2014 updated in real-time across all your AI agents.',
-    category: 'analytics', status: 'active', pricingModel: 'included', price: 0, color: 'purple', icon: '\uD83D\uDCCA',
-    installCount: 487, rating: 4.8, plans: ['Starter', 'Growth', 'Enterprise'], tags: ['analytics', 'dashboards', 'reporting', 'real-time'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'CRM Sync', slug: 'crm-sync', version: '1.0.0',
-    description: 'Every lead and conversation pushed to your CRM automatically. Bi-directional sync with Zapier/Make compatibility.',
-    category: 'integrations', status: 'active', pricingModel: 'addon', price: 149, color: 'indigo', icon: '\uD83D\uDD17',
-    installCount: 256, rating: 4.3, plans: ['Growth', 'Enterprise'], tags: ['CRM', 'sync', 'integration', 'zapier'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'Appointment Booking', slug: 'appointment-booking', version: '1.0.0',
-    description: 'AI books, confirms, and reminds \u2014 your calendar stays full automatically. Multi-staff booking with cancellation handling.',
-    category: 'sales', status: 'active', pricingModel: 'addon', price: 199, color: 'cyan', icon: '\uD83D\uDCC5',
-    installCount: 203, rating: 4.6, plans: ['Growth', 'Enterprise'], tags: ['booking', 'calendar', 'appointments', 'reminders'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'Lead Qualifier', slug: 'lead-qualifier', version: '1.0.0',
-    description: 'Score every lead instantly so you focus only on the ones that will close. Custom scoring model with intent classification.',
-    category: 'sales', status: 'active', pricingModel: 'addon', price: 249, color: 'amber', icon: '\uD83C\uDFAF',
-    installCount: 178, rating: 4.4, plans: ['Growth', 'Enterprise'], tags: ['lead-scoring', 'qualification', 'intent', 'routing'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'Review Manager', slug: 'review-manager', version: '1.0.0',
-    description: 'Monitor, respond to, and grow your Google reviews on autopilot. AI-drafted responses with negative review alerts.',
-    category: 'content', status: 'active', pricingModel: 'addon', price: 129, color: 'pink', icon: '\u2B50',
-    installCount: 342, rating: 4.5, plans: ['Growth', 'Enterprise'], tags: ['reviews', 'google', 'reputation', 'monitoring'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'Social Media Responder', slug: 'social-media-responder', version: '1.0.0',
-    description: 'Auto-reply to Instagram and Facebook DMs and comments in seconds. Lead capture from social with brand voice training.',
-    category: 'communication', status: 'active', pricingModel: 'addon', price: 179, color: 'pink', icon: '\uD83D\uDCAC',
-    installCount: 156, rating: 4.2, plans: ['Growth', 'Enterprise'], tags: ['social', 'instagram', 'facebook', 'DMs'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'WhatsApp Agent', slug: 'whatsapp-agent', version: '1.0.0',
-    description: 'An AI sales agent inside WhatsApp Business \u2014 where your customers already are. Handles enquiries, sends quotes, and books appointments.',
-    category: 'communication', status: 'active', pricingModel: 'addon', price: 299, color: 'emerald', icon: '\uD83D\uDCF1',
-    installCount: 221, rating: 4.6, plans: ['Growth', 'Enterprise'], tags: ['whatsapp', 'messaging', 'sales', 'multilingual'],
-    isActive: true,
-  },
-  {
-    id: crypto.randomUUID(), name: 'AI Chatbot Widget', slug: 'ai-chatbot-widget', version: '1.0.0',
-    description: 'A fully trained chat agent embedded on your website \u2014 live in 48 hours. Custom brand styling with lead capture forms.',
-    category: 'support', status: 'active', pricingModel: 'included', price: 0, color: 'blue', icon: '\uD83E\uDD16',
-    installCount: 521, rating: 4.9, plans: ['Starter', 'Growth', 'Enterprise'], tags: ['chatbot', 'widget', 'website', 'lead-capture'],
-    isActive: true,
-  },
-];
+interface DbModuleRow {
+  id: string;
+  name: string;
+  slug: string;
+  short_description: string | null;
+  long_description: string | null;
+  monthly_addon_price: number | null;
+  setup_fee: number | null;
+  features: unknown;
+  is_active: boolean;
+  sort_order: number;
+  category: string | null;
+  status: string | null;
+  pricing_model: string | null;
+  color: string | null;
+  icon: string | null;
+  tags: unknown;
+  compatible_plans: unknown;
+  install_count: number | null;
+  rating: number | null;
+  version: string | null;
+}
+
+const dbRowToModule = (row: DbModuleRow): Module => ({
+  id: row.id,
+  name: row.name,
+  slug: row.slug,
+  version: row.version || '1.0.0',
+  description: row.short_description || '',
+  category: (row.category as ModuleCategory) || 'sales',
+  status: (row.status as ModuleStatus) || 'active',
+  pricingModel: (row.pricing_model as PricingModel) || 'addon',
+  price: row.monthly_addon_price || 0,
+  color: row.color || 'indigo',
+  icon: row.icon || '🤖',
+  installCount: row.install_count || 0,
+  rating: row.rating ? parseFloat(String(row.rating)) : 0,
+  plans: Array.isArray(row.compatible_plans) ? (row.compatible_plans as string[]) : [],
+  tags: Array.isArray(row.tags) ? (row.tags as string[]) : [],
+  isActive: row.is_active ?? true,
+});
+
+const moduleToDbPayload = (mod: Module) => ({
+  name: mod.name,
+  slug: mod.slug,
+  short_description: mod.description,
+  monthly_addon_price: mod.price,
+  category: mod.category,
+  status: mod.status,
+  pricing_model: mod.pricingModel,
+  color: mod.color,
+  icon: mod.icon,
+  tags: mod.tags,
+  compatible_plans: mod.plans,
+  install_count: mod.installCount,
+  rating: mod.rating,
+  version: mod.version,
+  is_active: mod.isActive,
+});
 
 // ─── Helpers ──────────────────────────────────────────────────
 
@@ -188,7 +179,9 @@ const renderStars = (rating: number) => {
 // ─── Component ────────────────────────────────────────────────
 
 export function ModulesManager() {
-  const [modules, setModules] = useState<Module[]>(makeSeedModules);
+  const [modules, setModules] = useState<Module[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
@@ -199,14 +192,34 @@ export function ModulesManager() {
   const [newTag, setNewTag] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+  // ─── Data Fetching ──────────────────────────────────────────
+
+  useEffect(() => { fetchModules(); }, []);
+
+  const fetchModules = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('modules')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      toast.error('Failed to load modules');
+      console.error('Error fetching modules:', error);
+    } else {
+      setModules((data || []).map((row: DbModuleRow) => dbRowToModule(row)));
+    }
+    setLoading(false);
+  };
+
   // ─── Computed ───────────────────────────────────────────────
 
   const stats = useMemo(() => {
     const active = modules.filter(m => m.isActive);
+    const totalInstalls = modules.reduce((s, m) => s + m.installCount, 0);
     const addonRev = modules
       .filter(m => m.pricingModel === 'addon' || m.pricingModel === 'beta')
       .reduce((s, m) => s + m.price * m.installCount, 0);
-    const totalInstalls = modules.reduce((s, m) => s + m.installCount, 0);
     const avgRating = modules.length > 0
       ? modules.reduce((s, m) => s + m.rating, 0) / modules.length
       : 0;
@@ -247,36 +260,80 @@ export function ModulesManager() {
     setIsModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editingModule.name.trim()) { toast.error('Module name is required'); return; }
     if (!editingModule.slug.trim()) { toast.error('Module slug is required'); return; }
 
+    setSaving(true);
+    const payload = moduleToDbPayload(editingModule);
+
     if (isEditing) {
-      setModules(prev => prev.map(m => m.id === editingModule.id ? editingModule : m));
-      toast.success(`"${editingModule.name}" updated`);
+      const { error } = await supabase
+        .from('modules')
+        .update(payload)
+        .eq('id', editingModule.id);
+
+      if (error) {
+        toast.error('Failed to update module');
+        console.error('Update error:', error);
+      } else {
+        toast.success(`"${editingModule.name}" updated`);
+        setIsModalOpen(false);
+        await fetchModules();
+      }
     } else {
-      setModules(prev => [...prev, { ...editingModule, id: crypto.randomUUID() }]);
-      toast.success(`"${editingModule.name}" created`);
+      const { error } = await supabase
+        .from('modules')
+        .insert({ ...payload, sort_order: modules.length });
+
+      if (error) {
+        toast.error('Failed to create module');
+        console.error('Insert error:', error);
+      } else {
+        toast.success(`"${editingModule.name}" created`);
+        setIsModalOpen(false);
+        await fetchModules();
+      }
     }
-    setIsModalOpen(false);
+    setSaving(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return;
-    setModules(prev => prev.filter(m => m.id !== deleteTarget.id));
-    toast.success(`"${deleteTarget.name}" deleted`);
+    setSaving(true);
+
+    const { error } = await supabase
+      .from('modules')
+      .delete()
+      .eq('id', deleteTarget.id);
+
+    if (error) {
+      toast.error('Failed to delete module');
+      console.error('Delete error:', error);
+    } else {
+      toast.success(`"${deleteTarget.name}" deleted`);
+      await fetchModules();
+    }
     setDeleteTarget(null);
+    setSaving(false);
   };
 
-  const toggleActive = (id: string) => {
-    setModules(prev =>
-      prev.map(m => {
-        if (m.id !== id) return m;
-        const updated = { ...m, isActive: !m.isActive };
-        toast.success(`"${m.name}" ${updated.isActive ? 'activated' : 'deactivated'}`);
-        return updated;
-      })
-    );
+  const toggleActive = async (id: string) => {
+    const mod = modules.find(m => m.id === id);
+    if (!mod) return;
+
+    const newActive = !mod.isActive;
+    const { error } = await supabase
+      .from('modules')
+      .update({ is_active: newActive })
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to update module status');
+    } else {
+      toast.success(`"${mod.name}" ${newActive ? 'activated' : 'deactivated'}`);
+      await fetchModules();
+    }
   };
 
   const addTag = () => {
@@ -314,6 +371,15 @@ export function ModulesManager() {
   ];
 
   // ─── Render ─────────────────────────────────────────────────
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+        <span className="ml-3 text-cool-gray">Loading modules...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -357,7 +423,6 @@ export function ModulesManager() {
 
       {/* Search + View Toggle + Filters */}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
-        {/* Search */}
         <div className="relative flex-1 w-full md:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cool-gray/60" />
           <Input
@@ -367,8 +432,6 @@ export function ModulesManager() {
             className="pl-10 bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray/60"
           />
         </div>
-
-        {/* Category Tabs */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {categoryTabs.map(tab => (
             <button
@@ -384,19 +447,11 @@ export function ModulesManager() {
             </button>
           ))}
         </div>
-
-        {/* View Toggle */}
         <div className="flex items-center gap-1 bg-white rounded-lg p-1">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-1.5 rounded transition-all ${viewMode === 'grid' ? 'bg-indigo-600 text-white' : 'text-cool-gray hover:text-cool-gray'}`}
-          >
+          <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded transition-all ${viewMode === 'grid' ? 'bg-indigo-600 text-white' : 'text-cool-gray hover:text-cool-gray'}`}>
             <Grid3X3 className="h-4 w-4" />
           </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-1.5 rounded transition-all ${viewMode === 'list' ? 'bg-indigo-600 text-white' : 'text-cool-gray hover:text-cool-gray'}`}
-          >
+          <button onClick={() => setViewMode('list')} className={`p-1.5 rounded transition-all ${viewMode === 'list' ? 'bg-indigo-600 text-white' : 'text-cool-gray hover:text-cool-gray'}`}>
             <List className="h-4 w-4" />
           </button>
         </div>
@@ -418,85 +473,49 @@ export function ModulesManager() {
             return (
               <div
                 key={mod.id}
-                className={`bg-gradient-card shadow-card rounded-xl overflow-hidden transition-all hover:shadow-lg hover:border-soft-lilac/40 ${
-                  !mod.isActive ? 'opacity-60' : ''
-                }`}
+                className={`bg-gradient-card shadow-card rounded-xl overflow-hidden transition-all hover:shadow-lg hover:border-soft-lilac/40 ${!mod.isActive ? 'opacity-60' : ''}`}
               >
                 <div className={`h-1.5 ${c.accent}`} />
                 <div className="p-5">
-                  {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`h-10 w-10 rounded-lg ${c.bg} flex items-center justify-center text-lg`}>
-                        {mod.icon}
-                      </div>
+                      <div className={`h-10 w-10 rounded-lg ${c.bg} flex items-center justify-center text-lg`}>{mod.icon}</div>
                       <div>
                         <h3 className="text-sm font-semibold text-midnight-navy">{mod.name}</h3>
                         <p className="text-cool-gray/60 text-xs">v{mod.version} &middot; {CATEGORY_LABELS[mod.category]}</p>
                       </div>
                     </div>
                   </div>
-
-                  {/* Badges */}
                   <div className="flex items-center gap-1.5 mb-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${st.bg} ${st.text}`}>
-                      {st.label}
-                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${st.bg} ${st.text}`}>{st.label}</span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${pr.bg} ${pr.text}`}>
                       {mod.pricingModel === 'included' ? 'Included' : mod.pricingModel === 'beta' ? `Beta \u20AC${mod.price}/mo` : `+\u20AC${mod.price}/mo`}
                     </span>
                   </div>
-
-                  {/* Description */}
                   <p className="text-cool-gray text-xs mb-4 line-clamp-2">{mod.description}</p>
-
-                  {/* Metrics row */}
                   <div className="flex items-center gap-4 mb-3 text-xs">
                     <div className="flex items-center gap-1 text-cool-gray">
-                      <Download className="h-3 w-3" />
-                      {mod.installCount}
+                      <Download className="h-3 w-3" />{mod.installCount}
                     </div>
                     <div className="flex items-center gap-0.5">
                       {renderStars(mod.rating).map((s, i) => (
-                        <Star
-                          key={i}
-                          className={`h-3 w-3 ${
-                            s === 'full' ? 'text-amber-400 fill-amber-400' :
-                            s === 'half' ? 'text-amber-400 fill-amber-400/50' :
-                            'text-cool-gray/40'
-                          }`}
-                        />
+                        <Star key={i} className={`h-3 w-3 ${s === 'full' ? 'text-amber-400 fill-amber-400' : s === 'half' ? 'text-amber-400 fill-amber-400/50' : 'text-cool-gray/40'}`} />
                       ))}
                       <span className="text-cool-gray ml-1">{mod.rating}</span>
                     </div>
                   </div>
-
-                  {/* Plan pills */}
                   <div className="flex flex-wrap gap-1 mb-4">
                     {mod.plans.map(p => (
-                      <span key={p} className="px-2 py-0.5 rounded-full bg-white text-cool-gray text-[10px]">
-                        {p}
-                      </span>
+                      <span key={p} className="px-2 py-0.5 rounded-full bg-white text-cool-gray text-[10px]">{p}</span>
                     ))}
                   </div>
-
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-1 mb-4">
                     {mod.tags.map(t => (
-                      <span key={t} className={`px-1.5 py-0.5 rounded text-[10px] ${c.bg} ${c.text}`}>
-                        #{t}
-                      </span>
+                      <span key={t} className={`px-1.5 py-0.5 rounded text-[10px] ${c.bg} ${c.text}`}>#{t}</span>
                     ))}
                   </div>
-
-                  {/* Actions */}
                   <div className="flex items-center justify-between pt-3 border-t border-soft-lilac/20">
-                    <button
-                      onClick={() => toggleActive(mod.id)}
-                      className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
-                        mod.isActive ? 'text-emerald-400 hover:text-emerald-300' : 'text-cool-gray hover:text-midnight-navy/60'
-                      }`}
-                    >
+                    <button onClick={() => toggleActive(mod.id)} className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${mod.isActive ? 'text-emerald-400 hover:text-emerald-300' : 'text-cool-gray hover:text-midnight-navy/60'}`}>
                       {mod.isActive ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
                       {mod.isActive ? 'Active' : 'Inactive'}
                     </button>
@@ -515,22 +534,14 @@ export function ModulesManager() {
           })}
         </div>
       ) : (
-        /* List View */
         <div className="space-y-2">
           {filteredModules.map(mod => {
             const c = getColor(mod.color);
             const st = STATUS_STYLES[mod.status];
             const pr = PRICING_STYLES[mod.pricingModel];
             return (
-              <div
-                key={mod.id}
-                className={`bg-gradient-card shadow-card rounded-xl p-4 flex items-center gap-4 transition-all hover:bg-white ${
-                  !mod.isActive ? 'opacity-60' : ''
-                }`}
-              >
-                <div className={`h-10 w-10 rounded-lg ${c.bg} flex items-center justify-center text-lg shrink-0`}>
-                  {mod.icon}
-                </div>
+              <div key={mod.id} className={`bg-gradient-card shadow-card rounded-xl p-4 flex items-center gap-4 transition-all hover:bg-white ${!mod.isActive ? 'opacity-60' : ''}`}>
+                <div className={`h-10 w-10 rounded-lg ${c.bg} flex items-center justify-center text-lg shrink-0`}>{mod.icon}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-semibold text-midnight-navy truncate">{mod.name}</h3>
@@ -567,7 +578,7 @@ export function ModulesManager() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-slate-200">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-midnight-navy flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-indigo-400" />
               {isEditing ? 'Edit Module' : 'Create New Module'}
             </DialogTitle>
@@ -577,7 +588,6 @@ export function ModulesManager() {
           </DialogHeader>
 
           <div className="space-y-5 py-4">
-            {/* Name + Slug */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-cool-gray">Name *</Label>
@@ -588,8 +598,6 @@ export function ModulesManager() {
                 <Input value={editingModule.slug} onChange={e => updateField('slug', e.target.value)} placeholder="ai-sales-agent" className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray/60" />
               </div>
             </div>
-
-            {/* Version + Category */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-cool-gray">Version</Label>
@@ -607,14 +615,10 @@ export function ModulesManager() {
                 </Select>
               </div>
             </div>
-
-            {/* Description */}
             <div className="space-y-2">
               <Label className="text-cool-gray">Description</Label>
               <Textarea value={editingModule.description} onChange={e => updateField('description', e.target.value)} placeholder="Module description..." rows={2} className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray/60 resize-none" />
             </div>
-
-            {/* Status + Pricing + Price */}
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label className="text-cool-gray">Status</Label>
@@ -644,31 +648,19 @@ export function ModulesManager() {
                 <Input type="number" value={editingModule.price || ''} onChange={e => updateField('price', parseFloat(e.target.value) || 0)} className="bg-white border-slate-200 text-midnight-navy" />
               </div>
             </div>
-
-            {/* Icon Picker + Color Picker */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-cool-gray">Icon</Label>
                 <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className="w-full flex items-center gap-2 px-3 py-2 bg-white border border-white/10 rounded-md text-left"
-                  >
+                  <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="w-full flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-md text-left">
                     <span className="text-lg">{editingModule.icon}</span>
                     <span className="text-cool-gray text-sm">Click to change</span>
                   </button>
                   {showEmojiPicker && (
                     <div className="absolute z-10 mt-1 p-3 bg-[#1a2035] border border-white/10 rounded-lg shadow-xl grid grid-cols-8 gap-1.5">
                       {EMOJI_GRID.map(emoji => (
-                        <button
-                          key={emoji}
-                          type="button"
-                          onClick={() => { updateField('icon', emoji); setShowEmojiPicker(false); }}
-                          className={`h-8 w-8 rounded flex items-center justify-center text-lg hover:bg-soft-lilac/10 transition-colors ${
-                            editingModule.icon === emoji ? 'bg-indigo-500/30 ring-1 ring-indigo-500' : ''
-                          }`}
-                        >
+                        <button key={emoji} type="button" onClick={() => { updateField('icon', emoji); setShowEmojiPicker(false); }}
+                          className={`h-8 w-8 rounded flex items-center justify-center text-lg hover:bg-soft-lilac/10 transition-colors ${editingModule.icon === emoji ? 'bg-indigo-500/30 ring-1 ring-indigo-500' : ''}`}>
                           {emoji}
                         </button>
                       ))}
@@ -680,48 +672,28 @@ export function ModulesManager() {
                 <Label className="text-cool-gray">Accent Color</Label>
                 <div className="flex gap-2 pt-1">
                   {COLOR_OPTIONS.map(c => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => updateField('color', c)}
-                      className={`h-7 w-7 rounded-full ${COLOR_MAP[c].accent} transition-all ${
-                        editingModule.color === c ? 'ring-2 ring-offset-2 ring-offset-white ' + COLOR_MAP[c].ring : 'opacity-60 hover:opacity-100'
-                      }`}
-                    />
+                    <button key={c} type="button" onClick={() => updateField('color', c)}
+                      className={`h-7 w-7 rounded-full ${COLOR_MAP[c].accent} transition-all ${editingModule.color === c ? 'ring-2 ring-offset-2 ring-offset-white ' + COLOR_MAP[c].ring : 'opacity-60 hover:opacity-100'}`} />
                   ))}
                 </div>
               </div>
             </div>
-
-            {/* Plan Checkboxes */}
             <div className="space-y-2">
               <Label className="text-cool-gray">Available on Plans</Label>
               <div className="flex gap-3">
                 {PLAN_OPTIONS.map(plan => (
                   <label key={plan} className="flex items-center gap-2 cursor-pointer text-sm text-cool-gray">
-                    <input
-                      type="checkbox"
-                      checked={editingModule.plans.includes(plan)}
-                      onChange={() => togglePlan(plan)}
-                      className="rounded border-slate-200 bg-white text-indigo-600"
-                    />
+                    <input type="checkbox" checked={editingModule.plans.includes(plan)} onChange={() => togglePlan(plan)} className="rounded border-slate-200 bg-white text-indigo-600" />
                     {plan}
                   </label>
                 ))}
               </div>
             </div>
-
-            {/* Tags */}
             <div className="space-y-2">
               <Label className="text-cool-gray">Tags</Label>
               <div className="flex gap-2">
-                <Input
-                  value={newTag}
-                  onChange={e => setNewTag(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
-                  placeholder="Type tag and press Enter"
-                  className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray/60"
-                />
+                <Input value={newTag} onChange={e => setNewTag(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
+                  placeholder="Type tag and press Enter" className="bg-white border-slate-200 text-midnight-navy placeholder:text-cool-gray/60" />
               </div>
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {editingModule.tags.map(t => (
@@ -735,8 +707,9 @@ export function ModulesManager() {
           </div>
 
           <DialogFooter className="border-t border-soft-lilac/20 pt-4">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="border-white/10 text-cool-gray hover:bg-soft-lilac/10">Cancel</Button>
-            <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10">Cancel</Button>
+            <Button onClick={handleSave} disabled={saving} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {isEditing ? 'Update Module' : 'Create Module'}
             </Button>
           </DialogFooter>
@@ -747,18 +720,21 @@ export function ModulesManager() {
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <DialogContent className="max-w-md bg-white border-slate-200">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-midnight-navy flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-red-400" />
               Delete Module
             </DialogTitle>
             <DialogDescription className="text-cool-gray">
-              Are you sure you want to delete <strong className="text-white">{deleteTarget?.name}</strong>?
-              This will remove it from all plans and affect {deleteTarget?.installCount} installs.
+              Are you sure you want to delete <strong className="text-midnight-navy">{deleteTarget?.name}</strong>?
+              This will remove it from all plans.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="pt-4">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="border-white/10 text-cool-gray hover:bg-soft-lilac/10">Cancel</Button>
-            <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">Delete Module</Button>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="border-slate-200 text-cool-gray hover:bg-soft-lilac/10">Cancel</Button>
+            <Button onClick={handleDelete} disabled={saving} className="bg-red-600 hover:bg-red-700 text-white">
+              {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Delete Module
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -46,16 +46,16 @@ CREATE POLICY "Admins have full access to vision_family_apps"
     TO authenticated
     USING (
         EXISTS (
-            SELECT 1 FROM public.user_profiles
-            WHERE user_profiles.id = auth.uid()
-            AND user_profiles.role = 'admin'
+            SELECT 1 FROM public.profiles
+            WHERE profiles.id = auth.uid()
+            AND profiles.role = 'admin'
         )
     )
     WITH CHECK (
         EXISTS (
-            SELECT 1 FROM public.user_profiles
-            WHERE user_profiles.id = auth.uid()
-            AND user_profiles.role = 'admin'
+            SELECT 1 FROM public.profiles
+            WHERE profiles.id = auth.uid()
+            AND profiles.role = 'admin'
         )
     );
 
@@ -84,4 +84,33 @@ INSERT INTO public.vision_family_apps (
     true,
     1,
     ARRAY['Vision AI', 'Supabase', 'React']
+) ON CONFLICT (id) DO NOTHING;
+
+-- Seed Vision-Sync entry
+INSERT INTO public.vision_family_apps (
+    id,
+    name,
+    tagline,
+    description,
+    url,
+    logo_emoji,
+    accent_color,
+    category,
+    is_published,
+    is_featured,
+    display_order,
+    powered_by
+) VALUES (
+    '99999999-9999-9999-9999-999999999999',
+    'Vision-Sync',
+    'AI Agents, Chatbots & Intelligent Automation.',
+    'Transform businesses with custom AI agents, conversational AI, and 24/7 intelligent automation — built enterprise-grade from day one.',
+    'https://www.vision-sync.co',
+    '🧠',
+    '#06b6d4',
+    'Platform',
+    true,
+    true,
+    0,
+    ARRAY['Claude AI', 'Supabase', 'React', 'TypeScript']
 ) ON CONFLICT (id) DO NOTHING;

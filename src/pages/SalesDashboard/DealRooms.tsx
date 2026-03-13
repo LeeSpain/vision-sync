@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
     Building,
@@ -16,7 +16,8 @@ import {
     PlaySquare,
     MoreHorizontal,
     Plus,
-    Bot
+    Bot,
+    Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,36 +29,134 @@ import {
     TabsTrigger
 } from "@/components/ui/tabs";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
-const mockDeal = {
-    id: "d1",
-    businessName: "Costa Blanca Villas",
-    industry: "Real Estate",
-    location: "Alicante, Spain",
-    website: "costablancavillas.example.com",
-    currentStage: "Demo Prepared",
-    estimatedValue: 4500,
-    priority: "High",
+interface DealRoomData {
+    id: string;
+    businessName: string;
+    industry: string;
+    location: string;
+    website: string;
+    currentStage: string;
+    estimatedValue: number;
+    priority: string;
     contact: {
-        name: "Elena Rodriguez",
-        title: "Director",
-        email: "elena@costablancavillas.example.com",
-        phone: "+34 600 123 456"
-    },
-    aiSummary: "The business has 14 team members but uses a generic template with no lead capture. Heavy reliance on Idealista portals instead of direct acquisition.",
-    timeline: [
-        { id: "t5", type: "Demo", message: "Demo landing page generated", date: "Today 10:30 AM", user: "Sales Agent" },
-        { id: "t4", type: "Note", message: "Analyzed website, created opportunity summary.", date: "Today 09:15 AM", user: "AI Copilot" },
-        { id: "t3", type: "Call", message: "Spoke with Elena. She is interested in the AI chat features for after-hours real estate inquiries.", date: "Yesterday 14:00 PM", user: "Sales Agent" },
-        { id: "t2", type: "Email", message: "Sent introductory cold email with website audit.", date: "Oct 12, 11:45 AM", user: "Sales Agent" },
-        { id: "t1", type: "Create", message: "Lead created from Prospect Finder", date: "Oct 12, 11:00 AM", user: "System" },
-    ]
-};
+        name: string;
+        title: string;
+        email: string;
+        phone: string;
+    };
+    aiSummary: string;
+}
+
+interface ActivityItem {
+    id: string;
+    type: string;
+    message: string;
+    date: string;
+    user: string;
+}
+
+function formatActivityDate(iso: string): string {
+    const d = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const time = d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    if (diffMs < 86400000) return `Today ${time}`;
+    if (diffMs < 172800000) return `Yesterday ${time}`;
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ` ${time}`;
+}
+
+function dbRowToDealRoom(row: Record<string, unknown>): DealRoomData {
+    return {
+        id: row.id as string,
+        businessName: row.business_name as string,
+        industry: (row.industry as string) ?? '',
+        location: (row.location as string) ?? '',
+        website: (row.website as string) ?? '',
+        currentStage: row.current_stage as string,
+        estimatedValue: Number(row.estimated_value) || 0,
+        priority: (row.priority as string) ?? 'Medium',
+        contact: {
+            name: (row.contact_name as string) ?? '',
+            title: (row.contact_title as string) ?? '',
+            email: (row.contact_email as string) ?? '',
+            phone: (row.contact_phone as string) ?? '',
+        },
+        aiSummary: (row.ai_summary as string) ?? '',
+    };
+}
+
+function dbRowToActivity(row: Record<string, unknown>): ActivityItem {
+    return {
+        id: row.id as string,
+        type: (row.activity_type as string) ?? '',
+        message: row.message as string,
+        date: formatActivityDate(row.created_at as string),
+        user: row.actor as string,
+    };
+}
 
 export default function DealRooms() {
     const { t } = useTranslation();
     const { id } = useParams();
-    const deal = mockDeal; // In real app, fetch using 'id'
+    const [deal, setDeal] = useState<DealRoomData | null>(null);
+    const [activities, setActivities] = useState<ActivityItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false);
+
+    useEffect(() => {
+        if (id) fetchDeal(id);
+    }, [id]);
+
+    async function fetchDeal(dealId: string) {
+        setLoading(true);
+        setNotFound(false);
+
+        const { data, error } = await supabase
+            .from('deals')
+            .select('*')
+            .eq('id', dealId)
+            .single();
+
+        if (error || !data) {
+            setNotFound(true);
+            setLoading(false);
+            return;
+        }
+
+        setDeal(dbRowToDealRoom(data as Record<string, unknown>));
+
+        const { data: acts } = await supabase
+            .from('deal_activities')
+            .select('*')
+            .eq('deal_id', dealId)
+            .order('created_at', { ascending: false });
+
+        if (acts) setActivities(acts.map(a => dbRowToActivity(a as Record<string, unknown>)));
+        setLoading(false);
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-brand" />
+            </div>
+        );
+    }
+
+    if (notFound || !deal) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('salesDashboard.dealRooms.notFound', 'Deal not found')}</h2>
+                <Link to="/sales-dashboard/pipeline">
+                    <Button variant="outline">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> {t('salesDashboard.dealRooms.backToPipeline')}
+                    </Button>
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6 animate-fade-in max-w-7xl mx-auto pb-12">
@@ -88,11 +187,13 @@ export default function DealRooms() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-600 dark:text-slate-400">
-                            <span className="flex items-center"><Building className="h-4 w-4 mr-2" /> {deal.industry}</span>
-                            <span className="flex items-center"><MapPin className="h-4 w-4 mr-2" /> {deal.location}</span>
-                            <a href={`https://${deal.website}`} target="_blank" rel="noreferrer" className="flex items-center text-brand hover:underline">
-                                <Globe className="h-4 w-4 mr-2" /> {deal.website}
-                            </a>
+                            {deal.industry && <span className="flex items-center"><Building className="h-4 w-4 mr-2" /> {deal.industry}</span>}
+                            {deal.location && <span className="flex items-center"><MapPin className="h-4 w-4 mr-2" /> {deal.location}</span>}
+                            {deal.website && (
+                                <a href={`https://${deal.website}`} target="_blank" rel="noreferrer" className="flex items-center text-brand hover:underline">
+                                    <Globe className="h-4 w-4 mr-2" /> {deal.website}
+                                </a>
+                            )}
                         </div>
                     </div>
 
@@ -124,41 +225,51 @@ export default function DealRooms() {
                         <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center">
                             {t('salesDashboard.dealRooms.primaryContact')}
                         </h3>
-                        <div className="space-y-4">
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center font-bold text-lg shrink-0">
-                                    {deal.contact.name.charAt(0)}
+                        {deal.contact.name ? (
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center font-bold text-lg shrink-0">
+                                        {deal.contact.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-900 dark:text-white">{deal.contact.name}</h4>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">{deal.contact.title}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900 dark:text-white">{deal.contact.name}</h4>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">{deal.contact.title}</p>
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                                    {deal.contact.email && (
+                                        <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
+                                            <Mail className="h-4 w-4 mr-3 text-slate-400" />
+                                            <span className="truncate">{deal.contact.email}</span>
+                                        </div>
+                                    )}
+                                    {deal.contact.phone && (
+                                        <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
+                                            <Phone className="h-4 w-4 mr-3 text-slate-400" />
+                                            <span>{deal.contact.phone}</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
-                                <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                                    <Mail className="h-4 w-4 mr-3 text-slate-400" />
-                                    <span className="truncate">{deal.contact.email}</span>
-                                </div>
-                                <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                                    <Phone className="h-4 w-4 mr-3 text-slate-400" />
-                                    <span>{deal.contact.phone}</span>
-                                </div>
-                            </div>
-                        </div>
+                        ) : (
+                            <p className="text-sm text-slate-500 dark:text-slate-400">{t('salesDashboard.dealRooms.noContact', 'No contact info added yet')}</p>
+                        )}
                     </div>
 
                     {/* AI Insight Card */}
-                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/20 dark:to-blue-900/20 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800/50 p-5">
-                        <h3 className="text-base font-bold text-indigo-900 dark:text-indigo-300 mb-2 flex items-center">
-                            <Bot className="h-4 w-4 mr-2" /> {t('salesDashboard.dealRooms.aiDealOverview')}
-                        </h3>
-                        <p className="text-sm text-indigo-800/80 dark:text-indigo-200/80 leading-relaxed mb-4">
-                            {deal.aiSummary}
-                        </p>
-                        <Button size="sm" variant="outline" className="w-full bg-white/50 dark:bg-slate-900/50 border-indigo-200 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300 hover:bg-white dark:hover:bg-slate-800">
-                            {t('salesDashboard.dealRooms.openFullAnalysis')}
-                        </Button>
-                    </div>
+                    {deal.aiSummary && (
+                        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/20 dark:to-blue-900/20 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800/50 p-5">
+                            <h3 className="text-base font-bold text-indigo-900 dark:text-indigo-300 mb-2 flex items-center">
+                                <Bot className="h-4 w-4 mr-2" /> {t('salesDashboard.dealRooms.aiDealOverview')}
+                            </h3>
+                            <p className="text-sm text-indigo-800/80 dark:text-indigo-200/80 leading-relaxed mb-4">
+                                {deal.aiSummary}
+                            </p>
+                            <Button size="sm" variant="outline" className="w-full bg-white/50 dark:bg-slate-900/50 border-indigo-200 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300 hover:bg-white dark:hover:bg-slate-800">
+                                {t('salesDashboard.dealRooms.openFullAnalysis')}
+                            </Button>
+                        </div>
+                    )}
 
                     {/* Quick Actions Base */}
                     <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 p-5">
@@ -246,10 +357,17 @@ export default function DealRooms() {
 
                                 {/* Timeline Feed */}
                                 <div className="p-6 relative">
-                                    <div className="absolute left-[39px] top-6 bottom-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+                                    {activities.length > 0 && (
+                                        <div className="absolute left-[39px] top-6 bottom-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+                                    )}
 
                                     <div className="space-y-6">
-                                        {deal.timeline.map((event) => (
+                                        {activities.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                                                <MessageSquare className="h-8 w-8 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                                <p className="text-sm font-medium">{t('salesDashboard.dealRooms.noActivities', 'No activities yet')}</p>
+                                            </div>
+                                        ) : activities.map((event) => (
                                             <div key={event.id} className="flex gap-4 relative z-10">
                                                 <div className="shrink-0 mt-0.5 relative">
                                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 ${event.user === 'AI Copilot' ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/60 dark:text-indigo-400' :

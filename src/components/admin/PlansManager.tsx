@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
   Plus, Edit2, Trash2, TrendingUp, Users, CreditCard, BarChart3,
-  Check, X, Search, Crown, Gem, Star, ToggleLeft, ToggleRight,
-  ChevronDown, AlertTriangle
+  Check, X, Star, ToggleLeft, ToggleRight,
+  AlertTriangle, Loader2, Gem
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ interface PlanFeature {
 interface Plan {
   id: string;
   name: string;
+  slug: string;
   description: string;
   price: number;
   billingCycle: 'monthly' | 'yearly';
@@ -38,10 +40,9 @@ interface Plan {
   maxConversations: number;
   maxContacts: number;
   features: PlanFeature[];
-  subscribers: number;
-  revenue: number;
   isActive: boolean;
   isPopular: boolean;
+  sortOrder: number;
 }
 
 type FilterTab = 'all' | 'active' | 'inactive';
@@ -59,98 +60,78 @@ const COLOR_MAP: Record<string, { bg: string; border: string; text: string; acce
   cyan:    { bg: 'bg-cyan-500/10',    border: 'border-cyan-500/30',    text: 'text-cyan-400',    accent: 'bg-cyan-500',    ring: 'ring-cyan-500' },
   red:     { bg: 'bg-red-500/10',     border: 'border-red-500/30',     text: 'text-red-400',     accent: 'bg-red-500',     ring: 'ring-red-500' },
   blue:    { bg: 'bg-blue-500/10',    border: 'border-blue-500/30',    text: 'text-blue-400',    accent: 'bg-blue-500',    ring: 'ring-blue-500' },
+  violet:  { bg: 'bg-violet-500/10',  border: 'border-violet-500/30',  text: 'text-violet-400',  accent: 'bg-violet-500',  ring: 'ring-violet-500' },
 };
 
 const getColor = (color: string) => COLOR_MAP[color] || COLOR_MAP.indigo;
 
-// ─── Seed Data ────────────────────────────────────────────────
+// ─── DB Mappers ──────────────────────────────────────────────
 
-const makeSeedPlans = (): Plan[] => [
-  {
-    id: crypto.randomUUID(),
-    name: 'Starter',
-    description: 'Perfect for small businesses getting started with AI automation',
-    price: 49,
-    billingCycle: 'monthly',
-    currency: 'EUR',
-    color: 'emerald',
-    badge: 'Entry',
-    maxAgents: 2,
-    maxConversations: 500,
-    maxContacts: 1000,
-    features: [
-      { id: crypto.randomUUID(), text: '2 AI Agents' },
-      { id: crypto.randomUUID(), text: '500 conversations/mo' },
-      { id: crypto.randomUUID(), text: '1,000 contacts' },
-      { id: crypto.randomUUID(), text: 'Email support' },
-      { id: crypto.randomUUID(), text: 'Basic analytics' },
-    ],
-    subscribers: 127,
-    revenue: 6223,
-    isActive: true,
-    isPopular: false,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Growth',
-    description: 'For growing businesses that need advanced AI capabilities and integrations',
-    price: 149,
-    billingCycle: 'monthly',
-    currency: 'EUR',
-    color: 'indigo',
-    badge: 'Most Popular',
-    maxAgents: 10,
-    maxConversations: 5000,
-    maxContacts: 25000,
-    features: [
-      { id: crypto.randomUUID(), text: '10 AI Agents' },
-      { id: crypto.randomUUID(), text: '5,000 conversations/mo' },
-      { id: crypto.randomUUID(), text: '25,000 contacts' },
-      { id: crypto.randomUUID(), text: 'Priority support' },
-      { id: crypto.randomUUID(), text: 'Advanced analytics' },
-      { id: crypto.randomUUID(), text: 'CRM integration' },
-      { id: crypto.randomUUID(), text: 'Custom branding' },
-    ],
-    subscribers: 84,
-    revenue: 12516,
-    isActive: true,
-    isPopular: true,
-  },
-  {
-    id: crypto.randomUUID(),
-    name: 'Enterprise',
-    description: 'Unlimited power for large organizations with complex automation needs',
-    price: 499,
-    billingCycle: 'monthly',
-    currency: 'EUR',
-    color: 'amber',
-    badge: 'Premium',
-    maxAgents: 100,
-    maxConversations: 50000,
-    maxContacts: 500000,
-    features: [
-      { id: crypto.randomUUID(), text: 'Unlimited AI Agents' },
-      { id: crypto.randomUUID(), text: '50,000 conversations/mo' },
-      { id: crypto.randomUUID(), text: '500,000 contacts' },
-      { id: crypto.randomUUID(), text: 'Dedicated account manager' },
-      { id: crypto.randomUUID(), text: 'Enterprise analytics & reporting' },
-      { id: crypto.randomUUID(), text: 'All integrations included' },
-      { id: crypto.randomUUID(), text: 'White-label branding' },
-      { id: crypto.randomUUID(), text: 'SLA guarantee (99.9%)' },
-      { id: crypto.randomUUID(), text: 'Full API access' },
-    ],
-    subscribers: 31,
-    revenue: 15469,
-    isActive: true,
-    isPopular: false,
-  },
-];
+interface DbPlanRow {
+  id: string;
+  name: string;
+  slug: string;
+  monthly_price: number | null;
+  yearly_price: number | null;
+  setup_fee: number | null;
+  custom_price_label: string | null;
+  description: string | null;
+  features: unknown;
+  is_active: boolean;
+  sort_order: number;
+  billing_cycle: string | null;
+  currency: string | null;
+  color: string | null;
+  badge: string | null;
+  max_agents: number | null;
+  max_conversations: number | null;
+  max_contacts: number | null;
+  is_popular: boolean | null;
+}
+
+const dbRowToPlan = (row: DbPlanRow): Plan => ({
+  id: row.id,
+  name: row.name,
+  slug: row.slug,
+  description: row.description || '',
+  price: row.monthly_price || 0,
+  billingCycle: (row.billing_cycle as 'monthly' | 'yearly') || 'monthly',
+  currency: row.currency || 'EUR',
+  color: row.color || 'indigo',
+  badge: row.badge || '',
+  maxAgents: row.max_agents || 1,
+  maxConversations: row.max_conversations || 100,
+  maxContacts: row.max_contacts || 500,
+  features: Array.isArray(row.features) ? (row.features as PlanFeature[]) : [],
+  isActive: row.is_active ?? true,
+  isPopular: row.is_popular ?? false,
+  sortOrder: row.sort_order || 0,
+});
+
+const planToDbPayload = (plan: Plan) => ({
+  name: plan.name,
+  slug: plan.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+  monthly_price: plan.price,
+  yearly_price: plan.billingCycle === 'yearly' ? plan.price : plan.price * 10,
+  description: plan.description,
+  features: plan.features,
+  billing_cycle: plan.billingCycle,
+  currency: plan.currency,
+  color: plan.color,
+  badge: plan.badge || null,
+  max_agents: plan.maxAgents,
+  max_conversations: plan.maxConversations,
+  max_contacts: plan.maxContacts,
+  is_active: plan.isActive,
+  is_popular: plan.isPopular,
+});
 
 // ─── Helpers ──────────────────────────────────────────────────
 
 const emptyPlanForm = (): Plan => ({
   id: '',
   name: '',
+  slug: '',
   description: '',
   price: 0,
   billingCycle: 'monthly',
@@ -161,16 +142,17 @@ const emptyPlanForm = (): Plan => ({
   maxConversations: 100,
   maxContacts: 500,
   features: [],
-  subscribers: 0,
-  revenue: 0,
   isActive: true,
   isPopular: false,
+  sortOrder: 0,
 });
 
 // ─── Component ────────────────────────────────────────────────
 
 export function PlansManager() {
-  const [plans, setPlans] = useState<Plan[]>(makeSeedPlans);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan>(emptyPlanForm());
@@ -178,17 +160,35 @@ export function PlansManager() {
   const [deleteTarget, setDeleteTarget] = useState<Plan | null>(null);
   const [newFeatureText, setNewFeatureText] = useState('');
 
+  // ─── Data Fetching ──────────────────────────────────────────
+
+  useEffect(() => { fetchPlans(); }, []);
+
+  const fetchPlans = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('plans')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      toast.error('Failed to load plans');
+      console.error('Error fetching plans:', error);
+    } else {
+      setPlans((data || []).map((row: DbPlanRow) => dbRowToPlan(row)));
+    }
+    setLoading(false);
+  };
+
   // ─── Computed ───────────────────────────────────────────────
 
   const stats = useMemo(() => {
     const active = plans.filter(p => p.isActive);
-    const totalSubs = plans.reduce((s, p) => s + p.subscribers, 0);
-    const totalRev = plans.reduce((s, p) => s + p.revenue, 0);
     return {
-      totalMRR: totalRev,
-      totalSubscribers: totalSubs,
+      totalMRR: 0,
+      totalSubscribers: 0,
       activePlans: active.length,
-      avgPerSubscriber: totalSubs > 0 ? Math.round(totalRev / totalSubs) : 0,
+      avgPerSubscriber: 0,
     };
   }, [plans]);
 
@@ -214,7 +214,7 @@ export function PlansManager() {
     setIsModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editingPlan.name.trim()) {
       toast.error('Plan name is required');
       return;
@@ -224,33 +224,76 @@ export function PlansManager() {
       return;
     }
 
+    setSaving(true);
+    const payload = planToDbPayload(editingPlan);
+
     if (isEditing) {
-      setPlans(prev => prev.map(p => p.id === editingPlan.id ? editingPlan : p));
-      toast.success(`"${editingPlan.name}" plan updated`);
+      const { error } = await supabase
+        .from('plans')
+        .update(payload)
+        .eq('id', editingPlan.id);
+
+      if (error) {
+        toast.error('Failed to update plan');
+        console.error('Update error:', error);
+      } else {
+        toast.success(`"${editingPlan.name}" plan updated`);
+        setIsModalOpen(false);
+        await fetchPlans();
+      }
     } else {
-      const newPlan: Plan = { ...editingPlan, id: crypto.randomUUID() };
-      setPlans(prev => [...prev, newPlan]);
-      toast.success(`"${newPlan.name}" plan created`);
+      const { error } = await supabase
+        .from('plans')
+        .insert({ ...payload, sort_order: plans.length });
+
+      if (error) {
+        toast.error('Failed to create plan');
+        console.error('Insert error:', error);
+      } else {
+        toast.success(`"${editingPlan.name}" plan created`);
+        setIsModalOpen(false);
+        await fetchPlans();
+      }
     }
-    setIsModalOpen(false);
+    setSaving(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return;
-    setPlans(prev => prev.filter(p => p.id !== deleteTarget.id));
-    toast.success(`"${deleteTarget.name}" plan deleted`);
+    setSaving(true);
+
+    const { error } = await supabase
+      .from('plans')
+      .delete()
+      .eq('id', deleteTarget.id);
+
+    if (error) {
+      toast.error('Failed to delete plan');
+      console.error('Delete error:', error);
+    } else {
+      toast.success(`"${deleteTarget.name}" plan deleted`);
+      await fetchPlans();
+    }
     setDeleteTarget(null);
+    setSaving(false);
   };
 
-  const toggleActive = (id: string) => {
-    setPlans(prev =>
-      prev.map(p => {
-        if (p.id !== id) return p;
-        const updated = { ...p, isActive: !p.isActive };
-        toast.success(`"${p.name}" ${updated.isActive ? 'activated' : 'deactivated'}`);
-        return updated;
-      })
-    );
+  const toggleActive = async (id: string) => {
+    const plan = plans.find(p => p.id === id);
+    if (!plan) return;
+
+    const newActive = !plan.isActive;
+    const { error } = await supabase
+      .from('plans')
+      .update({ is_active: newActive })
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to update plan status');
+    } else {
+      toast.success(`"${plan.name}" ${newActive ? 'activated' : 'deactivated'}`);
+      await fetchPlans();
+    }
   };
 
   const addFeature = () => {
@@ -283,6 +326,15 @@ export function PlansManager() {
   ];
 
   // ─── Render ─────────────────────────────────────────────────
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+        <span className="ml-3 text-cool-gray">Loading plans...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -414,15 +466,19 @@ export function PlansManager() {
                     )}
                   </div>
 
-                  {/* Metrics */}
-                  <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="bg-soft-lilac/10 rounded-lg p-3">
-                      <p className="text-cool-gray text-xs">Subscribers</p>
-                      <p className="text-midnight-navy font-semibold">{plan.subscribers}</p>
+                  {/* Limits */}
+                  <div className="grid grid-cols-3 gap-2 mb-5">
+                    <div className="bg-soft-lilac/10 rounded-lg p-2 text-center">
+                      <p className="text-cool-gray text-xs">Agents</p>
+                      <p className="text-midnight-navy font-semibold text-sm">{plan.maxAgents}</p>
                     </div>
-                    <div className="bg-soft-lilac/10 rounded-lg p-3">
-                      <p className="text-cool-gray text-xs">Revenue</p>
-                      <p className="text-midnight-navy font-semibold">{'\u20AC'}{plan.revenue.toLocaleString()}</p>
+                    <div className="bg-soft-lilac/10 rounded-lg p-2 text-center">
+                      <p className="text-cool-gray text-xs">Convos</p>
+                      <p className="text-midnight-navy font-semibold text-sm">{plan.maxConversations.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-soft-lilac/10 rounded-lg p-2 text-center">
+                      <p className="text-cool-gray text-xs">Contacts</p>
+                      <p className="text-midnight-navy font-semibold text-sm">{plan.maxContacts.toLocaleString()}</p>
                     </div>
                   </div>
 
@@ -671,7 +727,12 @@ export function PlansManager() {
             >
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {isEditing ? 'Update Plan' : 'Create Plan'}
             </Button>
           </DialogFooter>
@@ -688,7 +749,7 @@ export function PlansManager() {
             </DialogTitle>
             <DialogDescription className="text-cool-gray">
               Are you sure you want to delete <strong className="text-midnight-navy">{deleteTarget?.name}</strong>?
-              This action cannot be undone. All subscriber data associated with this plan will be affected.
+              This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="pt-4">
@@ -701,8 +762,10 @@ export function PlansManager() {
             </Button>
             <Button
               onClick={handleDelete}
+              disabled={saving}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
+              {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Delete Plan
             </Button>
           </DialogFooter>

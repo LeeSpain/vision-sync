@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
     Plus,
     MapPin,
     MoreVertical,
     Calendar,
-    AlertCircle
+    AlertCircle,
+    Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Deal } from "@/types/sales";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock Data
 const STAGES = [
     "New Lead",
     "Contacted",
@@ -22,60 +23,41 @@ const STAGES = [
     "Won"
 ];
 
-const mockDeals: Deal[] = [
-    {
-        id: "d1",
-        leadId: "l1",
-        businessName: "Costa Blanca Villas",
-        currentStage: "Demo Prepared",
-        estimatedValue: 4500,
-        priority: "High",
-        nextAction: "Send Demo Link",
-        followUpDate: new Date(Date.now() + 86400000).toISOString(),
-        quoteStatus: "Draft",
-        contractStatus: null,
-        paymentStatus: null,
-        demoId: "demo-1",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: "d2",
-        leadId: "l2",
-        businessName: "Marina Dental Clinic",
-        currentStage: "Contacted",
-        estimatedValue: 2800,
-        priority: "Medium",
-        nextAction: "Follow up call",
-        followUpDate: new Date(Date.now() + 86400000 * 2).toISOString(),
-        quoteStatus: null,
-        contractStatus: null,
-        paymentStatus: null,
-        demoId: null,
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: "d3",
-        leadId: "l3",
-        businessName: "Almeria Motors",
-        currentStage: "Proposal Sent",
-        estimatedValue: 6500,
-        priority: "High",
-        nextAction: "Awaiting Signature",
-        followUpDate: new Date(Date.now() - 86400000).toISOString(), // Overdue
-        quoteStatus: "Sent",
-        contractStatus: "Draft",
-        paymentStatus: null,
-        demoId: "demo-2",
-        createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-        updatedAt: new Date().toISOString()
-    }
-];
+function dbRowToDeal(row: Record<string, unknown>): Deal {
+    return {
+        id: row.id as string,
+        leadId: (row.lead_id as string) ?? '',
+        businessName: row.business_name as string,
+        currentStage: row.current_stage as string,
+        estimatedValue: Number(row.estimated_value) || 0,
+        priority: (row.priority as Deal['priority']) ?? 'Medium',
+        nextAction: (row.next_action as string) ?? null,
+        followUpDate: (row.follow_up_date as string) ?? null,
+        quoteStatus: (row.quote_status as string) ?? null,
+        contractStatus: (row.contract_status as string) ?? null,
+        paymentStatus: (row.payment_status as string) ?? null,
+        demoId: (row.demo_id as string) ?? null,
+        createdAt: row.created_at as string,
+        updatedAt: row.updated_at as string,
+    };
+}
 
 export default function SalesPipeline() {
     const { t } = useTranslation();
-    const [deals, setDeals] = useState<Deal[]>(mockDeals);
+    const [deals, setDeals] = useState<Deal[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => { fetchDeals(); }, []);
+
+    async function fetchDeals() {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from('deals')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (!error && data) setDeals(data.map(r => dbRowToDeal(r as Record<string, unknown>)));
+        setLoading(false);
+    }
 
     // Filter deals by stage
     const getDealsForStage = (stage: string) => {
@@ -108,6 +90,11 @@ export default function SalesPipeline() {
                 </div>
             </div>
 
+            {loading ? (
+                <div className="flex-1 flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-brand" />
+                </div>
+            ) : (
             <div className="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar pb-4">
                 <div className="flex h-full gap-4 px-1 min-w-max">
                     {STAGES.map((stage) => {
@@ -200,6 +187,7 @@ export default function SalesPipeline() {
                     })}
                 </div>
             </div>
+            )}
         </div>
     );
 }

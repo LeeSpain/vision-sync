@@ -5,8 +5,10 @@ import {
 } from "@/lib/visionFamilyStore";
 import {
     Plus, Edit, Trash2, Eye, EyeOff, Star, StarOff,
-    Loader2, Save, AlertTriangle, Database
+    Loader2, Save, AlertTriangle, Database, Globe, Sparkles
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { SiteMetadataResponse } from "@/types/visionFamily";
 import { toast } from "sonner";
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription
@@ -60,6 +62,12 @@ export function VisionFamilyManager() {
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // URL auto-fill
+    const [isUrlStepOpen, setIsUrlStepOpen] = useState(false);
+    const [fetchUrl, setFetchUrl] = useState("");
+    const [isFetching, setIsFetching] = useState(false);
+    const [fetchError, setFetchError] = useState<string | null>(null);
+
     // Form handling
     const [formData, setFormData] = useState<Partial<VisionFamilyApp>>(DEFAULT_FORM_STATE);
     const [poweredByInput, setPoweredByInput] = useState("");
@@ -87,12 +95,16 @@ export function VisionFamilyManager() {
             setEditingId(app.id);
             setFormData(app);
             setPoweredByInput(app.powered_by?.join(", ") || "");
+            setIsFormOpen(true);
         } else {
+            // New app — show URL step first
             setEditingId(null);
             setFormData(DEFAULT_FORM_STATE);
             setPoweredByInput("");
+            setFetchUrl("");
+            setFetchError(null);
+            setIsUrlStepOpen(true);
         }
-        setIsFormOpen(true);
     };
 
     const handleCloseForm = () => {
@@ -104,6 +116,62 @@ export function VisionFamilyManager() {
 
     const handleFormChange = (field: keyof VisionFamilyApp, value: string | number | boolean | string[] | null) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleFetchMetadata = async () => {
+        if (!fetchUrl.trim()) {
+            setFetchError("Please enter a URL");
+            return;
+        }
+
+        setIsFetching(true);
+        setFetchError(null);
+
+        try {
+            const { data, error } = await supabase.functions.invoke<SiteMetadataResponse>(
+                "fetch-site-metadata",
+                { body: { url: fetchUrl.trim() } }
+            );
+
+            if (error) throw error;
+            if (!data?.success || !data.metadata) {
+                throw new Error(data?.error || "Failed to fetch metadata");
+            }
+
+            const meta = data.metadata;
+
+            setFormData({
+                name: meta.name || "",
+                tagline: meta.tagline || "",
+                description: meta.description || "",
+                url: meta.url || fetchUrl.trim(),
+                logo_url: meta.logo_url || "",
+                logo_emoji: meta.logo_emoji || "\u{1F517}",
+                accent_color: meta.accent_color || "#06b6d4",
+                category: meta.category || "App",
+                is_published: false,
+                is_featured: false,
+                display_order: 0,
+                powered_by: meta.powered_by || [],
+            });
+            setPoweredByInput((meta.powered_by || []).join(", "));
+
+            setIsUrlStepOpen(false);
+            setIsFormOpen(true);
+            toast.success("Site data extracted! Review and save.");
+        } catch (err: unknown) {
+            const e = err as { message?: string };
+            setFetchError(e.message || "Failed to fetch site metadata");
+        } finally {
+            setIsFetching(false);
+        }
+    };
+
+    const handleSkipUrl = () => {
+        setIsUrlStepOpen(false);
+        setFormData(DEFAULT_FORM_STATE);
+        setPoweredByInput("");
+        setIsFormOpen(true);
     };
 
     const handleSave = async () => {
@@ -508,6 +576,68 @@ export function VisionFamilyManager() {
                         <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
                         <Button variant="destructive" onClick={confirmDelete} disabled={isSubmitting}>
                             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Delete App"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Quick Add by URL */}
+            <Dialog open={isUrlStepOpen} onOpenChange={setIsUrlStepOpen}>
+                <DialogContent className="sm:max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Globe className="h-5 w-5 text-cyan-500" />
+                            Quick Add by URL
+                        </DialogTitle>
+                        <DialogDescription>
+                            Paste a website URL and our AI will extract the app details automatically.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="fetch-url">Website URL</Label>
+                            <Input
+                                id="fetch-url"
+                                value={fetchUrl}
+                                onChange={(e) => {
+                                    setFetchUrl(e.target.value);
+                                    setFetchError(null);
+                                }}
+                                placeholder="https://example.com"
+                                disabled={isFetching}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleFetchMetadata();
+                                }}
+                            />
+                        </div>
+
+                        {fetchError && (
+                            <div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 px-3 py-2 rounded-md">
+                                <AlertTriangle className="h-4 w-4 shrink-0" />
+                                {fetchError}
+                            </div>
+                        )}
+
+                        {isFetching && (
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground bg-muted/50 px-4 py-3 rounded-lg">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span>Analyzing website with AI... This may take a few seconds.</span>
+                            </div>
+                        )}
+                    </div>
+
+                    <DialogFooter className="flex-col sm:flex-row gap-2">
+                        <Button variant="ghost" onClick={handleSkipUrl} disabled={isFetching}>
+                            Skip, enter manually
+                        </Button>
+                        <Button onClick={handleFetchMetadata} disabled={isFetching || !fetchUrl.trim()}>
+                            {isFetching ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Sparkles className="mr-2 h-4 w-4" />
+                            )}
+                            Fetch &amp; Auto-Fill
                         </Button>
                     </DialogFooter>
                 </DialogContent>

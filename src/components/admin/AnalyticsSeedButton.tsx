@@ -11,6 +11,9 @@ export default function AnalyticsSeedButton() {
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSeedingQuotes, setIsSeedingQuotes] = useState(false);
 
+  // Only render in development mode
+  if (!import.meta.env.DEV) return null;
+
   const handleSeed = async () => {
     if (!confirm('This will generate 800+ sample analytics records. Continue?')) {
       return;
@@ -50,7 +53,8 @@ export default function AnalyticsSeedButton() {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-center">
+      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded">DEV ONLY</span>
       <Button
         onClick={handleSeed}
         disabled={isSeeding}
@@ -69,7 +73,7 @@ export default function AnalyticsSeedButton() {
           </>
         )}
       </Button>
-      
+
       <Button
         onClick={handleSeedQuotes}
         disabled={isSeedingQuotes}

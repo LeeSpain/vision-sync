@@ -1,27 +1,62 @@
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
     CreditCard,
-    Building,
-    CheckCirle,
-    Clock,
-    Ban,
     Download,
     ExternalLink,
-    Plus
+    Plus,
+    Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
+
+interface SalesPayment {
+    id: string;
+    dealId: string | null;
+    paymentType: string;
+    amount: number;
+    currency: string;
+    status: string;
+    reference: string | null;
+    dueDate: string | null;
+    paidAt: string | null;
+    createdAt: string;
+}
+
+function dbRowToPayment(row: Record<string, unknown>): SalesPayment {
+    return {
+        id: row.id as string,
+        dealId: (row.deal_id as string) ?? null,
+        paymentType: (row.payment_type as string) ?? '',
+        amount: Number(row.amount) || 0,
+        currency: (row.currency as string) ?? 'EUR',
+        status: (row.status as string) ?? 'pending',
+        reference: (row.reference as string) ?? null,
+        dueDate: (row.due_date as string) ?? null,
+        paidAt: (row.paid_at as string) ?? null,
+        createdAt: row.created_at as string,
+    };
+}
 
 export default function Payments() {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const dealId = searchParams.get("deal");
+    const [payments, setPayments] = useState<SalesPayment[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const mockPayments = [
-        { id: "inv-001", type: t('salesDashboard.payments.setupFee'), amount: 1500, status: t('salesDashboard.payments.statusPaid'), date: "Oct 10, 2026", method: "Credit Card ending in 4242" },
-        { id: "inv-002", type: t('salesDashboard.payments.monthlySubscription'), amount: 500, status: t('salesDashboard.payments.statusPending'), date: "Oct 12, 2026", method: "SEPA Direct Debit" },
-    ];
+    useEffect(() => { fetchPayments(); }, [dealId]);
+
+    async function fetchPayments() {
+        setLoading(true);
+        let query = supabase.from('sales_payments').select('*').order('created_at', { ascending: false });
+        if (dealId) query = query.eq('deal_id', dealId);
+        const { data, error } = await query;
+        if (!error && data) setPayments(data.map(r => dbRowToPayment(r as Record<string, unknown>)));
+        setLoading(false);
+    }
 
     return (
         <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
@@ -47,34 +82,48 @@ export default function Payments() {
                             <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('salesDashboard.payments.paymentHistory')} {dealId && t('salesDashboard.payments.forDeal', { id: dealId })}</h3>
                         </div>
                         <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                            {mockPayments.map((payment) => (
+                            {loading ? (
+                                <div className="p-12 flex justify-center">
+                                    <Loader2 className="h-8 w-8 animate-spin text-brand" />
+                                </div>
+                            ) : payments.length === 0 ? (
+                                <div className="p-12 text-center text-slate-500 dark:text-slate-400">
+                                    {t('salesDashboard.payments.noPayments', 'No payments found')}
+                                </div>
+                            ) : payments.map((payment) => (
                                 <div key={payment.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${payment.status === t('salesDashboard.payments.statusPaid') ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                                            payment.status === t('salesDashboard.payments.statusPending') ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' :
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${payment.status === 'paid' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                                            payment.status === 'pending' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' :
                                                 'bg-slate-100 text-slate-600'
                                             }`}>
                                             <CreditCard className="h-5 w-5" />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h4 className="font-bold text-slate-900 dark:text-white">{payment.type}</h4>
-                                                <Badge className={`${payment.status === t('salesDashboard.payments.statusPaid') ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                                                    } border-none shadow-none`}>
+                                                <h4 className="font-bold text-slate-900 dark:text-white capitalize">{payment.paymentType.replace('_', ' ')}</h4>
+                                                <Badge className={`${payment.status === 'paid' ? 'bg-emerald-100 text-emerald-700' :
+                                                    payment.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                                                        'bg-red-100 text-red-700'
+                                                    } border-none shadow-none capitalize`}>
                                                     {payment.status}
                                                 </Badge>
                                             </div>
                                             <div className="text-sm text-slate-500 flex items-center gap-3">
-                                                <span>{payment.date}</span>
-                                                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                                <span>{payment.id}</span>
+                                                <span>{new Date(payment.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                                                {payment.reference && (
+                                                    <>
+                                                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                                        <span>{payment.reference}</span>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between sm:justify-end gap-6 sm:w-auto w-full">
                                         <div className="text-xl font-bold text-slate-900 dark:text-white">
-                                            ${payment.amount.toLocaleString()}
+                                            {payment.currency === 'EUR' ? '\u20AC' : '$'}{payment.amount.toLocaleString()}
                                         </div>
                                         <div className="flex gap-2">
                                             <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand">
@@ -87,12 +136,6 @@ export default function Payments() {
                                     </div>
                                 </div>
                             ))}
-
-                            {!dealId && (
-                                <div className="p-12 text-center text-slate-500 dark:text-slate-400">
-                                    {t('salesDashboard.payments.noDealSelected')}
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -105,7 +148,7 @@ export default function Payments() {
                                 <div className="flex gap-3 items-center">
                                     <div className="w-10 h-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-[10px] font-bold">VISA</div>
                                     <div>
-                                        <p className="text-sm font-bold text-slate-900 dark:text-white">•••• 4242</p>
+                                        <p className="text-sm font-bold text-slate-900 dark:text-white">&bull;&bull;&bull;&bull; 4242</p>
                                         <p className="text-xs text-slate-500">{t('salesDashboard.payments.expires')} 12/28</p>
                                     </div>
                                 </div>
