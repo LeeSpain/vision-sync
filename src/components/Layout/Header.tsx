@@ -6,6 +6,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { LocaleSelector } from '@/components/common/LocaleSelector';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/components/ShareButton';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import HeaderChatButton from '@/components/chat/HeaderChatButton';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 
@@ -28,18 +34,20 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-slate-white/95 backdrop-blur-sm border-b border-soft-lilac/20">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">V</span>
-            </div>
-            <span className="text-xl font-heading font-bold text-midnight-navy">
-              Vision-Sync
-            </span>
-          </Link>
+          {/* Logo + Chat Button grouped on the left */}
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">V</span>
+              </div>
+              <span className="text-xl font-heading font-bold text-midnight-navy">
+                Vision-Sync
+              </span>
+            </Link>
 
-          {/* Chat Button - next to logo */}
-          <HeaderChatButton onClick={() => setIsChatOpen(true)} />
+            {/* Chat Button - next to logo */}
+            <HeaderChatButton onClick={() => setIsChatOpen(true)} />
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -59,18 +67,25 @@ const Header = () => {
               <ShareButton />
               <LocaleSelector variant="compact" />
               {user ? (
-                <div className="flex items-center space-x-2">
-                  <Link to="/admin">
-                    <Button variant="outline" size="sm">
-                      <LayoutDashboard className="h-4 w-4 mr-1" />
-                      {t('header.dashboard')}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <User className="h-4 w-4" />
                     </Button>
-                  </Link>
-                  <Button variant="ghost" size="sm" onClick={signOut}>
-                    <LogOut className="h-4 w-4 mr-1" />
-                    {t('header.signOut')}
-                  </Button>
-                </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin">
+                        <LayoutDashboard className="h-4 w-4 mr-2" />
+                        {t('header.dashboard')}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('header.signOut')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <Link to="/auth">
                   <Button variant="hero" size="sm">

@@ -7,8 +7,7 @@ import Footer from '@/components/Layout/Footer';
 import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowRight, Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Target, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
-import { VisionFamilySection } from '@/components/home/VisionFamilySection';
+import { ArrowRight, Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
 import CustomQuoteModal from '@/components/CustomQuoteModal';
 import { useTranslation } from 'react-i18next';
 import { INDUSTRIES } from '@/data/industries';
@@ -151,85 +150,6 @@ export default function Index() {
                     {t('index.globalOrchestration')}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Vision Family Ecosystem */}
-      <VisionFamilySection />
-
-      {/* AI Sales Sync Promo */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-midnight-navy text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-electric-blue/10 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 border border-white/10">
-                <Target className="h-4 w-4 text-emerald-green" />
-                {t('index.featuredIntegration')}
-              </div>
-              <h3 className="text-4xl font-heading font-bold mb-6">
-                {t('index.superchargeRevenue')}<span className="text-electric-blue">{t('index.aiSalesSync')}</span>
-              </h3>
-              <p className="text-lg text-white/80 mb-6 leading-relaxed">
-                {t('index.connectVisionSync')}
-              </p>
-              <ul className="space-y-4 mb-8">
-                {[t('index.autonomousLeadQual'), t('index.multichannelAgents'), t('index.seamlessCrm')].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 font-medium text-white/90">
-                    <CheckCircle className="h-5 w-5 text-emerald-green" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild variant="hero" size="lg" className="shadow-lg group">
-                  <a href="https://www.aisales-sync.com/" target="_blank" rel="noopener noreferrer">
-                    {t('index.exploreAiSales')}
-                    <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                </Button>
-              </div>
-            </div>
-            <div className="relative z-10 lg:h-full">
-              <div className="h-full bg-slate-900/50 rounded-2xl border border-white/10 p-8 shadow-2xl overflow-hidden group relative flex flex-col justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                <h4 className="text-2xl font-bold mb-8 text-white">{t('index.automatedAiFunnel')}</h4>
-
-                <div className="space-y-0 relative">
-                  {[
-                    { number: 1, title: t('index.find'), desc: t('index.discoverLeads') },
-                    { number: 2, title: t('index.outreach'), desc: t('index.sendMessages') },
-                    { number: 3, title: t('index.calls'), desc: t('index.aiConversations') },
-                    { number: 4, title: t('index.proposals'), desc: t('index.generateDocs') },
-                    { number: 5, title: t('index.close'), desc: t('index.winDeal'), isLast: true }
-                  ].map((step) => (
-                    <div key={step.number} className="flex gap-5 relative">
-                      {/* Vertical line connector */}
-                      {!step.isLast && (
-                        <div className="absolute left-[15px] top-[32px] bottom-[-8px] w-px bg-white/10"></div>
-                      )}
-
-                      <div className="relative z-10 flex flex-col items-center shrink-0">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-transform duration-300 group-hover:scale-110 ${step.isLast
-                          ? 'bg-emerald-green/20 border border-emerald-green text-emerald-green shadow-emerald-green/20'
-                          : 'bg-electric-blue/10 border border-electric-blue/50 text-electric-blue shadow-electric-blue/10'
-                          }`}>
-                          {step.number}
-                        </div>
-                      </div>
-
-                      <div className={step.isLast ? 'pt-1' : 'pb-8 pt-1'}>
-                        <h5 className="font-bold text-lg text-white leading-none mb-1">{step.title}</h5>
-                        <p className="text-white/60 text-sm">{step.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
               </div>
             </div>
           </div>
