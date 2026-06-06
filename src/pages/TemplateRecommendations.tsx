@@ -121,14 +121,14 @@ const TemplateRecommendations = () => {
         title="Your Template Recommendations | Vision-Sync Forge"
         description="Get personalized template recommendations based on your business needs. Compare features, pricing, deployment times. Request free demo today."
         keywords="template recommendations, personalized templates, business app templates, custom recommendations"
-        canonical="https://vision-sync-forge.lovable.app/template-recommendations"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/template-recommendations.jpg"
+        canonical="https://www.vision-sync.co/template-recommendations"
+        ogImage="https://www.vision-sync.co/og-images/template-recommendations.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Template Recommendations",
             description: "Personalized app template recommendations",
-            url: "https://vision-sync-forge.lovable.app/template-recommendations"
+            url: "https://www.vision-sync.co/template-recommendations"
           })
         ]}
       />

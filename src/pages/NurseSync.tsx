@@ -16,14 +16,14 @@ const NurseSync = () => {
         title="Nurse-Sync | Advanced Nursing Workflow Management System"
         description="Advanced nursing workflow management and patient care coordination system designed by nurses, for nurses. Streamline healthcare operations and improve patient outcomes."
         keywords="nursing software, healthcare workflow, patient care coordination, nursing management system, healthcare technology"
-        canonical="https://vision-sync-forge.lovable.app/nurse-sync"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        canonical="https://www.vision-sync.co/nurse-sync"
+        ogImage="https://www.vision-sync.co/favicon.png"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Nurse-Sync - Healthcare Management",
             description: "Advanced nursing workflow management and patient care coordination system",
-            url: "https://vision-sync-forge.lovable.app/nurse-sync"
+            url: "https://www.vision-sync.co/nurse-sync"
           }),
           generateProductSchema({
             name: "Nurse-Sync",

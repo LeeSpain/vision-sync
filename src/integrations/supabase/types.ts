@@ -275,6 +275,7 @@ export type Database = {
           industry_slug: string
           industry_name: string
           base_package_name: string
+          selected_tier: string | null
           base_ex_vat: number
           base_iva: number
           base_inc_vat: number
@@ -304,6 +305,7 @@ export type Database = {
           industry_slug: string
           industry_name: string
           base_package_name: string
+          selected_tier?: string | null
           base_ex_vat: number
           base_iva: number
           base_inc_vat: number
@@ -333,6 +335,7 @@ export type Database = {
           industry_slug?: string
           industry_name?: string
           base_package_name?: string
+          selected_tier?: string | null
           base_ex_vat?: number
           base_iva?: number
           base_inc_vat?: number

@@ -116,14 +116,14 @@ const GlobalHealthSync = () => {
         title="Global Health-Sync | Healthcare Collaboration Platform"
         description="Revolutionary healthcare synchronization platform connecting medical professionals worldwide. Real-time patient data sync, cross-border consultations, HIPAA & GDPR compliant. Join 2,500+ healthcare partners."
         keywords="healthcare collaboration platform, medical data synchronization, global health tech, telemedicine platform, HIPAA compliant, patient data management, healthcare interoperability"
-        canonical="https://vision-sync-forge.lovable.app/global-health-sync"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        canonical="https://www.vision-sync.co/global-health-sync"
+        ogImage="https://www.vision-sync.co/favicon.png"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Global Health-Sync - Healthcare Collaboration Platform",
             description: "Secure, real-time healthcare collaboration and patient data management platform connecting 150+ countries",
-            url: "https://vision-sync-forge.lovable.app/global-health-sync"
+            url: "https://www.vision-sync.co/global-health-sync"
           }),
           generateSoftwareApplicationSchema({
             name: "Global Health-Sync",

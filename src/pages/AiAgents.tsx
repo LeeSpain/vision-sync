@@ -9,11 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
 
 const AiAgents = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { formatPrice } = useCurrency();
   const [roiInputs, setRoiInputs] = useState({
     employees: 5,
@@ -127,14 +129,14 @@ const AiAgents = () => {
         title="AI Agents & Chatbots | Intelligent Business Automation - Vision-Sync Forge"
         description="Deploy AI agents for 24/7 customer service automation. Conversational AI, virtual assistants, intelligent automation. Achieve 15-25% efficiency gains today."
         keywords="AI agents, AI chatbots, conversational AI, intelligent automation, business automation, AI customer service, virtual assistants, chatbot development, AI sales assistant, machine learning automation, enterprise AI, automated customer support"
-        canonical="https://vision-sync-forge.lovable.app/ai-agents"
-        ogImage="https://vision-sync-forge.lovable.app/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
+        canonical="https://www.vision-sync.co/ai-agents"
+        ogImage="https://www.vision-sync.co/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "AI Agents & Chatbots - Vision-Sync Forge",
             description: "Professional AI agent and chatbot development for business automation, customer service, and sales support",
-            url: "https://vision-sync-forge.lovable.app/ai-agents"
+            url: "https://www.vision-sync.co/ai-agents"
           }),
           generateServiceSchema({
             name: "AI Agent & Chatbot Development",
@@ -146,45 +148,52 @@ const AiAgents = () => {
       <Header />
       
       {/* Hero Section - Partnership Focus */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy via-royal-purple to-emerald-green text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-midnight-navy/90 to-royal-purple/90"></div>
-        <div className="relative max-w-7xl mx-auto text-center">
-          <Badge className="mb-6 bg-emerald-green/20 text-emerald-green border-emerald-green/30">
-            <Star className="h-4 w-4 mr-2" />
-            Empowering Businesses to Achieve Excellence
-          </Badge>
-          <h1 className="text-5xl md:text-7xl font-heading font-bold mb-6">
+      <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute top-40 right-10 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="relative z-10 max-w-7xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center gap-2 bg-gradient-primary px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 shadow-glow mx-auto">
+            <Bot className="h-4 w-4" />
+            {t('aiAgents.heroEyebrow')}
+          </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 tracking-tight">
             AI Agents & Chatbots for{' '}
-            <span className="bg-gradient-to-r from-emerald-green to-coral-orange bg-clip-text text-transparent">
-              Business Growth
-            </span>
+            <span className="bg-gradient-primary bg-clip-text text-transparent">Business Growth</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto opacity-90">
+          <p className="text-lg md:text-xl text-cool-gray mb-10 max-w-3xl mx-auto leading-relaxed">
             Deploy intelligent AI agents and conversational chatbots to automate customer service, qualify leads, and streamline operations.
             <span className="text-emerald-green font-semibold"> Enterprise-grade AI automation for businesses of all sizes.</span>
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button 
-              size="lg" 
-              className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-4 text-lg"
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button
+              variant="hero"
+              size="lg"
+              className="shadow-lg group"
               onClick={() => navigate('/contact')}
             >
-              <MessageSquare className="mr-2 h-5 w-5" />
               Contact Us
+              <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/pricing')}
+            >
+              {t('aiAgents.heroCtaSecondary')}
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-3xl font-bold text-emerald-green">15-25%</div>
-              <div className="text-sm opacity-80">Typical Efficiency Gains</div>
+              <div className="text-sm text-cool-gray">Typical Efficiency Gains</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-coral-orange">24/7</div>
-              <div className="text-sm opacity-80">AI Support Availability</div>
+              <div className="text-sm text-cool-gray">AI Support Availability</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-soft-lilac">3-6 Months</div>
-              <div className="text-sm opacity-80">Typical ROI Timeline</div>
+              <div className="text-3xl font-bold text-royal-purple">3-6 Months</div>
+              <div className="text-sm text-cool-gray">Typical ROI Timeline</div>
             </div>
           </div>
         </div>

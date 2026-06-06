@@ -46,6 +46,7 @@ export default function SolutionsIndex() {
               const color = (industry.color ?? 'blue') as AccentColor;
               const accent = ACCENT_COLORS[color] ?? ACCENT_COLORS.blue;
               const painSolved = PAIN_SOLVED[industry.slug] ?? industry.painStatement;
+              const basePkg = industry.packages[0];
 
               return (
                 <div key={industry.slug} className={ds.cardBase}>
@@ -57,31 +58,31 @@ export default function SolutionsIndex() {
                     <h3 className={ds.cardTitle}>{industry.name}</h3>
 
                     {/* Core pain point solved */}
-                    <p className="text-sm font-medium text-emerald-600 mb-3 leading-snug">
+                    <p className="text-sm font-medium text-emerald-green mb-3 leading-snug">
                       {painSolved}
                     </p>
 
                     {/* Voice badge */}
-                    {industry.voiceIncluded && (
+                    {basePkg.voiceMinutes > 0 && (
                       <div className={`${ds.badge} ${accent.badge} mb-4`}>
                         <Mic className="h-3 w-3" />
                         Voice included
                       </div>
                     )}
 
-                    {/* 3 key features from baseIncludes */}
+                    {/* 3 key features from the Base package */}
                     <ul className="space-y-2 mb-5 flex-grow">
-                      {industry.baseIncludes.slice(0, 3).map((item) => (
+                      {basePkg.includes.slice(0, 3).map((item) => (
                         <li key={item} className={ds.featureItem}>
-                          <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-4 w-4 text-emerald-green shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
 
                     {/* Status line */}
-                    <div className="border-t border-slate-100 pt-4 mb-4">
-                      <p className="text-sm font-medium text-slate-500">
+                    <div className="border-t border-soft-lilac/20 pt-4 mb-4">
+                      <p className="text-sm font-medium text-cool-gray">
                         Fully configured · Live in 48 hours
                       </p>
                     </div>
@@ -102,7 +103,7 @@ export default function SolutionsIndex() {
           {/* Bottom notes */}
           <div className="text-center mt-12 max-w-2xl mx-auto">
             <div className={ds.infoStrip}>
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-green" />
               <p className="text-sm text-cool-gray">
                 Every blueprint includes a bilingual AI agent — English and Spanish — ready in 48 hours.
               </p>

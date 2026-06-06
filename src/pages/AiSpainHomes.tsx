@@ -23,14 +23,14 @@ const AiSpainHomes = () => {
         title="AI Spain Homes | Smart Spanish Property Investment Platform"
         description="AI-powered Spanish property investment platform. Smart ROI predictions, market insights, international buyer tools. Transform real estate investing today."
         keywords="Spanish property, Spain real estate investment, AI property investment, international property buying, Spanish homes, PropTech Spain"
-        canonical="https://vision-sync-forge.lovable.app/ai-spain-homes"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/ai-spain-homes.jpg"
+        canonical="https://www.vision-sync.co/ai-spain-homes"
+        ogImage="https://www.vision-sync.co/og-images/ai-spain-homes.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "AI Spain Homes - AI-Powered Spanish Real Estate Platform",
             description: "AI-driven platform for smart real estate investment in Spain with market analysis and ROI predictions",
-            url: "https://vision-sync-forge.lovable.app/ai-spain-homes"
+            url: "https://www.vision-sync.co/ai-spain-homes"
           }),
           generateSoftwareApplicationSchema({
             name: "AI Spain Homes",

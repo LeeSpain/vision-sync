@@ -41,7 +41,7 @@ serve(async (req) => {
     const [agentRes, settingsRes, trainingRes, projectsRes, leadsRes] = await Promise.all([
       supabase.from('ai_agents').select('*').eq('id', agentId).single(),
       supabase.from('ai_agent_settings').select('*'),
-      supabase.from('ai_training_data').select('*').eq('is_active', true).order('priority', { ascending: false }),
+      supabase.from('ai_training_data').select('*').eq('is_active', true),
       supabase.from('projects').select('name, description, category, industry, route, domain_url, price, investment_amount, subscription_price, leads_count, key_features, billing_type').eq('visibility', 'Public'),
       supabase.from('leads').select('count').eq('status', 'new').limit(1)
     ]);
@@ -280,7 +280,15 @@ CURRENT PROJECTS AND SERVICES:
 ${projectRecommendations}
 
 TRAINING DATA:
-${trainingData.map(t => `Q: ${t.question}\nA: ${t.answer}`).join('\n\n')}
+${trainingData.map((t) => t.content).filter(Boolean).join('\n\n')}
+
+💶 PRICING & QUOTING RULES (apply whenever the user asks about price, cost, or a quote):
+- Use ONLY the canonical Vision-Sync pricing provided in TRAINING DATA above. Never invent, estimate, round, or discount a price.
+- Always quote in euros, ex-VAT, and state "+21% IVA" — include the VAT-inclusive ("inc.") figure too.
+- Identify the user's industry and quote the tier (Base, Growth, or Everything) that matches their stated need. If the need is unclear, present all three tiers for their industry so they can choose.
+- Where a tier includes voice minutes, mention them.
+- If they need something outside the listed tiers, explain it's available as a custom add-on quoted separately, and offer to capture their details for a tailored quote.
+- If challenged on price ("why so much?"), anchor on value: 24/7 bilingual (English + Spanish) coverage that replaces a €2,000–4,000/mo front desk.
 
 CONTACT INFORMATION COLLECTED:
 - Name: ${contactInfo.name || 'Not provided'}

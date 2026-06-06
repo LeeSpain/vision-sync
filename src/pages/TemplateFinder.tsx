@@ -399,14 +399,14 @@ const TemplateFinder = () => {
         title="Template Finder | AI-Powered Recommendations - Vision-Sync Forge"
         description="Find your perfect app template with our AI-powered questionnaire. Answer a few questions and get personalized template recommendations tailored to your business needs and budget."
         keywords="template finder, AI recommendations, business template, app template, custom web app, template questionnaire"
-        canonical="https://vision-sync-forge.lovable.app/template-finder"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/template-finder.jpg"
+        canonical="https://www.vision-sync.co/template-finder"
+        ogImage="https://www.vision-sync.co/og-images/template-finder.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Template Finder",
             description: "AI-powered template recommendation questionnaire",
-            url: "https://vision-sync-forge.lovable.app/template-finder"
+            url: "https://www.vision-sync.co/template-finder"
           })
         ]}
       />

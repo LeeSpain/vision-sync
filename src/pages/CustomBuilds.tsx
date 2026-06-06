@@ -140,14 +140,14 @@ const CustomBuilds = () => {
         title="Custom Software Development | Web & Mobile Apps - Vision-Sync"
         description="Transform your vision into reality with custom web apps, mobile apps, and enterprise systems. Expert React, Node.js, AI/ML development. Rapid prototyping to enterprise scale."
         keywords="custom software development, web application development, mobile app development, enterprise software, custom CRM, custom ERP, bespoke software solutions"
-        canonical="https://vision-sync-forge.lovable.app/custom-builds"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/custom-builds.jpg"
+        canonical="https://www.vision-sync.co/custom-builds"
+        ogImage="https://www.vision-sync.co/og-images/custom-builds.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Custom Build Projects - Vision-Sync Forge",
             description: "Custom software development services for web, mobile, and enterprise applications",
-            url: "https://vision-sync-forge.lovable.app/custom-builds"
+            url: "https://www.vision-sync.co/custom-builds"
           }),
           generateServiceSchema({
             name: "Custom Software Development",

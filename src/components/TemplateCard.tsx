@@ -20,7 +20,7 @@ interface TemplateCardProps {
   const [isSubscription, setIsSubscription] = useState(false);
 
   return (
-    <Card className="group hover:shadow-hover transition-all duration-300 hover:scale-[1.02] bg-white/80 backdrop-blur-sm border border-slate-200/60 relative overflow-hidden shadow-lg">
+    <Card className="group hover:shadow-hover transition-all duration-300 hover:scale-[1.02] bg-white/80 backdrop-blur-sm border border-soft-lilac/20 relative overflow-hidden shadow-lg">
       {template.popular && (
         <div className="absolute top-4 right-4 z-10">
           <Badge className="bg-gradient-to-r from-coral-orange to-emerald-green text-white border-0 shadow-md">
@@ -78,12 +78,12 @@ interface TemplateCardProps {
             </h4>
             <div className="flex flex-wrap gap-1">
               {template.idealFor?.slice(0, 3).map((industry, index) => (
-                <Badge key={index} variant="outline" className="text-xs bg-slate-50 text-slate-600 border-slate-200">
+                <Badge key={index} variant="outline" className="text-xs bg-slate-50 text-slate-600 border-soft-lilac/20">
                   {industry}
                 </Badge>
               ))}
               {template.idealFor && template.idealFor.length > 3 && (
-                <Badge variant="outline" className="text-xs bg-slate-50 text-slate-500 border-slate-200">
+                <Badge variant="outline" className="text-xs bg-slate-50 text-cool-gray border-soft-lilac/20">
                   +{template.idealFor.length - 3} more
                 </Badge>
               )}

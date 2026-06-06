@@ -16,14 +16,14 @@ const TetherBand = () => {
         title="Tether-Band | Secure Device Connectivity & Network Bridging Solution"
         description="Innovative connectivity solution for secure device-to-device communication and network bridging. Enterprise-grade technology for seamless device integration and data transfer."
         keywords="device connectivity, network bridging, secure communication, IoT connectivity, device-to-device communication"
-        canonical="https://vision-sync-forge.lovable.app/tether-band"
-        ogImage="https://vision-sync-forge.lovable.app/favicon.png"
+        canonical="https://www.vision-sync.co/tether-band"
+        ogImage="https://www.vision-sync.co/favicon.png"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Tether-Band - Device Connectivity",
             description: "Innovative connectivity solution for secure device-to-device communication and network bridging",
-            url: "https://vision-sync-forge.lovable.app/tether-band"
+            url: "https://www.vision-sync.co/tether-band"
           }),
           generateProductSchema({
             name: "Tether-Band",

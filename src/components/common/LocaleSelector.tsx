@@ -46,7 +46,7 @@ export const LocaleSelector = ({ variant = 'default', className = '' }: LocaleSe
                     <span className="font-medium inline sm:hidden">
                         {currentLang.code.toUpperCase()}
                     </span>
-                    <span className="text-slate-400 hidden sm:inline">·</span>
+                    <span className="text-cool-gray hidden sm:inline">·</span>
                     <span className="font-medium hidden sm:inline">
                         {selectedCurrency.symbol} {selectedCurrency.code}
                     </span>
@@ -55,7 +55,7 @@ export const LocaleSelector = ({ variant = 'default', className = '' }: LocaleSe
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-52 z-[100]">
-                <DropdownMenuLabel className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                <DropdownMenuLabel className="text-xs text-cool-gray font-semibold uppercase tracking-wider">
                     Language
                 </DropdownMenuLabel>
                 {languages.map((lang) => {
@@ -77,7 +77,7 @@ export const LocaleSelector = ({ variant = 'default', className = '' }: LocaleSe
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuLabel className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                <DropdownMenuLabel className="text-xs text-cool-gray font-semibold uppercase tracking-wider">
                     Currency
                 </DropdownMenuLabel>
                 {currencies.map((currency: Currency) => {
@@ -92,7 +92,7 @@ export const LocaleSelector = ({ variant = 'default', className = '' }: LocaleSe
                                 <span className="font-medium w-6 text-center">{currency.symbol}</span>
                                 <span>{currency.name}</span>
                             </span>
-                            <span className={`text-xs ${isActive ? 'text-royal-purple font-bold' : 'text-slate-400'}`}>
+                            <span className={`text-xs ${isActive ? 'text-royal-purple font-bold' : 'text-cool-gray'}`}>
                                 {currency.code}
                             </span>
                         </DropdownMenuItem>
