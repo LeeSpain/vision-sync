@@ -89,14 +89,14 @@ const ForSale = () => {
         title="Premium Platforms For Sale | Ready-to-Launch Software - Vision-Sync Forge"
         description="Acquire fully-developed, production-ready platforms for healthcare, emergency services, and wearable tech. Ready to launch with complete ownership and support."
         keywords="platforms for sale, software acquisition, ready-made platforms, turnkey software, healthcare platforms, emergency systems, wearable tech platforms"
-        canonical="https://vision-sync-forge.lovable.app/for-sale"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/for-sale.jpg"
+        canonical="https://www.vision-sync.co/for-sale"
+        ogImage="https://www.vision-sync.co/og-images/for-sale.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Platforms For Sale - Vision-Sync Forge",
             description: "Fully-developed software platforms ready for acquisition",
-            url: "https://vision-sync-forge.lovable.app/for-sale"
+            url: "https://www.vision-sync.co/for-sale"
           }),
           ...platformsForSale.map(platform => 
             generateProductSchema({

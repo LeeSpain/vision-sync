@@ -91,14 +91,14 @@ const ForInvestors = () => {
         title="Tech Investment Opportunities | Vision-Sync Portfolio"
         description="Strategic tech investment opportunities in proven software platforms. Join Vision-Sync's portfolio of healthcare, PropTech, SaaS solutions. Early-stage access."
         keywords="tech investment, software investment, startup investment, PropTech investment, healthcare tech, SaaS investment"
-        canonical="https://vision-sync-forge.lovable.app/for-investors"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/for-investors.jpg"
+        canonical="https://www.vision-sync.co/for-investors"
+        ogImage="https://www.vision-sync.co/og-images/for-investors.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Investment Opportunities - Vision-Sync Forge",
             description: "Strategic tech investment opportunities in proven software platforms",
-            url: "https://vision-sync-forge.lovable.app/for-investors"
+            url: "https://www.vision-sync.co/for-investors"
           })
         ]}
       />

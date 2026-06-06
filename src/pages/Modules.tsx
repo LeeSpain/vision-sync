@@ -192,8 +192,8 @@ export default function Modules() {
 
           {/* Hero */}
           <div className={ds.heroWrapper}>
-            <div className="inline-flex items-center justify-center p-3 bg-emerald-100 rounded-2xl mb-6">
-              <Layers className="h-6 w-6 text-emerald-600" />
+            <div className="inline-flex items-center justify-center p-3 bg-emerald-green/10 rounded-2xl mb-6">
+              <Layers className="h-6 w-6 text-emerald-green" />
             </div>
             <h1 className={ds.h1}>
               {t('modules.title', 'AI Add-On Modules')}
@@ -206,7 +206,7 @@ export default function Modules() {
           {/* Module cards */}
           {loading ? (
             <div className="flex justify-center items-center py-24">
-              <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
+              <Loader2 className="h-10 w-10 animate-spin text-emerald-green" />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
@@ -225,7 +225,7 @@ export default function Modules() {
                           <Icon className="h-6 w-6" />
                         </div>
                         {isCoreFeature && (
-                          <span className={`${ds.badge} bg-slate-100 text-slate-600 border-slate-200 mt-1`}>
+                          <span className={`${ds.badge} bg-slate-100 text-slate-600 border-soft-lilac/20 mt-1`}>
                             {t('modules.coreFeature', 'Included')}
                           </span>
                         )}
@@ -233,7 +233,7 @@ export default function Modules() {
 
                       <h3 className={ds.cardTitle}>{mod.name}</h3>
 
-                      <p className="text-sm font-medium text-emerald-600 mb-3 leading-snug">
+                      <p className="text-sm font-medium text-emerald-green mb-3 leading-snug">
                         {mod.short_description}
                       </p>
 
@@ -247,17 +247,17 @@ export default function Modules() {
                         <ul className="space-y-2 mb-5">
                           {mod.features.map((feat) => (
                             <li key={feat} className={ds.featureItem}>
-                              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-4 w-4 text-emerald-green shrink-0 mt-0.5" />
                               <span>{feat}</span>
                             </li>
                           ))}
                         </ul>
                       )}
 
-                      <div className="border-t border-slate-100 pt-4 mt-auto">
+                      <div className="border-t border-soft-lilac/20 pt-4 mt-auto">
                         {isCoreFeature && (
                           <div className="mb-4">
-                            <span className="text-sm font-semibold text-emerald-600">
+                            <span className="text-sm font-semibold text-emerald-green">
                               {t('modules.included', 'Included in all packages')}
                             </span>
                           </div>

@@ -1,17 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  ArrowRight, ArrowLeft, CheckCircle, Mic, Loader2,
+  ArrowRight, ArrowLeft, CheckCircle, Mic, Loader2, Sparkles,
   Mail, MessageSquare, RefreshCw, BarChart3, Phone,
   Calendar, UserCheck, Star, MessageCircle, Bot
 } from 'lucide-react';
 import { INDUSTRIES } from '@/data/industries';
+import { Tier } from '@/types/industries';
 import { supabase } from '@/integrations/supabase/client';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 // ─── Add-on Skills (no prices shown to the user) ────────────────────────────
 
@@ -38,23 +40,24 @@ const ADDON_SKILLS: Skill[] = [
 // ─── Step Indicator ──────────────────────────────────────────────────────────
 
 const STEPS = [
-  { num: 1, label: 'Your Industry' },
-  { num: 2, label: 'Base Package' },
-  { num: 3, label: 'Extra Skills' },
-  { num: 4, label: 'Your Details' },
+  { num: 1, labelKey: 'pricing.step1Label' },
+  { num: 2, labelKey: 'pricing.step2Label' },
+  { num: 3, labelKey: 'pricing.step3Label' },
+  { num: 4, labelKey: 'pricing.step4Label' },
 ];
 
 function StepIndicator({ current }: { current: number }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center justify-center gap-2 mb-12">
       {STEPS.map((step, idx) => (
         <div key={step.num} className="flex items-center">
           <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
             current === step.num
-              ? 'bg-cyan-500 text-white'
+              ? 'bg-gradient-primary text-white shadow-glow'
               : current > step.num
-                ? 'bg-cyan-500/20 text-cyan-300'
-                : 'bg-white/5 text-white/40'
+                ? 'bg-emerald-green/10 text-emerald-green'
+                : 'bg-white text-cool-gray border border-soft-lilac/20'
           }`}>
             {current > step.num ? (
               <CheckCircle className="h-4 w-4" />
@@ -63,38 +66,16 @@ function StepIndicator({ current }: { current: number }) {
                 {step.num}
               </span>
             )}
-            <span className="hidden sm:inline">{step.label}</span>
+            <span className="hidden sm:inline">{t(step.labelKey)}</span>
           </div>
           {idx < STEPS.length - 1 && (
-            <div className={`w-8 h-px mx-1 ${current > step.num ? 'bg-cyan-500/40' : 'bg-white/10'}`} />
+            <div className={`w-8 h-px mx-1 ${current > step.num ? 'bg-emerald-green/40' : 'bg-soft-lilac/40'}`} />
           )}
         </div>
       ))}
     </div>
   );
 }
-
-// ─── Color Maps ──────────────────────────────────────────────────────────────
-
-const accentColorMap: Record<string, string> = {
-  blue: 'border-blue-500 bg-blue-500/10',
-  green: 'border-emerald-500 bg-emerald-500/10',
-  purple: 'border-purple-500 bg-purple-500/10',
-  orange: 'border-orange-500 bg-orange-500/10',
-  amber: 'border-amber-500 bg-amber-500/10',
-  red: 'border-red-500 bg-red-500/10',
-  pink: 'border-pink-500 bg-pink-500/10',
-};
-
-const stripColorMap: Record<string, string> = {
-  blue: 'bg-blue-500',
-  green: 'bg-emerald-500',
-  purple: 'bg-purple-500',
-  orange: 'bg-orange-500',
-  amber: 'bg-amber-500',
-  red: 'bg-red-500',
-  pink: 'bg-pink-500',
-};
 
 // ─── Quote Reference Generator ───────────────────────────────────────────────
 
@@ -107,8 +88,10 @@ function generateQuoteRef(): string {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function Pricing() {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
+  const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -123,7 +106,25 @@ export default function Pricing() {
     notes: '',
   });
 
+  const [searchParams] = useSearchParams();
+
+  // Pre-select industry + tier from query params (e.g. /pricing?industry=estate-agents&tier=growth)
+  // so "Get this package" links from Solutions pages land on the package step ready to confirm.
+  useEffect(() => {
+    const ind = searchParams.get('industry');
+    const tier = searchParams.get('tier');
+    if (ind && INDUSTRIES.some(i => i.slug === ind)) {
+      setSelectedIndustry(ind);
+      if (tier === 'base' || tier === 'growth' || tier === 'everything') {
+        setSelectedTier(tier);
+      }
+      setStep(2);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const industry = INDUSTRIES.find(i => i.slug === selectedIndustry);
+  const selectedPackage = industry?.packages.find(p => p.tier === selectedTier);
 
   const toggleSkill = (id: string) => {
     setSelectedSkills(prev => {
@@ -135,10 +136,13 @@ export default function Pricing() {
   };
 
   const handleSubmit = async () => {
-    if (!form.firstName || !form.email || !form.businessName || !industry) return;
+    if (!form.firstName || !form.email || !form.businessName || !industry || !selectedPackage) return;
 
     setSubmitting(true);
     const ref = generateQuoteRef();
+
+    const pkg = selectedPackage;
+    const baseIva = pkg.incVatPrice - pkg.exVatPrice;
 
     const selectedSkillNames = ADDON_SKILLS
       .filter(s => selectedSkills.has(s.id))
@@ -153,17 +157,18 @@ export default function Pricing() {
       phone: form.phone || null,
       industry_slug: industry.slug,
       industry_name: industry.name,
-      base_package_name: `${industry.name} Base`,
-      base_ex_vat: 0,
-      base_iva: 0,
-      base_inc_vat: 0,
+      base_package_name: `${industry.name} ${pkg.name}`,
+      selected_tier: selectedTier,
+      base_ex_vat: pkg.exVatPrice,
+      base_iva: baseIva,
+      base_inc_vat: pkg.incVatPrice,
       modules_selected: selectedSkillNames,
       modules_ex_vat_total: 0,
       modules_iva_total: 0,
       modules_inc_vat_total: 0,
-      total_ex_vat: 0,
-      total_iva: 0,
-      total_inc_vat: 0,
+      total_ex_vat: pkg.exVatPrice,
+      total_iva: baseIva,
+      total_inc_vat: pkg.incVatPrice,
       client_notes: form.notes || null,
       status: 'new',
     };
@@ -183,25 +188,25 @@ export default function Pricing() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#0a0f1e] font-sans">
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white font-sans">
         <Header />
         <main className="flex-grow flex items-center justify-center px-4">
           <div className="max-w-lg text-center">
-            <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-8">
-              <CheckCircle className="h-10 w-10 text-emerald-400" />
+            <div className="w-20 h-20 rounded-full bg-emerald-green/10 flex items-center justify-center mx-auto mb-8">
+              <CheckCircle className="h-10 w-10 text-emerald-green" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Quote Request Received
+            <h1 className="text-3xl md:text-4xl font-heading font-bold text-midnight-navy mb-4">
+              {t('pricing.successTitle')}
             </h1>
-            <p className="text-white/60 text-lg mb-3">
-              Your reference: <span className="font-mono font-bold text-cyan-400">{quoteRef}</span>
+            <p className="text-cool-gray text-lg mb-3">
+              {t('pricing.successRef')} <span className="font-mono font-bold text-royal-purple">{quoteRef}</span>
             </p>
-            <p className="text-white/50 mb-10">
-              We'll review your requirements and send a personalised proposal to <strong className="text-white/80">{form.email}</strong> within 24 hours.
+            <p className="text-cool-gray mb-10">
+              {t('pricing.successBody', { email: form.email })}
             </p>
             <Link to="/">
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-5">
-                Back to Homepage
+              <Button variant="hero" size="lg">
+                {t('pricing.backHome')}
               </Button>
             </Link>
           </div>
@@ -214,20 +219,29 @@ export default function Pricing() {
   // ─── Wizard ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a0f1e] font-sans">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white font-sans">
       <Header />
-      <main className="flex-grow pt-28 pb-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
 
-          {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
-              Get Your Custom Quote
-            </h1>
-            <p className="text-lg text-white/50 max-w-2xl mx-auto">
-              Tell us about your business, pick the AI skills you need, and receive a personalised proposal — no obligation, no hidden fees.
-            </p>
+      {/* Light hero (PAGE_STANDARD §1) */}
+      <section className="relative pt-28 pb-10 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="absolute top-16 left-10 w-96 h-96 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute top-32 right-10 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="max-w-5xl mx-auto relative z-10 text-center">
+          <div className="inline-flex items-center justify-center gap-2 bg-gradient-primary px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 shadow-glow mx-auto">
+            <Sparkles className="h-4 w-4" />
+            {t('pricing.heroEyebrow')}
           </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 tracking-tight">
+            <span className="bg-gradient-primary bg-clip-text text-transparent">{t('pricing.heroTitle')}</span>
+          </h1>
+          <p className="text-lg md:text-xl text-cool-gray max-w-3xl mx-auto leading-relaxed">
+            {t('pricing.heroSubtitle')}
+          </p>
+        </div>
+      </section>
+
+      <main className="flex-grow pb-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
 
           {/* Step Indicator */}
           <StepIndicator current={step} />
@@ -235,35 +249,34 @@ export default function Pricing() {
           {/* ─── Step 1: Pick Industry ─────────────────────────────── */}
           {step === 1 && (
             <div>
-              <h2 className="text-xl font-semibold text-white mb-2 text-center">Which industry are you in?</h2>
-              <p className="text-white/40 text-center mb-8">Select the industry that best matches your business.</p>
+              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step1Title')}</h2>
+              <p className="text-cool-gray text-center mb-8">{t('pricing.step1Subtitle')}</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {INDUSTRIES.map(ind => {
                   const isSelected = selectedIndustry === ind.slug;
-                  const stripColor = stripColorMap[ind.color] || 'bg-blue-500';
-                  const selectedClass = isSelected
-                    ? (accentColorMap[ind.color] || 'border-blue-500 bg-blue-500/10') + ' border-2'
-                    : 'border border-white/10 bg-white/[0.03] hover:bg-white/[0.06]';
-
                   return (
                     <button
                       key={ind.slug}
                       onClick={() => setSelectedIndustry(ind.slug)}
-                      className={`relative rounded-2xl p-5 text-left transition-all overflow-hidden ${selectedClass}`}
+                      className={`relative rounded-2xl p-5 text-left transition-all overflow-hidden bg-white ${
+                        isSelected
+                          ? 'border-2 border-royal-purple shadow-card'
+                          : 'border border-soft-lilac/20 shadow-card hover:-translate-y-0.5'
+                      }`}
                     >
-                      <div className={`absolute top-0 left-0 w-full h-1 ${stripColor}`} />
-                      <h3 className="font-semibold text-white text-sm mt-1 mb-2">{ind.name}</h3>
-                      <p className="text-white/40 text-xs leading-relaxed line-clamp-2">{ind.painStatement}</p>
-                      {ind.voiceIncluded && (
-                        <div className="flex items-center gap-1 mt-3 text-cyan-400 text-[10px] font-medium">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-primary" />
+                      <h3 className="font-semibold text-midnight-navy text-sm mt-1 mb-2">{ind.name}</h3>
+                      <p className="text-cool-gray text-xs leading-relaxed line-clamp-2">{ind.painStatement}</p>
+                      {ind.packages[0].voiceMinutes > 0 && (
+                        <div className="flex items-center gap-1 mt-3 text-electric-blue text-[10px] font-medium">
                           <Mic className="h-3 w-3" />
-                          Voice included
+                          {t('pricing.voiceIncluded')}
                         </div>
                       )}
                       {isSelected && (
                         <div className="absolute top-3 right-3">
-                          <CheckCircle className="h-5 w-5 text-cyan-400" />
+                          <CheckCircle className="h-5 w-5 text-royal-purple" />
                         </div>
                       )}
                     </button>
@@ -273,81 +286,106 @@ export default function Pricing() {
 
               <div className="flex justify-end mt-10">
                 <Button
+                  variant="hero"
+                  size="lg"
                   onClick={() => setStep(2)}
                   disabled={!selectedIndustry}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-5 disabled:opacity-40"
+                  className="group"
                 >
-                  Continue
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  {t('pricing.continue')}
+                  <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* ─── Step 2: Base Package ──────────────────────────────── */}
+          {/* ─── Step 2: Choose Package ────────────────────────────── */}
           {step === 2 && industry && (
             <div>
-              <h2 className="text-xl font-semibold text-white mb-2 text-center">Your {industry.name} Base Package</h2>
-              <p className="text-white/40 text-center mb-8">Here's what's included as standard in every {industry.name} package.</p>
+              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step2Title')}</h2>
+              <p className="text-cool-gray text-center mb-10 max-w-2xl mx-auto">{t('pricing.step2Subtitle', { industry: industry.name })}</p>
 
-              <div className="max-w-2xl mx-auto bg-white/[0.04] border border-white/10 rounded-2xl p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className={`w-12 h-12 rounded-xl ${stripColorMap[industry.color] || 'bg-blue-500'} flex items-center justify-center`}>
-                    <CheckCircle className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{industry.name}</h3>
-                    <p className="text-white/40 text-sm">Industry-optimised AI base package</p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                {industry.packages.map(pkg => {
+                  const isPopular = pkg.tier === 'growth';
+                  const isSelected = selectedTier === pkg.tier;
+                  return (
+                    <button
+                      key={pkg.tier}
+                      onClick={() => setSelectedTier(pkg.tier)}
+                      className={`relative text-left rounded-3xl p-7 bg-white flex flex-col transition-all shadow-card ${
+                        isSelected
+                          ? 'border-2 border-royal-purple'
+                          : isPopular
+                            ? 'border-2 border-royal-purple/40'
+                            : 'border border-soft-lilac/20 hover:-translate-y-1'
+                      }`}
+                    >
+                      {isPopular && (
+                        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-white text-xs font-semibold px-3 py-1 rounded-full shadow-glow whitespace-nowrap">
+                          {t('pricing.mostPopular')}
+                        </span>
+                      )}
 
-                <ul className="space-y-3 mb-6">
-                  {industry.baseIncludes.map((item, idx) => (
-                    <li key={idx} className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                        <CheckCircle className="h-3 w-3 text-emerald-400" />
+                      <h3 className="text-xl font-heading font-bold text-midnight-navy mb-1">{pkg.name}</h3>
+                      <p className="text-sm text-cool-gray mb-5 leading-relaxed min-h-[40px]">{pkg.tagline}</p>
+
+                      <div className="mb-1">
+                        <span className="text-4xl font-bold text-midnight-navy">€{pkg.exVatPrice}</span>
+                        <span className="text-cool-gray text-base">{t('pricing.perMonth')}</span>
                       </div>
-                      <span className="text-white/70 text-sm">{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                      <p className="text-xs text-cool-gray mb-5">{t('pricing.vatNote', { inc: pkg.incVatPrice })}</p>
 
-                {industry.voiceIncluded && (
-                  <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 flex items-center gap-3">
-                    <Mic className="h-5 w-5 text-cyan-400 shrink-0" />
-                    <div>
-                      <p className="font-medium text-cyan-300 text-sm">Voice Agent Included</p>
-                      <p className="text-cyan-400/60 text-xs">{industry.voiceMinutes?.toLocaleString()} inbound minutes per month</p>
-                    </div>
-                  </div>
-                )}
+                      {pkg.voiceMinutes > 0 && (
+                        <div className="flex items-center gap-2 text-electric-blue text-sm font-medium mb-5">
+                          <Mic className="h-4 w-4 shrink-0" />
+                          {t('pricing.voiceMinutes', { mins: pkg.voiceMinutes.toLocaleString() })}
+                        </div>
+                      )}
+
+                      <ul className="space-y-2.5 mb-6 flex-grow">
+                        {pkg.includes.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2.5">
+                            <CheckCircle className="h-4 w-4 text-emerald-green shrink-0 mt-0.5" />
+                            <span className="text-sm text-midnight-navy/80 leading-snug">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className={`mt-auto w-full rounded-xl py-2.5 text-center text-sm font-semibold transition-colors ${
+                        isSelected ? 'bg-gradient-primary text-white' : 'bg-soft-lilac/15 text-royal-purple'
+                      }`}>
+                        {isSelected ? t('pricing.selected') : t('pricing.selectPackage')}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="flex justify-between mt-10">
-                <Button
-                  variant="outline"
-                  onClick={() => setStep(1)}
-                  className="border-white/20 text-white/60 hover:bg-white/5 px-6 py-5"
-                >
+                <Button variant="outline" size="lg" onClick={() => setStep(1)}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
+                  {t('pricing.back')}
                 </Button>
                 <Button
+                  variant="hero"
+                  size="lg"
                   onClick={() => setStep(3)}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-5"
+                  disabled={!selectedTier}
+                  className="group"
                 >
-                  Add Extra Skills
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  {t('pricing.continue')}
+                  <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* ─── Step 3: Add Extra Skills ──────────────────────────── */}
+          {/* ─── Step 3: Add Extra Skills (optional) ───────────────── */}
           {step === 3 && (
             <div>
-              <h2 className="text-xl font-semibold text-white mb-2 text-center">Add Extra AI Skills</h2>
-              <p className="text-white/40 text-center mb-8">Toggle on any additional capabilities you'd like included in your quote. Select as many as you need.</p>
+              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step3Title')}</h2>
+              <p className="text-cool-gray text-center mb-8 max-w-2xl mx-auto">{t('pricing.step3Subtitle', { package: selectedPackage?.name })}</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
                 {ADDON_SKILLS.map(skill => {
@@ -356,26 +394,26 @@ export default function Pricing() {
                     <button
                       key={skill.id}
                       onClick={() => toggleSkill(skill.id)}
-                      className={`relative rounded-2xl p-5 text-left transition-all ${
+                      className={`relative rounded-2xl p-5 text-left transition-all bg-white ${
                         isOn
-                          ? 'bg-cyan-500/10 border-2 border-cyan-500'
-                          : 'bg-white/[0.03] border border-white/10 hover:bg-white/[0.06]'
+                          ? 'border-2 border-royal-purple shadow-card'
+                          : 'border border-soft-lilac/20 shadow-card hover:-translate-y-0.5'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                          isOn ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/5 text-white/40'
+                          isOn ? 'bg-royal-purple/10 text-royal-purple' : 'bg-slate-50 text-cool-gray'
                         }`}>
                           {skill.icon}
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-white text-sm mb-1">{skill.name}</h3>
-                          <p className="text-white/40 text-xs leading-relaxed">{skill.description}</p>
+                          <h3 className="font-semibold text-midnight-navy text-sm mb-1">{skill.name}</h3>
+                          <p className="text-cool-gray text-xs leading-relaxed">{skill.description}</p>
                         </div>
                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                          isOn ? 'border-cyan-400 bg-cyan-400' : 'border-white/20'
+                          isOn ? 'border-royal-purple bg-royal-purple' : 'border-soft-lilac/40'
                         }`}>
-                          {isOn && <CheckCircle className="h-3 w-3 text-[#0a0f1e]" />}
+                          {isOn && <CheckCircle className="h-3 w-3 text-white" />}
                         </div>
                       </div>
                     </button>
@@ -384,20 +422,13 @@ export default function Pricing() {
               </div>
 
               <div className="flex justify-between mt-10">
-                <Button
-                  variant="outline"
-                  onClick={() => setStep(2)}
-                  className="border-white/20 text-white/60 hover:bg-white/5 px-6 py-5"
-                >
+                <Button variant="outline" size="lg" onClick={() => setStep(2)}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
+                  {t('pricing.back')}
                 </Button>
-                <Button
-                  onClick={() => setStep(4)}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-5"
-                >
-                  Continue to Details
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                <Button variant="hero" size="lg" onClick={() => setStep(4)} className="group">
+                  {t('pricing.continue')}
+                  <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
             </div>
@@ -406,25 +437,28 @@ export default function Pricing() {
           {/* ─── Step 4: Your Details ──────────────────────────────── */}
           {step === 4 && industry && (
             <div>
-              <h2 className="text-xl font-semibold text-white mb-2 text-center">Your Details</h2>
-              <p className="text-white/40 text-center mb-8">Tell us about you and your business so we can prepare your personalised quote.</p>
+              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step4Title')}</h2>
+              <p className="text-cool-gray text-center mb-8">{t('pricing.step4Subtitle')}</p>
 
               <div className="max-w-2xl mx-auto">
                 {/* Summary strip */}
-                <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 mb-8">
-                  <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Quote Summary</h3>
+                <div className="bg-white border border-soft-lilac/20 shadow-card rounded-2xl p-5 mb-8">
+                  <h3 className="text-xs font-semibold text-cool-gray uppercase tracking-wider mb-3">{t('pricing.summaryHeading')}</h3>
                   <div className="flex items-center gap-2 mb-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-400" />
-                    <span className="text-white text-sm font-medium">{industry.name} Base Package</span>
+                    <CheckCircle className="h-4 w-4 text-emerald-green" />
+                    <span className="text-midnight-navy text-sm font-medium">
+                      {industry.name} {selectedPackage?.name}
+                      {selectedPackage && <span className="text-cool-gray font-normal"> — €{selectedPackage.exVatPrice}{t('pricing.perMonth')}</span>}
+                    </span>
                   </div>
                   {ADDON_SKILLS.filter(s => selectedSkills.has(s.id)).map(s => (
                     <div key={s.id} className="flex items-center gap-2 mb-1">
-                      <CheckCircle className="h-3.5 w-3.5 text-cyan-400" />
-                      <span className="text-white/60 text-sm">{s.name}</span>
+                      <CheckCircle className="h-3.5 w-3.5 text-royal-purple" />
+                      <span className="text-cool-gray text-sm">{s.name}</span>
                     </div>
                   ))}
                   {selectedSkills.size === 0 && (
-                    <p className="text-white/30 text-sm mt-1">No extra skills selected — base package only.</p>
+                    <p className="text-cool-gray text-sm mt-1">{t('pricing.summaryNoExtras', { package: selectedPackage?.name })}</p>
                   )}
                 </div>
 
@@ -432,100 +466,98 @@ export default function Pricing() {
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm text-white/50 font-medium">First name *</label>
+                      <label className="text-sm text-midnight-navy/70 font-medium">{t('pricing.firstName')} *</label>
                       <Input
                         value={form.firstName}
                         onChange={e => setForm(f => ({ ...f, firstName: e.target.value }))}
-                        placeholder="John"
-                        className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/20 focus:border-cyan-500"
+                        placeholder={t('pricing.firstNamePlaceholder')}
+                        className="focus:border-royal-purple"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm text-white/50 font-medium">Last name</label>
+                      <label className="text-sm text-midnight-navy/70 font-medium">{t('pricing.lastName')}</label>
                       <Input
                         value={form.lastName}
                         onChange={e => setForm(f => ({ ...f, lastName: e.target.value }))}
-                        placeholder="Smith"
-                        className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/20 focus:border-cyan-500"
+                        placeholder={t('pricing.lastNamePlaceholder')}
+                        className="focus:border-royal-purple"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm text-white/50 font-medium">Business name *</label>
+                    <label className="text-sm text-midnight-navy/70 font-medium">{t('pricing.businessName')} *</label>
                     <Input
                       value={form.businessName}
                       onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                      placeholder="Acme Properties SL"
-                      className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/20 focus:border-cyan-500"
+                      placeholder={t('pricing.businessPlaceholder')}
+                      className="focus:border-royal-purple"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm text-white/50 font-medium">Email *</label>
+                      <label className="text-sm text-midnight-navy/70 font-medium">{t('pricing.emailLabel')} *</label>
                       <Input
                         type="email"
                         value={form.email}
                         onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                        placeholder="john@acme.es"
-                        className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/20 focus:border-cyan-500"
+                        placeholder={t('pricing.emailPlaceholder')}
+                        className="focus:border-royal-purple"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm text-white/50 font-medium">Phone</label>
+                      <label className="text-sm text-midnight-navy/70 font-medium">{t('pricing.phoneLabel')}</label>
                       <Input
                         type="tel"
                         value={form.phone}
                         onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                        placeholder="+34 600 123 456"
-                        className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/20 focus:border-cyan-500"
+                        placeholder={t('pricing.phonePlaceholder')}
+                        className="focus:border-royal-purple"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm text-white/50 font-medium">Anything else we should know?</label>
+                    <label className="text-sm text-midnight-navy/70 font-medium">{t('pricing.notesLabel')}</label>
                     <Textarea
                       value={form.notes}
                       onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                      placeholder="Tell us about your business, specific needs, or questions..."
+                      placeholder={t('pricing.notesPlaceholder')}
                       rows={3}
-                      className="bg-white/[0.05] border-white/10 text-white placeholder:text-white/20 focus:border-cyan-500 resize-none"
+                      className="focus:border-royal-purple resize-none"
                     />
                   </div>
                 </div>
 
                 <div className="flex justify-between mt-10">
-                  <Button
-                    variant="outline"
-                    onClick={() => setStep(3)}
-                    className="border-white/20 text-white/60 hover:bg-white/5 px-6 py-5"
-                  >
+                  <Button variant="outline" size="lg" onClick={() => setStep(3)}>
                     <ArrowLeft className="h-4 w-4 mr-2" />
-                    Back
+                    {t('pricing.back')}
                   </Button>
                   <Button
+                    variant="hero"
+                    size="lg"
                     onClick={handleSubmit}
                     disabled={submitting || !form.firstName || !form.email || !form.businessName}
-                    className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-5 disabled:opacity-40"
+                    className="group"
                   >
                     {submitting ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Submitting...
+                        {t('pricing.submitting')}
                       </>
                     ) : (
                       <>
-                        Submit Quote Request
-                        <ArrowRight className="h-4 w-4 ml-2" />
+                        {t('pricing.submit')}
+                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </Button>
                 </div>
 
-                <p className="text-center text-white/30 text-xs mt-6">
-                  No obligation. We'll prepare a personalised proposal and send it to your email within 24 hours.
+                <p className="text-center text-cool-gray text-xs mt-6">
+                  {t('pricing.disclaimer')}
                 </p>
               </div>
             </div>

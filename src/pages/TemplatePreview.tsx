@@ -106,14 +106,14 @@ const TemplatePreview = () => {
         title={`${template.title} | App Template - Vision-Sync Forge`}
         description={`Preview ${template.title} app template with live demos, feature breakdowns, pricing comparisons. Customize with your branding. Deploy in 72 hours with full support.`}
         keywords={`${template.title}, ${template.category}, app template, ${template.keyFeatures.join(', ')}`}
-        canonical={`https://vision-sync-forge.lovable.app/template-preview/${id}`}
-        ogImage="https://vision-sync-forge.lovable.app/og-images/template-preview.jpg"
+        canonical={`https://www.vision-sync.co/template-preview/${id}`}
+        ogImage="https://www.vision-sync.co/og-images/template-preview.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: template.title,
             description: template.overview,
-            url: `https://vision-sync-forge.lovable.app/template-preview/${id}`
+            url: `https://www.vision-sync.co/template-preview/${id}`
           }),
           generateSoftwareApplicationSchema({
             name: template.title,

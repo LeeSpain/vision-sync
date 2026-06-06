@@ -20,7 +20,7 @@ const ConneqtCentral = () => {
         title="Conneqt-Central | Internal Operations Platform - Vision-Sync Forge"
         description="Vision-Sync's proprietary project management and team collaboration platform. Enterprise-grade internal operations system with restricted access."
         keywords="internal operations, project management platform, team collaboration"
-        canonical="https://vision-sync-forge.lovable.app/conneqt-central"
+        canonical="https://www.vision-sync.co/conneqt-central"
         noindex={true}
         nofollow={true}
         structuredData={[
@@ -28,7 +28,7 @@ const ConneqtCentral = () => {
           generateWebPageSchema({
             name: "Conneqt-Central - Internal Platform",
             description: "Proprietary internal operations platform for Vision-Sync Forge",
-            url: "https://vision-sync-forge.lovable.app/conneqt-central"
+            url: "https://www.vision-sync.co/conneqt-central"
           })
         ]}
       />

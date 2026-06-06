@@ -100,17 +100,17 @@ export default function Platform() {
 
           {/* ── Guarantees strip ─────────────────────────────────────────── */}
           <div className="mt-16 max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+            <div className="bg-white rounded-2xl border border-soft-lilac/20 shadow-sm p-8">
               <h3 className="text-center font-bold text-midnight-navy mb-8 text-lg">
                 Everything included. No surprises.
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {PLATFORM_GUARANTEES.map((item) => (
                   <div key={item} className={ds.featureItem}>
-                    <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
-                      <CheckCircle className="h-4 w-4 text-emerald-600" />
+                    <div className="w-6 h-6 bg-emerald-green/10 rounded-full flex items-center justify-center shrink-0">
+                      <CheckCircle className="h-4 w-4 text-emerald-green" />
                     </div>
-                    <span className="font-medium text-slate-700">{item}</span>
+                    <span className="font-medium text-midnight-navy">{item}</span>
                   </div>
                 ))}
               </div>

@@ -145,9 +145,11 @@ export default function ModulePicker() {
       const modulesExVat = selectedModules.reduce((sum, m) => sum + m.exVatPrice, 0);
       const modulesIva = selectedModules.reduce((sum, m) => sum + m.ivaAmount, 0);
       const modulesIncVat = selectedModules.reduce((sum, m) => sum + m.totalIncVat, 0);
-      const totalExVat = industry.exVatPrice + modulesExVat;
-      const totalIva = industry.ivaAmount + modulesIva;
-      const totalIncVat = industry.totalIncVat + modulesIncVat;
+      const basePkg = industry.packages[0];
+      const baseIva = basePkg.incVatPrice - basePkg.exVatPrice;
+      const totalExVat = basePkg.exVatPrice + modulesExVat;
+      const totalIva = baseIva + modulesIva;
+      const totalIncVat = basePkg.incVatPrice + modulesIncVat;
 
       const quoteRef = `VS-${new Date().toISOString().slice(0,7).replace('-','')}-${Math.random().toString(36).substring(2,8).toUpperCase()}`;
 
@@ -171,9 +173,9 @@ export default function ModulePicker() {
           industry_slug: industry.slug,
           industry_name: industry.name,
           base_package_name: `${industry.name} Base Package`,
-          base_ex_vat: industry.exVatPrice,
-          base_iva: industry.ivaAmount,
-          base_inc_vat: industry.totalIncVat,
+          base_ex_vat: basePkg.exVatPrice,
+          base_iva: baseIva,
+          base_inc_vat: basePkg.incVatPrice,
           modules_selected: modulesSelected,
           modules_ex_vat_total: modulesExVat,
           modules_iva_total: modulesIva,
@@ -203,10 +205,10 @@ export default function ModulePicker() {
             industryName: industry.name,
             industrySlug: industry.slug,
             basePackageName: `${industry.name} Base Package`,
-            baseIncludes: industry.baseIncludes,
-            baseExVat: industry.exVatPrice,
-            baseIva: industry.ivaAmount,
-            baseIncVat: industry.totalIncVat,
+            baseIncludes: basePkg.includes,
+            baseExVat: basePkg.exVatPrice,
+            baseIva: baseIva,
+            baseIncVat: basePkg.incVatPrice,
             selectedModules: modulesSelected,
             modulesExVatTotal: modulesExVat,
             modulesIvaTotal: modulesIva,
@@ -238,6 +240,8 @@ export default function ModulePicker() {
       </div>
     );
   }
+
+  const basePkg = industry.packages[0];
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -273,27 +277,27 @@ export default function ModulePicker() {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-midnight-navy flex items-center gap-2">
-                      <Package className="h-5 w-5 text-emerald-600" />
+                      <Package className="h-5 w-5 text-emerald-green" />
                       {industry.name} Base Package
                     </CardTitle>
-                    <span className="text-xs font-semibold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200">
+                    <span className="text-xs font-semibold px-3 py-1 bg-emerald-green/10 text-emerald-700 rounded-full border border-emerald-200">
                       Always Included
                     </span>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {industry.baseIncludes.map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-3 text-slate-700">
-                        <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+                    {basePkg.includes.map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-3 text-midnight-navy">
+                        <CheckCircle className="h-4 w-4 text-emerald-green shrink-0" />
                         <span className="text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
-                  {industry.voiceIncluded && (
-                    <div className="mt-4 flex items-center gap-2 text-emerald-700 bg-emerald-100 px-3 py-2 rounded-lg text-sm font-medium">
+                  {basePkg.voiceMinutes > 0 && (
+                    <div className="mt-4 flex items-center gap-2 text-emerald-700 bg-emerald-green/10 px-3 py-2 rounded-lg text-sm font-medium">
                       <Mic className="h-4 w-4" />
-                      {industry.voiceMinutes?.toLocaleString()} voice minutes/month included
+                      {basePkg.voiceMinutes.toLocaleString()} voice minutes/month included
                     </div>
                   )}
                 </CardContent>
@@ -311,7 +315,7 @@ export default function ModulePicker() {
                     <Loader2 className="h-8 w-8 animate-spin text-electric-blue" />
                   </div>
                 ) : availableModules.length === 0 ? (
-                  <div className="text-center py-12 text-cool-gray bg-white rounded-xl border border-slate-200">
+                  <div className="text-center py-12 text-cool-gray bg-white rounded-xl border border-soft-lilac/20">
                     <p className="font-medium">No add-on modules available for this industry yet.</p>
                     <p className="text-sm mt-2">Your base package includes everything you need to get started.</p>
                   </div>
@@ -326,7 +330,7 @@ export default function ModulePicker() {
                           className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 ${
                             isSelected
                               ? 'border-electric-blue bg-electric-blue/5 shadow-md'
-                              : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
+                              : 'border-soft-lilac/20 bg-white hover:border-slate-300 hover:shadow-sm'
                           }`}
                         >
                           <div className="flex items-start justify-between gap-4">

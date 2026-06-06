@@ -141,14 +141,14 @@ export default function DynamicProjectDetail() {
         title={`${project.title} | ${isInvestmentProject ? 'Investment Opportunity' : 'For Sale'} - Vision-Sync Forge`}
         description={introText || project.description?.substring(0, 160) || `Discover ${project.title} - ${project.category} project available for ${isInvestmentProject ? 'investment' : 'purchase'}.`}
         keywords={`${project.title}, ${project.category}, ${isInvestmentProject ? 'investment opportunity' : 'platform for sale'}, ${project.technologies?.join(', ') || ''}`}
-        canonical={`https://vision-sync-forge.lovable.app${project.route}`}
+        canonical={`https://www.vision-sync.co${project.route}`}
         ogImage={project.image_url || undefined}
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: project.title,
             description: introText || project.description || '',
-            url: `https://vision-sync-forge.lovable.app${project.route}`
+            url: `https://www.vision-sync.co${project.route}`
           }),
           ...(project.price || project.investment_amount ? [generateProductSchema({
             name: project.title,

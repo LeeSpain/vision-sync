@@ -75,14 +75,14 @@ const Templates = () => {
         title="50+ Professional App Templates | Deploy in 72 Hours"
         description="Browse 50+ professional app templates ready for instant customization. Industry-specific solutions for healthcare, e-commerce, real estate. Deploy in 72 hours."
         keywords="app templates, web app templates, business app templates, ready-to-deploy apps, customizable templates, professional templates"
-        canonical="https://vision-sync-forge.lovable.app/templates"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/templates.jpg"
+        canonical="https://www.vision-sync.co/templates"
+        ogImage="https://www.vision-sync.co/og-images/templates.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Professional App Templates",
             description: "Explore professional app templates for various industries",
-            url: "https://vision-sync-forge.lovable.app/templates"
+            url: "https://www.vision-sync.co/templates"
           })
         ]}
       />

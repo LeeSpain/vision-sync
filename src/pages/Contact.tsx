@@ -320,14 +320,14 @@ const Contact = () => {
         title="Contact Vision-Sync Forge | Get Your Free Consultation"
         description="Get in touch with Vision-Sync Forge for custom software development, AI solutions, and app templates. Free consultation and personalized recommendations."
         keywords="contact, consultation, software development inquiry, custom software quote, AI solutions contact"
-        canonical="https://vision-sync.com/contact"
-        ogImage="https://vision-sync.com/og-images/contact.jpg"
+        canonical="https://www.vision-sync.co/contact"
+        ogImage="https://www.vision-sync.co/og-images/contact.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Contact Vision-Sync",
             description: "Get in touch for custom software development and AI solutions",
-            url: "https://vision-sync.com/contact"
+            url: "https://www.vision-sync.co/contact"
           }),
           generateFAQSchema(contactFAQs)
         ]}
@@ -375,7 +375,7 @@ const Contact = () => {
                 </div>
               )}
 
-              <Card className="p-8 shadow-lg border-slate-200/60 flex-1 flex flex-col">
+              <Card className="p-8 shadow-lg border-soft-lilac/20 flex-1 flex flex-col">
                 <div className="flex-1">
                   {renderStep()}
                 </div>

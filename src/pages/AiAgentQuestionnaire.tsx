@@ -392,14 +392,14 @@ const AiAgentQuestionnaire = () => {
         title="AI Agent Questionnaire | Custom AI Solutions - Vision-Sync Forge"
         description="Get matched with the perfect AI agent for your business. Answer 7 questions, receive custom recommendations. Start automating in 48 hours."
         keywords="AI agent, custom AI solution, AI assistant, business automation, AI chatbot, AI questionnaire"
-        canonical="https://vision-sync-forge.lovable.app/ai-agent-questionnaire"
-        ogImage="https://vision-sync-forge.lovable.app/og-images/ai-agent-questionnaire.jpg"
+        canonical="https://www.vision-sync.co/ai-agent-questionnaire"
+        ogImage="https://www.vision-sync.co/og-images/ai-agent-questionnaire.jpg"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "AI Agent Questionnaire",
             description: "Custom AI agent solution questionnaire",
-            url: "https://vision-sync-forge.lovable.app/ai-agent-questionnaire"
+            url: "https://www.vision-sync.co/ai-agent-questionnaire"
           }),
           generateServiceSchema({
             name: "Custom AI Agent Development",

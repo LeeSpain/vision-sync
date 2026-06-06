@@ -57,13 +57,13 @@ export default function Index() {
         title="Vision-Sync | Premium AI Automation Platform"
         description="Vision-Sync provides modular AI systems, automation infrastructure, business workflows, communications, CRM, analytics, and sales systems for enterprises."
         keywords="AI automation, business systems, CRM, workflow automation, AI agents, enterprise AI"
-        canonical="https://vision-sync.com/"
+        canonical="https://www.vision-sync.co/"
         structuredData={[
           generateOrganizationSchema(),
           generateWebPageSchema({
             name: "Vision-Sync | Premium AI Automation Platform",
             description: "Modular AI systems and automation infrastructure for businesses.",
-            url: "https://vision-sync.com/"
+            url: "https://www.vision-sync.co/"
           })
         ]}
       />
@@ -126,7 +126,7 @@ export default function Index() {
             <div className="relative isolate">
               <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-emerald-green/20 to-royal-purple/20 blur-3xl opacity-50 rounded-full"></div>
               <div className="aspect-square grid grid-cols-2 gap-4 w-full h-full">
-                <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative group">
+                <div className="rounded-2xl shadow-lg border border-soft-lilac/20 overflow-hidden relative group">
                   <img src="/images/platform_ai_brain.png" alt="AI Neural Network" className="object-cover w-full h-full transform transition duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
                   <div className="absolute bottom-4 left-4 right-4 text-white font-medium text-sm flex items-center">
@@ -134,7 +134,7 @@ export default function Index() {
                     {t('index.cognitiveEngine')}
                   </div>
                 </div>
-                <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative group">
+                <div className="rounded-2xl shadow-lg border border-soft-lilac/20 overflow-hidden relative group">
                   <img src="/images/platform_workflow.png" alt="Data Pipeline Workflow" className="object-cover w-full h-full transform transition duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
                   <div className="absolute bottom-4 left-4 right-4 text-white font-medium text-sm flex items-center">
@@ -142,7 +142,7 @@ export default function Index() {
                     {t('index.automatedFlows')}
                   </div>
                 </div>
-                <div className="rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden relative col-span-2 group">
+                <div className="rounded-2xl shadow-lg border border-soft-lilac/20 overflow-hidden relative col-span-2 group">
                   <img src="/images/platform_network.png" alt="Global Network Orchestration" className="object-cover w-full h-full transform transition duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/90 via-midnight-navy/20 to-transparent opacity-90 transition-opacity group-hover:opacity-80"></div>
                   <div className="absolute bottom-6 left-6 right-6 text-white font-medium text-lg flex items-center">
@@ -173,7 +173,7 @@ export default function Index() {
               <Link
                 key={industry.slug}
                 to={`/solutions/${industry.slug}`}
-                className="group bg-white border-2 border-slate-200 rounded-2xl p-6 hover:border-electric-blue hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="group bg-white border-2 border-soft-lilac/20 rounded-2xl p-6 hover:border-electric-blue hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
               >
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-slate-50 group-hover:bg-electric-blue/10 rounded-xl flex items-center justify-center transition-colors">
@@ -231,7 +231,7 @@ export default function Index() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {modules.map((mod: any) => (
-                <Card key={mod.id} className="hover:shadow-xl transition-all duration-300 border-slate-200 bg-white group hover:-translate-y-1 flex flex-col">
+                <Card key={mod.id} className="hover:shadow-xl transition-all duration-300 border-soft-lilac/20 bg-white group hover:-translate-y-1 flex flex-col">
                   <CardHeader>
                     <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center mb-4 text-midnight-navy group-hover:bg-electric-blue/10 group-hover:text-electric-blue transition-colors">
                       <Zap className="h-6 w-6" />
