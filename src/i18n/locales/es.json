@@ -105,8 +105,13 @@
             "requestBlueprint": "Solicitar Plan Personalizado",
             "viewPricing": "Ver Precios"
         },
+        "forSale": {
+            "priceOnApplication": "Precio a consultar",
+            "enquire": "Consultar"
+        },
         "footer": {
             "tagline": "\"Diseña. Automatiza. Escala. Sincroniza tu visión con el futuro.\"",
+            "contactUs": "Contáctanos",
             "quickLinks": "Enlaces Rápidos",
             "stayUpdated": "Mantente Actualizado",
             "notifyUpdate": "Recibe notificaciones sobre nuevos módulos de IA y actualizaciones de la plataforma.",

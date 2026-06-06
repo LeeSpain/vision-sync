@@ -2,133 +2,77 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema, generateServiceSchema } from '@/utils/structuredData';
-import { Bot, Brain, MessageSquare, Zap, Users, Target, Calculator, TrendingUp, Clock, DollarSign, Shield, Globe, BarChart3, Rocket, CheckCircle, ArrowRight, Play, Star } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Bot, Brain, MessageSquare, Zap, Users, Target, TrendingUp, Clock, Shield, Globe, BarChart3, Rocket, CheckCircle, ArrowRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useCurrency } from '@/contexts/CurrencyContext';
-
 
 const AiAgents = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { formatPrice } = useCurrency();
-  const [roiInputs, setRoiInputs] = useState({
-    employees: 5,
-    avgSalary: 50000,
-    hoursPerWeek: 40
-  });
 
-  const calculateROI = () => {
-    // Calculate efficiency gains, not replacement
-    const hoursPerEmployee = roiInputs.hoursPerWeek * 52;
-    const hoursSavedPerEmployee = hoursPerEmployee * 0.15; // 15% efficiency gain
-    const totalHoursSaved = hoursSavedPerEmployee * roiInputs.employees;
-    const hourlyRate = roiInputs.avgSalary / hoursPerEmployee;
-    const annualTimeSavings = totalHoursSaved * hourlyRate;
-    const aiAgentCost = 6000; // €500/month for AI assistance
-    const netBenefit = annualTimeSavings - aiAgentCost;
-    
-    return {
-      hoursSaved: Math.round(totalHoursSaved),
-      timeSavings: formatPrice(annualTimeSavings),
-      netBenefit: formatPrice(Math.max(0, netBenefit)),
-      efficiencyGain: "15-25%"
-    };
-  };
-
-  const roi = calculateROI();
-
-  const successStories = [
-    {
-      company: "Local Healthcare Clinic",
-      industry: "Healthcare",
-      improvement: "18% faster response times",
-      staffImpact: "Staff now focus on patient care",
-      quote: "Our AI assistant helps triage inquiries and schedule appointments, giving our team more time with patients."
-    },
-    {
-      company: "Regional Realty Group",
-      industry: "Real Estate", 
-      improvement: "23% increase in qualified leads",
-      staffImpact: "Agents close more deals",
-      quote: "AI helps qualify leads 24/7. Our agents spend time with serious buyers instead of cold calls."
-    },
-    {
-      company: "Small Business Services",
-      industry: "Business Services",
-      improvement: "30% faster onboarding", 
-      staffImpact: "Team handles complex cases",
-      quote: "AI guides customers through routine setup. Our team focuses on strategic consulting."
-    }
-  ];
-
-  const futureCapabilities = [
+  // Genuine, non-numeric value statements — how the AI agent actually works.
+  const howItWorks = [
     {
       icon: <Brain className="h-8 w-8" />,
-      title: "Predictive Analytics",
-      description: "AI that predicts customer needs before they ask",
-      timeline: "Available Now"
+      title: 'Trained on your business',
+      description: 'Your agent learns your services, opening hours, and common questions, so it answers like a knowledgeable member of your team.',
     },
     {
       icon: <Globe className="h-8 w-8" />,
-      title: "Multi-Modal Intelligence", 
-      description: "Voice, text, image, and video understanding",
-      timeline: "Q2 2024"
+      title: 'English & Spanish',
+      description: 'Every conversation is handled fluently in both languages, so no customer goes unanswered.',
     },
     {
-      icon: <Rocket className="h-8 w-8" />,
-      title: "Autonomous Operations",
-      description: "Self-managing business processes end-to-end",
-      timeline: "Q4 2024"
-    }
+      icon: <Clock className="h-8 w-8" />,
+      title: 'Available 24/7',
+      description: 'Enquiries are captured and answered around the clock, and you are notified instantly.',
+    },
+    {
+      icon: <Users className="h-8 w-8" />,
+      title: 'Works with your team',
+      description: 'The AI handles routine questions and hands more complex cases to a human whenever needed.',
+    },
   ];
 
   const agents = [
     {
-      name: "Customer Service Assistant",
-      description: "AI that supports your team with 24/7 customer inquiries",
+      name: 'Customer Service Assistant',
+      description: 'AI that supports your team with customer inquiries, day and night.',
       icon: <MessageSquare className="h-8 w-8" />,
-      benefit: "Handle routine inquiries automatically",
-      features: ["24/7 Initial Response", "Multi-Language Support", "Smart Routing to Staff", "Knowledge Base Integration"],
-      impact: "15-25% efficiency gain"
+      benefit: 'Handle routine inquiries automatically',
+      features: ['24/7 Initial Response', 'English & Spanish', 'Smart Routing to Staff', 'Knowledge Base Integration'],
     },
     {
-      name: "Sales Support Assistant", 
-      description: "AI that helps qualify leads and schedule appointments",
+      name: 'Sales Support Assistant',
+      description: 'AI that helps qualify leads and schedule appointments.',
       icon: <Target className="h-8 w-8" />,
-      benefit: "More time for your team to close deals",
-      features: ["Lead Qualification", "Automated Scheduling", "Follow-up Reminders", "CRM Integration"],
-      impact: "20-30% more qualified leads"
+      benefit: 'More time for your team to close deals',
+      features: ['Lead Qualification', 'Automated Scheduling', 'Follow-up Reminders', 'CRM Integration'],
     },
     {
-      name: "Operations Assistant",
-      description: "AI that streamlines workflows and reduces repetitive tasks", 
+      name: 'Operations Assistant',
+      description: 'AI that streamlines workflows and reduces repetitive tasks.',
       icon: <Zap className="h-8 w-8" />,
-      benefit: "Free your team for strategic work",
-      features: ["Process Automation", "Data Entry", "Status Updates", "Report Generation"],
-      impact: "10-20% time savings"
+      benefit: 'Free your team for strategic work',
+      features: ['Process Automation', 'Data Entry', 'Status Updates', 'Report Generation'],
     },
     {
-      name: "Business Intelligence Helper",
-      description: "AI that analyzes data and generates insights for your team",
+      name: 'Business Intelligence Helper',
+      description: 'AI that analyzes your data and surfaces insights for your team.',
       icon: <BarChart3 className="h-8 w-8" />,
-      benefit: "Make data-driven decisions faster",
-      features: ["Trend Analysis", "Custom Dashboards", "Automated Reports", "Predictive Insights"],
-      impact: "Better decision making"
-    }
+      benefit: 'Make data-driven decisions faster',
+      features: ['Trend Analysis', 'Custom Dashboards', 'Automated Reports', 'Plain-language Summaries'],
+    },
   ];
 
   return (
     <div className="min-h-screen">
       <SEOHead
         title="AI Agents & Chatbots | Intelligent Business Automation - Vision-Sync Forge"
-        description="Deploy AI agents for 24/7 customer service automation. Conversational AI, virtual assistants, intelligent automation. Achieve 15-25% efficiency gains today."
-        keywords="AI agents, AI chatbots, conversational AI, intelligent automation, business automation, AI customer service, virtual assistants, chatbot development, AI sales assistant, machine learning automation, enterprise AI, automated customer support"
+        description="Deploy AI agents for 24/7 customer service automation in English and Spanish. Conversational AI, virtual assistants, and intelligent automation for businesses of all sizes."
+        keywords="AI agents, AI chatbots, conversational AI, intelligent automation, business automation, AI customer service, virtual assistants, chatbot development, AI sales assistant, enterprise AI, automated customer support"
         canonical="https://www.vision-sync.co/ai-agents"
         ogImage="https://www.vision-sync.co/lovable-uploads/afb9cb1e-a617-48d7-b0bf-062beac34324.png"
         structuredData={[
@@ -146,7 +90,7 @@ const AiAgents = () => {
         ]}
       />
       <Header />
-      
+
       {/* Hero Section - Partnership Focus */}
       <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
         <div className="absolute top-20 left-10 w-96 h-96 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
@@ -182,161 +126,51 @@ const AiAgents = () => {
               {t('aiAgents.heroCtaSecondary')}
             </Button>
           </div>
+          {/* Genuine, non-numeric value points */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-emerald-green">15-25%</div>
-              <div className="text-sm text-cool-gray">Typical Efficiency Gains</div>
+              <div className="flex items-center justify-center gap-2 text-lg font-semibold text-emerald-green">
+                <Clock className="h-5 w-5" />
+                24/7 availability
+              </div>
+              <div className="text-sm text-cool-gray mt-1">Always on, even after hours</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-coral-orange">24/7</div>
-              <div className="text-sm text-cool-gray">AI Support Availability</div>
+              <div className="flex items-center justify-center gap-2 text-lg font-semibold text-emerald-green">
+                <Globe className="h-5 w-5" />
+                English &amp; Spanish
+              </div>
+              <div className="text-sm text-cool-gray mt-1">Bilingual by default</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-royal-purple">3-6 Months</div>
-              <div className="text-sm text-cool-gray">Typical ROI Timeline</div>
+              <div className="flex items-center justify-center gap-2 text-lg font-semibold text-emerald-green">
+                <Users className="h-5 w-5" />
+                Works with your team
+              </div>
+              <div className="text-sm text-cool-gray mt-1">Hands off to a human when needed</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ROI Calculator Section - Focus on Efficiency */}
+      {/* How It Works - genuine value statements (no numbers/claims) */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
-              Calculate Your <span className="text-emerald-green">Efficiency Gains</span>
-            </h2>
-            <p className="text-xl text-cool-gray">See how AI assistance can improve your team's productivity</p>
-          </div>
-          
-          <Card className="p-8 shadow-elegant">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-midnight-navy mb-6">Your Team Information</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-cool-gray mb-2">Number of Team Members</label>
-                    <Input 
-                      type="number" 
-                      value={roiInputs.employees}
-                      onChange={(e) => setRoiInputs({...roiInputs, employees: parseInt(e.target.value) || 0})}
-                      className="w-full"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-cool-gray mb-2">Average Annual Salary</label>
-                    <Input 
-                      type="number" 
-                      value={roiInputs.avgSalary}
-                      onChange={(e) => setRoiInputs({...roiInputs, avgSalary: parseInt(e.target.value) || 0})}
-                      className="w-full"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-cool-gray mb-2">Hours Worked Per Week</label>
-                    <Input 
-                      type="number" 
-                      value={roiInputs.hoursPerWeek}
-                      onChange={(e) => setRoiInputs({...roiInputs, hoursPerWeek: parseInt(e.target.value) || 0})}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-emerald-green/10 to-royal-purple/10 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold text-midnight-navy mb-6">Estimated Productivity Gains</h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Hours Saved/Year:</span>
-                    <span className="text-2xl font-bold text-emerald-green">{roi.hoursSaved}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Time Value:</span>
-                    <span className="text-xl font-semibold text-emerald-green">{roi.timeSavings}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Net Benefit:</span>
-                    <span className="text-xl font-semibold text-emerald-green">{roi.netBenefit}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-cool-gray">Efficiency Gain:</span>
-                    <span className="text-lg font-semibold text-coral-orange">{roi.efficiencyGain}</span>
-                  </div>
-                </div>
-                <div className="mt-6 p-4 bg-white rounded-lg border border-emerald-green/20">
-                  <p className="text-sm text-cool-gray">
-                    These estimates assume AI handles routine tasks, freeing your team to focus on high-value work.
-                  </p>
-                </div>
-                <Button 
-                  className="w-full mt-4 bg-emerald-green hover:bg-emerald-green/90"
-                  onClick={() => navigate('/contact')}
-                >
-                  <ArrowRight className="mr-2 h-4 w-4" />
-                  Discuss Your Needs
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* Success Stories Section - Realistic Results */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
-              Real Businesses, <span className="text-emerald-green">Real Results</span>
+              How your <span className="text-emerald-green">AI agent</span> works
             </h2>
-            <p className="text-xl text-cool-gray">See how AI assistance has helped businesses improve operations</p>
+            <p className="text-xl text-cool-gray">Trained on your business, available around the clock, always with a human in the loop.</p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {successStories.map((story, index) => (
-              <Card key={index} className="p-6 hover:shadow-elegant transition-all duration-300">
-                <div className="flex items-center justify-between mb-4">
-                  <Badge variant="secondary">{story.industry}</Badge>
-                  <CheckCircle className="h-6 w-6 text-emerald-green" />
-                </div>
-                <h3 className="font-semibold text-midnight-navy mb-2">{story.company}</h3>
-                <div className="space-y-2 mb-4">
-                  <p className="text-emerald-green font-semibold">{story.improvement}</p>
-                  <p className="text-sm text-cool-gray flex items-center">
-                    <Users className="h-4 w-4 mr-2" />
-                    {story.staffImpact}
-                  </p>
-                </div>
-                <blockquote className="text-cool-gray italic border-l-4 border-emerald-green pl-4">
-                  "{story.quote}"
-                </blockquote>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Future Capabilities Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-midnight-navy/5 to-royal-purple/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-heading font-bold text-midnight-navy mb-4">
-              Your Business in <span className="text-royal-purple">2025</span>
-            </h2>
-            <p className="text-xl text-cool-gray">Advanced capabilities coming to transform your operations</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {futureCapabilities.map((capability, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {howItWorks.map((item, index) => (
               <Card key={index} className="p-6 text-center hover:shadow-elegant transition-all duration-300">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white">
-                  {capability.icon}
+                  {item.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-midnight-navy mb-2">{capability.title}</h3>
-                <p className="text-cool-gray mb-4">{capability.description}</p>
-                <Badge className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
-                  {capability.timeline}
-                </Badge>
+                <h3 className="text-xl font-semibold text-midnight-navy mb-2">{item.title}</h3>
+                <p className="text-cool-gray">{item.description}</p>
               </Card>
             ))}
           </div>
@@ -361,14 +195,9 @@ const AiAgents = () => {
                     {agent.icon}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xl font-heading font-semibold text-midnight-navy">
-                        {agent.name}
-                      </h3>
-                      <Badge className="bg-emerald-green/10 text-emerald-green border-emerald-green/30">
-                        {agent.impact}
-                      </Badge>
-                    </div>
+                    <h3 className="text-xl font-heading font-semibold text-midnight-navy mb-2">
+                      {agent.name}
+                    </h3>
                     <p className="text-cool-gray mb-3">{agent.description}</p>
                     <div className="text-emerald-green font-semibold mb-4 flex items-center">
                       <Zap className="h-4 w-4 mr-2" />
@@ -382,7 +211,7 @@ const AiAgents = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button 
+                    <Button
                       className="mt-4 w-full bg-midnight-navy hover:bg-midnight-navy/90"
                       onClick={() => navigate('/contact')}
                     >
@@ -435,17 +264,17 @@ const AiAgents = () => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="bg-emerald-green hover:bg-emerald-green/90 px-8 py-4 text-lg"
               onClick={() => navigate('/contact')}
             >
               <MessageSquare className="mr-2 h-5 w-5" />
               Start a Conversation
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
+            <Button
+              size="lg"
+              variant="outline"
               className="border-white text-white hover:bg-white hover:text-midnight-navy px-8 py-4 text-lg"
               onClick={() => navigate('/templates')}
             >

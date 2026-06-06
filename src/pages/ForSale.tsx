@@ -10,12 +10,12 @@ import Footer from '@/components/Layout/Footer';
 import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema, generateProductSchema } from '@/utils/structuredData';
 import { DollarSign, ShoppingCart, Download, ArrowRight, CheckCircle, Shield, Headphones } from 'lucide-react';
-import { useCurrency } from '@/contexts/CurrencyContext';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 import { analytics } from '@/utils/analytics';
+import { useTranslation } from 'react-i18next';
 
 const ForSale = () => {
-  const { formatPrice } = useCurrency();
+  const { t } = useTranslation();
   const { forSale: budgetOptions } = useBudgetOptions();
   const [inquiryForm, setInquiryForm] = useState({
     name: '',
@@ -52,7 +52,6 @@ const ForSale = () => {
     {
       title: 'ICE-SOS Lite',
       description: 'Emergency contact and medical information system',
-      price: formatPrice(75000),
       stage: 'For Sale',
       users: '500+ Beta Users',
       rating: '4.8★',
@@ -68,7 +67,6 @@ const ForSale = () => {
     {
       title: 'Tether-Band',
       description: 'Secure device-to-device connectivity solution',
-      price: formatPrice(150000),
       stage: 'Beta License',
       users: 'Early Access',
       rating: 'In Development',
@@ -102,7 +100,6 @@ const ForSale = () => {
             generateProductSchema({
               name: platform.title,
               description: platform.description,
-              price: platform.price.replace(/[^0-9]/g, ''),
               currency: "EUR"
             })
           )
@@ -209,8 +206,12 @@ const ForSale = () => {
                   <div className="flex items-start justify-between mb-2">
                     <Badge className="bg-coral-orange text-white">{platform.stage}</Badge>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-midnight-navy">{platform.price}</div>
-                      <div className="text-sm text-cool-gray">One-time license</div>
+                      <div className="text-2xl font-bold text-midnight-navy">
+                        <abbr title={t('forSale.priceOnApplication')} className="no-underline">POA</abbr>
+                        {' · '}
+                        {t('forSale.enquire')}
+                      </div>
+                      <div className="text-sm text-cool-gray">{t('forSale.priceOnApplication')}</div>
                     </div>
                   </div>
                   <CardTitle className="font-heading text-xl">{platform.title}</CardTitle>
@@ -234,9 +235,11 @@ const ForSale = () => {
                     </div>
                   </div>
                   <div className="flex space-x-3 pt-4">
-                    <Button variant="buy" className="flex-1">
-                      <DollarSign className="h-4 w-4" />
-                      Purchase Now
+                    <Button asChild variant="buy" className="flex-1">
+                      <a href="#purchase-inquiry">
+                        <DollarSign className="h-4 w-4" />
+                        {t('forSale.enquire')}
+                      </a>
                     </Button>
                     <Button variant="outline" className="flex-1">
                       <Download className="h-4 w-4" />
@@ -251,7 +254,7 @@ const ForSale = () => {
       </section>
 
       {/* Purchase Inquiry Form */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="purchase-inquiry" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-heading font-bold text-midnight-navy mb-4">

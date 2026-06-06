@@ -50,7 +50,7 @@ export function SettingsManager({ userId, userEmail, onProfileUpdate }: Settings
   const [siteSettings, setSiteSettings] = useState<SiteSettings>({
     site_title: 'Vision-Sync',
     site_tagline: 'Build. Showcase. Sell. Invest. Sync your vision with the future.',
-    contact_email: 'contact@vision-sync.com'
+    contact_email: ''
   });
   
   // Security state

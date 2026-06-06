@@ -15,7 +15,7 @@ export const generateOrganizationSchema = () => ({
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "Customer Service",
-    "email": "contact@vision-sync-forge.com"
+    "url": "https://www.vision-sync.co/contact"
   }
 });
 

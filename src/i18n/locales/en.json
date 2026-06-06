@@ -105,8 +105,13 @@
             "requestBlueprint": "Request Custom Blueprint",
             "viewPricing": "View Pricing"
         },
+        "forSale": {
+            "priceOnApplication": "Price on application",
+            "enquire": "Enquire"
+        },
         "footer": {
             "tagline": "\"Design. Automate. Scale. Sync your vision with the future.\"",
+            "contactUs": "Contact us",
             "quickLinks": "Quick Links",
             "stayUpdated": "Stay Updated",
             "notifyUpdate": "Get notified about new AI modules and platform updates.",
