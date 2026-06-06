@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
 import CustomQuoteModal from '@/components/CustomQuoteModal';
 import { useTranslation } from 'react-i18next';
-import { INDUSTRIES } from '@/data/industries';
+import { usePricing } from '@/hooks/usePricing';
 import { Eyebrow, GradientText, CTAGroup, SectionHeading, FeatureCard, DarkBand, SectionDivider } from '@/components/ui-system';
 import { HeroChatCard } from '@/components/home/HeroChatCard';
 
@@ -19,6 +19,9 @@ export default function Index() {
   const [modules, setModules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
+  // Industry cards source: published DB pricing, with automatic static fallback
+  // (seeded with the static list, so the grid renders immediately — no empty flash).
+  const { industries } = usePricing();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +53,7 @@ export default function Index() {
 
   const hero = getSection('hero-area', 'Premium AI Automation For Your Business', 'Vision-Sync is a modular AI platform providing complete control over your business infrastructure. From intelligent sales systems to automated CRM and communications, we build systems that scale.');
   const overview = getSection('platform-overview', 'Intelligence, Automation, and Complete Control', 'Vision-Sync goes beyond generic tools. We help businesses design and deploy tailored AI-powered systems. Our modular architecture means you only use what you need, with the power to scale endlessly.');
-  const finalCta = getSection('final-cta', 'Ready to Transform Your Business Operations?', 'Join enterprise leaders leveraging Vision-Sync to automate workflows, scale AI agents, and dominate their industries.');
+  const finalCta = getSection('final-cta', t('index.finalCtaTitle'), t('index.finalCtaContent'));
 
   return (
     <div className="min-h-screen">
@@ -189,7 +192,7 @@ export default function Index() {
             subtitle="Pick your industry and we'll show you exactly what Vision-Sync can do for you."
           />
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-stretch">
-            {INDUSTRIES.map((industry) => (
+            {industries.map((industry) => (
               <FeatureCard
                 key={industry.slug}
                 href={`/solutions/${industry.slug}`}

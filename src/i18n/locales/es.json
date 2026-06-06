@@ -103,7 +103,9 @@
             "exploreModule": "Explorar Módulo",
             "viewCatalog": "Ver Catálogo Completo",
             "requestBlueprint": "Solicitar Plan Personalizado",
-            "viewPricing": "Ver Precios"
+            "viewPricing": "Ver Precios",
+            "finalCtaTitle": "¿Listo para transformar las operaciones de tu negocio?",
+            "finalCtaContent": "¿Listo para poner la IA a trabajar en tu negocio? Construyamos los sistemas que se adaptan a tu forma de operar."
         },
         "forSale": {
             "priceOnApplication": "Precio a consultar",

@@ -103,7 +103,9 @@
             "exploreModule": "Explore Module",
             "viewCatalog": "View Entire Catalog",
             "requestBlueprint": "Request Custom Blueprint",
-            "viewPricing": "View Pricing"
+            "viewPricing": "View Pricing",
+            "finalCtaTitle": "Ready to Transform Your Business Operations?",
+            "finalCtaContent": "Ready to put AI to work in your business? Let's build the systems that fit how you operate."
         },
         "forSale": {
             "priceOnApplication": "Price on application",
