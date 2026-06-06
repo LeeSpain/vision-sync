@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "gen:pricing-knowledge": "tsx scripts/generate-pricing-knowledge.mjs"
+    "gen:pricing-knowledge": "npx tsx scripts/generate-pricing-knowledge.mjs",
+    "gen:pricing-db-seed": "npx tsx scripts/generate-pricing-db-seed.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
