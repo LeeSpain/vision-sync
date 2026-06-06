@@ -20,6 +20,7 @@ import AuthPage from "./pages/AuthPage";
 import { AdminRoute } from "./components/AdminRoute";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import UiSystemPreview from "./pages/UiSystemPreview";
 
 import { SalesDashboardLayout } from "./components/sales-dashboard/layout/SalesDashboardLayout";
 import DashboardOverview from "./pages/SalesDashboard/DashboardOverview";
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/modules" element={<Modules />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/ui-system" element={<UiSystemPreview />} />
 
             {/* CRITICAL: Static admin and system pages MUST come before dynamic routes */}
             <Route path="/admin" element={

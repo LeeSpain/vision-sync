@@ -56,6 +56,19 @@
         },
         "index": {
             "enterpriseInfrastructure": "Infraestructura Empresarial",
+            "seeHowItWorks": "Ver cómo funciona",
+            "heroTrust": "Hecho para negocios de la Costa Blanca — respondiendo en inglés y español, de día y de noche.",
+            "heroChat": {
+                "agentName": "Vision-Sync IA",
+                "status": "en línea · responde al instante",
+                "msg1": "¡Hola! ¿Tenéis citas disponibles esta semana?",
+                "msg2": "Sí — tengo el martes 10:00, miércoles 14:30 o jueves 16:00. ¿Cuál te viene mejor?",
+                "msg3": "El miércoles a las 14:30, por favor.",
+                "msg4": "¡Hecho! Tu cita está confirmada para el miércoles a las 14:30. Te enviaré un recordatorio el día antes.",
+                "booked": "Cita reservada",
+                "statValue": "24/7",
+                "statLabel": "disponibilidad de IA"
+            },
             "explorePlatform": "Explorar Plataforma",
             "requestDemo": "Solicitar Demostración",
             "platformOverview": "Resumen de la Plataforma",

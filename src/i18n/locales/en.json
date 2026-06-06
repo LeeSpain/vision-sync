@@ -56,6 +56,19 @@
         },
         "index": {
             "enterpriseInfrastructure": "Enterprise Infrastructure",
+            "seeHowItWorks": "See how it works",
+            "heroTrust": "Built for Costa Blanca businesses — answering in English and Spanish, day and night.",
+            "heroChat": {
+                "agentName": "Vision-Sync AI",
+                "status": "online · replying instantly",
+                "msg1": "Hi! Do you have any appointments this week?",
+                "msg2": "Yes — I have Tue 10:00, Wed 14:30 or Thu 16:00. Which suits you best?",
+                "msg3": "Wednesday at 2:30 please.",
+                "msg4": "Done! You're confirmed for Wed 14:30. I'll text you a reminder the day before.",
+                "booked": "Appointment booked",
+                "statValue": "24/7",
+                "statLabel": "AI availability"
+            },
             "explorePlatform": "Explore Platform",
             "requestDemo": "Request a Demo",
             "platformOverview": "Platform Overview",
