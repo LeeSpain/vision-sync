@@ -5,25 +5,29 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowLeft, ArrowRight, Mic, Users, Target } from 'lucide-react';
-import { INDUSTRIES } from '@/data/industries';
+import { usePricing } from '@/hooks/usePricing';
 
 export default function Solutions() {
   const { industrySlug } = useParams<{ industrySlug: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  // Pricing source of truth: published DB pricing, with automatic static fallback
+  // (seeded with the static list, so the page renders immediately — no empty flash).
+  const { industries } = usePricing();
 
   useEffect(() => {
     if (!industrySlug) {
       navigate('/#industries', { replace: true });
       return;
     }
-    const found = INDUSTRIES.find(i => i.slug === industrySlug);
+    const found = industries.find(i => i.slug === industrySlug);
     if (!found) {
       navigate('/#industries', { replace: true });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [industrySlug, navigate]);
 
-  const industry = INDUSTRIES.find(i => i.slug === industrySlug);
+  const industry = industries.find(i => i.slug === industrySlug);
 
   if (!industry) return null;
 

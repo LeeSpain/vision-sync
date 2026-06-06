@@ -3,7 +3,7 @@ import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Mic, CheckCircle2, Lightbulb } from 'lucide-react';
-import { INDUSTRIES } from '@/data/industries';
+import { usePricing } from '@/hooks/usePricing';
 import { ds, ACCENT_COLORS } from '@/styles/designSystem';
 import type { AccentColor } from '@/styles/designSystem';
 
@@ -20,6 +20,9 @@ const PAIN_SOLVED: Record<string, string> = {
 };
 
 export default function SolutionsIndex() {
+  // Pricing source of truth: published DB pricing, with automatic static fallback
+  // (seeded with the static list, so the grid renders immediately — no empty flash).
+  const { industries } = usePricing();
   return (
     <div className={ds.pageWrapper}>
       <Header />
@@ -42,7 +45,7 @@ export default function SolutionsIndex() {
 
           {/* Industry blueprint cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {INDUSTRIES.map((industry) => {
+            {industries.map((industry) => {
               const color = (industry.color ?? 'blue') as AccentColor;
               const accent = ACCENT_COLORS[color] ?? ACCENT_COLORS.blue;
               const painSolved = PAIN_SOLVED[industry.slug] ?? industry.painStatement;

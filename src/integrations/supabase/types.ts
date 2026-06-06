@@ -14,6 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      pricing_industries: {
+        Row: {
+          id: string
+          slug: string
+          name: string
+          core_service_line: string | null
+          color: string | null
+          voice_native: boolean
+          sort_order: number
+          is_published: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          name: string
+          core_service_line?: string | null
+          color?: string | null
+          voice_native?: boolean
+          sort_order?: number
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          name?: string
+          core_service_line?: string | null
+          color?: string | null
+          voice_native?: boolean
+          sort_order?: number
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pricing_packages: {
+        Row: {
+          id: string
+          industry_id: string
+          tier: string
+          name: string
+          ex_vat_price: number
+          inc_vat_price: number
+          voice_minutes: number
+          tagline: string | null
+          includes: Json
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          industry_id: string
+          tier: string
+          name: string
+          ex_vat_price: number
+          inc_vat_price: number
+          voice_minutes?: number
+          tagline?: string | null
+          includes?: Json
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          industry_id?: string
+          tier?: string
+          name?: string
+          ex_vat_price?: number
+          inc_vat_price?: number
+          voice_minutes?: number
+          tagline?: string | null
+          includes?: Json
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_packages_industry_id_fkey"
+            columns: ["industry_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_industries"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       plans: {
         Row: {
           id: string

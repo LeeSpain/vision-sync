@@ -9,7 +9,7 @@ import {
   Mail, MessageSquare, RefreshCw, BarChart3, Phone,
   Calendar, UserCheck, Star, MessageCircle, Bot
 } from 'lucide-react';
-import { INDUSTRIES } from '@/data/industries';
+import { usePricing } from '@/hooks/usePricing';
 import { Tier } from '@/types/industries';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -108,12 +108,16 @@ export default function Pricing() {
 
   const [searchParams] = useSearchParams();
 
+  // Pricing source of truth: published DB pricing, with automatic static fallback.
+  // Seeded with the static list, so the wizard renders immediately (no empty flash).
+  const { industries } = usePricing();
+
   // Pre-select industry + tier from query params (e.g. /pricing?industry=estate-agents&tier=growth)
   // so "Get this package" links from Solutions pages land on the package step ready to confirm.
   useEffect(() => {
     const ind = searchParams.get('industry');
     const tier = searchParams.get('tier');
-    if (ind && INDUSTRIES.some(i => i.slug === ind)) {
+    if (ind && industries.some(i => i.slug === ind)) {
       setSelectedIndustry(ind);
       if (tier === 'base' || tier === 'growth' || tier === 'everything') {
         setSelectedTier(tier);
@@ -123,7 +127,7 @@ export default function Pricing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const industry = INDUSTRIES.find(i => i.slug === selectedIndustry);
+  const industry = industries.find(i => i.slug === selectedIndustry);
   const selectedPackage = industry?.packages.find(p => p.tier === selectedTier);
 
   const toggleSkill = (id: string) => {
@@ -253,7 +257,7 @@ export default function Pricing() {
               <p className="text-cool-gray text-center mb-8">{t('pricing.step1Subtitle')}</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {INDUSTRIES.map(ind => {
+                {industries.map(ind => {
                   const isSelected = selectedIndustry === ind.slug;
                   return (
                     <button

@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CheckCircle, Loader2, ArrowLeft, Package, Plus, Mic } from 'lucide-react';
-import { INDUSTRIES } from '@/data/industries';
+import { usePricing } from '@/hooks/usePricing';
 import { Industry, QuoteModule } from '@/types/industries';
 import { useToast } from '@/hooks/use-toast';
 
@@ -58,20 +58,24 @@ export default function ModulePicker() {
     clientNotes: ''
   });
   const [formErrors, setFormErrors] = useState<Partial<QuoteFormData>>({});
+  // Pricing source of truth: published DB pricing, with automatic static fallback
+  // (seeded with the static list, so there is no empty flash).
+  const { industries } = usePricing();
 
   useEffect(() => {
     if (!industrySlug) {
       navigate('/');
       return;
     }
-    const found = INDUSTRIES.find(i => i.slug === industrySlug);
+    const found = industries.find(i => i.slug === industrySlug);
     if (!found) {
       navigate('/');
       return;
     }
     setIndustry(found);
     fetchModules(industrySlug);
-  }, [industrySlug, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [industrySlug, navigate, industries]);
 
   const fetchModules = async (slug: string) => {
     setLoadingModules(true);
