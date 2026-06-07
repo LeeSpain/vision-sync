@@ -277,6 +277,13 @@
         "modules": {
             "title": "Pick Your AI Superpowers",
             "subtitle": "Add new skills to your business just like installing apps on your phone. Browse our library of ready-to-use AI helpers.",
+            "heroEyebrow": "Add-On Modules",
+            "heroTitle": "Pick Your AI",
+            "heroHighlight": "Superpowers",
+            "heroCta": "Build Your AI Stack",
+            "getQuote": "Get Your Quote",
+            "bottomCtaText": "Ready to build your perfect AI stack?",
+            "bottomCtaButton": "Get Your Custom Quote",
             "coreFeature": "Core Feature",
             "fallbackDesc": "Add this specific skill to your AI assistant to handle this task completely automatically.",
             "addonPrice": "Add-on Price",

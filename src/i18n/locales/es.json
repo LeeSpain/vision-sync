@@ -277,6 +277,13 @@
         "modules": {
             "title": "Elige Tus Superpoderes de IA",
             "subtitle": "Agrega nuevas habilidades a tu negocio como si instalaras aplicaciones en tu teléfono. Explora nuestra biblioteca de ayudantes de IA listos para usar.",
+            "heroEyebrow": "Módulos Adicionales",
+            "heroTitle": "Elige Tus",
+            "heroHighlight": "Superpoderes de IA",
+            "heroCta": "Crea Tu Stack de IA",
+            "getQuote": "Obtén Tu Presupuesto",
+            "bottomCtaText": "¿Listo para crear tu stack de IA perfecto?",
+            "bottomCtaButton": "Obtén Tu Presupuesto Personalizado",
             "coreFeature": "Característica Principal",
             "fallbackDesc": "Agregue esta habilidad específica a su asistente de IA para manejar esta tarea de forma completamente automática.",
             "addonPrice": "Precio Adicional",
