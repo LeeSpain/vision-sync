@@ -227,7 +227,18 @@
             "guarantee1": "Live in 48 hours — no complex setup",
             "guarantee2": "English + Spanish out of the box",
             "guarantee3": "No per-seat pricing — flat monthly fee",
-            "guarantee4": "Cancel anytime — no lock-in contracts"
+            "guarantee4": "Cancel anytime — no lock-in contracts",
+            "infra": {
+                "coreName": "Vision-Sync AI",
+                "coreStatus": "Orchestrating in real time",
+                "core": "AI Core",
+                "calls": "Calls",
+                "chat": "Chat",
+                "whatsapp": "WhatsApp",
+                "crm": "CRM",
+                "bookings": "Bookings",
+                "followUp": "Follow-up"
+            }
         },
         "aiAgents": {
             "heroEyebrow": "Empowering Businesses to Achieve Excellence",

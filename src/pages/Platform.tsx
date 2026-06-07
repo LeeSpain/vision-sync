@@ -3,6 +3,7 @@ import Footer from '@/components/Layout/Footer';
 import { Cpu, Database, Zap, Shield, Layers, BadgeCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Hero, FeatureCard, DarkBand, CTAGroup, SectionDivider } from '@/components/ui-system';
+import { HeroInfraCard } from '@/components/platform/HeroInfraCard';
 
 const PLATFORM_FEATURES = [
   { icon: Cpu, titleKey: 'platform.feature1Title' as const, descKey: 'platform.feature1Desc' as const },
@@ -33,6 +34,7 @@ export default function Platform() {
         subtitle={t('platform.subtitle')}
         primaryCta={{ label: t('platform.exploreSolutions'), href: '/pricing' }}
         secondaryCta={{ label: t('platform.requestDemo'), href: '/contact' }}
+        media={<HeroInfraCard />}
       />
 
       <main>

@@ -227,7 +227,18 @@
             "guarantee1": "Activo en 48 horas — sin configuración compleja",
             "guarantee2": "Inglés + Español desde el primer momento",
             "guarantee3": "Sin precios por usuario — tarifa mensual fija",
-            "guarantee4": "Cancela cuando quieras — sin contratos de permanencia"
+            "guarantee4": "Cancela cuando quieras — sin contratos de permanencia",
+            "infra": {
+                "coreName": "Vision-Sync IA",
+                "coreStatus": "Orquestando en tiempo real",
+                "core": "Núcleo IA",
+                "calls": "Llamadas",
+                "chat": "Chat",
+                "whatsapp": "WhatsApp",
+                "crm": "CRM",
+                "bookings": "Reservas",
+                "followUp": "Seguimiento"
+            }
         },
         "aiAgents": {
             "heroEyebrow": "Potenciando Negocios para Alcanzar la Excelencia",
