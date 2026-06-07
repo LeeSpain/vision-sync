@@ -175,6 +175,7 @@
             "successRef": "Tu referencia:",
             "successBody": "Revisaremos tus requisitos y enviaremos una propuesta personalizada a {{email}} en 24 horas.",
             "backHome": "Volver al Inicio",
+            "viewYourQuote": "Ver tu presupuesto",
             "fallback": {
                 "starterName": "Platform Starter",
                 "starterDesc": "Orquestación esencial para equipos pequeños.",
@@ -393,6 +394,7 @@
             "industry": "Sector",
             "basePackage": "Paquete Base",
             "alwaysIncluded": "Siempre incluido",
+            "whatsIncluded": "Qué incluye",
             "exIva": "Sin IVA",
             "iva21": "IVA 21%",
             "monthlyTotal": "Total Mensual",

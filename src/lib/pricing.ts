@@ -14,6 +14,10 @@ import type { Industry, Package, Tier } from '@/types/industries';
 // static entry by slug (with safe defaults for any DB-only industry).
 // ─────────────────────────────────────────────────────────────────────────────
 
+// INTERIM: flat add-on price — to be made admin-editable via DB.
+// The single source for every selected wizard add-on's monthly ex-VAT price.
+export const ADDON_MONTHLY_PRICE_EX_VAT = 150;
+
 export type PricingSource = 'db' | 'fallback';
 
 export interface PricingResult {

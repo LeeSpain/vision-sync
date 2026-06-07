@@ -175,6 +175,7 @@
             "successRef": "Your reference:",
             "successBody": "We'll review your requirements and send a personalised proposal to {{email}} within 24 hours.",
             "backHome": "Back to Homepage",
+            "viewYourQuote": "View your quote",
             "fallback": {
                 "starterName": "Platform Starter",
                 "starterDesc": "Essential orchestration for small teams.",
@@ -393,6 +394,7 @@
             "industry": "Industry",
             "basePackage": "Base Package",
             "alwaysIncluded": "Always included",
+            "whatsIncluded": "What's included",
             "exIva": "Ex IVA",
             "iva21": "IVA 21%",
             "monthlyTotal": "Monthly Total",
