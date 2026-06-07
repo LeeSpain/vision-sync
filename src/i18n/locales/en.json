@@ -406,6 +406,12 @@
             "toastChangeSentTitle": "Request sent",
             "toastChangeSentDesc": "We've received your change request. Our team will be in touch shortly."
         },
+        "notFound": {
+            "title": "Page not found",
+            "subtitle": "The page you're looking for doesn't exist or may have moved. Let's get you back on track.",
+            "goHome": "Back to homepage",
+            "contact": "Contact us"
+        },
         "salesDashboard": {
             "sidebar": {
                 "visionSales": "Vision Sales",

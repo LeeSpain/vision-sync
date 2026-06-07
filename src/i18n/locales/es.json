@@ -406,6 +406,12 @@
             "toastChangeSentTitle": "Solicitud enviada",
             "toastChangeSentDesc": "Hemos recibido tu solicitud de cambio. Nuestro equipo se pondrá en contacto pronto."
         },
+        "notFound": {
+            "title": "Página no encontrada",
+            "subtitle": "La página que buscas no existe o puede haber sido movida. Te ayudamos a volver al camino.",
+            "goHome": "Volver al inicio",
+            "contact": "Contáctanos"
+        },
         "salesDashboard": {
             "sidebar": {
                 "visionSales": "Ventas Vision",
