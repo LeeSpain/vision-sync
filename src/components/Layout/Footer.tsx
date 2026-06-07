@@ -37,7 +37,7 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
-                <a href="mailto:contact@vision-sync.com"><Mail className="h-5 w-5" /></a>
+                <Link to="/contact" aria-label={t('footer.contactUs')}><Mail className="h-5 w-5" /></Link>
               </Button>
               <Button variant="ghost" size="icon" className="text-slate-white/60 hover:text-slate-white" asChild>
                 <a href="https://github.com/LeeSpain" target="_blank" rel="noreferrer"><Github className="h-5 w-5" /></a>

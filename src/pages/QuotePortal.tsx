@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle, Loader2, Home, Calendar, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
+import { DarkBand } from '@/components/ui-system';
 
 interface SelectedModule {
   id: string;
@@ -62,6 +64,7 @@ const formatDate = (dateString: string | null): string => {
 export default function QuotePortal() {
   const { quoteReference } = useParams<{ quoteReference: string }>();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [quote, setQuote] = useState<QuoteRow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -118,10 +121,10 @@ export default function QuotePortal() {
       .eq('id', quote.id);
 
     if (error) {
-      toast({ title: 'Error', description: 'Failed to update quote status.', variant: 'destructive' });
+      toast({ title: t('quotePortal.toastErrorTitle'), description: t('quotePortal.toastAcceptFail'), variant: 'destructive' });
     } else {
       setAccepted(true);
-      toast({ title: 'Quote accepted!', description: 'Our team will be in touch very shortly.' });
+      toast({ title: t('quotePortal.toastAcceptedTitle'), description: t('quotePortal.toastAcceptedDesc') });
     }
     setAccepting(false);
   };
@@ -137,8 +140,8 @@ export default function QuotePortal() {
     setShowRequestChange(false);
     setChangeMessage('');
     toast({
-      title: 'Request sent',
-      description: 'We\'ve received your change request. Our team will be in touch shortly.'
+      title: t('quotePortal.toastChangeSentTitle'),
+      description: t('quotePortal.toastChangeSentDesc')
     });
   };
 
@@ -147,7 +150,7 @@ export default function QuotePortal() {
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center">
           <Loader2 className="h-10 w-10 animate-spin text-electric-blue mx-auto mb-4" />
-          <p className="text-cool-gray">Loading your quote...</p>
+          <p className="text-cool-gray">{t('quotePortal.loading')}</p>
         </div>
       </div>
     );
@@ -159,16 +162,16 @@ export default function QuotePortal() {
         <Header />
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center max-w-md mx-auto px-4">
-            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-soft-lilac/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Home className="h-10 w-10 text-cool-gray" />
             </div>
-            <h1 className="text-2xl font-bold text-midnight-navy mb-3">Quote not found</h1>
+            <h1 className="text-2xl font-bold text-midnight-navy mb-3">{t('quotePortal.notFoundTitle')}</h1>
             <p className="text-cool-gray mb-8">
-              We couldn't find a quote with that reference. Please check the link or contact our team.
+              {t('quotePortal.notFoundDesc')}
             </p>
             <Link to="/">
               <Button className="bg-midnight-navy hover:bg-midnight-navy/90 text-white">
-                Go to Homepage
+                {t('quotePortal.goHome')}
               </Button>
             </Link>
           </div>
@@ -187,58 +190,58 @@ export default function QuotePortal() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
 
           {/* Quote Header */}
-          <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A8A] rounded-t-2xl p-10 text-center">
+          <DarkBand as="div" className="rounded-t-2xl p-10 text-center">
             <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-black text-2xl">V</span>
             </div>
-            <h1 className="text-white text-3xl font-bold mb-2">Your Personalised Quote</h1>
-            <p className="text-white/70 text-sm">Vision-Sync Forge | AI Agents & Automation</p>
+            <h1 className="text-white text-3xl font-bold mb-2">{t('quotePortal.heroTitle')}</h1>
+            <p className="text-white/70 text-sm">{t('quotePortal.heroSubtitle')}</p>
             <div className="mt-6 inline-block bg-white/10 border border-white/20 rounded-lg px-6 py-3">
-              <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Quote Reference</p>
+              <p className="text-white/60 text-xs uppercase tracking-wider mb-1">{t('quotePortal.quoteReference')}</p>
               <p className="text-white font-mono font-bold text-xl tracking-widest">{quote.quote_reference}</p>
             </div>
-          </div>
+          </DarkBand>
 
           {/* Quote Body */}
           <div className="bg-white rounded-b-2xl shadow-lg p-8">
 
             {/* Client & Date */}
-            <div className="grid grid-cols-2 gap-6 mb-8 pb-8 border-b border-slate-100">
+            <div className="grid grid-cols-2 gap-6 mb-8 pb-8 border-b border-soft-lilac/20">
               <div>
-                <p className="text-xs text-cool-gray uppercase tracking-wider mb-1">Prepared for</p>
+                <p className="text-xs text-cool-gray uppercase tracking-wider mb-1">{t('quotePortal.preparedFor')}</p>
                 <p className="font-bold text-midnight-navy text-lg">{quote.client_first_name} {quote.client_last_name}</p>
                 <p className="text-cool-gray">{quote.business_name}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-cool-gray uppercase tracking-wider mb-1">Quote Date</p>
+                <p className="text-xs text-cool-gray uppercase tracking-wider mb-1">{t('quotePortal.quoteDate')}</p>
                 <p className="font-semibold text-midnight-navy">{formatDate(quote.created_at)}</p>
-                <p className="text-xs text-cool-gray mt-1">Industry: {quote.industry_name}</p>
+                <p className="text-xs text-cool-gray mt-1">{t('quotePortal.industry')}: {quote.industry_name}</p>
               </div>
             </div>
 
             {/* Base Package */}
             <div className="mb-6">
               <h2 className="text-sm font-bold text-midnight-navy uppercase tracking-wider mb-4">
-                Base Package
+                {t('quotePortal.basePackage')}
               </h2>
-              <div className="bg-slate-50 rounded-xl border border-slate-200 p-5">
+              <div className="bg-slate-50 rounded-xl border border-soft-lilac/30 p-5">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold text-midnight-navy">{quote.base_package_name}</p>
-                    <p className="text-sm text-cool-gray mt-1">Always included</p>
+                    <p className="text-sm text-cool-gray mt-1">{t('quotePortal.alwaysIncluded')}</p>
                   </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-slate-200 grid grid-cols-3 gap-4 text-center">
+                <div className="mt-4 pt-4 border-t border-soft-lilac/30 grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-xs text-cool-gray uppercase tracking-wide">Ex IVA</p>
+                    <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.exIva')}</p>
                     <p className="font-semibold text-midnight-navy">{formatCurrency(quote.base_ex_vat)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-cool-gray uppercase tracking-wide">IVA 21%</p>
+                    <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.iva21')}</p>
                     <p className="font-semibold text-cool-gray">{formatCurrency(quote.base_iva)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-cool-gray uppercase tracking-wide">Monthly Total</p>
+                    <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.monthlyTotal')}</p>
                     <p className="font-bold text-midnight-navy">{formatCurrency(quote.base_inc_vat)}</p>
                   </div>
                 </div>
@@ -249,26 +252,26 @@ export default function QuotePortal() {
             {modules.length > 0 && (
               <div className="mb-6">
                 <h2 className="text-sm font-bold text-midnight-navy uppercase tracking-wider mb-4">
-                  Add-on Modules
+                  {t('quotePortal.addonModules')}
                 </h2>
                 <div className="space-y-3">
                   {modules.map((mod, idx) => (
-                    <div key={idx} className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+                    <div key={idx} className="bg-slate-50 rounded-xl border border-soft-lilac/30 p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <CheckCircle className="h-4 w-4 text-electric-blue" />
                         <span className="font-semibold text-midnight-navy">{mod.name}</span>
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                          <p className="text-xs text-cool-gray uppercase tracking-wide">Ex IVA</p>
+                          <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.exIva')}</p>
                           <p className="font-semibold text-midnight-navy">{formatCurrency(mod.exVatPrice)}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-cool-gray uppercase tracking-wide">IVA 21%</p>
+                          <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.iva21')}</p>
                           <p className="font-semibold text-cool-gray">{formatCurrency(mod.ivaAmount)}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-cool-gray uppercase tracking-wide">Monthly Total</p>
+                          <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.monthlyTotal')}</p>
                           <p className="font-bold text-midnight-navy">{formatCurrency(mod.totalIncVat)}</p>
                         </div>
                       </div>
@@ -279,25 +282,25 @@ export default function QuotePortal() {
             )}
 
             {/* Total Summary */}
-            <div className="bg-[#0A1628] rounded-xl p-6 mb-8">
+            <DarkBand as="div" glow={false} className="rounded-xl p-6 mb-8">
               <div className="flex justify-between items-center text-white/60 text-sm mb-2">
-                <span>Subtotal ex IVA</span>
+                <span>{t('quotePortal.subtotalExIva')}</span>
                 <span>{formatCurrency(quote.total_ex_vat)}</span>
               </div>
               <div className="flex justify-between items-center text-white/60 text-sm mb-4">
-                <span>IVA 21%</span>
+                <span>{t('quotePortal.iva21')}</span>
                 <span>{formatCurrency(quote.total_iva)}</span>
               </div>
               <div className="flex justify-between items-center text-white border-t border-white/10 pt-4">
-                <span className="text-lg font-bold">Monthly Investment</span>
+                <span className="text-lg font-bold">{t('quotePortal.monthlyInvestment')}</span>
                 <span className="text-3xl font-black">{formatCurrency(quote.total_inc_vat)}</span>
               </div>
-            </div>
+            </DarkBand>
 
             {/* Client Notes */}
             {quote.client_notes && (
               <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                <p className="text-xs text-amber-700 uppercase tracking-wider mb-1 font-semibold">Your Notes</p>
+                <p className="text-xs text-amber-700 uppercase tracking-wider mb-1 font-semibold">{t('quotePortal.yourNotes')}</p>
                 <p className="text-slate-700 text-sm">{quote.client_notes}</p>
               </div>
             )}
@@ -311,19 +314,19 @@ export default function QuotePortal() {
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 text-base"
                 >
                   {accepting ? (
-                    <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> Processing...</>
+                    <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> {t('quotePortal.processing')}</>
                   ) : quote.status === 'accepted' ? (
-                    <><CheckCircle className="h-5 w-5 mr-2" /> Package Accepted</>
+                    <><CheckCircle className="h-5 w-5 mr-2" /> {t('quotePortal.packageAccepted')}</>
                   ) : (
-                    'I want this package →'
+                    t('quotePortal.wantPackage')
                   )}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => setShowRequestChange(true)}
-                  className="w-full border-slate-300 text-midnight-navy hover:bg-slate-50"
+                  className="w-full border-soft-lilac/40 text-midnight-navy hover:bg-slate-50"
                 >
-                  Request a change
+                  {t('quotePortal.requestChange')}
                 </Button>
               </div>
             )}
@@ -331,22 +334,22 @@ export default function QuotePortal() {
             {accepted && (
               <div className="text-center py-8">
                 <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-midnight-navy mb-2">Brilliant! Package accepted.</h3>
-                <p className="text-cool-gray">A member of our team will be in touch within 24 hours to get you started.</p>
+                <h3 className="text-xl font-bold text-midnight-navy mb-2">{t('quotePortal.acceptedTitle')}</h3>
+                <p className="text-cool-gray">{t('quotePortal.acceptedDesc')}</p>
               </div>
             )}
 
             {/* Footer */}
-            <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+            <div className="mt-8 pt-6 border-t border-soft-lilac/20 text-center">
               <div className="flex items-center justify-center gap-4 text-sm text-cool-gray">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Team response within 24 hours
+                  {t('quotePortal.responseTime')}
                 </span>
                 <span>|</span>
                 <span className="flex items-center gap-1">
                   <Phone className="h-4 w-4" />
-                  Alicante & Almeria
+                  {t('quotePortal.location')}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-3">
@@ -361,14 +364,14 @@ export default function QuotePortal() {
       <Dialog open={showRequestChange} onOpenChange={setShowRequestChange}>
         <DialogContent className="max-w-md bg-white">
           <DialogHeader>
-            <DialogTitle className="text-midnight-navy">Request a change</DialogTitle>
-            <p className="text-cool-gray text-sm">Tell us what you'd like to change and we'll get back to you.</p>
+            <DialogTitle className="text-midnight-navy">{t('quotePortal.requestChange')}</DialogTitle>
+            <p className="text-cool-gray text-sm">{t('quotePortal.changeModalDesc')}</p>
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <Textarea
               value={changeMessage}
               onChange={e => setChangeMessage(e.target.value)}
-              placeholder="e.g. I'd like to add the voice module, or I have a question about..."
+              placeholder={t('quotePortal.changePlaceholder')}
               rows={4}
             />
             <Button
@@ -377,7 +380,7 @@ export default function QuotePortal() {
               className="w-full bg-midnight-navy hover:bg-midnight-navy/90 text-white"
             >
               {sendingChange ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              Send request
+              {t('quotePortal.sendRequest')}
             </Button>
           </div>
         </DialogContent>

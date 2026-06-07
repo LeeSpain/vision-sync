@@ -9,11 +9,12 @@ import {
   Mail, MessageSquare, RefreshCw, BarChart3, Phone,
   Calendar, UserCheck, Star, MessageCircle, Bot
 } from 'lucide-react';
-import { INDUSTRIES } from '@/data/industries';
+import { usePricing } from '@/hooks/usePricing';
 import { Tier } from '@/types/industries';
 import { supabase } from '@/integrations/supabase/client';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Hero, PricingCard, SectionHeading, CTAGroup } from '@/components/ui-system';
 
 // ─── Add-on Skills (no prices shown to the user) ────────────────────────────
 
@@ -108,12 +109,16 @@ export default function Pricing() {
 
   const [searchParams] = useSearchParams();
 
+  // Pricing source of truth: published DB pricing, with automatic static fallback.
+  // Seeded with the static list, so the wizard renders immediately (no empty flash).
+  const { industries } = usePricing();
+
   // Pre-select industry + tier from query params (e.g. /pricing?industry=estate-agents&tier=growth)
   // so "Get this package" links from Solutions pages land on the package step ready to confirm.
   useEffect(() => {
     const ind = searchParams.get('industry');
     const tier = searchParams.get('tier');
-    if (ind && INDUSTRIES.some(i => i.slug === ind)) {
+    if (ind && industries.some(i => i.slug === ind)) {
       setSelectedIndustry(ind);
       if (tier === 'base' || tier === 'growth' || tier === 'everything') {
         setSelectedTier(tier);
@@ -123,7 +128,7 @@ export default function Pricing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const industry = INDUSTRIES.find(i => i.slug === selectedIndustry);
+  const industry = industries.find(i => i.slug === selectedIndustry);
   const selectedPackage = industry?.packages.find(p => p.tier === selectedTier);
 
   const toggleSkill = (id: string) => {
@@ -204,11 +209,7 @@ export default function Pricing() {
             <p className="text-cool-gray mb-10">
               {t('pricing.successBody', { email: form.email })}
             </p>
-            <Link to="/">
-              <Button variant="hero" size="lg">
-                {t('pricing.backHome')}
-              </Button>
-            </Link>
+            <CTAGroup className="justify-center" primary={{ label: t('pricing.backHome'), href: '/' }} />
           </div>
         </main>
         <Footer />
@@ -222,23 +223,13 @@ export default function Pricing() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white font-sans">
       <Header />
 
-      {/* Light hero (PAGE_STANDARD §1) */}
-      <section className="relative pt-28 pb-10 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div className="absolute top-16 left-10 w-96 h-96 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute top-32 right-10 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="max-w-5xl mx-auto relative z-10 text-center">
-          <div className="inline-flex items-center justify-center gap-2 bg-gradient-primary px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 shadow-glow mx-auto">
-            <Sparkles className="h-4 w-4" />
-            {t('pricing.heroEyebrow')}
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 tracking-tight">
-            <span className="bg-gradient-primary bg-clip-text text-transparent">{t('pricing.heroTitle')}</span>
-          </h1>
-          <p className="text-lg md:text-xl text-cool-gray max-w-3xl mx-auto leading-relaxed">
-            {t('pricing.heroSubtitle')}
-          </p>
-        </div>
-      </section>
+      {/* Light hero */}
+      <Hero
+        eyebrow={{ icon: Sparkles, label: t('pricing.heroEyebrow') }}
+        title={t('pricing.heroTitle')}
+        highlight={t('pricing.heroHighlight')}
+        subtitle={t('pricing.heroSubtitle')}
+      />
 
       <main className="flex-grow pb-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
@@ -249,11 +240,14 @@ export default function Pricing() {
           {/* ─── Step 1: Pick Industry ─────────────────────────────── */}
           {step === 1 && (
             <div>
-              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step1Title')}</h2>
-              <p className="text-cool-gray text-center mb-8">{t('pricing.step1Subtitle')}</p>
+              <SectionHeading
+                title={t('pricing.step1Title')}
+                subtitle={t('pricing.step1Subtitle')}
+                className="mb-8"
+              />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {INDUSTRIES.map(ind => {
+                {industries.map(ind => {
                   const isSelected = selectedIndustry === ind.slug;
                   return (
                     <button
@@ -302,62 +296,33 @@ export default function Pricing() {
           {/* ─── Step 2: Choose Package ────────────────────────────── */}
           {step === 2 && industry && (
             <div>
-              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step2Title')}</h2>
-              <p className="text-cool-gray text-center mb-10 max-w-2xl mx-auto">{t('pricing.step2Subtitle', { industry: industry.name })}</p>
+              <SectionHeading
+                title={t('pricing.step2Title')}
+                subtitle={t('pricing.step2Subtitle', { industry: industry.name })}
+                className="mb-10"
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
                 {industry.packages.map(pkg => {
                   const isPopular = pkg.tier === 'growth';
                   const isSelected = selectedTier === pkg.tier;
                   return (
-                    <button
+                    <PricingCard
                       key={pkg.tier}
+                      name={pkg.name}
+                      tagline={pkg.tagline}
+                      price={`€${pkg.exVatPrice}`}
+                      perMonthLabel={t('pricing.perMonth')}
+                      vatNote={t('pricing.vatNote', { inc: pkg.incVatPrice })}
+                      voiceNote={pkg.voiceMinutes > 0 ? t('pricing.voiceMinutes', { mins: pkg.voiceMinutes.toLocaleString() }) : undefined}
+                      includes={pkg.includes}
+                      popular={isPopular}
+                      popularLabel={t('pricing.mostPopular')}
+                      selected={isSelected}
                       onClick={() => setSelectedTier(pkg.tier)}
-                      className={`relative text-left rounded-3xl p-7 bg-white flex flex-col transition-all shadow-card ${
-                        isSelected
-                          ? 'border-2 border-royal-purple'
-                          : isPopular
-                            ? 'border-2 border-royal-purple/40'
-                            : 'border border-soft-lilac/20 hover:-translate-y-1'
-                      }`}
-                    >
-                      {isPopular && (
-                        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-white text-xs font-semibold px-3 py-1 rounded-full shadow-glow whitespace-nowrap">
-                          {t('pricing.mostPopular')}
-                        </span>
-                      )}
-
-                      <h3 className="text-xl font-heading font-bold text-midnight-navy mb-1">{pkg.name}</h3>
-                      <p className="text-sm text-cool-gray mb-5 leading-relaxed min-h-[40px]">{pkg.tagline}</p>
-
-                      <div className="mb-1">
-                        <span className="text-4xl font-bold text-midnight-navy">€{pkg.exVatPrice}</span>
-                        <span className="text-cool-gray text-base">{t('pricing.perMonth')}</span>
-                      </div>
-                      <p className="text-xs text-cool-gray mb-5">{t('pricing.vatNote', { inc: pkg.incVatPrice })}</p>
-
-                      {pkg.voiceMinutes > 0 && (
-                        <div className="flex items-center gap-2 text-electric-blue text-sm font-medium mb-5">
-                          <Mic className="h-4 w-4 shrink-0" />
-                          {t('pricing.voiceMinutes', { mins: pkg.voiceMinutes.toLocaleString() })}
-                        </div>
-                      )}
-
-                      <ul className="space-y-2.5 mb-6 flex-grow">
-                        {pkg.includes.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2.5">
-                            <CheckCircle className="h-4 w-4 text-emerald-green shrink-0 mt-0.5" />
-                            <span className="text-sm text-midnight-navy/80 leading-snug">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className={`mt-auto w-full rounded-xl py-2.5 text-center text-sm font-semibold transition-colors ${
-                        isSelected ? 'bg-gradient-primary text-white' : 'bg-soft-lilac/15 text-royal-purple'
-                      }`}>
-                        {isSelected ? t('pricing.selected') : t('pricing.selectPackage')}
-                      </div>
-                    </button>
+                      selectLabel={t('pricing.selectPackage')}
+                      selectedLabel={t('pricing.selected')}
+                    />
                   );
                 })}
               </div>
@@ -384,8 +349,11 @@ export default function Pricing() {
           {/* ─── Step 3: Add Extra Skills (optional) ───────────────── */}
           {step === 3 && (
             <div>
-              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step3Title')}</h2>
-              <p className="text-cool-gray text-center mb-8 max-w-2xl mx-auto">{t('pricing.step3Subtitle', { package: selectedPackage?.name })}</p>
+              <SectionHeading
+                title={t('pricing.step3Title')}
+                subtitle={t('pricing.step3Subtitle', { package: selectedPackage?.name })}
+                className="mb-8"
+              />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
                 {ADDON_SKILLS.map(skill => {
@@ -437,8 +405,11 @@ export default function Pricing() {
           {/* ─── Step 4: Your Details ──────────────────────────────── */}
           {step === 4 && industry && (
             <div>
-              <h2 className="text-2xl font-heading font-bold text-midnight-navy mb-2 text-center">{t('pricing.step4Title')}</h2>
-              <p className="text-cool-gray text-center mb-8">{t('pricing.step4Subtitle')}</p>
+              <SectionHeading
+                title={t('pricing.step4Title')}
+                subtitle={t('pricing.step4Subtitle')}
+                className="mb-8"
+              />
 
               <div className="max-w-2xl mx-auto">
                 {/* Summary strip */}

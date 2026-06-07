@@ -1,11 +1,9 @@
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Mic, CheckCircle2, Lightbulb } from 'lucide-react';
-import { INDUSTRIES } from '@/data/industries';
-import { ds, ACCENT_COLORS } from '@/styles/designSystem';
-import type { AccentColor } from '@/styles/designSystem';
+import { CheckCircle2, Lightbulb } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { usePricing } from '@/hooks/usePricing';
+import { Hero, FeatureCard, SectionHeading, CTAGroup, SectionDivider } from '@/components/ui-system';
 
 // Map industry slugs to the top pain point solved (one-line summary)
 const PAIN_SOLVED: Record<string, string> = {
@@ -20,107 +18,73 @@ const PAIN_SOLVED: Record<string, string> = {
 };
 
 export default function SolutionsIndex() {
+  const { t } = useTranslation();
+  // Pricing source of truth: published DB pricing, with automatic static fallback
+  // (seeded with the static list, so the grid renders immediately — no empty flash).
+  const { industries } = usePricing();
+
   return (
-    <div className={ds.pageWrapper}>
+    <div className="min-h-screen">
       <Header />
-      <main className={ds.main}>
-        <div className={ds.container}>
 
-          {/* Hero */}
-          <div className={ds.heroWrapper}>
-            <div className="inline-flex items-center justify-center p-3 bg-indigo-100 rounded-2xl mb-6">
-              <Lightbulb className="h-6 w-6 text-indigo-600" />
+      {/* Hero */}
+      <Hero
+        eyebrow={{ icon: Lightbulb, label: t('solutionsIndex.heroEyebrow') }}
+        title={t('solutionsIndex.heroTitle')}
+        highlight={t('solutionsIndex.heroHighlight')}
+        subtitle={t('solutionsIndex.heroSubtitle')}
+        primaryCta={{ label: t('solutionsIndex.heroCta'), href: '/pricing' }}
+      />
+
+      <main>
+        {/* Industry blueprint cards */}
+        <section className="py-24 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {industries.map((industry) => {
+                const painSolved = PAIN_SOLVED[industry.slug] ?? industry.painStatement;
+                const basePkg = industry.packages[0];
+
+                return (
+                  <FeatureCard
+                    key={industry.slug}
+                    icon={Lightbulb}
+                    title={industry.name}
+                    body={painSolved}
+                    badge={basePkg.voiceMinutes > 0 ? t('solutionsIndex.voiceIncluded') : undefined}
+                    items={basePkg.includes.slice(0, 3)}
+                    meta={t('solutionsIndex.cardStatus')}
+                    href="/pricing"
+                    ctaLabel={t('solutionsIndex.seeSolution')}
+                  />
+                );
+              })}
             </div>
-            <span className={ds.sectionLabel}>Ready-to-Use AI Blueprints</span>
-            <h1 className={`${ds.h1} mt-3`}>
-              Pre-built AI solutions for your industry
-            </h1>
-            <p className={ds.heroSubtitle}>
-              Each blueprint is a fully-configured AI system designed for one industry — trained on real pain points, ready to go live in 48 hours.
-            </p>
-          </div>
 
-          {/* Industry blueprint cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {INDUSTRIES.map((industry) => {
-              const color = (industry.color ?? 'blue') as AccentColor;
-              const accent = ACCENT_COLORS[color] ?? ACCENT_COLORS.blue;
-              const painSolved = PAIN_SOLVED[industry.slug] ?? industry.painStatement;
-              const basePkg = industry.packages[0];
-
-              return (
-                <div key={industry.slug} className={ds.cardBase}>
-                  {/* Top accent strip */}
-                  <div className={`${ds.cardAccentStrip} ${accent.strip}`} />
-
-                  <div className={ds.cardContent}>
-                    {/* Industry name */}
-                    <h3 className={ds.cardTitle}>{industry.name}</h3>
-
-                    {/* Core pain point solved */}
-                    <p className="text-sm font-medium text-emerald-green mb-3 leading-snug">
-                      {painSolved}
-                    </p>
-
-                    {/* Voice badge */}
-                    {basePkg.voiceMinutes > 0 && (
-                      <div className={`${ds.badge} ${accent.badge} mb-4`}>
-                        <Mic className="h-3 w-3" />
-                        Voice included
-                      </div>
-                    )}
-
-                    {/* 3 key features from the Base package */}
-                    <ul className="space-y-2 mb-5 flex-grow">
-                      {basePkg.includes.slice(0, 3).map((item) => (
-                        <li key={item} className={ds.featureItem}>
-                          <CheckCircle2 className="h-4 w-4 text-emerald-green shrink-0 mt-0.5" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Status line */}
-                    <div className="border-t border-soft-lilac/20 pt-4 mb-4">
-                      <p className="text-sm font-medium text-cool-gray">
-                        Fully configured · Live in 48 hours
-                      </p>
-                    </div>
-
-                    {/* CTA */}
-                    <Link to="/pricing">
-                      <Button className={`w-full ${ds.primaryButton} group`}>
-                        See this solution
-                        <ArrowRight className={ds.ctaArrow} />
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Bottom notes */}
-          <div className="text-center mt-12 max-w-2xl mx-auto">
-            <div className={ds.infoStrip}>
-              <CheckCircle2 className="h-4 w-4 text-emerald-green" />
-              <p className="text-sm text-cool-gray">
-                Every blueprint includes a bilingual AI agent — English and Spanish — ready in 48 hours.
-              </p>
+            {/* Bilingual note */}
+            <div className="mt-12 flex justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-soft-lilac/30 bg-slate-white px-4 py-2 shadow-card">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-green" />
+                <p className="text-sm text-cool-gray">{t('solutionsIndex.bilingualNote')}</p>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div className="text-center mt-10">
-            <p className="text-cool-gray mb-4">Not sure which solution fits your business?</p>
-            <Link to="/contact">
-              <Button variant="outline" size="lg" className={ds.secondaryButton}>
-                Talk to our team
-              </Button>
-            </Link>
+        <SectionDivider />
+
+        {/* Closing CTA */}
+        <section className="py-24 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <SectionHeading title={t('solutionsIndex.notSure')} />
+            <CTAGroup
+              className="mt-8 justify-center"
+              primary={{ label: t('solutionsIndex.talkToTeam'), href: '/contact' }}
+            />
           </div>
-
-        </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
