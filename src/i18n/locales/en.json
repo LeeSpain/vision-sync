@@ -218,7 +218,15 @@
             "feature4Desc": "No rogue AI here. Every single action our digital assistants take can be set to require your human approval first. You have complete visibility and you always hold the keys.",
             "growBannerTitle": "Grow at Your Own Pace",
             "growBannerDesc": "Start simple with just one smart AI assistant. As you become more comfortable, you can easily add more skills and capabilities from our growing library.",
-            "browseSkills": "Browse AI Skills"
+            "browseSkills": "Browse AI Skills",
+            "heroEyebrow": "How It Works",
+            "heroTitle": "Meet Your New",
+            "heroHighlight": "Digital Team",
+            "guaranteesTitle": "Everything included. No surprises.",
+            "guarantee1": "Live in 48 hours — no complex setup",
+            "guarantee2": "English + Spanish out of the box",
+            "guarantee3": "No per-seat pricing — flat monthly fee",
+            "guarantee4": "Cancel anytime — no lock-in contracts"
         },
         "aiAgents": {
             "heroEyebrow": "Empowering Businesses to Achieve Excellence",
