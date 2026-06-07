@@ -413,6 +413,30 @@
             "goHome": "Back to homepage",
             "contact": "Contact us"
         },
+        "projectPage": {
+            "notFoundTitle": "Project Not Found",
+            "notFoundDesc": "The project you're looking for doesn't exist or has been moved.",
+            "returnHome": "Return Home",
+            "goAdmin": "Go to Admin",
+            "liveTitle": "Experience the Live Platform",
+            "liveDesc": "Ready to explore? Visit the live site and see it in action.",
+            "visitLive": "Visit Live Site",
+            "contactProject": "Contact Us About This Project",
+            "interestedTitle": "Interested in This Project?",
+            "interestedDesc": "Get in touch to learn more about investment opportunities or purchase options.",
+            "contactUs": "Contact Us",
+            "purchaseOptions": "Purchase Options",
+            "pricingInvestment": "Pricing & Investment",
+            "chooseOption": "Choose the option that works best for you",
+            "previewTitle": "Live Platform Preview",
+            "previewDesc": "Experience the platform in action",
+            "aboutTitle": "About This Project",
+            "description": "Description",
+            "category": "Category",
+            "pricing": "Pricing",
+            "technologies": "Technologies",
+            "livePreviewSuffix": "Live Preview"
+        },
         "salesDashboard": {
             "sidebar": {
                 "visionSales": "Vision Sales",

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useParams, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -8,7 +7,9 @@ import { Project, projectManager } from '@/utils/projectManager';
 import { ProjectPageTemplate } from '@/components/project-template';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ArrowLeft, ExternalLink, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { DarkBand, SectionHeading, CTAGroup } from '@/components/ui-system';
 import WebsitePreview from '@/components/WebsitePreview';
 import ProjectInquiryForm from '@/components/ProjectInquiryForm';
 import { analytics } from '@/utils/analytics';
@@ -25,6 +26,7 @@ export default function DynamicProjectDetail() {
   const { projectRoute } = useParams<{ projectRoute: string }>();
   const location = useLocation();
   const { formatPrice } = useCurrency();
+  const { t } = useTranslation();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,10 +75,10 @@ export default function DynamicProjectDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto space-y-6">
+          <div className="max-w-4xl mx-auto space-y-6 pt-12">
             <Skeleton className="h-8 w-3/4" />
             <Skeleton className="h-64 w-full" />
             <Skeleton className="h-32 w-full" />
@@ -89,35 +91,23 @@ export default function DynamicProjectDetail() {
 
   if (error || !project) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
+      <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-50 to-white">
         <Header />
-        <div className="container mx-auto px-4 py-8">
-          <Card className="max-w-4xl mx-auto">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold text-destructive">
-                {error || 'Project Not Found'}
-              </CardTitle>
-              <CardDescription>
-                The project you're looking for doesn't exist or has been moved.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4">
-                <Link to="/">
-                  <Button variant="outline">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Return Home
-                  </Button>
-                </Link>
-                <Link to="/admin">
-                  <Button>
-                    Go to Admin
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <main className="flex flex-grow items-center justify-center px-4 py-24">
+          <div className="mx-auto max-w-md text-center">
+            <h1 className="mb-3 font-heading text-3xl font-bold text-midnight-navy">
+              {error || t('projectPage.notFoundTitle')}
+            </h1>
+            <p className="mb-8 text-cool-gray">
+              {t('projectPage.notFoundDesc')}
+            </p>
+            <CTAGroup
+              className="justify-center"
+              primary={{ label: t('projectPage.returnHome'), href: '/' }}
+              secondary={{ label: t('projectPage.goAdmin'), href: '/admin' }}
+            />
+          </div>
+        </main>
         <Footer />
       </div>
     );
@@ -162,18 +152,18 @@ export default function DynamicProjectDetail() {
       />
       <ProjectPageTemplate>
         {/* Clean Hero Section */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-royal-purple via-electric-blue to-emerald-green">
+        <DarkBand className="py-24 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="animate-fade-in">
+            <div className="animate-fade-in motion-reduce:animate-none">
               <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 tracking-tight">
                 {project.title}
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
                 {introText}
               </p>
             </div>
           </div>
-        </section>
+        </DarkBand>
 
         {/* Pricing Section - Only for Platforms for Sale */}
         {isPlatformForSale && (project.price || project.subscription_price) && (
@@ -212,37 +202,32 @@ export default function DynamicProjectDetail() {
 
         {/* Visit Live Site Section */}
       {project.demo_url && (
-        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-gradient-to-r from-emerald-green/10 to-electric-blue/10 rounded-xl p-8 border border-emerald-green/20">
+            <div className="rounded-3xl border border-soft-lilac/30 bg-gradient-to-br from-soft-lilac/20 to-slate-white p-8 shadow-card">
               <h3 className="text-2xl font-bold text-midnight-navy mb-4 font-heading">
-                Experience the Live Platform
+                {t('projectPage.liveTitle')}
               </h3>
               <p className="text-cool-gray mb-6 text-lg">
-                Ready to explore? Visit the live site and see it in action.
+                {t('projectPage.liveDesc')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={() => {
+              <CTAGroup
+                className="justify-center"
+                primary={{
+                  label: t('projectPage.visitLive'),
+                  onClick: () => {
                     analytics.trackInteraction('button_click', 'visit_live_site_button', project.id);
                     setShowLiveSiteModal(true);
-                  }}
-                  className="bg-emerald-green hover:bg-emerald-green/90 text-white px-8 py-3 text-lg font-semibold"
-                >
-                  <ExternalLink className="h-5 w-5 mr-2" />
-                  Visit Live Site
-                </Button>
-                <Button 
-                  onClick={() => {
+                  },
+                }}
+                secondary={{
+                  label: t('projectPage.contactProject'),
+                  onClick: () => {
                     analytics.trackInteraction('button_click', 'contact_button', project.id);
                     setShowInquiryForm(true);
-                  }}
-                  variant="outline"
-                  className="px-8 py-3 text-lg font-semibold"
-                >
-                  Contact Us About This Project
-                </Button>
-              </div>
+                  },
+                }}
+              />
             </div>
           </div>
         </section>
@@ -250,24 +235,25 @@ export default function DynamicProjectDetail() {
 
       {/* CTA Section for projects without demo */}
       {!project.demo_url && (
-        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-gradient-to-r from-royal-purple/10 to-electric-blue/10 rounded-xl p-8 border border-royal-purple/20">
+            <div className="rounded-3xl border border-soft-lilac/30 bg-gradient-to-br from-soft-lilac/20 to-slate-white p-8 shadow-card">
               <h3 className="text-2xl font-bold text-midnight-navy mb-4 font-heading">
-                Interested in This Project?
+                {t('projectPage.interestedTitle')}
               </h3>
               <p className="text-cool-gray mb-6 text-lg">
-                Get in touch to learn more about investment opportunities or purchase options.
+                {t('projectPage.interestedDesc')}
               </p>
-              <Button 
-                onClick={() => {
-                  analytics.trackInteraction('button_click', 'contact_button', project.id);
-                  setShowInquiryForm(true);
+              <CTAGroup
+                className="justify-center"
+                primary={{
+                  label: t('projectPage.contactUs'),
+                  onClick: () => {
+                    analytics.trackInteraction('button_click', 'contact_button', project.id);
+                    setShowInquiryForm(true);
+                  },
                 }}
-                className="bg-royal-purple hover:bg-royal-purple/90 text-white px-8 py-3 text-lg font-semibold"
-              >
-                Contact Us
-              </Button>
+              />
             </div>
           </div>
         </section>
@@ -278,14 +264,11 @@ export default function DynamicProjectDetail() {
       {!isInvestmentProject && !isPlatformForSale && (project.price || project.subscription_price) && (
         <section className="py-16 lg:py-24 bg-gradient-to-br from-soft-lilac/20 to-slate-white">
           <div className="container max-w-4xl">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-midnight-navy mb-4 font-heading">
-                {isForSaleProject ? 'Purchase Options' : 'Pricing & Investment'}
-              </h2>
-              <p className="text-cool-gray text-lg">
-                Choose the option that works best for you
-              </p>
-            </div>
+            <SectionHeading
+              title={isForSaleProject ? t('projectPage.purchaseOptions') : t('projectPage.pricingInvestment')}
+              subtitle={t('projectPage.chooseOption')}
+              className="mb-12"
+            />
 
             {(project.billing_type === 'deposit-subscription' || 
               project.subscription_price) && (
@@ -313,15 +296,12 @@ export default function DynamicProjectDetail() {
       {project.demo_url && (
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-midnight-navy mb-4 font-heading">
-                Live Platform Preview
-              </h2>
-              <p className="text-xl text-cool-gray max-w-2xl mx-auto">
-                Experience the platform in action
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl shadow-elegant p-8">
+            <SectionHeading
+              title={t('projectPage.previewTitle')}
+              subtitle={t('projectPage.previewDesc')}
+              className="mb-12"
+            />
+            <div className="bg-white rounded-2xl shadow-card p-8">
               <WebsitePreview 
                 url={project.demo_url} 
                 title={project.title}
@@ -336,18 +316,14 @@ export default function DynamicProjectDetail() {
       {/* About This Project Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-white/30">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-midnight-navy mb-6 font-heading">
-              About This Project
-            </h2>
-          </div>
-          
+          <SectionHeading title={t('projectPage.aboutTitle')} className="mb-16" />
+
           <div className="bg-white rounded-xl p-8 shadow-card">
             <div className="space-y-6">
               {/* Full Description */}
               <div>
                 <h3 className="text-2xl font-bold text-midnight-navy mb-4 font-heading">
-                  Description
+                  {t('projectPage.description')}
                 </h3>
                 <div className="text-cool-gray leading-relaxed text-lg whitespace-pre-line">
                   {project.description}
@@ -358,14 +334,14 @@ export default function DynamicProjectDetail() {
               <div className="grid md:grid-cols-2 gap-8 pt-8 border-t border-slate-white">
                 {project.category && (
                   <div>
-                    <h4 className="text-lg font-semibold text-midnight-navy mb-2">Category</h4>
+                    <h4 className="text-lg font-semibold text-midnight-navy mb-2">{t('projectPage.category')}</h4>
                     <p className="text-cool-gray">{project.category}</p>
                   </div>
                 )}
-                
+
                 {project.pricing && (
                   <div>
-                    <h4 className="text-lg font-semibold text-midnight-navy mb-2">Pricing</h4>
+                    <h4 className="text-lg font-semibold text-midnight-navy mb-2">{t('projectPage.pricing')}</h4>
                     <p className="text-cool-gray">
                       {typeof project.pricing === 'object' 
                         ? JSON.stringify(project.pricing, null, 2) 
@@ -376,7 +352,7 @@ export default function DynamicProjectDetail() {
                 
                 {project.technologies && project.technologies.length > 0 && (
                   <div className="md:col-span-2">
-                    <h4 className="text-lg font-semibold text-midnight-navy mb-2">Technologies</h4>
+                    <h4 className="text-lg font-semibold text-midnight-navy mb-2">{t('projectPage.technologies')}</h4>
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.map((tech, index) => (
                         <span key={index} className="bg-emerald-green/10 text-emerald-green px-3 py-1 rounded-full text-sm">
@@ -405,11 +381,11 @@ export default function DynamicProjectDetail() {
           <DialogContent className="max-w-full h-screen w-screen p-0 gap-0 bg-background">
             <div className="flex flex-col h-full">
               {/* Header Bar */}
-              <div className="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-emerald-green/10 to-electric-blue/10">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-soft-lilac/20 bg-slate-white">
                 <div className="flex items-center gap-3">
-                  <div className="h-3 w-3 rounded-full bg-emerald-green animate-pulse" />
+                  <div className="h-3 w-3 rounded-full bg-emerald-green animate-pulse motion-reduce:animate-none" />
                   <h3 className="text-lg font-semibold text-midnight-navy">
-                    {project.title} - Live Preview
+                    {project.title} - {t('projectPage.livePreviewSuffix')}
                   </h3>
                 </div>
                 <Button

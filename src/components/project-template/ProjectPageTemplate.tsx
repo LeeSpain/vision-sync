@@ -8,7 +8,7 @@ interface ProjectPageTemplateProps {
 
 const ProjectPageTemplate = ({ children }: ProjectPageTemplateProps) => {
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <Header />
       <main className="flex-1">
         {children}

@@ -413,6 +413,30 @@
             "goHome": "Volver al inicio",
             "contact": "Contáctanos"
         },
+        "projectPage": {
+            "notFoundTitle": "Proyecto no encontrado",
+            "notFoundDesc": "El proyecto que buscas no existe o ha sido movido.",
+            "returnHome": "Volver al Inicio",
+            "goAdmin": "Ir al Panel",
+            "liveTitle": "Descubre la Plataforma en Vivo",
+            "liveDesc": "¿Listo para explorar? Visita el sitio en vivo y velo en acción.",
+            "visitLive": "Visitar Sitio en Vivo",
+            "contactProject": "Contáctanos sobre este Proyecto",
+            "interestedTitle": "¿Te interesa este Proyecto?",
+            "interestedDesc": "Ponte en contacto para conocer más sobre oportunidades de inversión u opciones de compra.",
+            "contactUs": "Contáctanos",
+            "purchaseOptions": "Opciones de Compra",
+            "pricingInvestment": "Precios e Inversión",
+            "chooseOption": "Elige la opción que mejor funcione para ti",
+            "previewTitle": "Vista Previa de la Plataforma",
+            "previewDesc": "Experimenta la plataforma en acción",
+            "aboutTitle": "Sobre este Proyecto",
+            "description": "Descripción",
+            "category": "Categoría",
+            "pricing": "Precios",
+            "technologies": "Tecnologías",
+            "livePreviewSuffix": "Vista en Vivo"
+        },
         "salesDashboard": {
             "sidebar": {
                 "visionSales": "Ventas Vision",
