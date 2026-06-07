@@ -20,8 +20,8 @@ export interface HeroProps {
   highlight?: React.ReactNode;
   /** Supporting paragraph under the headline. */
   subtitle?: React.ReactNode;
-  /** Primary action — gradient `hero` button with trailing arrow. */
-  primaryCta: CTAAction;
+  /** Optional primary action — gradient `hero` button with trailing arrow. Omit for a CTA-less hero. */
+  primaryCta?: CTAAction;
   /** Optional secondary action — `outline` button. */
   secondaryCta?: CTAAction;
   /** Optional right-side visual (e.g. the homepage chat card + floating stat). */
@@ -127,13 +127,15 @@ export const Hero: React.FC<HeroProps> = ({
             {subtitle}
           </p>
         )}
-        <div {...reveal(360)}>
-          <CTAGroup
-            className="mt-10 justify-center lg:justify-start"
-            primary={primaryCta}
-            secondary={secondaryCta}
-          />
-        </div>
+        {primaryCta && (
+          <div {...reveal(360)}>
+            <CTAGroup
+              className="mt-10 justify-center lg:justify-start"
+              primary={primaryCta}
+              secondary={secondaryCta}
+            />
+          </div>
+        )}
         {footnote != null && (
           <p
             {...reveal(480)}

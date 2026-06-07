@@ -6,12 +6,12 @@ import { generateOrganizationSchema, generateWebPageSchema, generateFAQSchema } 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card } from '@/components/ui/card';
 import { Shield, CheckCircle, ArrowRight, Send, MessageSquare } from 'lucide-react';
 import { supabaseLeadManager } from '@/utils/supabaseLeadManager';
 import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 import { useTranslation } from 'react-i18next';
+import { Hero, DarkBand } from '@/components/ui-system';
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -335,19 +335,12 @@ const Contact = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-heading font-bold text-midnight-navy mb-6">
-            {t('contact.title')}{' '}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              {t('contact.titleHighlight')}
-            </span>
-          </h1>
-          <p className="text-xl md:text-2xl text-cool-gray mb-8 max-w-3xl mx-auto">
-            {t('contact.subtitle')}
-          </p>
-        </div>
-      </section>
+      <Hero
+        eyebrow={{ label: t('contact.heroEyebrow') }}
+        title={t('contact.title')}
+        highlight={t('contact.titleHighlight')}
+        subtitle={t('contact.subtitle')}
+      />
 
       {/* Contact Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
@@ -375,7 +368,7 @@ const Contact = () => {
                 </div>
               )}
 
-              <Card className="p-8 shadow-lg border-soft-lilac/20 flex-1 flex flex-col">
+              <div className="flex flex-1 flex-col rounded-3xl border border-soft-lilac/30 bg-slate-white p-8 shadow-card">
                 <div className="flex-1">
                   {renderStep()}
                 </div>
@@ -412,12 +405,12 @@ const Contact = () => {
                     )}
                   </div>
                 )}
-              </Card>
+              </div>
             </div>
 
             {/* AI Guardian Section */}
             <div className="order-1 lg:order-2 flex flex-col">
-              <div className="bg-gradient-to-br from-midnight-navy via-royal-purple to-electric-blue rounded-2xl p-6 text-white shadow-2xl flex-1 flex flex-col">
+              <DarkBand as="div" className="flex flex-1 flex-col rounded-2xl p-6 shadow-2xl">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
                     <Shield className="h-8 w-8 text-coral-orange" />
@@ -447,7 +440,7 @@ const Contact = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </DarkBand>
             </div>
           </div>
         </div>
