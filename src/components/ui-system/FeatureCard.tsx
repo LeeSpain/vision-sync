@@ -12,6 +12,9 @@ export interface FeatureCardProps {
   items?: string[];
   /** Optional corner badge label. */
   badge?: string;
+  /** Optional muted status/footnote line pinned to the card bottom — smaller,
+   *  cool-gray, separated by a hairline; never a checklist item (no checkmark). */
+  meta?: string;
   /** Optional destination. When set, the whole card becomes a link (internal route or absolute URL). */
   href?: string;
   /** Optional CTA affordance label shown bottom-left with a trailing arrow (needs `href`). */
@@ -33,6 +36,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   body,
   items,
   badge,
+  meta,
   href,
   ctaLabel,
   className,
@@ -70,8 +74,19 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
         </ul>
       )}
 
+      {meta && (
+        <p className="mt-auto border-t border-soft-lilac/20 pt-4 text-xs leading-snug text-cool-gray">
+          {meta}
+        </p>
+      )}
+
       {href && ctaLabel && (
-        <div className="mt-auto flex items-center gap-1.5 pt-5 text-sm font-semibold text-royal-purple">
+        <div
+          className={cn(
+            'flex items-center gap-1.5 pt-5 text-sm font-semibold text-royal-purple',
+            !meta && 'mt-auto',
+          )}
+        >
           {ctaLabel}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
         </div>

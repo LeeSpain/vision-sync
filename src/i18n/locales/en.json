@@ -261,6 +261,19 @@
                 ]
             }
         },
+        "solutionsIndex": {
+            "heroEyebrow": "Ready-to-Use AI Blueprints",
+            "heroTitle": "Pre-built AI solutions",
+            "heroHighlight": "for your industry",
+            "heroSubtitle": "Each blueprint is a fully-configured AI system designed for one industry — trained on real pain points, ready to go live in 48 hours.",
+            "heroCta": "View Pricing & Packages",
+            "voiceIncluded": "Voice included",
+            "cardStatus": "Fully configured · Live in 48 hours",
+            "seeSolution": "See this solution",
+            "bilingualNote": "Every blueprint includes a bilingual AI agent — English and Spanish — ready in 48 hours.",
+            "notSure": "Not sure which solution fits your business?",
+            "talkToTeam": "Talk to our team"
+        },
         "modules": {
             "title": "Pick Your AI Superpowers",
             "subtitle": "Add new skills to your business just like installing apps on your phone. Browse our library of ready-to-use AI helpers.",
