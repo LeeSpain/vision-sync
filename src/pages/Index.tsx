@@ -10,7 +10,7 @@ import { Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Bot, Zap, Bri
 import CustomQuoteModal from '@/components/CustomQuoteModal';
 import { useTranslation } from 'react-i18next';
 import { usePricing } from '@/hooks/usePricing';
-import { Eyebrow, GradientText, CTAGroup, SectionHeading, FeatureCard, DarkBand, SectionDivider } from '@/components/ui-system';
+import { Hero, GradientText, CTAGroup, SectionHeading, FeatureCard, DarkBand, SectionDivider } from '@/components/ui-system';
 import { HeroChatCard } from '@/components/home/HeroChatCard';
 
 export default function Index() {
@@ -74,41 +74,16 @@ export default function Index() {
       <Header />
 
       {/* Hero Section — product proof (Concept 1) */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8">
-        {/* Light atmospheric background */}
-        <div className="pointer-events-none absolute top-16 left-0 h-96 w-96 -translate-x-1/3 rounded-full bg-royal-purple/5 blur-3xl animate-float motion-reduce:animate-none" />
-        <div
-          className="pointer-events-none absolute bottom-0 right-0 h-[28rem] w-[28rem] translate-x-1/4 rounded-full bg-emerald-green/5 blur-3xl animate-float motion-reduce:animate-none"
-          style={{ animationDelay: '1.2s' }}
-        />
-        <div className="pointer-events-none absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-soft-lilac/20 blur-3xl" />
-
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Left: copy + CTAs */}
-          <div className="text-center lg:text-left">
-            <Eyebrow icon={Sparkles} label={t('index.enterpriseInfrastructure')} className="mx-auto lg:mx-0" />
-            <h1 className="mt-6 font-heading text-4xl font-bold tracking-tight text-midnight-navy sm:text-5xl lg:text-6xl">
-              {hero.title.split(' For Your Business')[0]}
-              {hero.title.includes('For Your Business') && (
-                <>
-                  <br />
-                  <GradientText>For Your Business</GradientText>
-                </>
-              )}
-            </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-cool-gray md:text-xl lg:mx-0">
-              {hero.content}
-            </p>
-            <CTAGroup
-              className="mt-10 justify-center lg:justify-start"
-              primary={{ label: hero.ctaLabel || t('index.requestDemo'), onClick: () => setShowQuoteModal(true) }}
-              secondary={{ label: t('index.explorePlatform'), href: hero.ctaLink || '/platform', icon: Network }}
-            />
-            <p className="mt-6 text-sm text-cool-gray">{t('index.heroTrust')}</p>
-          </div>
-
-          {/* Right: live AI chat card + floating 24/7 stat */}
-          <div className="relative mx-auto w-full max-w-md lg:mx-0 lg:ml-auto">
+      <Hero
+        eyebrow={{ icon: Sparkles, label: t('index.enterpriseInfrastructure') }}
+        title={hero.title.split(' For Your Business')[0]}
+        highlight={hero.title.includes('For Your Business') ? 'For Your Business' : undefined}
+        subtitle={hero.content}
+        primaryCta={{ label: hero.ctaLabel || t('index.requestDemo'), onClick: () => setShowQuoteModal(true) }}
+        secondaryCta={{ label: t('index.explorePlatform'), href: hero.ctaLink || '/platform', icon: Network }}
+        footnote={t('index.heroTrust')}
+        media={
+          <>
             <HeroChatCard />
             <div
               className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-soft-lilac/30 bg-slate-white px-5 py-4 shadow-card animate-float motion-reduce:animate-none sm:block"
@@ -119,9 +94,9 @@ export default function Index() {
               </p>
               <p className="mt-1 text-xs font-medium text-cool-gray">{t('index.heroChat.statLabel')}</p>
             </div>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       {/* Platform Overview */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">

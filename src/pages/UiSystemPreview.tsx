@@ -2,6 +2,7 @@ import { Bot, Sparkles, Network, Zap, Shield, Workflow, BarChart3 } from 'lucide
 import {
   Eyebrow,
   GradientText,
+  Hero,
   SectionHeading,
   FeatureCard,
   PricingCard,
@@ -38,6 +39,36 @@ export default function UiSystemPreview() {
             “reduce motion” setting to verify animations/hover lifts settle.
           </p>
         </header>
+
+        <SectionDivider />
+
+        {/* Hero */}
+        <Swatch label="<Hero /> (atmospheric light hero — composes Eyebrow + GradientText + CTAGroup; staggered reveal, reduced-motion safe)">
+          <div className="overflow-hidden rounded-3xl border border-soft-lilac/30">
+            <Hero
+              eyebrow={{ icon: Sparkles, label: 'Enterprise Infrastructure' }}
+              title="Premium AI Automation"
+              highlight="For Your Business"
+              subtitle="Modular AI systems that scale with your business — only what you need, nothing you don't."
+              primaryCta={{ label: 'Request a Demo', href: '/contact' }}
+              secondaryCta={{ label: 'Explore Platform', href: '/platform', icon: Network }}
+              footnote="Built for Costa Blanca businesses — answering in English and Spanish, day and night."
+              media={
+                <div className="rounded-3xl border border-soft-lilac/30 bg-slate-white p-6 shadow-hover">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-primary shadow-glow">
+                      <Bot className="h-5 w-5 text-white" />
+                    </div>
+                    <p className="font-heading text-sm font-semibold text-midnight-navy">Sample media slot</p>
+                  </div>
+                  <p className="mt-4 text-sm text-cool-gray">
+                    Pass any ReactNode as <code>media</code> — e.g. the homepage chat card.
+                  </p>
+                </div>
+              }
+            />
+          </div>
+        </Swatch>
 
         <SectionDivider />
 
