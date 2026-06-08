@@ -30,10 +30,8 @@ import LeadsManagement from "./pages/SalesDashboard/LeadsManagement";
 import SalesPipeline from "./pages/SalesDashboard/SalesPipeline";
 import DealRooms from "./pages/SalesDashboard/DealRooms";
 import DemoGenerator from "./pages/SalesDashboard/DemoGenerator";
-import Quotes from "./pages/SalesDashboard/Quotes";
 import Contracts from "./pages/SalesDashboard/Contracts";
 import Payments from "./pages/SalesDashboard/Payments";
-import Analytics from "./pages/SalesDashboard/Analytics";
 import SalesCopilot from "./pages/SalesDashboard/SalesCopilot";
 
 const queryClient = new QueryClient();
@@ -79,10 +77,8 @@ const App = () => (
             <Route path="/sales-dashboard/deals" element={<AdminRoute><SalesDashboardLayout><DealRooms /></SalesDashboardLayout></AdminRoute>} />
             <Route path="/sales-dashboard/deals/:id" element={<AdminRoute><SalesDashboardLayout><DealRooms /></SalesDashboardLayout></AdminRoute>} />
             <Route path="/sales-dashboard/demos" element={<AdminRoute><SalesDashboardLayout><DemoGenerator /></SalesDashboardLayout></AdminRoute>} />
-            <Route path="/sales-dashboard/quotes" element={<AdminRoute><SalesDashboardLayout><Quotes /></SalesDashboardLayout></AdminRoute>} />
             <Route path="/sales-dashboard/contracts" element={<AdminRoute><SalesDashboardLayout><Contracts /></SalesDashboardLayout></AdminRoute>} />
             <Route path="/sales-dashboard/payments" element={<AdminRoute><SalesDashboardLayout><Payments /></SalesDashboardLayout></AdminRoute>} />
-            <Route path="/sales-dashboard/analytics" element={<AdminRoute><SalesDashboardLayout><Analytics /></SalesDashboardLayout></AdminRoute>} />
             <Route path="/sales-dashboard/copilot" element={<AdminRoute><SalesDashboardLayout><SalesCopilot /></SalesDashboardLayout></AdminRoute>} />
 
             <Route path="/auth" element={<AuthPage />} />

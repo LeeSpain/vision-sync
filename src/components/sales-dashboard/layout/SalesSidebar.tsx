@@ -17,10 +17,8 @@ import {
     TrendingUp,
     Briefcase,
     MonitorPlay,
-    FileText,
     PenTool,
     CreditCard,
-    BarChart,
     Bot
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -35,13 +33,11 @@ const salesMenuItems = [
 
 const toolsMenuItems = [
     { titleKey: "salesDashboard.sidebar.demoGenerator", icon: MonitorPlay, url: "/sales-dashboard/demos" },
-    { titleKey: "salesDashboard.sidebar.quotes", icon: FileText, url: "/sales-dashboard/quotes" },
     { titleKey: "salesDashboard.sidebar.contracts", icon: PenTool, url: "/sales-dashboard/contracts" },
     { titleKey: "salesDashboard.sidebar.payments", icon: CreditCard, url: "/sales-dashboard/payments" },
 ];
 
 const analysisMenuItems = [
-    { titleKey: "salesDashboard.sidebar.analytics", icon: BarChart, url: "/sales-dashboard/analytics" },
     { titleKey: "salesDashboard.sidebar.salesCopilot", icon: Bot, url: "/sales-dashboard/copilot" },
 ];
 
