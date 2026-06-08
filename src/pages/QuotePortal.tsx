@@ -6,7 +6,7 @@ import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, Loader2, Home, Calendar, Phone } from 'lucide-react';
+import { CheckCircle, Loader2, Home, Calendar, Phone, Mic } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { DarkBand } from '@/components/ui-system';
@@ -30,6 +30,7 @@ interface QuoteRow {
   industry_slug: string;
   industry_name: string;
   base_package_name: string;
+  selected_tier: string | null;
   base_ex_vat: number;
   base_iva: number;
   base_inc_vat: number;
@@ -67,6 +68,7 @@ export default function QuotePortal() {
   const { t } = useTranslation();
 
   const [quote, setQuote] = useState<QuoteRow | null>(null);
+  const [packageDetail, setPackageDetail] = useState<{ voiceMinutes: number; includes: string[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [accepting, setAccepting] = useState(false);
@@ -107,6 +109,30 @@ export default function QuotePortal() {
         .from('quotes')
         .update({ viewed_at: new Date().toISOString(), status: quoteData.status === 'new' ? 'viewed' : quoteData.status })
         .eq('id', quoteData.id);
+    }
+
+    // Re-derive voice minutes + "what's included" from the canonical pricing
+    // tables (no extra columns on quotes) via industry_slug + selected_tier.
+    if (quoteData.industry_slug && quoteData.selected_tier) {
+      const { data: ind } = await supabase
+        .from('pricing_industries')
+        .select('id')
+        .eq('slug', quoteData.industry_slug)
+        .maybeSingle();
+      if (ind) {
+        const { data: pkg } = await supabase
+          .from('pricing_packages')
+          .select('voice_minutes, includes')
+          .eq('industry_id', ind.id)
+          .eq('tier', quoteData.selected_tier)
+          .maybeSingle();
+        if (pkg) {
+          setPackageDetail({
+            voiceMinutes: Number(pkg.voice_minutes) || 0,
+            includes: Array.isArray(pkg.includes) ? (pkg.includes as string[]) : [],
+          });
+        }
+      }
     }
 
     setLoading(false);
@@ -231,6 +257,28 @@ export default function QuotePortal() {
                     <p className="text-sm text-cool-gray mt-1">{t('quotePortal.alwaysIncluded')}</p>
                   </div>
                 </div>
+
+                {packageDetail && packageDetail.voiceMinutes > 0 && (
+                  <div className="mt-4 flex items-center gap-2 text-sm font-medium text-electric-blue">
+                    <Mic className="h-4 w-4 shrink-0" />
+                    {t('pricing.voiceMinutes', { mins: packageDetail.voiceMinutes.toLocaleString() })}
+                  </div>
+                )}
+
+                {packageDetail && packageDetail.includes.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-xs text-cool-gray uppercase tracking-wide mb-2">{t('quotePortal.whatsIncluded')}</p>
+                    <ul className="space-y-2">
+                      {packageDetail.includes.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-midnight-navy/80">
+                          <CheckCircle className="h-4 w-4 text-emerald-green shrink-0 mt-0.5" />
+                          <span className="leading-snug">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <div className="mt-4 pt-4 border-t border-soft-lilac/30 grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-xs text-cool-gray uppercase tracking-wide">{t('quotePortal.exIva')}</p>

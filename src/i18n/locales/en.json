@@ -175,6 +175,7 @@
             "successRef": "Your reference:",
             "successBody": "We'll review your requirements and send a personalised proposal to {{email}} within 24 hours.",
             "backHome": "Back to Homepage",
+            "viewYourQuote": "View your quote",
             "fallback": {
                 "starterName": "Platform Starter",
                 "starterDesc": "Essential orchestration for small teams.",
@@ -227,7 +228,18 @@
             "guarantee1": "Live in 48 hours — no complex setup",
             "guarantee2": "English + Spanish out of the box",
             "guarantee3": "No per-seat pricing — flat monthly fee",
-            "guarantee4": "Cancel anytime — no lock-in contracts"
+            "guarantee4": "Cancel anytime — no lock-in contracts",
+            "infra": {
+                "coreName": "Vision-Sync AI",
+                "coreStatus": "Orchestrating in real time",
+                "core": "AI Core",
+                "calls": "Calls",
+                "chat": "Chat",
+                "whatsapp": "WhatsApp",
+                "crm": "CRM",
+                "bookings": "Bookings",
+                "followUp": "Follow-up"
+            }
         },
         "aiAgents": {
             "heroEyebrow": "Empowering Businesses to Achieve Excellence",
@@ -382,6 +394,7 @@
             "industry": "Industry",
             "basePackage": "Base Package",
             "alwaysIncluded": "Always included",
+            "whatsIncluded": "What's included",
             "exIva": "Ex IVA",
             "iva21": "IVA 21%",
             "monthlyTotal": "Monthly Total",

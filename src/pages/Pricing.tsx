@@ -10,6 +10,7 @@ import {
   Calendar, UserCheck, Star, MessageCircle, Bot
 } from 'lucide-react';
 import { usePricing } from '@/hooks/usePricing';
+import { ADDON_MONTHLY_PRICE_EX_VAT } from '@/lib/pricing';
 import { Tier } from '@/types/industries';
 import { supabase } from '@/integrations/supabase/client';
 import { useSearchParams } from 'react-router-dom';
@@ -149,9 +150,22 @@ export default function Pricing() {
     const pkg = selectedPackage;
     const baseIva = pkg.incVatPrice - pkg.exVatPrice;
 
+    // INTERIM: flat add-on price — to be made admin-editable via DB.
+    // Per-add-on figures derived from the single ADDON_MONTHLY_PRICE_EX_VAT constant.
+    const addonEx = ADDON_MONTHLY_PRICE_EX_VAT;
+    const addonIva = Math.round(addonEx * 0.21);
+    const addonInc = Math.round(addonEx * 1.21);
+
     const selectedSkillNames = ADDON_SKILLS
       .filter(s => selectedSkills.has(s.id))
-      .map(s => ({ id: s.id, name: s.name, exVatPrice: 0, ivaAmount: 0, totalIncVat: 0 }));
+      .map(s => ({ id: s.id, name: s.name, exVatPrice: addonEx, ivaAmount: addonIva, totalIncVat: addonInc }));
+
+    const modulesExVat = addonEx * selectedSkillNames.length;
+    const modulesIva = addonIva * selectedSkillNames.length;
+    const modulesIncVat = addonInc * selectedSkillNames.length;
+    const totalExVat = pkg.exVatPrice + modulesExVat;
+    const totalIva = baseIva + modulesIva;
+    const totalIncVat = pkg.incVatPrice + modulesIncVat;
 
     const payload = {
       quote_reference: ref,
@@ -168,12 +182,12 @@ export default function Pricing() {
       base_iva: baseIva,
       base_inc_vat: pkg.incVatPrice,
       modules_selected: selectedSkillNames,
-      modules_ex_vat_total: 0,
-      modules_iva_total: 0,
-      modules_inc_vat_total: 0,
-      total_ex_vat: pkg.exVatPrice,
-      total_iva: baseIva,
-      total_inc_vat: pkg.incVatPrice,
+      modules_ex_vat_total: modulesExVat,
+      modules_iva_total: modulesIva,
+      modules_inc_vat_total: modulesIncVat,
+      total_ex_vat: totalExVat,
+      total_iva: totalIva,
+      total_inc_vat: totalIncVat,
       client_notes: form.notes || null,
       status: 'new',
     };
@@ -182,6 +196,38 @@ export default function Pricing() {
 
     if (error) {
       console.error('Quote submission error:', error);
+    } else {
+      // Email the customer their quote + /quote/:ref link (same edge function
+      // ModulePicker uses). Non-blocking: the quote is already saved.
+      try {
+        await supabase.functions.invoke('send-quote-email', {
+          body: {
+            quoteReference: ref,
+            clientFirstName: form.firstName,
+            clientLastName: form.lastName,
+            businessName: form.businessName,
+            email: form.email,
+            phone: form.phone || undefined,
+            industryName: industry.name,
+            industrySlug: industry.slug,
+            basePackageName: `${industry.name} ${pkg.name}`,
+            baseIncludes: pkg.includes,
+            baseExVat: pkg.exVatPrice,
+            baseIva: baseIva,
+            baseIncVat: pkg.incVatPrice,
+            selectedModules: selectedSkillNames,
+            modulesExVatTotal: modulesExVat,
+            modulesIvaTotal: modulesIva,
+            modulesIncVatTotal: modulesIncVat,
+            totalExVat: totalExVat,
+            totalIva: totalIva,
+            totalIncVat: totalIncVat,
+            clientNotes: form.notes || undefined,
+          },
+        });
+      } catch (emailErr) {
+        console.error('Quote email failed to send:', emailErr);
+      }
     }
 
     setQuoteRef(ref);
@@ -209,7 +255,11 @@ export default function Pricing() {
             <p className="text-cool-gray mb-10">
               {t('pricing.successBody', { email: form.email })}
             </p>
-            <CTAGroup className="justify-center" primary={{ label: t('pricing.backHome'), href: '/' }} />
+            <CTAGroup
+              className="justify-center"
+              primary={{ label: t('pricing.viewYourQuote'), href: `/quote/${quoteRef}` }}
+              secondary={{ label: t('pricing.backHome'), href: '/' }}
+            />
           </div>
         </main>
         <Footer />
