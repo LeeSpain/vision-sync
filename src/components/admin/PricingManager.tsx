@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  CheckCircle, Mic, Loader2, AlertTriangle, Coins, Pencil, Trash2, Plus, X, ArrowRight, Sparkles,
+  CheckCircle, Mic, Loader2, AlertTriangle, Coins, Pencil, Trash2, Plus, X, ArrowRight, Sparkles, UploadCloud,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { SectionHeading } from '@/components/ui-system';
@@ -66,6 +66,27 @@ interface EditForm {
 }
 
 const asStringArray = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+
+interface FieldDiff {
+  label: string;
+  from: string;
+  to: string;
+}
+
+/** What will change for a package when its draft is published (live → draft). */
+function packageDiffs(pkg: AdminPackage): FieldDiff[] {
+  if (!pkg.hasDraft) return [];
+  const diffs: FieldDiff[] = [];
+  if (pkg.draftName !== null && pkg.draftName !== pkg.name) diffs.push({ label: 'Name', from: pkg.name, to: pkg.draftName });
+  if (pkg.draftExVatPrice !== null && pkg.draftExVatPrice !== pkg.exVatPrice) diffs.push({ label: 'Ex-VAT', from: `€${pkg.exVatPrice}`, to: `€${pkg.draftExVatPrice}` });
+  if (pkg.draftIncVatPrice !== null && pkg.draftIncVatPrice !== pkg.incVatPrice) diffs.push({ label: 'Inc-VAT', from: `€${pkg.incVatPrice}`, to: `€${pkg.draftIncVatPrice}` });
+  if (pkg.draftVoiceMinutes !== null && pkg.draftVoiceMinutes !== pkg.voiceMinutes) diffs.push({ label: 'Voice', from: `${pkg.voiceMinutes} min`, to: `${pkg.draftVoiceMinutes} min` });
+  const draftTag = pkg.draftTagline ?? '';
+  if (draftTag !== pkg.tagline) diffs.push({ label: 'Tagline', from: pkg.tagline || '—', to: draftTag || '—' });
+  const draftInc = pkg.draftIncludes ?? [];
+  if (JSON.stringify(draftInc) !== JSON.stringify(pkg.includes)) diffs.push({ label: 'Includes', from: `${pkg.includes.length} items`, to: `${draftInc.length} items` });
+  return diffs;
+}
 
 function Badge({ tone, children }: { tone: 'emerald' | 'coral' | 'purple'; children: React.ReactNode }) {
   const tones = {
@@ -203,6 +224,8 @@ export function PricingManager() {
   const [incTouched, setIncTouched] = useState(false);
   const [saving, setSaving] = useState(false);
   const [discardingId, setDiscardingId] = useState<string | null>(null);
+  const [publishTarget, setPublishTarget] = useState<AdminIndustry | null>(null);
+  const [publishing, setPublishing] = useState(false);
 
   const loadPricing = useCallback(async () => {
     setLoading(true);
@@ -394,6 +417,27 @@ export function PricingManager() {
     await loadPricing();
   };
 
+  // ── Publish (changes LIVE prices) ──────────────────────────────────────────
+  // Atomic via the publish_pricing_industry RPC: all of an industry's staged
+  // drafts go live together, or none do. The public site reads the live columns,
+  // so a customer never sees a half-updated tier set.
+  const publishIndustry = async () => {
+    if (!publishTarget) return;
+    setPublishing(true);
+    const { data, error: rpcErr } = await supabase.rpc('publish_pricing_industry', {
+      p_industry_id: publishTarget.id,
+    });
+    setPublishing(false);
+    if (rpcErr) {
+      toast({ title: 'Publish failed', description: rpcErr.message, variant: 'destructive' });
+      return;
+    }
+    const n = data ?? 0;
+    toast({ title: 'Published', description: `${n} tier${n === 1 ? '' : 's'} now live for ${publishTarget.name}.` });
+    setPublishTarget(null);
+    await loadPricing();
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────
   const publishedCount = industries.filter((i) => i.isPublished).length;
   const draftCount = industries.length - publishedCount;
@@ -450,16 +494,24 @@ export function PricingManager() {
           <div className="space-y-6">
             {industries.map((ind) => (
               <section key={ind.id} className="rounded-3xl border border-soft-lilac/30 bg-slate-white p-6 shadow-card">
-                <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
-                  <h3 className="font-heading text-xl font-bold text-midnight-navy">{ind.name}</h3>
-                  {ind.isPublished ? <Badge tone="emerald">Published</Badge> : <Badge tone="coral">Draft</Badge>}
-                  {ind.hasDraftChanges && <Badge tone="purple">Unpublished changes</Badge>}
-                  <span className="text-sm text-cool-gray">
-                    /{ind.slug}
-                    {' · '}sort {ind.sortOrder}
-                    {ind.voiceNative ? ' · voice-native' : ''}
-                    {ind.coreServiceLine ? ` · ${ind.coreServiceLine}` : ''}
-                  </span>
+                <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <h3 className="font-heading text-xl font-bold text-midnight-navy">{ind.name}</h3>
+                    {ind.isPublished ? <Badge tone="emerald">Published</Badge> : <Badge tone="coral">Draft</Badge>}
+                    {ind.hasDraftChanges && <Badge tone="purple">Unpublished changes</Badge>}
+                    <span className="text-sm text-cool-gray">
+                      /{ind.slug}
+                      {' · '}sort {ind.sortOrder}
+                      {ind.voiceNative ? ' · voice-native' : ''}
+                      {ind.coreServiceLine ? ` · ${ind.coreServiceLine}` : ''}
+                    </span>
+                  </div>
+                  {ind.hasDraftChanges && (
+                    <Button variant="hero" size="sm" onClick={() => setPublishTarget(ind)} className="shrink-0 gap-1.5">
+                      <UploadCloud className="h-3.5 w-3.5" />
+                      Publish changes
+                    </Button>
+                  )}
                 </div>
 
                 {ind.packages.length === 0 ? (
@@ -552,6 +604,64 @@ export function PricingManager() {
             <Button variant="hero" onClick={saveDraft} disabled={saving} className="gap-2">
               {saving && <Loader2 className="h-4 w-4 animate-spin" />}
               Save draft
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Publish confirmation — this changes LIVE prices */}
+      <Dialog open={!!publishTarget} onOpenChange={(o) => !o && !publishing && setPublishTarget(null)}>
+        <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto bg-white">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-midnight-navy">
+              Publish pricing — {publishTarget?.name}
+            </DialogTitle>
+            <DialogDescription className="text-cool-gray">
+              This makes the staged drafts <strong>live</strong>. The public site reads live prices, so customers see these immediately. Review exactly what will change:
+            </DialogDescription>
+          </DialogHeader>
+
+          {publishTarget && (
+            <div className="space-y-3 pt-2">
+              {publishTarget.packages.filter((p) => p.hasDraft).map((pkg) => {
+                const diffs = packageDiffs(pkg);
+                return (
+                  <div key={pkg.id} className="rounded-xl border border-soft-lilac/30 bg-slate-50 p-4">
+                    <p className="font-semibold text-midnight-navy">
+                      {pkg.name}{' '}
+                      <span className="text-xs font-semibold uppercase tracking-wide text-royal-purple">({pkg.tier})</span>
+                    </p>
+                    {diffs.length === 0 ? (
+                      <p className="mt-1 text-sm text-cool-gray">Draft matches live — nothing changes.</p>
+                    ) : (
+                      <ul className="mt-2 space-y-1.5">
+                        {diffs.map((dd, i) => (
+                          <li key={i} className="flex flex-wrap items-center gap-2 text-sm">
+                            <span className="w-16 shrink-0 text-xs font-semibold uppercase tracking-wide text-cool-gray">{dd.label}</span>
+                            <span className="text-cool-gray line-through">{dd.from}</span>
+                            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-royal-purple" />
+                            <span className="font-semibold text-royal-purple">{dd.to}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div className="flex items-start gap-2 rounded-xl border border-coral-orange/30 bg-coral-orange/5 p-3 text-sm text-midnight-navy">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-coral-orange" />
+                <span>This updates the live prices immediately and can't be undone from here.</span>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setPublishTarget(null)} disabled={publishing}>Cancel</Button>
+            <Button variant="hero" onClick={publishIndustry} disabled={publishing} className="gap-2">
+              {publishing && <Loader2 className="h-4 w-4 animate-spin" />}
+              Publish {publishTarget ? publishTarget.packages.filter((p) => p.hasDraft).length : 0} tier
+              {publishTarget && publishTarget.packages.filter((p) => p.hasDraft).length === 1 ? '' : 's'}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1875,6 +1875,12 @@ export type Database = {
         }
         Returns: number
       }
+      publish_pricing_industry: {
+        Args: {
+          p_industry_id: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
