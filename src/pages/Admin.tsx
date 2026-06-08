@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import { AdminErrorBoundary } from '@/components/AdminErrorBoundary';
 import { AdminLayout } from '@/components/AdminLayout';
 import { ProjectManager } from '@/components/admin/ProjectManager';
-import { ContentManager } from '@/components/admin/ContentManager';
 import { MessagesManager } from '@/components/admin/MessagesManager';
 import { ConversationsManager } from '@/components/admin/ConversationsManager';
 import { LeadsManager } from '@/components/admin/LeadsManager';
@@ -28,7 +27,6 @@ import BrainAgentDashboard from '@/components/admin/BrainAgentDashboard';
 import AgentTestingPanel from '@/components/admin/AgentTestingPanel';
 import RoutingRulesManager from '@/components/admin/RoutingRulesManager';
 import { SalesTeamManager } from '@/components/admin/SalesTeamManager';
-import { VisionFamilyManager } from '@/components/admin/VisionFamilyManager';
 import { QuotesManager } from '@/components/admin/QuotesManager';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -456,9 +454,6 @@ const Admin = () => {
       case 'sales-pipeline':
         return <EnhancedLeadsManager />;
 
-      case 'content':
-        return <ContentManager />;
-
       case 'analytics':
         return <RealTimeAnalytics />;
 
@@ -476,9 +471,6 @@ const Admin = () => {
 
       case 'sales-team':
         return <SalesTeamManager />;
-
-      case 'vision-family':
-        return <VisionFamilyManager />;
 
       case 'settings':
         return (

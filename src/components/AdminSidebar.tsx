@@ -19,7 +19,6 @@ import {
   Bot,
   ChevronDown,
   Sparkles,
-  Network,
   Puzzle,
   Factory
 } from "lucide-react"
@@ -47,7 +46,6 @@ const mainItems = [
   { key: "admin.skills", url: "#skills", icon: Puzzle },
   { key: "admin.solutions", url: "#solutions", icon: Building2 },
   { key: "admin.quotes", url: "#quotes", icon: FileText, badge: null },
-  { key: "Vision Family", url: "#vision-family", icon: Network },
   { key: "admin.pageSections", url: "#page-sections", icon: LayoutDashboard },
   { key: "admin.messages", url: "#messages", icon: Mail },
   { key: "admin.conversations", url: "#conversations", icon: MessageCircle },
