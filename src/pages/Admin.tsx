@@ -20,6 +20,7 @@ import { WelcomeSection } from '@/components/admin/WelcomeSection';
 import { TodaySummary } from '@/components/admin/TodaySummary';
 import { SettingsManager } from '@/components/admin/SettingsManager';
 import { SolutionsManager } from '@/components/admin/SolutionsManager';
+import { PricingManager } from '@/components/admin/PricingManager';
 import { SkillsManager } from '@/components/admin/SkillsManager';
 import { PageSectionsManager } from '@/components/admin/PageSectionsManager';
 import AiAgentManager from '@/components/admin/AiAgentManager';
@@ -435,6 +436,9 @@ const Admin = () => {
 
       case 'industries':
         return <IndustryManager />;
+
+      case 'pricing':
+        return <PricingManager />;
 
       case 'skills':
         return <SkillsManager />;
