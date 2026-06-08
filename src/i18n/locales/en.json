@@ -171,6 +171,7 @@
             "notesPlaceholder": "Tell us about your business, specific needs, or questions...",
             "submit": "Submit Quote Request",
             "submitting": "Submitting...",
+            "submitError": "Something went wrong saving your request — please try again, or contact us if it keeps happening. Your details have been kept.",
             "disclaimer": "No obligation. We'll prepare a personalised proposal and send it to your email within 24 hours.",
             "successTitle": "Quote Request Received",
             "successRef": "Your reference:",

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  ArrowRight, ArrowLeft, CheckCircle, Mic, Loader2, Sparkles,
+  ArrowRight, ArrowLeft, CheckCircle, Mic, Loader2, Sparkles, AlertCircle,
   Mail, MessageSquare, RefreshCw, BarChart3, Phone,
   Calendar, UserCheck, Star, MessageCircle, Bot
 } from 'lucide-react';
@@ -97,6 +97,7 @@ export default function Pricing() {
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [quoteRef, setQuoteRef] = useState('');
 
   const [form, setForm] = useState({
@@ -145,6 +146,7 @@ export default function Pricing() {
     if (!form.firstName || !form.email || !form.businessName || !industry || !selectedPackage) return;
 
     setSubmitting(true);
+    setSubmitError(false);
     const ref = generateQuoteRef();
 
     const pkg = selectedPackage;
@@ -194,40 +196,45 @@ export default function Pricing() {
 
     const { error } = await supabase.from('quotes').insert(payload);
 
+    // Save failed: surface a clear error, keep the user's details, and let them
+    // retry. Do NOT show the success screen or a reference for an unsaved quote.
     if (error) {
       console.error('Quote submission error:', error);
-    } else {
-      // Email the customer their quote + /quote/:ref link (same edge function
-      // ModulePicker uses). Non-blocking: the quote is already saved.
-      try {
-        await supabase.functions.invoke('send-quote-email', {
-          body: {
-            quoteReference: ref,
-            clientFirstName: form.firstName,
-            clientLastName: form.lastName,
-            businessName: form.businessName,
-            email: form.email,
-            phone: form.phone || undefined,
-            industryName: industry.name,
-            industrySlug: industry.slug,
-            basePackageName: `${industry.name} ${pkg.name}`,
-            baseIncludes: pkg.includes,
-            baseExVat: pkg.exVatPrice,
-            baseIva: baseIva,
-            baseIncVat: pkg.incVatPrice,
-            selectedModules: selectedSkillNames,
-            modulesExVatTotal: modulesExVat,
-            modulesIvaTotal: modulesIva,
-            modulesIncVatTotal: modulesIncVat,
-            totalExVat: totalExVat,
-            totalIva: totalIva,
-            totalIncVat: totalIncVat,
-            clientNotes: form.notes || undefined,
-          },
-        });
-      } catch (emailErr) {
-        console.error('Quote email failed to send:', emailErr);
-      }
+      setSubmitError(true);
+      setSubmitting(false);
+      return;
+    }
+
+    // Save confirmed — only now email the customer their quote + /quote/:ref link
+    // via the send-quote-email edge function. Non-blocking: the quote is saved.
+    try {
+      await supabase.functions.invoke('send-quote-email', {
+        body: {
+          quoteReference: ref,
+          clientFirstName: form.firstName,
+          clientLastName: form.lastName,
+          businessName: form.businessName,
+          email: form.email,
+          phone: form.phone || undefined,
+          industryName: industry.name,
+          industrySlug: industry.slug,
+          basePackageName: `${industry.name} ${pkg.name}`,
+          baseIncludes: pkg.includes,
+          baseExVat: pkg.exVatPrice,
+          baseIva: baseIva,
+          baseIncVat: pkg.incVatPrice,
+          selectedModules: selectedSkillNames,
+          modulesExVatTotal: modulesExVat,
+          modulesIvaTotal: modulesIva,
+          modulesIncVatTotal: modulesIncVat,
+          totalExVat: totalExVat,
+          totalIva: totalIva,
+          totalIncVat: totalIncVat,
+          clientNotes: form.notes || undefined,
+        },
+      });
+    } catch (emailErr) {
+      console.error('Quote email failed to send:', emailErr);
     }
 
     setQuoteRef(ref);
@@ -551,7 +558,14 @@ export default function Pricing() {
                   </div>
                 </div>
 
-                <div className="flex justify-between mt-10">
+                {submitError && (
+                  <div className="mt-6 flex items-start gap-3 rounded-xl border border-coral-orange/30 bg-coral-orange/10 p-4">
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-coral-orange" />
+                    <p className="text-sm text-midnight-navy">{t('pricing.submitError')}</p>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-4 mt-10 sm:flex-row sm:justify-between">
                   <Button variant="outline" size="lg" onClick={() => setStep(3)}>
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     {t('pricing.back')}

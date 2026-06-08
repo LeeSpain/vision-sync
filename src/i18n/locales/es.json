@@ -171,6 +171,7 @@
             "notesPlaceholder": "Cuéntanos sobre tu negocio, necesidades específicas o preguntas...",
             "submit": "Enviar Solicitud de Presupuesto",
             "submitting": "Enviando...",
+            "submitError": "Algo salió mal al guardar tu solicitud — inténtalo de nuevo, o contáctanos si sigue ocurriendo. Tus datos se han conservado.",
             "disclaimer": "Sin compromiso. Prepararemos una propuesta personalizada y la enviaremos a tu correo en 24 horas.",
             "successTitle": "Solicitud de Presupuesto Recibida",
             "successRef": "Tu referencia:",
