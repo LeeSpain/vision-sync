@@ -4,6 +4,7 @@ import { CheckCircle2, Lightbulb } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePricing } from '@/hooks/usePricing';
 import { Hero, FeatureCard, SectionHeading, CTAGroup, SectionDivider } from '@/components/ui-system';
+import { HeroBlueprintCard } from '@/components/solutions/HeroBlueprintCard';
 
 // Map industry slugs to the top pain point solved (one-line summary)
 const PAIN_SOLVED: Record<string, string> = {
@@ -34,6 +35,7 @@ export default function SolutionsIndex() {
         highlight={t('solutionsIndex.heroHighlight')}
         subtitle={t('solutionsIndex.heroSubtitle')}
         primaryCta={{ label: t('solutionsIndex.heroCta'), href: '/pricing' }}
+        media={<HeroBlueprintCard />}
       />
 
       <main>

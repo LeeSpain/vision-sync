@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Hero, FeatureCard, SectionHeading, CTAGroup, SectionDivider } from '@/components/ui-system';
+import { HeroSkillsGrid } from '@/components/modules/HeroSkillsGrid';
 
 interface Module {
   id: string;
@@ -181,6 +182,7 @@ export default function Modules() {
         highlight={t('modules.heroHighlight')}
         subtitle={t('modules.subtitle')}
         primaryCta={{ label: t('modules.heroCta'), href: '/pricing' }}
+        media={<HeroSkillsGrid />}
       />
 
       <main>

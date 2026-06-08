@@ -10,7 +10,6 @@ import Index from "./pages/Index";
 import Platform from "./pages/Platform";
 import Solutions from "./pages/Solutions";
 import SolutionsIndex from "./pages/SolutionsIndex";
-import ModulePicker from './pages/ModulePicker';
 import QuotePortal from './pages/QuotePortal';
 import Modules from "./pages/Modules";
 import Pricing from "./pages/Pricing";
@@ -49,7 +48,6 @@ const App = () => (
             <Route path="/platform" element={<Platform />} />
             <Route path="/solutions" element={<SolutionsIndex />} />
             <Route path="/solutions/:industrySlug" element={<Solutions />} />
-            <Route path="/solutions/:industrySlug/build" element={<ModulePicker />} />
             <Route path="/quote/:quoteReference" element={<QuotePortal />} />
             <Route path="/modules" element={<Modules />} />
             <Route path="/pricing" element={<Pricing />} />

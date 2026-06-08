@@ -7,14 +7,12 @@ import SEOHead from '@/components/SEOHead';
 import { generateOrganizationSchema, generateWebPageSchema } from '@/utils/structuredData';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, Network, CheckCircle, Brain, Workflow, Loader2, Bot, Zap, Briefcase, MessageSquare, BarChart3 } from 'lucide-react';
-import CustomQuoteModal from '@/components/CustomQuoteModal';
 import { useTranslation } from 'react-i18next';
 import { usePricing } from '@/hooks/usePricing';
 import { Hero, GradientText, CTAGroup, SectionHeading, FeatureCard, DarkBand, SectionDivider } from '@/components/ui-system';
 import { HeroChatCard } from '@/components/home/HeroChatCard';
 
 export default function Index() {
-  const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [sections, setSections] = useState<any[]>([]);
   const [modules, setModules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +77,7 @@ export default function Index() {
         title={hero.title.split(' For Your Business')[0]}
         highlight={hero.title.includes('For Your Business') ? 'For Your Business' : undefined}
         subtitle={hero.content}
-        primaryCta={{ label: hero.ctaLabel || t('index.requestDemo'), onClick: () => setShowQuoteModal(true) }}
+        primaryCta={{ label: hero.ctaLabel || t('index.requestDemo'), href: '/pricing' }}
         secondaryCta={{ label: t('index.explorePlatform'), href: hero.ctaLink || '/platform', icon: Network }}
         footnote={t('index.heroTrust')}
         media={
@@ -246,14 +244,13 @@ export default function Index() {
           </p>
           <CTAGroup
             className="justify-center text-midnight-navy"
-            primary={{ label: finalCta.ctaLabel || t('index.requestBlueprint'), onClick: () => setShowQuoteModal(true) }}
+            primary={{ label: finalCta.ctaLabel || t('index.requestBlueprint'), href: '/pricing' }}
             secondary={{ label: t('index.viewPricing'), href: finalCta.ctaLink || '/pricing' }}
           />
         </div>
       </DarkBand>
 
       <Footer />
-      <CustomQuoteModal open={showQuoteModal} onOpenChange={setShowQuoteModal} />
     </div>
   );
 }
