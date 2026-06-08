@@ -35,6 +35,7 @@
         "admin": {
             "dashboard": "Panel de Control",
             "industries": "Industrias",
+            "pricing": "Precios",
             "skills": "Habilidades",
             "solutions": "Soluciones",
             "pageSections": "Secciones de Página",

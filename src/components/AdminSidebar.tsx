@@ -20,7 +20,8 @@ import {
   ChevronDown,
   Sparkles,
   Puzzle,
-  Factory
+  Factory,
+  Coins
 } from "lucide-react"
 
 import {
@@ -43,6 +44,7 @@ import { useTranslation } from "react-i18next";
 const mainItems = [
   { key: "admin.dashboard", url: "#overview", icon: LayoutDashboard },
   { key: "admin.industries", url: "#industries", icon: Factory },
+  { key: "admin.pricing", url: "#pricing", icon: Coins },
   { key: "admin.skills", url: "#skills", icon: Puzzle },
   { key: "admin.solutions", url: "#solutions", icon: Building2 },
   { key: "admin.quotes", url: "#quotes", icon: FileText, badge: null },
