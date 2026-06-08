@@ -38,7 +38,7 @@ BEGIN
       ex_vat_price  = COALESCE(draft_ex_vat_price, ex_vat_price),
       inc_vat_price = COALESCE(draft_inc_vat_price, inc_vat_price),
       voice_minutes = COALESCE(draft_voice_minutes, voice_minutes),
-      tagline       = draft_tagline,
+      tagline       = COALESCE(draft_tagline, tagline),
       includes      = COALESCE(draft_includes, includes),
       draft_name          = NULL,
       draft_ex_vat_price  = NULL,
