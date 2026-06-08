@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Hero, PricingCard, SectionHeading, CTAGroup } from '@/components/ui-system';
+import { HeroPricingCard } from '@/components/pricing/HeroPricingCard';
 
 // ─── Add-on Skills (no prices shown to the user) ────────────────────────────
 
@@ -286,6 +287,7 @@ export default function Pricing() {
         title={t('pricing.heroTitle')}
         highlight={t('pricing.heroHighlight')}
         subtitle={t('pricing.heroSubtitle')}
+        media={<HeroPricingCard />}
       />
 
       <main className="flex-grow pb-24">

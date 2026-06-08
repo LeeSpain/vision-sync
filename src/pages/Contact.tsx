@@ -12,6 +12,7 @@ import { useBudgetOptions } from '@/utils/budgetOptions';
 import AiChatWidget from '@/components/chat/AiChatWidget';
 import { useTranslation } from 'react-i18next';
 import { Hero, DarkBand } from '@/components/ui-system';
+import { HeroMessageCard } from '@/components/contact/HeroMessageCard';
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -340,6 +341,7 @@ const Contact = () => {
         title={t('contact.title')}
         highlight={t('contact.titleHighlight')}
         subtitle={t('contact.subtitle')}
+        media={<HeroMessageCard />}
       />
 
       {/* Contact Section */}

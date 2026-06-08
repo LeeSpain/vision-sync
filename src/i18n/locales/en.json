@@ -135,6 +135,18 @@
             "heroTitle": "Get Your",
             "heroHighlight": "Quote",
             "heroSubtitle": "Tell us about your business, choose your package, and receive a personalised proposal — no obligation, no hidden fees.",
+            "heroVisual": {
+                "title": "Pricing",
+                "status": "3 tiers — pick yours",
+                "base": "Base",
+                "growth": "Growth",
+                "everything": "Everything",
+                "baseDesc": "Get started",
+                "growthDesc": "Best value",
+                "everythingDesc": "All channels",
+                "popular": "Most popular",
+                "vat": "+21% IVA on all tiers"
+            },
             "step1Label": "Your Industry",
             "step2Label": "Your Package",
             "step3Label": "Extra Skills",
@@ -252,6 +264,9 @@
             "subtitle": "Not sure where to start with AI? We've created simple, pre-built packages tailored for your industry that plug right into your business.",
             "seeHowItWorks": "See How It Works",
             "heroEyebrow": "Built for {{industry}} in Alicante & Almeria",
+            "heroTitlePrefix": "AI for",
+            "heroQuoteCta": "Get Your Quote",
+            "heroTeamCta": "Talk to our team",
             "packagesEyebrow": "Plans",
             "packagesTitle": "Packages & pricing",
             "packagesSubtitle": "Choose the tier that fits — every plan is built for {{industry}} and includes everything below it.",
@@ -295,11 +310,33 @@
             "seeSolution": "See this solution",
             "bilingualNote": "Every blueprint includes a bilingual AI agent — English and Spanish — ready in 48 hours.",
             "notSure": "Not sure which solution fits your business?",
-            "talkToTeam": "Talk to our team"
+            "talkToTeam": "Talk to our team",
+            "heroVisual": {
+                "title": "AI Blueprints",
+                "status": "Ready in 48 hours",
+                "estate": "Estate Agents",
+                "dental": "Dental Clinics",
+                "legal": "Legal & Gestoría",
+                "rentals": "Holiday Rentals",
+                "gyms": "Gyms & Fitness",
+                "restaurants": "Restaurants"
+            }
         },
         "modules": {
             "title": "Pick Your AI Superpowers",
             "subtitle": "Add new skills to your business just like installing apps on your phone. Browse our library of ready-to-use AI helpers.",
+            "heroVisual": {
+                "title": "AI Skills",
+                "status": "Add as you grow",
+                "email": "Email",
+                "voice": "Voice",
+                "crm": "CRM",
+                "bookings": "Bookings",
+                "reviews": "Reviews",
+                "whatsapp": "WhatsApp",
+                "social": "Social",
+                "analytics": "Analytics"
+            },
             "heroEyebrow": "Add-On Modules",
             "heroTitle": "Pick Your AI",
             "heroHighlight": "Superpowers",
@@ -381,7 +418,14 @@
             "aiTitle": "AI Guardian Assistant",
             "aiSubtitle": "Get instant answers about our services while you fill out the form",
             "aiAvailable": "AI Available 24/7",
-            "aiResponses": "Instant Responses"
+            "aiResponses": "Instant Responses",
+            "heroVisual": {
+                "agentName": "Vision-Sync AI",
+                "status": "online · replies instantly",
+                "sent": "Do you offer support in Spanish?",
+                "reply": "Yes — we reply in English and Spanish, around the clock.",
+                "stat": "Replies in English & Spanish"
+            }
         },
         "quotePortal": {
             "loading": "Loading your quote...",

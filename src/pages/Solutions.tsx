@@ -6,6 +6,8 @@ import Footer from '@/components/Layout/Footer';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowLeft, ArrowRight, Mic, Users, Target } from 'lucide-react';
 import { usePricing } from '@/hooks/usePricing';
+import { Hero } from '@/components/ui-system';
+import { HeroBlueprintCard } from '@/components/solutions/HeroBlueprintCard';
 
 export default function Solutions() {
   const { industrySlug } = useParams<{ industrySlug: string }>();
@@ -52,35 +54,15 @@ export default function Solutions() {
         </div>
 
         {/* Hero */}
-        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-royal-purple/5 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute top-40 right-10 w-96 h-96 bg-emerald-green/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-          <div className="max-w-7xl mx-auto relative z-10 text-center">
-            <div className="inline-flex items-center justify-center gap-2 bg-gradient-primary px-4 py-1.5 rounded-full text-white text-sm font-medium mb-8 shadow-glow mx-auto">
-              <Target className="h-4 w-4" />
-              {t('solutions.heroEyebrow', { industry: industry.name })}
-            </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-midnight-navy mb-6 tracking-tight">
-              <span className="bg-gradient-primary bg-clip-text text-transparent">{industry.name}</span>
-            </h1>
-            <p className="text-lg md:text-xl text-cool-gray mb-10 max-w-3xl mx-auto leading-relaxed">
-              {industry.painStatement}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/pricing">
-                <Button variant="hero" size="lg" className="shadow-lg group">
-                  Get Your Quote
-                  <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link to="/contact">
-                <Button variant="outline" size="lg">
-                  Talk to our team
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
+        <Hero
+          eyebrow={{ icon: Target, label: t('solutions.heroEyebrow', { industry: industry.name }) }}
+          title={t('solutions.heroTitlePrefix')}
+          highlight={industry.name}
+          subtitle={industry.painStatement}
+          primaryCta={{ label: t('solutions.heroQuoteCta'), href: '/pricing' }}
+          secondaryCta={{ label: t('solutions.heroTeamCta'), href: '/contact' }}
+          media={<HeroBlueprintCard />}
+        />
 
         {/* What's included */}
         <section className="py-20 px-4 bg-white">

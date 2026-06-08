@@ -135,6 +135,18 @@
             "heroTitle": "Obtén Tu",
             "heroHighlight": "Presupuesto",
             "heroSubtitle": "Cuéntanos sobre tu negocio, elige tu paquete y recibe una propuesta personalizada — sin compromiso, sin costes ocultos.",
+            "heroVisual": {
+                "title": "Precios",
+                "status": "3 niveles — elige el tuyo",
+                "base": "Base",
+                "growth": "Growth",
+                "everything": "Everything",
+                "baseDesc": "Para empezar",
+                "growthDesc": "Mejor valor",
+                "everythingDesc": "Todos los canales",
+                "popular": "Más popular",
+                "vat": "+21% IVA en todos los niveles"
+            },
             "step1Label": "Tu Sector",
             "step2Label": "Tu Paquete",
             "step3Label": "Funciones Extra",
@@ -252,6 +264,9 @@
             "subtitle": "¿No estás seguro de por dónde empezar con la IA? Hemos creado paquetes preconstruidos sencillos y adaptados a tu industria que se integran directamente en tu negocio.",
             "seeHowItWorks": "Ver Cómo Funciona",
             "heroEyebrow": "Hecho para {{industry}} en Alicante y Almería",
+            "heroTitlePrefix": "IA para",
+            "heroQuoteCta": "Obtén Tu Presupuesto",
+            "heroTeamCta": "Habla con nuestro equipo",
             "packagesEyebrow": "Planes",
             "packagesTitle": "Paquetes y precios",
             "packagesSubtitle": "Elige el nivel que encaje — cada plan está creado para {{industry}} e incluye todo lo del nivel inferior.",
@@ -295,11 +310,33 @@
             "seeSolution": "Ver esta solución",
             "bilingualNote": "Cada plano incluye un agente de IA bilingüe — inglés y español — listo en 48 horas.",
             "notSure": "¿No sabes qué solución se adapta a tu negocio?",
-            "talkToTeam": "Habla con nuestro equipo"
+            "talkToTeam": "Habla con nuestro equipo",
+            "heroVisual": {
+                "title": "Planos de IA",
+                "status": "Listo en 48 horas",
+                "estate": "Inmobiliarias",
+                "dental": "Clínicas Dentales",
+                "legal": "Legal y Gestoría",
+                "rentals": "Alquiler Vacacional",
+                "gyms": "Gimnasios",
+                "restaurants": "Restaurantes"
+            }
         },
         "modules": {
             "title": "Elige Tus Superpoderes de IA",
             "subtitle": "Agrega nuevas habilidades a tu negocio como si instalaras aplicaciones en tu teléfono. Explora nuestra biblioteca de ayudantes de IA listos para usar.",
+            "heroVisual": {
+                "title": "Habilidades de IA",
+                "status": "Añade a tu ritmo",
+                "email": "Email",
+                "voice": "Voz",
+                "crm": "CRM",
+                "bookings": "Reservas",
+                "reviews": "Reseñas",
+                "whatsapp": "WhatsApp",
+                "social": "Social",
+                "analytics": "Análisis"
+            },
             "heroEyebrow": "Módulos Adicionales",
             "heroTitle": "Elige Tus",
             "heroHighlight": "Superpoderes de IA",
@@ -381,7 +418,14 @@
             "aiTitle": "Asistente AI Guardian",
             "aiSubtitle": "Obtén respuestas instantáneas sobre nuestros servicios mientras llenas el formulario",
             "aiAvailable": "IA Disponible 24/7",
-            "aiResponses": "Respuestas Instantáneas"
+            "aiResponses": "Respuestas Instantáneas",
+            "heroVisual": {
+                "agentName": "Vision-Sync IA",
+                "status": "en línea · responde al instante",
+                "sent": "¿Ofrecéis soporte en español?",
+                "reply": "Sí — respondemos en inglés y español, a cualquier hora.",
+                "stat": "Responde en inglés y español"
+            }
         },
         "quotePortal": {
             "loading": "Cargando tu presupuesto...",
