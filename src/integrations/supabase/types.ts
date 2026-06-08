@@ -24,6 +24,7 @@ export type Database = {
           voice_native: boolean
           sort_order: number
           is_published: boolean
+          has_draft_changes: boolean
           created_at: string
           updated_at: string
         }
@@ -36,6 +37,7 @@ export type Database = {
           voice_native?: boolean
           sort_order?: number
           is_published?: boolean
+          has_draft_changes?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -48,6 +50,7 @@ export type Database = {
           voice_native?: boolean
           sort_order?: number
           is_published?: boolean
+          has_draft_changes?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -64,6 +67,13 @@ export type Database = {
           voice_minutes: number
           tagline: string | null
           includes: Json
+          draft_name: string | null
+          draft_ex_vat_price: number | null
+          draft_inc_vat_price: number | null
+          draft_voice_minutes: number | null
+          draft_tagline: string | null
+          draft_includes: Json | null
+          has_draft: boolean
           sort_order: number
           created_at: string
           updated_at: string
@@ -78,6 +88,13 @@ export type Database = {
           voice_minutes?: number
           tagline?: string | null
           includes?: Json
+          draft_name?: string | null
+          draft_ex_vat_price?: number | null
+          draft_inc_vat_price?: number | null
+          draft_voice_minutes?: number | null
+          draft_tagline?: string | null
+          draft_includes?: Json | null
+          has_draft?: boolean
           sort_order?: number
           created_at?: string
           updated_at?: string
@@ -92,6 +109,13 @@ export type Database = {
           voice_minutes?: number
           tagline?: string | null
           includes?: Json
+          draft_name?: string | null
+          draft_ex_vat_price?: number | null
+          draft_inc_vat_price?: number | null
+          draft_voice_minutes?: number | null
+          draft_tagline?: string | null
+          draft_includes?: Json | null
+          has_draft?: boolean
           sort_order?: number
           created_at?: string
           updated_at?: string
