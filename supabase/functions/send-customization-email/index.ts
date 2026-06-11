@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { EMAIL, adminInbox, escapeHtml } from "../_shared/email.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -48,9 +49,9 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { clientInfo, templateTitle, customizationData }: CustomizationEmailRequest = await req.json();
 
-    console.log("Processing customization request:", { 
-      client: clientInfo.name, 
-      template: templateTitle 
+    console.log("Processing customization request:", {
+      client: clientInfo.name,
+      template: templateTitle
     });
 
     // Validate required fields
@@ -58,24 +59,40 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields");
     }
 
-    // Format requirements for email display
+    // Escaped copies for safe HTML interpolation. Subjects + Reply-To below use
+    // the raw values (they are not HTML).
+    const q = customizationData.questionnaire;
+    const safe = {
+      name: escapeHtml(clientInfo.name),
+      email: escapeHtml(clientInfo.email),
+      phone: escapeHtml(clientInfo.phone),
+      template: escapeHtml(templateTitle),
+      businessType: escapeHtml(q.businessType),
+      industry: escapeHtml(q.industry),
+      businessSize: escapeHtml(q.businessSize),
+      techComfort: escapeHtml(q.techComfort),
+      budgetRange: escapeHtml(q.budgetRange),
+      timeline: escapeHtml(q.timeline),
+    };
+
+    // Format requirements for email display (each item escaped)
     const formatRequirements = (requirements: string[]) => {
-      return requirements.length > 0 
-        ? requirements.map(r => `<li>${r}</li>`).join('') 
+      return requirements.length > 0
+        ? requirements.map(r => `<li>${escapeHtml(r)}</li>`).join('')
         : '<li>None specified</li>';
     };
 
     // Send confirmation email to client
     const clientEmailResponse = await resend.emails.send({
-      from: "Vision-Sync Forge <onboarding@resend.dev>",
+      from: EMAIL.from.hello,
       to: [clientInfo.email],
       subject: `Your ${templateTitle} Customization Request Received`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #1e293b;">Thank You, ${clientInfo.name}!</h1>
-          
+          <h1 style="color: #1e293b;">Thank You, ${safe.name}!</h1>
+
           <p style="font-size: 16px; color: #475569;">
-            We've received your customization request for <strong>${templateTitle}</strong>.
+            We've received your customization request for <strong>${safe.template}</strong>.
           </p>
 
           <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -89,21 +106,21 @@ const handler = async (req: Request): Promise<Response> => {
 
           <h3 style="color: #1e293b;">Your Requirements Summary:</h3>
           <ul style="color: #475569; line-height: 1.6;">
-            <li><strong>Business Type:</strong> ${customizationData.questionnaire.businessType}</li>
-            <li><strong>Industry:</strong> ${customizationData.questionnaire.industry}</li>
-            <li><strong>Business Size:</strong> ${customizationData.questionnaire.businessSize}</li>
-            <li><strong>Tech Comfort:</strong> ${customizationData.questionnaire.techComfort}</li>
-            <li><strong>Budget Range:</strong> ${customizationData.questionnaire.budgetRange}</li>
-            <li><strong>Timeline:</strong> ${customizationData.questionnaire.timeline}</li>
+            <li><strong>Business Type:</strong> ${safe.businessType}</li>
+            <li><strong>Industry:</strong> ${safe.industry}</li>
+            <li><strong>Business Size:</strong> ${safe.businessSize}</li>
+            <li><strong>Tech Comfort:</strong> ${safe.techComfort}</li>
+            <li><strong>Budget Range:</strong> ${safe.budgetRange}</li>
+            <li><strong>Timeline:</strong> ${safe.timeline}</li>
           </ul>
 
           <h3 style="color: #1e293b;">Features Needed:</h3>
           <ul style="color: #475569; line-height: 1.6;">
-            ${formatRequirements(customizationData.questionnaire.requirements)}
+            ${formatRequirements(q.requirements)}
           </ul>
 
           <p style="font-size: 14px; color: #64748b; margin-top: 30px;">
-            If you have any questions, feel free to reply to this email or call us at ${clientInfo.phone}.
+            If you have any questions, feel free to reply to this email or call us at ${safe.phone}.
           </p>
 
           <p style="font-size: 14px; color: #64748b;">
@@ -114,56 +131,56 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    // Send notification email to team
+    // Send notification email to the admin inbox
     const teamEmailResponse = await resend.emails.send({
-      from: "Vision-Sync Customizations <onboarding@resend.dev>",
-      to: ["leewakeman@hotmail.co.uk"],
+      from: EMAIL.from.hello,
+      to: [adminInbox()],
       subject: `New Customization Request - ${templateTitle}`,
       replyTo: clientInfo.email,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #1e293b;">New Customization Request</h1>
-          
+
           <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h2 style="color: #1e293b; font-size: 18px; margin-top: 0;">Client Information</h2>
             <ul style="color: #475569; line-height: 1.6;">
-              <li><strong>Name:</strong> ${clientInfo.name}</li>
-              <li><strong>Email:</strong> ${clientInfo.email}</li>
-              <li><strong>Phone:</strong> ${clientInfo.phone}</li>
+              <li><strong>Name:</strong> ${safe.name}</li>
+              <li><strong>Email:</strong> ${safe.email}</li>
+              <li><strong>Phone:</strong> ${safe.phone}</li>
             </ul>
           </div>
 
-          <h3 style="color: #1e293b;">Template: ${templateTitle}</h3>
-          
+          <h3 style="color: #1e293b;">Template: ${safe.template}</h3>
+
           <h3 style="color: #1e293b;">Requirements:</h3>
           <ul style="color: #475569; line-height: 1.6;">
-            <li><strong>Business Type:</strong> ${customizationData.questionnaire.businessType}</li>
-            <li><strong>Industry:</strong> ${customizationData.questionnaire.industry}</li>
-            <li><strong>Business Size:</strong> ${customizationData.questionnaire.businessSize}</li>
-            <li><strong>Tech Comfort:</strong> ${customizationData.questionnaire.techComfort}</li>
-            <li><strong>Budget Range:</strong> ${customizationData.questionnaire.budgetRange}</li>
-            <li><strong>Timeline:</strong> ${customizationData.questionnaire.timeline}</li>
+            <li><strong>Business Type:</strong> ${safe.businessType}</li>
+            <li><strong>Industry:</strong> ${safe.industry}</li>
+            <li><strong>Business Size:</strong> ${safe.businessSize}</li>
+            <li><strong>Tech Comfort:</strong> ${safe.techComfort}</li>
+            <li><strong>Budget Range:</strong> ${safe.budgetRange}</li>
+            <li><strong>Timeline:</strong> ${safe.timeline}</li>
           </ul>
 
           <h3 style="color: #1e293b;">Features Needed:</h3>
           <ul style="color: #475569; line-height: 1.6;">
-            ${formatRequirements(customizationData.questionnaire.requirements)}
+            ${formatRequirements(q.requirements)}
           </ul>
 
           <p style="font-size: 14px; color: #64748b; margin-top: 30px;">
-            Submitted at: ${new Date(customizationData.submittedAt).toLocaleString()}
+            Submitted at: ${escapeHtml(new Date(customizationData.submittedAt).toLocaleString())}
           </p>
         </div>
       `,
     });
 
-    console.log("Emails sent successfully:", { 
+    console.log("Emails sent successfully:", {
       clientEmail: clientEmailResponse,
       teamEmail: teamEmailResponse
     });
 
-    return new Response(JSON.stringify({ 
-      success: true, 
+    return new Response(JSON.stringify({
+      success: true,
       message: "Customization request sent successfully",
       client: clientInfo.name,
       template: templateTitle
@@ -174,13 +191,11 @@ const handler = async (req: Request): Promise<Response> => {
         ...corsHeaders,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
+    // Log the full error server-side; return a clean failure to the caller.
     console.error("Error in send-customization-email function:", error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        success: false 
-      }),
+      JSON.stringify({ success: false }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
