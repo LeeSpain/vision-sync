@@ -7,6 +7,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Single source of truth for this function's model. Verified against the
+// Anthropic models docs (current Sonnet). Env-overridable without a code change.
+const AI_MODEL = Deno.env.get('AI_MODEL') ?? 'claude-sonnet-4-6';
+
 interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -619,10 +623,15 @@ serve(async (req) => {
       }
       authenticatedUserId = user.id;
     }
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
 
-    if (!lovableApiKey) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    if (!anthropicApiKey) {
+      // Never leak which secret is missing to the chat client.
+      console.error('ANTHROPIC_API_KEY is not configured');
+      return new Response(JSON.stringify({ error: 'AI service is not configured. Please try again later.' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -670,24 +679,32 @@ serve(async (req) => {
       });
     }
 
-    // Build conversation for AI
+    // Build conversation for the Anthropic Messages API. `system` is a top-level
+    // param (not a message), so extract the system prompt and pass the last-10
+    // window as plain user/assistant turns. Anthropic requires the first message
+    // to be a user turn, so drop any leading assistant turn from the window
+    // (consecutive same-role turns are allowed and merged by the API).
     const systemPrompt = buildSystemPrompt(agent, pageContext, isAdmin, businessData);
-    const messages: Message[] = [
-      { role: 'system', content: systemPrompt },
-      ...conversationHistory.slice(-10), // Last 10 messages for context
-      { role: 'user', content: message }
-    ];
+    const historyWindow = conversationHistory
+      .slice(-10) // Last 10 messages for context
+      .filter((m: Message) => m.role === 'user' || m.role === 'assistant');
+    while (historyWindow.length > 0 && historyWindow[0].role === 'assistant') {
+      historyWindow.shift();
+    }
+    const anthropicMessages = [...historyWindow, { role: 'user', content: message }];
 
-    // Generate response using Lovable AI
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    // Generate response via the Anthropic Messages API (direct).
+    const aiResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
-        'Content-Type': 'application/json',
+        'x-api-key': anthropicApiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4-5',
-        messages,
+        model: AI_MODEL,
+        system: systemPrompt,
+        messages: anthropicMessages,
         max_tokens: agent.max_tokens || 500,
         temperature: agent.temperature || 0.7,
       }),
@@ -695,25 +712,36 @@ serve(async (req) => {
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error('AI Gateway error:', aiResponse.status, errorText);
-      
+      console.error('Anthropic API error:', aiResponse.status, errorText);
+
+      // 429 → keep the existing client-facing rate-limit message + status.
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }), {
           status: 429,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      if (aiResponse.status === 402) {
-        return new Response(JSON.stringify({ error: 'AI service requires payment. Please contact support.' }), {
-          status: 402,
+      // 529 overloaded_error → 503 "Service busy, please retry".
+      if (aiResponse.status === 529) {
+        return new Response(JSON.stringify({ error: 'Service busy, please retry.' }), {
+          status: 503,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+      // 401/403 (auth) and any other status → generic 500. Never leak key/auth
+      // detail to the chat client.
+      return new Response(JSON.stringify({ error: 'AI service error. Please try again.' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const aiData = await aiResponse.json();
-    let responseText = aiData.choices?.[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
+    // Anthropic returns an array of content blocks; concatenate the text blocks.
+    let responseText = (aiData.content ?? [])
+      .filter((b: { type: string }) => b.type === 'text')
+      .map((b: { text: string }) => b.text)
+      .join('\n') || "I'm sorry, I couldn't generate a response.";
 
     // Add handoff message if switching agents
     if (handoffOccurred && previousAgentName) {
@@ -850,7 +878,7 @@ serve(async (req) => {
         escalated: analysis.escalationRequested,
         handoff_triggered: handoffOccurred,
         source: 'ai-router',
-        model: 'anthropic/claude-sonnet-4-5',
+        model: aiData.model ?? AI_MODEL,
       });
 
     const response: RouterResponse = {
