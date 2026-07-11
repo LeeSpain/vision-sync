@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { EMAIL, adminInbox, escapeHtml } from "../_shared/email.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -54,10 +55,26 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const quote: QuoteEmailRequest = await req.json();
 
+    // Resolve the admin inbox up front so a missing ADMIN_EMAIL fails loudly.
+    const admin = adminInbox();
+
+    // Escaped copies for safe interpolation into the HTML bodies below.
+    // Subjects + Reply-To use the raw quote.* values (they are not HTML).
+    const e = {
+      firstName: escapeHtml(quote.clientFirstName),
+      lastName: escapeHtml(quote.clientLastName),
+      business: escapeHtml(quote.businessName),
+      email: escapeHtml(quote.email),
+      phone: escapeHtml(quote.phone || '—'),
+      industry: escapeHtml(quote.industryName),
+      packageName: escapeHtml(quote.basePackageName),
+      notes: quote.clientNotes ? escapeHtml(quote.clientNotes) : '',
+    };
+
     const modulesRows = quote.selectedModules.length > 0
       ? quote.selectedModules.map(mod => `
         <tr>
-          <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; color: #1e293b;">${mod.name}</td>
+          <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; color: #1e293b;">${escapeHtml(mod.name)}</td>
           <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; text-align: right; color: #1e293b;">${formatCurrency(mod.exVatPrice)}</td>
           <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; text-align: right; color: #64748b;">${formatCurrency(mod.ivaAmount)}</td>
           <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 600; color: #0f172a;">${formatCurrency(mod.totalIncVat)}</td>
@@ -66,7 +83,7 @@ const handler = async (req: Request): Promise<Response> => {
       : `<tr><td colspan="4" style="padding: 12px 16px; color: #64748b; text-align: center;">No add-on modules selected</td></tr>`;
 
     const baseIncludesList = quote.baseIncludes.map(item =>
-      `<li style="padding: 4px 0; color: #475569;">${item}</li>`
+      `<li style="padding: 4px 0; color: #475569;">${escapeHtml(item)}</li>`
     ).join('');
 
     const clientEmailHtml = `
@@ -99,19 +116,19 @@ const handler = async (req: Request): Promise<Response> => {
     <div style="background: white; padding: 48px; border-radius: 0 0 16px 16px;">
 
       <!-- Greeting -->
-      <h2 style="color: #0A1628; font-size: 22px; font-weight: 700; margin: 0 0 8px;">Hi ${quote.clientFirstName},</h2>
+      <h2 style="color: #0A1628; font-size: 22px; font-weight: 700; margin: 0 0 8px;">Hi ${e.firstName},</h2>
       <p style="color: #475569; font-size: 16px; line-height: 1.6; margin: 0 0 32px;">
         Thank you for building your package with Vision-Sync. Here is your personalised quote for
-        <strong style="color: #1E3A8A;">${quote.businessName}</strong>.
+        <strong style="color: #1E3A8A;">${e.business}</strong>.
         A member of our team will be in touch within 24 hours.
       </p>
 
       <!-- Industry & Package -->
       <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
         <p style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 4px;">Industry</p>
-        <p style="color: #0A1628; font-size: 18px; font-weight: 700; margin: 0 0 16px;">${quote.industryName}</p>
+        <p style="color: #0A1628; font-size: 18px; font-weight: 700; margin: 0 0 16px;">${e.industry}</p>
 
-        <p style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">Base Package: ${quote.basePackageName}</p>
+        <p style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">Base Package: ${e.packageName}</p>
         <ul style="margin: 0; padding-left: 20px;">
           ${baseIncludesList}
         </ul>
@@ -153,7 +170,7 @@ const handler = async (req: Request): Promise<Response> => {
       ${quote.clientNotes ? `
       <div style="background: #f0f9ff; border-left: 4px solid #1E3A8A; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 32px;">
         <p style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 4px;">Your Notes</p>
-        <p style="color: #1e293b; margin: 0; font-size: 14px;">${quote.clientNotes}</p>
+        <p style="color: #1e293b; margin: 0; font-size: 14px;">${e.notes}</p>
       </div>
       ` : ''}
 
@@ -196,11 +213,11 @@ const handler = async (req: Request): Promise<Response> => {
       <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
         <h2 style="color: #0A1628; font-size: 16px; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 0.5px;">Client Details</h2>
         <table style="width: 100%; border-collapse: collapse;">
-          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px; width: 120px;">Name</td><td style="padding: 6px 0; color: #1e293b; font-weight: 600;">${quote.clientFirstName} ${quote.clientLastName}</td></tr>
-          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Business</td><td style="padding: 6px 0; color: #1e293b; font-weight: 600;">${quote.businessName}</td></tr>
-          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Email</td><td style="padding: 6px 0; color: #1E3A8A;">${quote.email}</td></tr>
-          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Phone</td><td style="padding: 6px 0; color: #1e293b;">${quote.phone || '—'}</td></tr>
-          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Industry</td><td style="padding: 6px 0; color: #1e293b;">${quote.industryName}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px; width: 120px;">Name</td><td style="padding: 6px 0; color: #1e293b; font-weight: 600;">${e.firstName} ${e.lastName}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Business</td><td style="padding: 6px 0; color: #1e293b; font-weight: 600;">${e.business}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Email</td><td style="padding: 6px 0; color: #1E3A8A;">${e.email}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Phone</td><td style="padding: 6px 0; color: #1e293b;">${e.phone}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Industry</td><td style="padding: 6px 0; color: #1e293b;">${e.industry}</td></tr>
           <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Quote Ref</td><td style="padding: 6px 0; color: #1e293b; font-family: monospace; font-weight: 700;">${quote.quoteReference}</td></tr>
         </table>
       </div>
@@ -214,7 +231,7 @@ const handler = async (req: Request): Promise<Response> => {
       <div style="margin-bottom: 24px;">
         <h3 style="color: #0A1628; font-size: 14px; margin: 0 0 12px; text-transform: uppercase;">Modules Selected</h3>
         ${quote.selectedModules.length > 0
-        ? quote.selectedModules.map(m => `<div style="padding: 8px 12px; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between;"><span style="color: #1e293b;">${m.name}</span><span style="color: #1E3A8A; font-weight: 600;">${formatCurrency(m.totalIncVat)}/mo</span></div>`).join('')
+        ? quote.selectedModules.map(m => `<div style="padding: 8px 12px; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between;"><span style="color: #1e293b;">${escapeHtml(m.name)}</span><span style="color: #1E3A8A; font-weight: 600;">${formatCurrency(m.totalIncVat)}/mo</span></div>`).join('')
         : '<p style="color: #94a3b8; font-size: 13px;">No add-on modules selected</p>'
       }
       </div>
@@ -222,7 +239,7 @@ const handler = async (req: Request): Promise<Response> => {
       ${quote.clientNotes ? `
       <div style="background: #fef9c3; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
         <p style="color: #854d0e; font-size: 12px; text-transform: uppercase; margin: 0 0 4px;">Client Notes</p>
-        <p style="color: #1e293b; margin: 0;">${quote.clientNotes}</p>
+        <p style="color: #1e293b; margin: 0;">${e.notes}</p>
       </div>
       ` : ''}
 
@@ -239,7 +256,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send client email
     const clientEmailResponse = await resend.emails.send({
-      from: "Vision-Sync Forge <quotes@vision-sync.co>",
+      from: EMAIL.from.quotes,
       to: [quote.email],
       subject: `Your Vision-Sync Quote — ${quote.quoteReference}`,
       html: clientEmailHtml,
@@ -247,8 +264,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send admin notification
     const adminEmailResponse = await resend.emails.send({
-      from: "Vision-Sync Lead System <quotes@vision-sync.co>",
-      to: ["lee@vision-sync.com"],
+      from: EMAIL.from.quotes,
+      to: [admin],
       subject: `NEW QUOTE: ${quote.businessName} — ${quote.industryName} — ${formatCurrency(quote.totalIncVat)}/mo`,
       html: adminEmailHtml,
       replyTo: quote.email,
@@ -269,12 +286,11 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
-  } catch (error: unknown) {
+  } catch (error) {
+    // Log the full error server-side; return a clean failure to the caller.
     console.error("Error in send-quote-email function:", error);
     return new Response(
-      JSON.stringify({
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }),
+      JSON.stringify({ success: false }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
