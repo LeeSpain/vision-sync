@@ -128,6 +128,16 @@ Web Speech API (or provider) for the film inputs; graceful hide when unsupported
 Tables: `tenants`, `tenant_configs` (versioned), `industry_packs`, `nodes`, `tenant_nodes`, `provisioning_jobs`, `agent_test_runs`, `change_requests`, `signoffs`. RLS on all; tenant-scoped policies; seed `nodes` from PRICING_PACKAGES; seed 8 `industry_packs` (D17) — pilots first: Hair & Beauty, Holiday Rentals, Trades.
 ✅ Accept: RLS proven by negative tests (tenant A cannot read tenant B).
 
+### D20 Admin plan/pricing levers + plan versioning (owner build-order step 6; cited in P3.6)
+Editable economic levers (prices per currency, included AI conversations, voice minutes, WhatsApp caps, overage rates, per-tier feature flags) + plan versioning; extends PlansManager/PricingManager. Admin-only, invisible to public.
+
+**Status (part 1/2 — data layer done, drafting mode; verified on local PG14; awaits owner apply):**
+- [x] `plan_versions` table (versioned levers) + admin-only RLS + `create_plan_version()` RPC + one-current-per-plan index — migration `20260712140000_d20_plan_versions.sql`. Self-contained (defensively re-defines `is_admin()`/`update_updated_at_column()`, so it applies with or without P3.1 first).
+- [x] Backfill v1 for every existing plan from live columns — `20260712140100_d20_backfill_plan_versions.sql` (idempotent).
+- [x] Tests `supabase/tests/d20_plan_versions_tests.sql` — 5 PASS (versioning bump, one-current constraint, admin-only read, non-admin read/write denied) + backfill sanity; ran end-to-end on throwaway PG14.
+- [x] TS contract `src/types/planVersion.ts`; runbook `supabase/RUNBOOK_D20.md`.
+- [ ] **Part 2 (UI) — NEXT PR:** extend PlansManager (per-tier levers + save-as-new-version + version history) and PricingManager (caps/overages/flags), reading `plan_versions`. Requires part-1 migrations live in the DB first (managers read from Supabase).
+
 ### P3.2 Multi-tenant runtime
 Vercel wildcard `*.vision-sync.co` + tenant resolver; microsite renderer composing light-register sections from TenantConfig (branding = token overrides only); tenant chat widget embed issuing.
 ✅ Accept: two seeded tenants render distinctly on their subdomains.
