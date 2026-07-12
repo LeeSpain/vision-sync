@@ -128,6 +128,14 @@ Web Speech API (or provider) for the film inputs; graceful hide when unsupported
 Tables: `tenants`, `tenant_configs` (versioned), `industry_packs`, `nodes`, `tenant_nodes`, `provisioning_jobs`, `agent_test_runs`, `change_requests`, `signoffs`. RLS on all; tenant-scoped policies; seed `nodes` from PRICING_PACKAGES; seed 8 `industry_packs` (D17) — pilots first: Hair & Beauty, Holiday Rentals, Trades.
 ✅ Accept: RLS proven by negative tests (tenant A cannot read tenant B).
 
+**Status (done — drafting mode; purely additive, verified on a local PG14 cluster; awaits owner `supabase db push`):**
+- [x] 4 numbered migrations (all 9 tables + RLS + triggers): `20260712120000_p31_catalog` (is_admin() · industry_packs · nodes), `..0100_p31_tenants` (tenants · owns_tenant() · tenant_configs versioned · tenant_nodes), `..0200_p31_workflow` (provisioning_jobs · agent_test_runs · change_requests · signoffs), `..0300_p31_seed`.
+- [x] RLS on all 9 (9/9 verified): admin full; tenant-owner scoped via `owns_tenant()`; nodes public-read active; industry_packs admin-only (sensitive prompt/test-suite — public projection deferred to P2.5).
+- [x] Seeds: 9 nodes (PRICING §3/§4) + 3 pilot packs (D17: hair-beauty, holiday-rentals, trades) with EN/ES copy, interview scripts, test-suites, per-tier default_nodes. (Full 8 packs = content work, post-P3.1.)
+- [x] RLS negative tests `supabase/tests/p31_rls_negative_tests.sql` — **all 6 PASS incl. tenant-A-cannot-read-tenant-B**; ran end-to-end on a throwaway PG14 cluster (Supabase-shimmed). Idempotent re-run + rollback snippet also verified.
+- [x] Runbook `supabase/RUNBOOK_P3.1.md` (apply → verify → negative tests → rollback note, D21).
+- **Note:** Supabase MCP not authorized this session → owner runs `supabase db push` on staging-first (D21), then prod. Purely additive: zero existing tables/rows/policies touched.
+
 ### P3.2 Multi-tenant runtime
 Vercel wildcard `*.vision-sync.co` + tenant resolver; microsite renderer composing light-register sections from TenantConfig (branding = token overrides only); tenant chat widget embed issuing.
 ✅ Accept: two seeded tenants render distinctly on their subdomains.
