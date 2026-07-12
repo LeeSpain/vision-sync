@@ -168,4 +168,52 @@ Ordered; each step is one PR/SQL with a rollback. Assumes **Option A**. Staging-
 ## 4. What I need from you
 1. Run §1.3 (A, B, C) and paste results — I'll complete the exact drift table and finalize R6's migration list.
 2. Rule on §2 (recommend **Option A**).
-3. Confirm the D20 build (PRs #10 unmerged) should be **re-homed per R4** rather than merged as-is against empty `plans`.
+3. Confirm the D20 build should be **re-homed per R4**.
+
+---
+
+## 5. UPDATE (post live inspection) — precise lever→home column map
+
+**Live ground truth (owner-confirmed):** `pricing_packages` = **24 rows** (8×3), healthy, columns incl. `ex_vat_price, inc_vat_price, voice_minutes, tagline, includes`. `pricing_industries` = **8 rows** healthy. `plans` = **0**, `plan_versions` = **0** (the D20 bug). `nodes` = 9, `industry_packs` = 3.
+**Ruling: Option A APPROVED.** **#10 authoritative status: MERGED** (merged_at 2026-07-12 17:12) — the buggy D20 UI is **already on `main`** reading empty `plans`; R4 fixes merged code (not a pending PR).
+
+### 5.1 Column map — which D20 levers already have a home
+| D20 lever | Already in `pricing_packages`? | Granularity | Homeless? | Canonical home (Option A) |
+|-----------|-------------------------------|-------------|-----------|---------------------------|
+| Price ex/inc VAT (EUR) | **Yes** (`ex_vat_price`,`inc_vat_price`) | per industry×tier | No | **`pricing_packages`** — do not duplicate |
+| Multi-currency prices (USD/GBP, D13) | No (EUR only) | — | Future | Deferred to D13/P3.3 — **not** in tier catalogue now |
+| Voice minutes | **Yes** (`voice_minutes`) | per industry×tier | No | **`pricing_packages`** — do not duplicate |
+| Included AI conversations | No | tier-level | **Yes** | **`plans`+`plan_versions`** |
+| WhatsApp cap | No | tier-level | **Yes** | **`plans`+`plan_versions`** |
+| Overage rates | No | tier-level | **Yes** | **`plans`+`plan_versions`** |
+| Feature flags (structured booleans) | Partial — `includes` (jsonb) is a per-package *display* list | per industry×tier | Overlap → owner call | `includes` stays for display; `plan_versions.feature_flags` only if tier-level *capability gating* is wanted. See 5.3 |
+| Versioning history | No (pricing has draft/publish, not history) | — | **Yes** | **`plan_versions`** |
+
+### 5.2 Consequence — redundant D20 columns
+`plan_versions.included_voice_minutes` and `plan_versions.price_points` (from the original D20 migration) **duplicate** `pricing_packages` and must **not** be populated. R2 leaves them NULL/empty; **R5** drops them after R4 confirms no reader.
+
+### 5.3 Open decision for owner (feature flags)
+Is a **tier-level capability-flag** set needed (does this tier get booking/whatsapp/voice at all), separate from `pricing_packages.includes` (customer-facing "what's included") and from per-tenant `tenant_nodes`? R2 seeds a starter `feature_flags` set but **the site does not read it** — safe either way. If not needed, R5 can also drop `plan_versions.feature_flags`.
+
+---
+
+## 6. REVISED reconciliation plan (supersedes §3 for R2/R4/R5)
+
+Report/plan only. Owner runs each R-step and confirms before the next. All migrations idempotent + `IF NOT EXISTS`-guarded — **verified on a deliberately drifted local PG14** (`plans` missing `currency`/`max_conversations`/`is_active`/`sort_order`; a `plan_versions` column dropped → R2 re-added missing columns, seeded 3 tiers + 3 v1 versions with **voice NULL**; R3 skipped drifted columns without error; re-run idempotent; rollback clean).
+
+| R | Step | Artifact | Rollback |
+|---|------|----------|----------|
+| R0 | Measure | §1.3 A done (counts); **B (full column dump) still needed for R6** | n/a |
+| R1 | Decide | Option A approved | n/a |
+| **R2** | Seed `plans` 3-tier catalogue + `plan_versions` v1 **homeless levers only** (AI conversations, overage, feature_flags; WhatsApp cap NULL; **no voice, no price**) | `20260712160000_r2_seed_tier_catalogue.sql` (this PR) | `DELETE FROM plan_versions WHERE plan_id IN (SELECT id FROM plans WHERE slug IN ('base','growth','everything')); DELETE FROM plans WHERE slug IN ('base','growth','everything');` |
+| **R3** | Mark `plans` price/limit columns DEPRECATED (guarded COMMENTs) | `20260712160100_r3_deprecate_plans_price_columns.sql` (this PR) | re-run with `IS NULL` comments, or revert PR |
+| **R4** | **Fix the merged D20 UI (#10):** `PlanVersionsManager` drops voice-minutes + price inputs (those live in PricingManager/`pricing_packages`); keeps AI conversations, WhatsApp cap, overage, feature flags, versioning. `PlansManager` reads the 3-row tier catalogue **and is wired into the admin shell** (it is orphaned — MISSION_CONTROL_AUDIT §1A). | code PR (after R2 live) | revert PR (admin-only) |
+| **R5** | Drop redundant `plan_versions.included_voice_minutes`, `price_points` (+ maybe `feature_flags` per 5.3) once R4 confirms no reader | migration (destructive — backup first) | re-add columns |
+| **R6** | Close wider drift on **kept** tables from §1.3 Query B; regenerate `src/integrations/supabase/types.ts` | migrations (after B paste) | per-migration |
+
+**Standing task (added):** *migration-history ↔ live-schema reconciliation.* The live DB has drifted from `supabase/migrations/*` (proven: `plans.currency`/`max_conversations`). Establish a checked-in live-schema baseline + a CI drift check so future migrations don't assume a schema the live DB lacks. Tracked in CLAUDE_CODE_PLAN.md STANDING GUARDRAILS.
+
+### What I need now
+1. **Run §1.3 Query B** (full column dump) → I finalize R6.
+2. Approve **R2** to run (SQL in this PR); confirm before I hand you R3.
+3. Answer **§5.3** (tier-level feature flags: keep or drop?).

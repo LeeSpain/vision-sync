@@ -198,6 +198,9 @@ Renewal reminders, dunning escalation drafts, churn-risk flags (usage drop), ups
 - No feature ships without EN + ES strings.
 - No new page without PAGE_STANDARD §7 checklist.
 - No migration without rollback note.
+- **Migrations must be self-verifying: the live DB has drifted from `supabase/migrations/*`, so guard every column/object with `IF NOT EXISTS` / existence checks; never assume a column exists. All seeds idempotent.** (See SCHEMA_AUDIT.md.)
 - When in doubt: smaller PR, ask Lee at the phase gate, never mid-sprint scope creep.
+
+**STANDING TASK — migration-history ↔ live-schema reconciliation.** Live has drifted from migration history (proven: `plans.currency`/`max_conversations` were manually added). Establish a checked-in live-schema baseline + a CI drift check so future migrations don't fail on drift. Scoped in SCHEMA_AUDIT.md §6 (R6 + standing task). Not yet started.
 
 *v1 · July 2026 · derived from BLUEPRINT.md v3 (31 decisions). Update this file as tasks complete.*
