@@ -149,7 +149,7 @@ serve(async (req) => {
       return `- ${project.name} (${project.category} - ${project.industry || 'Technology'}): ${project.description}
       Key Features: ${features}
       Pricing: ${pricing}
-      Page Link: ${Deno.env.get('FRONTEND_URL') || 'https://www.vision-sync.com'}${project.route}
+      Page Link: ${Deno.env.get('FRONTEND_URL') || 'https://www.vision-sync.co'}${project.route}
       ${project.domain_url ? `Live Demo: ${project.domain_url}` : ''}
       Lead Interest: ${project.leads_count || 0} inquiries`;
     }).join('\n\n') || 'No projects available';

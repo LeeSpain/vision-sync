@@ -1,73 +1,109 @@
-# Welcome to your Lovable project
+# Vision-Sync Forge
 
-## Project info
+**AI Agents, Chatbots & Intelligent Automation** — the self-selling, self-provisioning AI platform.
 
-**URL**: https://lovable.dev/projects/46b351db-af1b-407f-b201-d479176f3d35
+- **Live site:** https://www.vision-sync.co
+- **Repo:** https://github.com/LeeSpain/vision-sync
 
-## How can I edit this code?
+Vision-Sync is being built into a multi-tenant "tenant factory": a visitor lands on the
+site, is met by a live AI agent that interviews them, assembles their industry package,
+takes payment, and provisions their entire working platform automatically — branded
+microsite on their own subdomain, trained AI agent, dashboard, and notifications — gated
+only by a short owner approval. The company is run by talking to the Brain agent, not by
+hand-building client sites.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 📐 Read this first
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/46b351db-af1b-407f-b201-d479176f3d35) and start prompting.
+This repo is governed by two documents at the root. Read them before making changes:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **[BLUEPRINT.md](./BLUEPRINT.md)** — the constitution. Vision, decisions of record
+  (D1–D32), target architecture, phases (P0→P4), and the definition of done. **Strategy is
+  written here before it is built.**
+- **[CLAUDE_CODE_PLAN.md](./CLAUDE_CODE_PLAN.md)** — the work order. The session protocol
+  and the ordered, checkable task list that executes the blueprint.
 
-**Use your preferred IDE**
+Companion specs: `CLAUDE.md` (engineering standards), `DESIGN.md`, `UI_SYSTEM.md`,
+`PAGE_STANDARD.md`, `PRICING_PACKAGES.md`.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠 Tech stack
 
-Follow these steps:
+| Layer      | Technology                                                        |
+|------------|-------------------------------------------------------------------|
+| Frontend   | React 18 + TypeScript + Vite                                      |
+| Styling    | Tailwind CSS + shadcn/ui                                          |
+| Backend    | Supabase (PostgreSQL + Edge Functions + Realtime + Auth)          |
+| AI layer   | Anthropic Claude API (via Supabase Edge Functions — no keys in the client) |
+| i18n       | i18next (EN/ES at launch, more locales by demand)                 |
+| Deployment | Vercel (frontend) + Supabase Cloud (backend)                      |
+
+---
+
+## 🚀 Local development
+
+Requires Node.js and npm ([install via nvm](https://github.com/nvm-sh/nvm#installing-and-updating)).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 1. Clone
+git clone https://github.com/LeeSpain/vision-sync
+cd vision-sync
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# 2. Install
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 3. Configure environment
+#    Create a .env from the Supabase project settings (URL + anon key).
+#    Secrets (ANTHROPIC_API_KEY, RESEND_API_KEY, ADMIN_EMAIL, ...) live in
+#    Supabase Edge Function secrets — never in client code or Git.
+
+# 4. Run the dev server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Command                     | What it does                                        |
+|-----------------------------|-----------------------------------------------------|
+| `npm run dev`               | Start the Vite dev server                           |
+| `npm run build`             | Production build                                    |
+| `npm run preview`           | Preview the production build locally                |
+| `npm run lint`              | ESLint over the project                             |
+| `npx tsc --noEmit`          | Type-check (must be clean before every commit)      |
+| `npm run gen:pricing-knowledge` | Regenerate the pricing knowledge base           |
+| `npm run gen:pricing-db-seed`   | Regenerate the pricing DB seed                  |
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🗂 Project structure
 
-## What technologies are used for this project?
+```
+vision-sync/
+├── src/
+│   ├── components/      # admin, chat, ui-system, layout
+│   ├── pages/           # route-level components (incl. SalesDashboard)
+│   ├── hooks/           # data-fetching hooks
+│   ├── i18n/locales/    # en.json / es.json (kept at key-tree parity)
+│   ├── lib/ · utils/    # Supabase client, AI wrapper, shared utils
+│   └── types/           # shared TypeScript interfaces
+├── supabase/
+│   ├── functions/       # Deno edge functions (ai-chat, ai-router, ...)
+│   └── migrations/      # numbered, sequential SQL migrations (never edited)
+├── scripts/             # build-time generators
+├── BLUEPRINT.md         # the constitution
+└── CLAUDE_CODE_PLAN.md  # the work order
+```
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🤝 Contributing
 
-## How can I deploy this project?
+Every change follows the **session protocol** in `CLAUDE_CODE_PLAN.md`:
 
-Simply open [Lovable](https://lovable.dev/projects/46b351db-af1b-407f-b201-d479176f3d35) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. Branch per task (`<phase>/<task-id>-<slug>`) — never commit to `main`.
+2. `npx tsc --noEmit` clean and `npm run build` green before every commit.
+3. All user-facing copy goes through i18n (EN **and** ES). No raw hex — use DESIGN.md tokens.
+4. New numbered Supabase migrations only; never edit old ones.
+5. Cite the relevant BLUEPRINT decision (D-number) in the PR description.
