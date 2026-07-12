@@ -98,6 +98,33 @@ vision-sync/
 
 ---
 
+## 🔁 Environments, CI & deployment
+
+**Continuous integration (D31).** GitHub Actions (`.github/workflows/ci.yml`) runs on every
+pull request into `main` and on push to `main`. It installs with `npm ci`, then runs
+`npx tsc --noEmit` and `npm run build`. `main` is branch-protected: the **`typecheck + build`**
+check must pass before a PR can merge — a failing typecheck or build blocks merge.
+
+**Environments (D21 — staging-first, no destructive live changes).**
+
+| Environment | Trigger | Surface |
+|-------------|---------|---------|
+| **Production** | Merge to `main` | Vercel production → https://www.vision-sync.co. Only CI-passing, reviewed code reaches prod. |
+| **Preview / staging** | Every PR | Vercel Preview Deployment (unique per-PR URL) — the staging surface for review before merge. |
+| **Backend** | Supabase Cloud | One project for build/dev today; **D32** moves Vision-Sync to a dedicated Supabase **Pro** org at **P3.0**, before the first paying tenant. |
+
+**Secrets & config.** The client `.env` carries only the Supabase URL + anon key. All server
+secrets (`ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `ADMIN_EMAIL`, `ALLOWED_ORIGIN`, `FRONTEND_URL`)
+live in Supabase Edge Function secrets — never in client code or Git.
+
+**Backups / PITR — deferred.** Point-in-time recovery is **not** enabled: the current Supabase
+project is on the **Free tier**, where PITR is unavailable. PITR is turned on as part of the
+**D32** migration to a dedicated **Pro** org at **P3.0** (which replays migrations, migrates data,
+and keeps the old project read-only for 30 days as rollback). No paying-tenant data lives on the
+current project before that cutover.
+
+---
+
 ## 🤝 Contributing
 
 Every change follows the **session protocol** in `CLAUDE_CODE_PLAN.md`:
