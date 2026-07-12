@@ -32,6 +32,14 @@ Remove: `DynamicProjectPage`, `DynamicProjectDetail`, `src/components/project-te
 Fix last `vision-sync.com` canonical → `https://www.vision-sync.co`. Close the 4-key en/es gap (compare key trees programmatically). Rewrite README.md: real project description, stack, link to BLUEPRINT.md; remove Lovable boilerplate. Delete or admin-gate `/pricing-data-test` and `/ui-system` routes.
 ✅ Accept: one canonical domain repo-wide; key counts equal; README truthful.
 
+**Status (partial — done under owner's standing order, visual freeze in force):**
+- [x] Canonical straggler fixed: `ai-chat` `FRONTEND_URL` fallback `.com` → `.co`. (All site canonicals/OG/structured-data already on `.co`.)
+- [x] EN/ES i18n gap closed — exact key-tree parity (787/787): added 7 live ES `salesDashboard.overview` pipeline keys; removed 15 dead orphan `salesDashboard.quotes.*` keys (6 EN-only + 9 ES-only, zero code refs).
+- [x] README.md rewritten — Lovable boilerplate removed; real project/stack/blueprint links.
+- [x] Extra: `.claude/` added to `.gitignore`.
+- [ ] `/pricing-data-test` + `/ui-system` route gating — **DEFERRED** (visual freeze; touches visible routes).
+- Not touched (visible copy, freeze): `DemoGenerator.tsx` mock chrome string `preview.vision-sync.com/demo/temp-xyz`.
+
 ### P0.4 Pricing doc edits (D2, D3, D19)
 Update PRICING_PACKAGES.md: booking visibility = Growth (remove ASSUMPTION); Payments = add-on €49/mo Growth+ (remove from Everything scope); add Add-ons section (Payments, custom domain placeholder); add D19 lease/own-by-application + 14-day guarantee language.
 ✅ Accept: zero ASSUMPTION flags remain.

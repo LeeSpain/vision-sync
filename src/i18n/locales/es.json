@@ -549,7 +549,14 @@
                 "rec3Title": "Contrato Pendiente: TechFlow Solutions",
                 "rec3Desc": "El contrato lleva pendiente más de 5 días.",
                 "actionContract": "Ver Contrato",
-                "typeContract": "Contrato"
+                "typeContract": "Contrato",
+                "pipelineChart": "Embudo de Ventas",
+                "byStage": "Por Etapa",
+                "stageLead": "Lead Guardado",
+                "stageContacted": "Contactado",
+                "stageDemo": "Demo Enviada",
+                "stageProposal": "Propuesta",
+                "stageClosing": "Cierre"
             },
             "payments": {
                 "title": "Pagos y Facturación",
@@ -684,15 +691,6 @@
             "quotes": {
                 "title": "Generador de Cotizaciones",
                 "subtitle": "Crea y envía cotizaciones y propuestas profesionales.",
-                "newQuote": "Nueva Cotización",
-                "clientInfo": "Información del Cliente",
-                "clientName": "Nombre del Cliente",
-                "companyName": "Nombre de la Empresa",
-                "emailAddress": "Correo Electrónico",
-                "services": "Servicios Incluidos",
-                "webDevelopment": "Desarrollo Web",
-                "seoOptimization": "Optimización SEO",
-                "aiChatbot": "Integración de Chatbot IA",
                 "monthlyServices": "Servicios Mensuales Continuos",
                 "termsNotes": "Términos y Notas",
                 "defaultTerms": "Se aplica un compromiso estándar de contrato de 12 meses. Los precios no incluyen IVA. El pago por la configuración debe realizarse al firmar. La suscripción mensual comienza 30 días después del lanzamiento.",

@@ -672,12 +672,6 @@
             "quotes": {
                 "title": "Quote Builder",
                 "subtitle": "Generate and send professional pricing proposals.",
-                "dealLabel": "Deal: {{dealId}}",
-                "pdfPreview": "PDF Preview",
-                "sendProposal": "Send Proposal",
-                "lineItems": "Line Items",
-                "addItem": "Add Item",
-                "setupFees": "One-time Setup Fees",
                 "monthlyServices": "Ongoing Monthly Services",
                 "termsNotes": "Terms & Notes",
                 "defaultTerms": "Standard 12-month contract commitment applies. Prices exclude VAT. Payment for setup is due upon signature. Monthly subscription begins 30 days post-launch.",
