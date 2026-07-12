@@ -24,6 +24,13 @@
 Remove components: `EnhancedTemplatesShowcase`, `TemplateCard`, `TemplateCardAdapter`, `TemplateCategoryFilter`, `TemplateCategoryFilterAdapter`, `TemplateCustomizationFlow`, `TemplateDetailModal`, `TemplateInquiryForm`, `ShopCard`, `FeaturedProjectsCarousel`. Remove `src/utils/appTemplates.ts`, `useTemplates.ts` if orphaned, template-only admin managers (`CurrencyAwareTemplateManager`, `EnhancedTemplateCreationModal`, `IndustryTemplateBuilder/Selector` IF template-shop-scoped — verify imports first), edge functions `ai-template-assistant`, `generate-template-image` if uncalled.
 ✅ Accept: `grep -ri "template" src/` returns only legitimate hits (industry packs later reuse the word); tsc clean; build ok.
 
+**Status (done — owner's visual-freeze scope: "zero live imports, invisible"):**
+- [x] Deleted 12 zero-live-import dead-island files (public appearance unchanged; tsc + build green):
+  `EnhancedTemplatesShowcase`, `TemplateCard`, `TemplateCardAdapter`, `TemplateCategoryFilter`, `TemplateCategoryFilterAdapter`, `TemplateCustomizationFlow`, `TemplateDetailModal`, `TemplateInquiryForm`, `ShopCard`, `FeaturedProjectsCarousel`, `admin/IndustryTemplateBuilder`, and orphaned hook `hooks/useTemplates.ts`.
+- **KEPT (live imports → deferred to D24 Mission Control consolidation, build-order step 7):** `CurrencyAwareTemplateManager` (← Admin.tsx), `EnhancedTemplateCreationModal` + `IndustryTemplateSelector` (← admin TemplateManager chain), `TemplateManager`, `TemplateCreationModal`, `TemplateEditModal`, `TemplateAnalytics`, `TemplatePreviewModal`, `BulkImageGenerator`.
+- **KEPT `src/utils/appTemplates.ts`** — still referenced by the live admin modals above ("delete if unreferenced after sweep" — it isn't).
+- **KEPT edge fns `ai-template-assistant`, `generate-template-image`** — still invoked by live admin modals ("delete if uncalled" — they are called).
+
 ### P0.2 Delete the legacy project-showcase system (D25)
 Remove: `DynamicProjectPage`, `DynamicProjectDetail`, `src/components/project-template/`, `ProjectCard`, `ProfessionalProjectCard`, `FeaturedProjectCard`, `ProjectInquiryForm`, `ProjectCreationModal`, `ProjectEditModal`, `EnhancedProjectCreationModal/EditModal`, `ProjectManager` admin, `src/utils/projectManager.ts`, edge fn `generate-project-images`, `/:projectRoute` route in App.tsx, related i18n keys. Add `vercel.json` 301 redirects: each old project slug → `/` (or matching industry page).
 ✅ Accept: no dead imports; redirects tested; tsc clean.
