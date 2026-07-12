@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import {
   Plus, Edit2, Trash2, TrendingUp, Users, CreditCard, BarChart3,
   Check, X, Star, ToggleLeft, ToggleRight,
-  AlertTriangle, Loader2, Gem
+  AlertTriangle, Loader2, Gem, SlidersHorizontal
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { PlanVersionsManager } from './PlanVersionsManager';
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -158,6 +159,7 @@ export function PlansManager() {
   const [editingPlan, setEditingPlan] = useState<Plan>(emptyPlanForm());
   const [isEditing, setIsEditing] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Plan | null>(null);
+  const [versionsTarget, setVersionsTarget] = useState<Plan | null>(null);
   const [newFeatureText, setNewFeatureText] = useState('');
 
   // ─── Data Fetching ──────────────────────────────────────────
@@ -498,6 +500,15 @@ export function PlansManager() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-cool-gray hover:text-indigo-400 hover:bg-indigo-500/10"
+                        onClick={() => setVersionsTarget(plan)}
+                        title="Levers & versions"
+                      >
+                        <SlidersHorizontal className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-cool-gray hover:text-indigo-400 hover:bg-indigo-500/10"
                         onClick={() => openEdit(plan)}
                       >
                         <Edit2 className="h-3.5 w-3.5" />
@@ -769,6 +780,28 @@ export function PlansManager() {
               Delete Plan
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Levers & Versions (D20) ─────────────────────────── */}
+      <Dialog open={!!versionsTarget} onOpenChange={() => setVersionsTarget(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white border-slate-200">
+          <DialogHeader>
+            <DialogTitle className="text-midnight-navy flex items-center gap-2">
+              <SlidersHorizontal className="h-5 w-5 text-indigo-500" />
+              Levers & versions — {versionsTarget?.name}
+            </DialogTitle>
+            <DialogDescription className="text-cool-gray">
+              Edit this plan’s economic levers. Saving creates a new version; existing tenants keep their version until notified (D20).
+            </DialogDescription>
+          </DialogHeader>
+          {versionsTarget && (
+            <PlanVersionsManager
+              planId={versionsTarget.id}
+              planName={versionsTarget.name}
+              defaultCurrency={versionsTarget.currency}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>

@@ -144,7 +144,9 @@ Editable economic levers (prices per currency, included AI conversations, voice 
 - [x] Backfill v1 for every existing plan from live columns — `20260712140100_d20_backfill_plan_versions.sql` (idempotent).
 - [x] Tests `supabase/tests/d20_plan_versions_tests.sql` — 5 PASS (versioning bump, one-current constraint, admin-only read, non-admin read/write denied) + backfill sanity; ran end-to-end on throwaway PG14.
 - [x] TS contract `src/types/planVersion.ts`; runbook `supabase/RUNBOOK_D20.md`.
-- [ ] **Part 2 (UI) — NEXT PR:** extend PlansManager (per-tier levers + save-as-new-version + version history) and PricingManager (caps/overages/flags), reading `plan_versions`. Requires part-1 migrations live in the DB first (managers read from Supabase).
+- [x] **Part 2 (UI) — done:** `usePlanVersions` hook + `PlanVersionsManager` component (edit levers: per-currency price points, included AI conversations, voice minutes, WhatsApp cap, overage rates, per-tier feature-flag toggles, required version note) wired into **PlansManager** via a per-plan "Levers & versions" dialog. "Save as new version" calls the `create_plan_version` RPC; version history listed with current marker; loading/empty/error states handled. Admin-only; tsc + build green. Untyped Supabase boundary uses the repo's existing `as any` pattern (types not regenerated).
+  - PricingManager: its per-industry `pricing_packages` already has a draft/publish flow; plan-level levers live on `plan_versions` (plan-scoped), so the versioning UI's natural home is PlansManager. Mapping levers into PricingManager awaits a defined plan↔industry-package link — flagged as follow-up.
+  - Not runtime-verified against the live DB (no admin session/Supabase MCP in this environment); schema + RPC were verified on local PG in part 1.
 
 ### P3.2 Multi-tenant runtime
 Vercel wildcard `*.vision-sync.co` + tenant resolver; microsite renderer composing light-register sections from TenantConfig (branding = token overrides only); tenant chat widget embed issuing.
