@@ -166,6 +166,11 @@ Tenant dashboard: assembly progress (live), sandbox review + sign-off #1, leads/
 Admin audit: merge Enhanced*/base duplicates; new panels (Tenants, Gate queue, Change-request queue, Pack editor, cost-per-tenant dashboard D29); plans/pricing levers editable + plan versioning (D20); lazy-load admin + sales-dashboard chunks.
 ✅ Accept: public-site JS bundle contains zero admin code (verify with bundle analyzer).
 
+**Status (D24 scoping done — drafting; no admin code changed yet):**
+- [x] `MISSION_CONTROL_AUDIT.md` — full inventory (54 components, 25 rendered by Admin.tsx), classification (keep+extend / merge / kill / new), duplicate-merge plan, new factory panels mapped to P3.1 tables, proposed one-sidebar IA, bundle-split note (D8), and a sequenced execution plan.
+- **Key findings:** (1) `PlansManager` is **orphaned** (not mounted) → must be re-wired; the **D20 part-2 UI (#10) is unreachable until then** — first D24 task. (2) `LeadsManager` + `EnhancedLeadsManager` **both render** → merge to one. (3) `ProductCatalogManager` = confirmed orphan → delete (owner ruling). (4) project-era manager kills must coordinate with P0.2 (freeze-deferred).
+- Execution (the actual merges/kills/new panels) is per-PR under P3.6, admin-only, freeze-safe — awaits owner go-ahead.
+
 ### P3.7 Hardening (D26–D31 residue)
 Sentry front+edge; tenant health checks + alerts; LLM fallback copy; Resend/Postmark integration + template set (D30); provisioning integration tests in CI; retention job (24-mo conversations); legal pages (Terms w/ lease+AUP+guarantee, Privacy, DPA, AI-disclosure) drafted → LEE: human lawyer review before first sale.
 ✅ Accept: forced agent failure alerts Lee; test email suite renders EN/ES.
