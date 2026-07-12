@@ -63,6 +63,13 @@ Update PRICING_PACKAGES.md: booking visibility = Growth (remove ASSUMPTION); Pay
 GitHub Actions: on PR → `tsc --noEmit`, `npm run build`. Protect main. Confirm Vercel preview deploys. Document staging strategy in README. Enable Supabase PITR (manual dashboard step — write instruction for Lee).
 ✅ Accept: a failing typecheck blocks merge.
 
+**Status (done):**
+- [x] GitHub Actions CI `.github/workflows/ci.yml`: on PR→main + push→main runs `npm ci` → `npx tsc --noEmit` → `npm run build` (Node 22, npm cache, concurrency-cancel). Green on the real runner (PR #6, ~31s) and locally (all three steps exit 0).
+- [x] README "Environments, CI & deployment" section: prod (`main`→Vercel prod), per-PR Vercel Preview = staging (D21), Supabase backend note, secrets location.
+- [x] Vercel preview deploys confirmed (per-PR preview passed on PR #6).
+- [x] **Branch protection on `main`** requires the `typecheck + build` status check (`strict: false`, `enforce_admins: false`). Owner elected to **make the repo public** to unlock protection on GitHub Free. Acceptance met — a failing typecheck blocks merge.
+- **PITR — formally deferred to P3.0 (D32)** per owner amendment: current project is Free tier (PITR unavailable); enabled during the dedicated Pro-org migration at P3.0. Documented in README.
+
 **PHASE 0 GATE:** Lee 10-min review — site works, corpse gone, bundle smaller.
 
 ---
