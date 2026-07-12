@@ -44,6 +44,14 @@ Fix last `vision-sync.com` canonical → `https://www.vision-sync.co`. Close the
 Update PRICING_PACKAGES.md: booking visibility = Growth (remove ASSUMPTION); Payments = add-on €49/mo Growth+ (remove from Everything scope); add Add-ons section (Payments, custom domain placeholder); add D19 lease/own-by-application + 14-day guarantee language.
 ✅ Accept: zero ASSUMPTION flags remain.
 
+**Status (done — docs-only, no visible-site impact):**
+- [x] §2 booking/calendar visibility confirmed **Growth (D2)**, ASSUMPTION flag removed; Base dashboard = leads + conversations, view-only.
+- [x] §3 Payments/deposits removed from Everything scope, ASSUMPTION flag removed; note keeps "everything for *automation*" promise honest.
+- [x] New **§4 Add-ons**: Take Payments & Deposits €49/mo Growth+ (own Stripe, D3); Custom domain from €15/mo placeholder (D5).
+- [x] New **§5 Commercial terms (D19)**: lease-don't-sell, 14-day money-back on first payment, cancel anytime 30-day notice, purchase-by-application.
+- [x] §8 agent quoting rules extended to cover the add-on pricing + lease/guarantee terms; sections renumbered (per-industry→§6, data-shape→§7, agent→§8).
+- Verify: `grep -ni assumption` → 0; tsc clean (docs-only, build unaffected).
+
 ### P0.5 CI + environments (D31, D21)
 GitHub Actions: on PR → `tsc --noEmit`, `npm run build`. Protect main. Confirm Vercel preview deploys. Document staging strategy in README. Enable Supabase PITR (manual dashboard step — write instruction for Lee).
 ✅ Accept: a failing typecheck blocks merge.

@@ -22,7 +22,7 @@ Every industry is sold in **3 tiers** — Base, Growth, Everything — built on 
 - 24/7 availability
 - Onboarding & setup
 
-> "Accounts" = the client account/dashboard portal (view-only on leads & conversations). **ASSUMPTION — confirm:** booking/calendar visibility is a Growth feature, not base.
+> "Accounts" = the client account/dashboard portal (view-only on leads & conversations). **Booking/calendar visibility is a Growth feature (D2)** — the Base dashboard shows leads & conversations only, view-only.
 
 ---
 
@@ -41,13 +41,34 @@ Every industry is sold in **3 tiers** — Base, Growth, Everything — built on 
 - Social Media Responder
 - Email Follow-Up Agent
 - Voice agent — *added* for chat-led industries; *increased minutes* for voice-native ones
-- **ASSUMPTION — confirm:** Take payments / deposits is an Everything feature (or a custom add-on).
 
-Anything not listed here ("if the client needs it, we can do it") is a **custom add-on** quoted separately.
+> **Take Payments & Deposits is NOT part of Everything (D3).** It's a paid add-on (see §4). Everything = "everything for *automation*"; payments is commerce plumbing, priced separately, so the tier promise stays honest.
 
 ---
 
-## 4. Per-industry packages (prices €/mo)
+## 4. Add-ons (à la carte)
+
+Priced separately from the tiers, on top of a tier subscription; billed monthly ex-VAT.
+
+- **Take Payments & Deposits — €49/mo** · available on **Growth and Everything only (D3)**. Client uses their **own Stripe account**; the fee covers integration, setup, and support. Framed as *commerce plumbing*, not automation — which is why it sits outside the Everything tier.
+- **Custom domain — from €15/mo** *(placeholder — D5)* · client's own domain in place of the default `clientname.vision-sync.co` subdomain. Priced properly when built (post-launch).
+
+Anything else not listed in the tiers ("if the client needs it, we can do it") remains a **custom add-on** quoted separately.
+
+---
+
+## 5. Commercial terms — lease, guarantee, ownership (D19)
+
+- **Lease, don't sell.** Platforms remain **Vision-Sync property, leased monthly**. Clients subscribe to a running platform; they don't buy the codebase.
+- **14-day money-back guarantee** on the **first payment** if the client isn't satisfied.
+- **Cancel anytime** thereafter with **30 days' notice** — no long contracts.
+- **Outright purchase is by application only**, reviewed case-by-case.
+
+This ownership language is canonical for Terms, checkout copy, and the agent's training.
+
+---
+
+## 6. Per-industry packages (prices €/mo)
 
 Format: **ex-VAT** (client pays **inc-IVA**) · voice minutes included.
 
@@ -93,7 +114,7 @@ Format: **ex-VAT** (client pays **inc-IVA**) · voice minutes included.
 
 ---
 
-## 5. Suggested data shape (for implementation)
+## 7. Suggested data shape (for implementation)
 
 Extend the existing `Industry` type with a `packages` array; the wizard/site/AI all read this:
 
@@ -115,16 +136,18 @@ interface Package {
 
 ---
 
-## 6. For the AI agent (so it can quote)
+## 8. For the AI agent (so it can quote)
 
 The agent's knowledge must include this file's pricing so it can answer "how much is X?" accurately. Rules for the agent:
 
 - Quote the tier that matches the client's stated need; if unsure, present all 3 for their industry.
 - Always state prices **ex-VAT and note "+21% IVA"**, in euros.
 - Never invent a price or discount — quote only from the canonical data.
+- Quote the **Take Payments & Deposits** add-on at **€49/mo** only for **Growth or Everything** clients (§4); it's never bundled into a tier. Custom domain is a **from €15/mo** placeholder (§4) — don't commit to a firm price.
+- On terms: platforms are **leased monthly, not sold**; there's a **14-day money-back guarantee** on the first payment, **cancel anytime with 30 days' notice**, and outright **purchase is by application only** (§5).
 - For needs outside the tiers, say it's available as a **custom add-on** and offer to capture the enquiry for a tailored quote.
 - Anchor on value when asked "why so much": 24/7 bilingual coverage replacing a €2,000–4,000/mo front desk.
 
 ---
 
-*Last updated: June 2026 | Owner: Lee Spain | Source of truth for wizard, site & AI pricing*
+*Last updated: July 2026 | Owner: Lee Spain | Source of truth for wizard, site & AI pricing*
