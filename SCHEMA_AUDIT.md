@@ -192,8 +192,8 @@ Ordered; each step is one PR/SQL with a rollback. Assumes **Option A**. Staging-
 ### 5.2 Consequence — redundant D20 columns
 `plan_versions.included_voice_minutes` and `plan_versions.price_points` (from the original D20 migration) **duplicate** `pricing_packages` and must **not** be populated. R2 leaves them NULL/empty; **R5** drops them after R4 confirms no reader.
 
-### 5.3 Open decision for owner (feature flags)
-Is a **tier-level capability-flag** set needed (does this tier get booking/whatsapp/voice at all), separate from `pricing_packages.includes` (customer-facing "what's included") and from per-tenant `tenant_nodes`? R2 seeds a starter `feature_flags` set but **the site does not read it** — safe either way. If not needed, R5 can also drop `plan_versions.feature_flags`.
+### 5.3 RULING (owner) — KEEP tier-level `feature_flags`
+`plan_versions.feature_flags` is **retained as capability gating** — it enforces which nodes/behaviors a tier may access and connects to the `nodes`/`tenant_nodes` system. It is **distinct** from `pricing_packages.includes` (customer-facing "what's included" display list) and from per-tenant `tenant_nodes` (a tenant's actual enabled set). **R5 must NOT drop `feature_flags`.** R2's seeded flags are the starting capability matrix per tier.
 
 ---
 
@@ -208,12 +208,12 @@ Report/plan only. Owner runs each R-step and confirms before the next. All migra
 | **R2** | Seed `plans` 3-tier catalogue + `plan_versions` v1 **homeless levers only** (AI conversations, overage, feature_flags; WhatsApp cap NULL; **no voice, no price**) | `20260712160000_r2_seed_tier_catalogue.sql` (this PR) | `DELETE FROM plan_versions WHERE plan_id IN (SELECT id FROM plans WHERE slug IN ('base','growth','everything')); DELETE FROM plans WHERE slug IN ('base','growth','everything');` |
 | **R3** | Mark `plans` price/limit columns DEPRECATED (guarded COMMENTs) | `20260712160100_r3_deprecate_plans_price_columns.sql` (this PR) | re-run with `IS NULL` comments, or revert PR |
 | **R4** | **Fix the merged D20 UI (#10):** `PlanVersionsManager` drops voice-minutes + price inputs (those live in PricingManager/`pricing_packages`); keeps AI conversations, WhatsApp cap, overage, feature flags, versioning. `PlansManager` reads the 3-row tier catalogue **and is wired into the admin shell** (it is orphaned — MISSION_CONTROL_AUDIT §1A). | code PR (after R2 live) | revert PR (admin-only) |
-| **R5** | Drop redundant `plan_versions.included_voice_minutes`, `price_points` (+ maybe `feature_flags` per 5.3) once R4 confirms no reader | migration (destructive — backup first) | re-add columns |
-| **R6** | Close wider drift on **kept** tables from §1.3 Query B; regenerate `src/integrations/supabase/types.ts` | migrations (after B paste) | per-migration |
+| **R5** | Drop **only** the redundant `plan_versions.included_voice_minutes` + `price_points` once R4 confirms no reader. **KEEP `feature_flags`** (§5.3 ruling). | migration (destructive — backup first) | re-add the 2 columns (`integer` / `jsonb default '{}'`) |
+| **R6** | **FINALIZED against Query B (owner-run): no drift found in the pricing tables** (`pricing_packages`/`pricing_industries` match code + draft/publish mirror intact; `plan_versions` matches). So R6 carries **no pricing-table migration**. Remaining R6 scope: (a) one guarded no-op reconciliation migration that formalizes the earlier out-of-band `plans.currency`/`max_conversations` additions into migration history (`ADD COLUMN IF NOT EXISTS`, so history ↔ live agree); (b) regenerate `src/integrations/supabase/types.ts` from live so code/types/DB agree. | migration + types regen | per-migration; types = revert file |
 
 **Standing task (added):** *migration-history ↔ live-schema reconciliation.* The live DB has drifted from `supabase/migrations/*` (proven: `plans.currency`/`max_conversations`). Establish a checked-in live-schema baseline + a CI drift check so future migrations don't assume a schema the live DB lacks. Tracked in CLAUDE_CODE_PLAN.md STANDING GUARDRAILS.
 
-### What I need now
-1. **Run §1.3 Query B** (full column dump) → I finalize R6.
-2. Approve **R2** to run (SQL in this PR); confirm before I hand you R3.
-3. Answer **§5.3** (tier-level feature flags: keep or drop?).
+### Status of the asks (all resolved)
+1. ✅ **Query B run** — no drift in pricing tables; R6 finalized above (no pricing migration).
+2. ✅ **R2 approved** — owner runs it from `RUNBOOK_R2_R3.md`, pastes results; R3 handed over only after R2 is confirmed.
+3. ✅ **§5.3 ruled** — `feature_flags` KEPT as capability gating (see 5.3); R5 does not drop it.
